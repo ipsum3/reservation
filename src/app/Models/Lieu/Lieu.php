@@ -17,16 +17,23 @@ class Lieu extends BaseModel
 
     protected $table = 'lieux';
 
-    //protected $fillable = array('zone_id', 'nom', 'type', 'telephone', 'adresse', 'instruction', 'horaires', 'taxe_aeroport_eur', 'taxe_aeroport_max_eur', 'taxe_aeroport_usd', 'taxe_aeroport_max_usd', 'gps', 'email', 'email_reservation', 'ordre');
-
+    protected $guarded = ['id'];
 
     //static public $types = ['aeroport' => 'Aéroport', 'agence' => 'Agence', 'depot' => 'Dépôt', 'accueil' => 'Accueil et retour', 'navette' => 'Dépôt avec navette'];
 
-
+    protected $slugBase = 'nom';
+    
+    
 
     /*
+     * 
      * Relations
      */
+
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
+    }
 
     public function horaires()
     {

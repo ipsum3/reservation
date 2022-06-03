@@ -40,6 +40,7 @@ return new class extends Migration
 
         Schema::create('feries', function (Blueprint $table) {
             $table->id();
+            $table->integer('lieu_id')->nullable()->unsigned()->index();
             $table->string('nom')->nullable();
             $table->date('jour_at');
         });

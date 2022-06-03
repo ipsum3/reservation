@@ -3,7 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Lieu;
 
 
-use App\BaseModel;
+use Ipsum\Core\app\Models\BaseModel;
 use Carbon\Carbon;
 
 class Fermeture extends BaseModel
@@ -11,7 +11,7 @@ class Fermeture extends BaseModel
 
     public $timestamps = false;
 
-    //protected $fillable = array('lieu_id', 'nom', 'debut_at', 'fin_at');
+    protected $guarded = ['id'];
 
 
     protected $dates = [
@@ -49,13 +49,5 @@ class Fermeture extends BaseModel
      * Accessors & Mutators
      */
 
-    /*public function setDebutAtAttribute($value)
-    {
-        $this->attributes['debut_at'] = Carbon::createFromFormat('d/m/Y', $value);
-    }
-    public function setFinAtAttribute($value)
-    {
-        $this->attributes['fin_at'] = !empty($value) ? Carbon::createFromFormat('d/m/Y', $value) : null;
-    }*/
 
 }

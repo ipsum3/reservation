@@ -3,7 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Lieu;
 
 
-use App\BaseModel;
+use Ipsum\Core\app\Models\BaseModel;
 use Carbon\Carbon;
 
 class Ferie extends BaseModel
@@ -11,9 +11,8 @@ class Ferie extends BaseModel
 
     public $timestamps = false;
 
-    //protected $fillable = array('zone_id', 'nom', 'jour_at');
+    protected $guarded = ['id'];
 
-    protected $nullable = ['zone_id', 'nom'];
 
 
     protected $dates = [
@@ -28,8 +27,10 @@ class Ferie extends BaseModel
      * Relations
      */
 
-
-
+    public function lieu()
+    {
+        return $this->belongsTo(Lieu::class);
+    }
 
 
     /*
@@ -42,11 +43,7 @@ class Ferie extends BaseModel
     /*
      * Accessors & Mutators
      */
-
-    /*public function setJourAtAttribute($value)
-    {
-        $this->attributes['jour_at'] = Carbon::createFromFormat('d/m/Y', $value);
-    }*/
+    
 
 
 }
