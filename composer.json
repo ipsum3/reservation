@@ -1,0 +1,26 @@
+{
+    "name": "ipsum3/reservation",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "B1nj",
+            "email": "postmaster@b1nj.fr"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.0.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ipsum\\Reservation\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ipsum\\Reservation\\ReservationServiceProvider"
+            ]
+        }
+    }
+}

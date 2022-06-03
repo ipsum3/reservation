@@ -1,0 +1,168 @@
+<?php
+
+namespace Ipsum\Reservation\app\Models\Tarif;
+
+use Ipsum\Core\app\Models\BaseModel;
+use Carbon\Carbon;
+
+class Saison extends BaseModel
+{
+
+
+    public $timestamps = false;
+
+    protected $dates = [
+        'debut_at',
+    ];
+
+    /*
+     * Relations
+     */
+
+    public function tarifs()
+    {
+        return $this->hasMany(Tarif::class);
+    }
+
+
+
+    /*
+     * Scopes
+     */
+
+    public function scopeBetweenDates($query, Carbon $debut_at, Carbon $fin_at)
+    {
+        $debut_at->startOfDay();
+        $fin_at->startOfDay();
+
+        return $query->where(function ($query) use ($debut_at, $fin_at) {
+            return $query->where(function ($query) use ($debut_at, $fin_at) {
+                $query->where('debut_at', '>=', $debut_at)->where('debut_at', '<=', $fin_at);
+            })->orWhere(function ($query) use ($debut_at, $fin_at) {
+                $query->where('fin_at', '>=', $debut_at)->where('fin_at', '<=', $fin_at);
+            })->orWhere(function ($query) use ($debut_at, $fin_at) {
+                $query->where('debut_at', '<=', $debut_at)->where('fin_at', '>=', $fin_at);
+            });
+        });
+    }
+
+
+
+    /*
+     * Accessors & Mutators
+     */
+
+    /*public function getFinAtAttribute()
+    {
+        return Carbon::parse($this->attributes['fin_at'])->endOfDay();
+    }
+
+    public function setDebutAtAttribute($value)
+    {
+        $this->attributes['debut_at'] = formateDateStocke($value, 'Y-m-d');
+    }
+
+    public function setFinAtAttribute($value)
+    {
+        $this->attributes['fin_at'] = formateDateStocke($value, 'Y-m-d');
+    }*/
+
+
+
+
+
+    /*
+     * Functions
+     */
+
+    public static function getByDates(Carbon $date_arrivee, Carbon $date_depart)
+    {
+        $saisons = self::betweenDates($date_arrivee, $date_depart)->orderBy('fin_at', 'asc')->get();
+
+        if (!$saisons->count()) {
+            $message = _('Aucune saison pour la date de départ ').$date_arrivee->format('d/m/Y').'.';
+            throw new TarifException($message);
+        }
+
+        if ($saisons->last()->fin_at->lt($date_depart)) {
+            $message = _('La date limite de retour est le ').$saisons->last()->fin_at->format('d/m/Y');
+            throw new TarifException($message);
+        }
+
+        return $saisons;
+    }
+
+
+    public function getDuree(Carbon $date_debut, Carbon $date_fin)
+    {
+        // La saison ne correspond pas
+        if ($date_fin->lt($this->debut_at) or $date_debut->gt($this->fin_at)) {
+            return 0;
+        }
+
+        // Si c'est sur une seule saison
+        if ($date_debut->gt($this->debut_at) and $date_fin->lt($this->fin_at)) {
+            return $date_debut->diffInDays($date_fin->copy()->subMinutes(61)) + 1;
+        }
+
+        $date1 = $date_debut->gt($this->debut_at) ? $date_debut : $this->debut_at->copy()->subDay();
+        $date2 = $date_fin->lt($this->fin_at) ? $date_fin : $this->fin_at;
+
+        $duree = $date1->diffInDays($date2);
+
+        // Si c'est la dernière saison
+        if ($date2 == $date_fin) {
+            // Comparaison des heures
+            $hd = date('H', strtotime($date_debut)) * 60 + date('i', strtotime($date_debut));
+            $hf = date('H', strtotime($date_fin)) * 60 + date('i', strtotime($date_fin));
+            if ($hf - $hd > 60) {
+                // Ajout d'un jour si plus de 60 minutes de difference
+                $duree++;
+            }
+        }
+        return $duree;
+    }
+
+    public static function check()
+    {
+        $messages = null;
+
+
+        $saisons = self::orderBy('debut_at', 'asc')->get();
+
+        if ($saisons->first()->debut_at->gt(Carbon::now())) {
+            $messages[] = "Aucune saison pour la date d'aujourd'hui";
+        }
+
+        foreach ($saisons as $key => $saison) {
+            if (isset($saisons[$key + 1]) and $saison->fin_at->startOfday()->addDay()->ne($saisons[$key + 1]->debut_at)) {
+                $messages[] = "Il existe des dates sans saisons.";
+            }
+        }
+
+        $chevauchements = \DB::select(\DB::raw('
+            SELECT t.id,
+                   t.debut_at,
+                   t.fin_at
+            FROM   saison AS t,
+                   saison AS t2
+            WHERE  t.id <> t2.id
+                   AND
+                   t.debut_at <= t2.fin_at
+                   AND
+                   t.fin_at >= t2.debut_at
+            GROUP BY t.id,
+                     t.debut_at,
+                     t.fin_at
+        '));
+
+        if (!empty($chevauchements)) {
+            $messages[] = "Des chevauchements de saisons existe";
+        }
+
+        if ($messages) {
+            throw new TarifException(implode($messages, ' ; '));
+        }
+
+    }
+}
