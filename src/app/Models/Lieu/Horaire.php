@@ -12,7 +12,7 @@ class Horaire extends BaseModel
 
     public $timestamps = false;
 
-    public static $jours = [0 => 'dimanche', 1 => 'lundi', 2 => 'mardi', 3 => 'mercredi', 4 => 'jeudi', 5 => 'vendredi', 6 => 'samedi', 7 => 'ferié'];
+    const JOURS = [0 => 'dimanche', 1 => 'lundi', 2 => 'mardi', 3 => 'mercredi', 4 => 'jeudi', 5 => 'vendredi', 6 => 'samedi', 7 => 'ferié'];
     const JOUR_FERIE = 7;
 
     protected $guarded = ['id'];

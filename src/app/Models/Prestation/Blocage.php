@@ -13,8 +13,8 @@ class Blocage extends BaseModel
 
     public $timestamps = false;
 
+    protected $guarded = ['id'];
 
-    //protected $fillable = array('option_id', 'zone_id', 'nom', 'debut_at', 'fin_at');
 
     protected $dates = [
         'debut_at', 
@@ -60,13 +60,5 @@ class Blocage extends BaseModel
     /*
      * Accessors & Mutators
      */
-
-    /*public function setDebutAtAttribute($value)
-    {
-        $this->attributes['debut_at'] = Carbon::createFromFormat('d/m/Y', $value);
-    }
-    public function setFinAtAttribute($value)
-    {
-        $this->attributes['fin_at'] = Carbon::createFromFormat('d/m/Y', $value);
-    }*/
+    
 }

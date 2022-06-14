@@ -1,5 +1,5 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Categories')
+@section('title', 'Catégories')
 
 @section('content')
 

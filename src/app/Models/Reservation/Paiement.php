@@ -2,13 +2,20 @@
 
 namespace Ipsum\Reservation\app\Models\Reservation;
 
-use Ipsum\Core\Models\BaseModel;
+use Ipsum\Core\app\Models\BaseModel;
 
 class Paiement extends BaseModel
 {
     protected $table = 'paiements';
-    
-    protected $fillable=['paiement_type_id', 'montant', 'devise', 'transaction_ref', 'autorisation_ref', 'erreur', 'reservation_id','notification_id'];
+
+    protected $guarded = ['id'];
+
+
+
+    /*
+     * 
+     * Relations
+     */
 
     public function payable()
     {
@@ -24,5 +31,18 @@ class Paiement extends BaseModel
     {
         return $this->belongsTo(Reservation::class, 'reservation_id');
     }
+
+
+
+    /*
+     * Scopes
+     */
+
+    
+    
+
+    /*
+     * Accessors & Mutators
+     */
 
 }

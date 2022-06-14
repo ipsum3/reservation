@@ -13,7 +13,7 @@ class Tarif extends BaseModel
 
     public $timestamps = false;
 
-
+    protected $guarded = ['id'];
 
     /*
      * Relations

@@ -17,8 +17,7 @@ class Prestation extends BaseModel
     //public static $TYPE_OBLIGATOIRES = array('navette');
 
 
-    //protected $fillable = array('class', 'nom', 'description', 'type', 'tarification', 'montant_eur', 'montant_usd', 'quantite_max', 'gratuit_apres', 'jour_fact_max', 'ordre');
-
+    protected $guarded = ['id'];
 
 
 
@@ -31,7 +30,10 @@ class Prestation extends BaseModel
         return $this->hasMany(Blocage::class);
     }
 
-
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
+    }
 
 
     /*

@@ -54,6 +54,7 @@ return new class extends Migration
             $table->decimal('total', 10, 2)->nullable();
             $table->decimal('montant_paye', 10, 2)->nullable();
 
+            $table->text('note')->nullable();
             $table->timestamps();
         });
 

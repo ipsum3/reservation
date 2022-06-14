@@ -49,7 +49,7 @@ class CategorieBlocageController extends AdminController
 
     public function store(StoreCategorieBlocage $request)
     {
-        $blocage = Blocage::create($request->all());
+        $blocage = Blocage::create($request->validated());
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.categorieBlocage.edit', [$blocage->id]);
     }
@@ -63,7 +63,7 @@ class CategorieBlocageController extends AdminController
 
     public function update(StoreCategorieBlocage $request, Blocage $blocage)
     {
-        $blocage->update($request->all());
+        $blocage->update($request->validated());
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();

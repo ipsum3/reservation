@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Models\Lieu;
 
 
 use App\Article\Translatable;
+use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
@@ -13,7 +14,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
 class Lieu extends BaseModel
 {
-    use Slug;
+    use Slug, Sortable;
 
     protected $table = 'lieux';
 
@@ -22,6 +23,12 @@ class Lieu extends BaseModel
     //static public $types = ['aeroport' => 'Aéroport', 'agence' => 'Agence', 'depot' => 'Dépôt', 'accueil' => 'Accueil et retour', 'navette' => 'Dépôt avec navette'];
 
     protected $slugBase = 'nom';
+
+    protected $casts = [
+        'emails' => 'array',
+        'emails_reservation' => 'array',
+    ];
+    
     
     
 
@@ -40,11 +47,11 @@ class Lieu extends BaseModel
         return $this->hasMany(Horaire::class);
     }
 
-    /*public function fermetures()
+    public function fermetures()
     {
         // Ne pas utiliser car il faudrait prendre en compre les clés étrangères null
         return $this->hasMany(Fermeture::class);
-    }*/
+    }
 
     public function reservationsDebut()
     {
@@ -111,16 +118,6 @@ class Lieu extends BaseModel
         return $crenaux;
     }
 
-    public function calculerTaxeAeroport($nb_jours)
-    {
-        if (!$this->hasTaxeAeroport) {
-            return null;
-        }
-
-        $montant = $nb_jours * floatval($this->taxe_aeroport);
-
-        return $montant <  $this->taxe_aeroport_max ? $montant : $this->taxe_aeroport_max;
-    }
 
 
 
@@ -140,44 +137,9 @@ class Lieu extends BaseModel
      * Accessors & Mutators
      */
 
-    public function getHasTaxeAeroportAttribute()
-    {
-        return $this->taxe_aeroport !== null;
-    }
-
-    public function getTaxeAeroportAttribute()
-    {
-        return $this->{'taxe_aeroport_'.Config::get('app.devise')};
-    }
-
-    public function getTaxeAeroportMaxAttribute()
-    {
-        return $this->{'taxe_aeroport_max_'.Config::get('app.devise')};
-    }
-
-    public function getIsAeroportAttribute()
-    {
-        return $this->type === self::TYPE_AEROPORT;
-    }
-
-    public function getIsNavetteAttribute()
-    {
-        return $this->type === self::TYPE_NAVETTE;
-    }
-
-    public function getEmailsAttribute()
-    {
-        return array_map('trim', explode(',', $this->email));
-    }
-
     public function getEmailFirstAttribute()
     {
         return $this->emails[0];
-    }
-
-    public function getEmailsReservationAttribute()
-    {
-        return array_map('trim', explode(',', $this->email_reservation));
     }
 
     public function getEmailReservationFirstAttribute()

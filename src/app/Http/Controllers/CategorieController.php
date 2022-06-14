@@ -45,7 +45,7 @@ class CategorieController extends AdminController
         $categories = $query->orderBy('nom')->paginate();
 
         $types = Type::get()->pluck('nom', 'id');
-        $carrosseries = Carrosserie::get()->pluck('nom', 'id');
+        $carrosseries = Carrosserie::orderBy('order')->get()->pluck('nom', 'id');
 
         return view('IpsumReservation::categorie.index', compact('categories', 'types', 'carrosseries'));
     }
@@ -57,14 +57,14 @@ class CategorieController extends AdminController
         $types = Type::get()->pluck('nom', 'id');
         $motorisations = Motorisation::get()->pluck('nom', 'id');
         $transmissions = Transmission::get()->pluck('nom', 'id');
-        $carrosseries = Carrosserie::get()->pluck('nom', 'id');
+        $carrosseries = Carrosserie::orderBy('order')->get()->pluck('nom', 'id');
 
         return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries'));
     }
 
     public function store(StoreCategorie $request)
     {
-        $categorie = Categorie::create($request->all());
+        $categorie = Categorie::create($request->validated());
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.categorie.edit', [$categorie->id]);
     }
@@ -74,14 +74,14 @@ class CategorieController extends AdminController
         $types = Type::get()->pluck('nom', 'id');
         $motorisations = Motorisation::get()->pluck('nom', 'id');
         $transmissions = Transmission::get()->pluck('nom', 'id');
-        $carrosseries = Carrosserie::get()->pluck('nom', 'id');
+        $carrosseries = Carrosserie::orderBy('order')->get()->pluck('nom', 'id');
 
         return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries'));
     }
 
     public function update(StoreCategorie $request, Categorie $categorie)
     {
-        $categorie->update($request->all());
+        $categorie->update($request->validated());
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();

@@ -49,7 +49,7 @@ class LieuFerieController extends AdminController
 
     public function store(StoreLieuFerie $request)
     {
-        $ferie = Ferie::create($request->all());
+        $ferie = Ferie::create($request->validated());
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.lieuFerie.edit', [$ferie->id]);
     }
@@ -63,7 +63,7 @@ class LieuFerieController extends AdminController
 
     public function update(StoreLieuFerie $request, Ferie $ferie)
     {
-        $ferie->update($request->all());
+        $ferie->update($request->validated());
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();

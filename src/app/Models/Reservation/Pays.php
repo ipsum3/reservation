@@ -13,8 +13,29 @@ class Pays extends BaseModel
     public $timestamps = false;
 
 
+
+
+    /*
+     *
+     * Relations
+     */
+
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
     }
+
+
+
+    /*
+     * Scopes
+     */
+
+
+
+
+    /*
+     * Accessors & Mutators
+     */
+
 }

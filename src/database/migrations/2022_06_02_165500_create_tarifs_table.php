@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('categorie_id')->unsigned();
             $table->integer('duree_id')->unsigned();
             $table->integer('saison_id')->unsigned()->nullable();
-            $table->decimal('montant', 10, 2);
+            $table->decimal('montant', 10, 2)->nullable();
             $table->string('modalite_paiement_id');
 
             $table->unique(['categorie_id', 'duree_id', 'saison_id', 'modalite_paiement_id'], 'tarifs_index_unique');

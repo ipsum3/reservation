@@ -8,11 +8,13 @@ use Carbon\Carbon;
 class Saison extends BaseModel
 {
 
-
+    protected $guarded = ['id'];
+    
     public $timestamps = false;
 
     protected $dates = [
         'debut_at',
+        'fin_at',
     ];
 
     /*
@@ -52,20 +54,7 @@ class Saison extends BaseModel
      * Accessors & Mutators
      */
 
-    /*public function getFinAtAttribute()
-    {
-        return Carbon::parse($this->attributes['fin_at'])->endOfDay();
-    }
 
-    public function setDebutAtAttribute($value)
-    {
-        $this->attributes['debut_at'] = formateDateStocke($value, 'Y-m-d');
-    }
-
-    public function setFinAtAttribute($value)
-    {
-        $this->attributes['fin_at'] = formateDateStocke($value, 'Y-m-d');
-    }*/
 
 
 
@@ -74,6 +63,16 @@ class Saison extends BaseModel
     /*
      * Functions
      */
+    
+    public function replicateWithTarifs()
+    {
+        $saison_clone = $this->replicate();
+        $saison_clone->push();
+        foreach($this->tarifs as $tarif) {
+            $saison_clone->tarifs()->create($tarif->toArray());
+        }
+        return $saison_clone;
+    }
 
     public static function getByDates(Carbon $date_arrivee, Carbon $date_depart)
     {
@@ -123,7 +122,7 @@ class Saison extends BaseModel
         return $duree;
     }
 
-    public static function check()
+   /* public static function check()
     {
         $messages = null;
 
@@ -164,5 +163,5 @@ class Saison extends BaseModel
             throw new TarifException(implode($messages, ' ; '));
         }
 
-    }
+    }*/
 }

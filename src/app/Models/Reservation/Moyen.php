@@ -13,10 +13,29 @@ class Moyen extends BaseModel
     const CB_SITE_ID = 1;
 
 
+
+    /*
+     * 
+     * Relations
+     */
+    
     public function paiements()
     {
         return $this->hasMany(Paiement::class);
     }
+
+
+
+    /*
+     * Scopes
+     */
+
+
+
+
+    /*
+     * Accessors & Mutators
+     */
 
     public function getIsSiteCbAttribute()
     {

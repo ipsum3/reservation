@@ -9,6 +9,9 @@ class Duree extends BaseModel
     use Tranche;
 
 
+    protected $guarded = ['id'];
+
+
     public $timestamps = false;
 
 

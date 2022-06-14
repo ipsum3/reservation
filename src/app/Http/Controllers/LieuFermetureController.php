@@ -49,7 +49,7 @@ class LieuFermetureController extends AdminController
 
     public function store(StoreLieuFermeture $request)
     {
-        $fermeture = Fermeture::create($request->all());
+        $fermeture = Fermeture::create($request->validated());
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.lieuFermeture.edit', [$fermeture->id]);
     }
@@ -63,7 +63,7 @@ class LieuFermetureController extends AdminController
 
     public function update(StoreLieuFermeture $request, Fermeture $fermeture)
     {
-        $fermeture->update($request->all());
+        $fermeture->update($request->validated());
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();

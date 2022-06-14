@@ -16,8 +16,30 @@ class Modalite extends BaseModel
     const AGENCE_ID = 2;
 
 
+
+
+    /*
+     * 
+     * Relations
+     */
+
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
     }
+
+
+
+
+    /*
+     * Scopes
+     */
+
+
+
+
+    /*
+     * Accessors & Mutators
+     */
+
 }

@@ -16,8 +16,26 @@ class Etat extends BaseModel
     const ANNULEE_ID = 3;
 
 
+    /*
+     * Relations
+     */
+
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
     }
+
+
+
+    /*
+     * Scopes
+     */
+
+
+
+
+    /*
+     * Accessors & Mutators
+     */
+
 }

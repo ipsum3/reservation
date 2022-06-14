@@ -50,19 +50,20 @@ return new class extends Migration
 
         Schema::create('carrosseries', function (Blueprint $table) {
             $table->id();
-            $table->string('class');
+            $table->string('class')->nullable();
             $table->string('nom');
+            $table->tinyInteger('order')->default(0);
         });
 
         Schema::create('transmissions', function (Blueprint $table) {
             $table->id();
-            $table->string('class');
+            $table->string('class')->nullable();
             $table->string('nom');
         });
 
         Schema::create('motorisations', function (Blueprint $table) {
             $table->id();
-            $table->string('class');
+            $table->string('class')->nullable();
             $table->string('nom');
         });
 

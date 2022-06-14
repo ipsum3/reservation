@@ -25,15 +25,8 @@ class StoreReservation extends FormRequest
      */
     public function rules()
     {
-        $types =  array_keys(config('ipsum.reservation.types'));
-        $etats =  array_keys(config('ipsum.reservation.etats'));
-
         return [
             "categorie_id" => "nullable|integer|exists:reservation_categories,id",
-            'titre' => 'required|max:255',
-            'type' => 'required|in:'.implode(',', $types),
-            'etat' => 'required|in:'.implode(',', $etats),
-            'date' => 'nullable|date'
         ];
     }
 

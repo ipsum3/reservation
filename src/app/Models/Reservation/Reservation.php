@@ -21,9 +21,7 @@ class Reservation extends BaseModel
 {
     use HasFactory;
 
-    /*protected $fillable = [
-        "reference", "etat_id", "type", "client_id", "civilite", "nom", "prenom", "email", "telephone", "adresse", "cp", "ville", "pays", "naissance_at", "naissance_lieu", "permis_numero", "permis_at", "permis_delivre", "vol", "adresse_sejour", "observation", "categorie_id", "debut_at", "fin_at", "debut_lieu_id", "fin_lieu_id", "code_tarif", "options", "taxe_aeroport", "promotion_id", "total", "vehicule_id", "montant_paye", "devise"
-    ];*/
+    protected $guarded = ['id'];
 
     protected $saisons;
     protected $duree;
@@ -38,61 +36,14 @@ class Reservation extends BaseModel
     public static $type_paiement = array('ligne' => "Paiement en ligne", 'agence' => 'Paiement en agence');
 
 
-    public static function getSearchRules()
-    {
-        // TODO : vérification heures
-        $rules = [
-            'debut_at'        => 'required|date_format:d/m/Y H:i|date_min:' . Carbon::now()->addHours(Config::get('reservation.delai_minimum'))->format('d/m/Y H:i') . ',d/m/Y H:i|ouvert_horaire:debut_lieu_id,d/m/Y H:i,départ',
-            'debut_jour_at'   => 'ouvert:debut_lieu_id,d/m/Y,départ',
-            'fin_at'          => 'required|date_format:d/m/Y H:i|date_greater_than:debut_at,d/m/Y H:i|duree_min:' . Config::get('reservation.duree_minimum') . ',debut_at,d/m/Y H:i|ouvert_horaire:debut_lieu_id,d/m/Y H:i,retour',
-            'fin_jour_at'     => 'ouvert:fin_lieu_id,d/m/Y,retour',
-            "debut_lieu_id"   => "required|exists:lieu,id",
-            "fin_lieu_id"     => "required|exists:lieu,id",
-            "code_promo"      => "exists:promotion,code",
-        ];
-
-        return $rules;
-    }
-
-    public function getValidationRules()
-    {
-        $rules = [
-            'debut_at'       => 'required|date_format:d/m/Y H:i|date_min:' . Carbon::now()->addHours(Config::get('reservation.delai_minimum'))->format('d/m/Y H:i') . ',d/m/Y H:i',
-            'fin_at'         => 'required|date_format:d/m/Y H:i|date_greater_than:debut_at,d/m/Y H:i|duree_min:' . Config::get('reservation.duree_minimum') . ',debut_at,d/m/Y H:i',
-            "debut_lieu_id"  => "required|exists:lieu,id",
-            "fin_lieu_id"    => "required|exists:lieu,id",
-            "categorie_id"   => "required|exists:categorie,id",
-            "code_promo"     => "exists:promotion,code",
-            "nom"            => 'required|max:255',
-            "prenom"         => 'required|max:255',
-            "email"          => 'required|email',
-            "telephone"      => 'required|min:10',
-            "adresse"        => '',
-            "cp"             => 'max:255',
-            "ville"          => "min:2|max:255",
-            "pays"           => "min:4|max:255",
-            'naissance_at'   => 'date_format:d/m/Y|date_max:' . $this->date_naissance_minimum->format('d/m/Y') . ',d/m/Y',
-            'naissance_lieu' => 'max:255',
-            'permis_numero'  => 'max:255',
-            'permis_at'      => 'date_format:d/m/Y|date_max:' . $this->date_permis_minimum->format('d/m/Y') . ',d/m/Y',
-            'permis_delivre' => 'max:255',
-            'cgv'            => 'accepted',
-            'annee_permis_minimum'  => 'accepted',
-        ];
-
-        return $rules;
-    }
-
-    public static function getShowAdminRules()
-    {
-        $rules = [
-            'debut_at'    => 'required|date_format:d/m/Y H:i',
-            'fin_at'      => 'required|date_format:d/m/Y H:i|date_greater_than:debut_at,d/m/Y H:i',
-            "etat"        => "required|exists:reservation_etat,id"
-        ];
-
-        return $rules;
-    }
+    
+    
+    
+    
+    
+    
+    
+    
 
     protected static function newFactory()
     {
@@ -197,10 +148,10 @@ class Reservation extends BaseModel
     /*
      * TODO ! mettre class en config ?
      */
-    /*public function client()
+    public function client()
     {
-        return $this->belongsTo('App\Client\Client');
-    }*/
+        return $this->belongsTo(config('ipsum.reservation.client.model'));
+    }
 
 
 
