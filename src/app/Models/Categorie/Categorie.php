@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ipsum\Admin\Concerns\Htmlable;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Media\Concerns\Mediable;
+use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Tarif\Tarif;
 use Ipsum\Reservation\database\factories\CategorieFactory;
@@ -81,6 +82,11 @@ class Categorie extends BaseModel
     public function tarifs()
     {
         return $this->hasMany(Tarif::class);
+    }
+
+    public function prestations()
+    {
+        return $this->morphToMany(Prestation::class, 'prestable')->withPivot('montant');
     }
 
     

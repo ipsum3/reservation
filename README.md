@@ -14,3 +14,6 @@ php artisan vendor:publish --provider="Ipsum\Reservation\ReservationServiceProvi
 
 ### Add Reservation seeder to DatabaseSeeder.php file
 `$this->call(\Ipsum\Reservation\database\seeds\DatabaseSeeder::class);`
+
+### Add Commande to Kernel.php file
+`$schedule->command('ipsum:reservation:joursferies')->quarterly(); // Trimestre`

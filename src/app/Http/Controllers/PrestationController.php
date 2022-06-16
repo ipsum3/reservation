@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\StorePrestation;
+use Ipsum\Reservation\app\Models\Categorie\Categorie;
+use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Prestation\Type;
 use Prologue\Alerts\Facades\Alert;
@@ -46,13 +48,19 @@ class PrestationController extends AdminController
     {
         $prestation = new Prestation;
         $types = Type::all()->pluck('nom', 'id');
+        $categories = Categorie::orderBy('nom')->get();
+        $lieux = Lieu::orderBy('order')->get();
 
-        return view('IpsumReservation::prestation.form', compact('prestation', 'types'));
+        return view('IpsumReservation::prestation.form', compact('prestation', 'types', 'categories', 'lieux'));
     }
 
     public function store(StorePrestation $request)
     {
         $prestation = Prestation::create($request->validated());
+
+        $prestation->categories()->sync($request->categories);
+        $prestation->lieux()->sync($request->lieux);
+
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.prestation.edit', [$prestation->id]);
     }
@@ -60,13 +68,18 @@ class PrestationController extends AdminController
     public function edit(Prestation $prestation)
     {
         $types = Type::all()->pluck('nom', 'id');
+        $categories = Categorie::orderBy('nom')->get();
+        $lieux = Lieu::orderBy('order')->get();
         
-        return view('IpsumReservation::prestation.form', compact('prestation', 'types'));
+        return view('IpsumReservation::prestation.form', compact('prestation', 'types', 'categories', 'lieux'));
     }
 
     public function update(StorePrestation $request, Prestation $prestation)
     {
         $prestation->update($request->validated());
+
+        $prestation->categories()->sync($request->categories);
+        $prestation->lieux()->sync($request->lieux);
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();

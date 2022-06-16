@@ -59,7 +59,7 @@
         }
     </style>
 
-    @php($couleur = '#ccc')
+    @php($couleur = config('ipsum.reservation.confirmation.couleur'))
 </head>
 <body style="margin:0; padding:0;">
 
@@ -77,8 +77,12 @@
                         <td align="center" valign="top">
                             <table width="600" cellpadding="0" cellspacing="0" border="0" class="container" style="font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
                                 <tr>
-                                    <td width="300" class="mobile" align="left" valign="top">
-                                        <img src="{{ asset('themes/budget/images/logos/logo-header.jpg') }}" alt="{{ Config::get('website.nom_site') }}" width="250" style="width: 250px;">
+                                    <td width="300" class="mobile" align="left" valign="top" style="font-size: 25px; font-weight: bold">
+                                        @if (config('ipsum.reservation.confirmation.logo'))
+                                            <img src="{{ config('ipsum.reservation.confirmation.logo') }}" alt="{{ config('settings.nom_site') }}" width="250" style="width: 250px;">
+                                        @else
+                                            {{ config('settings.nom_site') }}
+                                        @endif
                                     </td>
                                     <td width="400" class="mobile" align="right" valign="top">
                                         <h1 style="font-size: 18px;color: #8c8c8c;">
@@ -110,7 +114,7 @@
                                             <tr>
                                                 <td align="center" valign="top">
                                                     <div style="border: 1px solid #acacac; padding: 10px 20px;font-size: 14px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
-                                                        Réservation {{ $reservation->etat ? strtolower($reservation->etat->nom) : '' }} {{ $reservation->modalite ? $reservation->modalite->nom : '' }}
+                                                        Réservation {{ $reservation->modalite ? strtolower($reservation->modalite->nom) : '' }} {{ $reservation->etat ? strtolower($reservation->etat->nom) : '' }}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -156,29 +160,23 @@
                                                 </tr>
                                                 <tr>
                                                     <th valign="top">{{ _('Adresse') }}</th>
-                                                    <td valign="top">{{ nl2br(e($reservation->lieuDebut->adresse)) }}</td>
+                                                    <td valign="top">{!! nl2br(e($reservation->lieuDebut->adresse)) !!}</td>
                                                 </tr>
                                                 @if($reservation->lieuDebut->instruction)
                                                     <tr>
                                                         <th valign="top">{{ _('Instruction') }}</th>
-                                                        <td valign="top">{{ nl2br(e($reservation->lieuDebut->instruction)) }}</td>
+                                                        <td valign="top">{!! nl2br(e($reservation->lieuDebut->instruction)) !!}</td>
                                                     </tr>
                                                 @endif
                                                 <tr>
                                                     <th valign="top">{{ _('Horaires') }}</th>
-                                                    <td valign="top">{{ nl2br(e($reservation->lieuDebut->horaires_txt)) }}</td>
+                                                    <td valign="top">{!! nl2br(e($reservation->lieuDebut->horaires_txt)) !!}</td>
                                                 </tr>
                                             @endif
                                             @if ($reservation->observation)
                                                 <tr>
                                                     <th valign="top">{{ _('Observations') }}</th>
-                                                    <td valign="top">{{ nl2br(e($reservation->observation)) }}</td>
-                                                </tr>
-                                            @endif
-                                            @if ($reservation->vol)
-                                                <tr>
-                                                    <th valign="top">{{ _('N° de vol') }}</th>
-                                                    <td valign="top">{{ $reservation->vol }}</td>
+                                                    <td valign="top">{!! nl2br(e($reservation->observation)) !!}</td>
                                                 </tr>
                                             @endif
                                         </table>
@@ -201,11 +199,11 @@
                                                 </tr>
                                                 <tr>
                                                     <th valign="top">{{ _('Adresse') }}</th>
-                                                    <td valign="top">{{ nl2br(e($reservation->lieuFin->adresse)) }}</td>
+                                                    <td valign="top">{!! nl2br(e($reservation->lieuFin->adresse)) !!}</td>
                                                 </tr>
                                                 <tr>
                                                     <th valign="top">{{ _('Horaires') }}</th>
-                                                    <td valign="top">{{ nl2br(e($reservation->lieuFin->horaires_txt)) }}</td>
+                                                    <td valign="top">{!! nl2br(e($reservation->lieuFin->horaires_txt)) !!}</td>
                                                 </tr>
                                             @endif
                                         </table>
@@ -261,6 +259,9 @@
                                                         @if ($reservation->permis_at)
                                                             {{ _('délivré le') }} {{ $reservation->permis_at->format('d/m/Y') }}
                                                         @endif
+                                                        @if ($reservation->permis_delivre)
+                                                            {{ _('par') }} {{ $reservation->permis_delivre }}
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endif
@@ -309,15 +310,9 @@
                                                 </tr>
                                             @endif
                                             <tr>
-                                                <th valign="top">{{ _('Prix de base') }} ({{ $reservation->nbJours }} {{ _('jours') }})</th>
+                                                <th valign="top">{{ _('Prix de base') }} ({{ $reservation->nb_jours }} {{ _('jours') }})</th>
                                                 <td align="right">@prix($reservation->montant_base)&nbsp;€</td>
                                             </tr>
-                                            @if ($reservation->taxe_aeroport != '0.00')
-                                                <tr>
-                                                    <th valign="top">{{ _('Taxe aéroport') }}</th>
-                                                    <td align="right">@prix($reservation->taxe_aeroport)&nbsp;€</td>
-                                                </tr>
-                                            @endif
                                             @if ($reservation->options)
                                                 @foreach ($reservation->options as $option)
                                                     <tr>
@@ -340,7 +335,7 @@
                                                         <th valign="top">
                                                             {{ _('Offre') }} {{ strtolower($promotion['nom']) }}
                                                             @if (!empty($promotion['commentaire']))
-                                                                <br>{{ nl2br(e($promotion['commentaire'])) }}
+                                                                <br>{!! nl2br(e($promotion['commentaire'])) !!}
                                                             @endif
                                                         </th>
                                                         <td align="right"><b>-@prix($promotion['reduction'])&nbsp;€</b></td>
@@ -348,9 +343,15 @@
                                                 @endforeach
                                             @endif
                                             <tr>
-                                                <th valign="top">{{ _('Total TTC') }} {{ !$reservation->isPayee ? _('à régler') : _('payé') }}</th>
+                                                <th valign="top">{{ _('Total (TTC)') }}</th>
                                                 <td align="right"><strong style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;">@prix($reservation->total)&nbsp;€</strong></td>
                                             </tr>
+                                            @if ($reservation->is_payee)
+                                                <tr>
+                                                    <th valign="top">{{ _('Reste à régler') }}</th>
+                                                    <td align="right"><strong style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;">@prix($reservation->total - $reservation->montant_paye)&nbsp;€</strong></td>
+                                                </tr>
+                                            @endif
                                         </table>
                                     </td>
                                 </tr>

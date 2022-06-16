@@ -5,6 +5,7 @@ namespace Ipsum\Reservation;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
+use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
 use Ipsum\Reservation\app\Models\Reservation;
 use Ipsum\Reservation\app\Policies\ReservationPolicy;
@@ -14,6 +15,7 @@ class ReservationServiceProvider extends ServiceProvider
 
     protected $commands = [
         \Ipsum\Reservation\app\Console\Commands\Install::class,
+        JoursFeries::class
     ];
 
     /**

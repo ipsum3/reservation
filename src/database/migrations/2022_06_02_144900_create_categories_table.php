@@ -37,6 +37,7 @@ return new class extends Migration
             $table->smallInteger('transmission_id')->unsigned();
             $table->smallInteger('motorisation_id')->unsigned();
             $table->smallInteger('carrosserie_id')->unsigned();
+            $table->text('datas')->nullable();
 
             $table->decimal('franchise', 10, 2)->nullable();
             $table->smallInteger('age_minimum')->unsigned();

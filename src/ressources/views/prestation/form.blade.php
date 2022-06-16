@@ -29,13 +29,63 @@
                 {{ Aire::select(collect(['' => '---- Tarifications -----'])->union(array_combine(\Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_TARIFICATION, \Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_TARIFICATION)), 'tarification', 'Tarification*')->groupAddClass('col-md-6') }}
                 {{ Aire::textArea('description', 'Description')->groupAddClass('col-md-6') }}
                 {{ Aire::number('montant', 'Montant')->step(.01)->groupAddClass('col-md-6') }}
-                {{ Aire::number('quantite_max', 'Quantité max')->groupAddClass('col-md-6') }}
+                {{ Aire::number('quantite_max', 'Quantité max*')->required()->defaultValue(1)->groupAddClass('col-md-6') }}
                 {{ Aire::number('gratuit_apres', 'Gratuit après')->groupAddClass('col-md-6') }}
                 {{ Aire::number('jour_fact_max', 'Jour max facturé')->groupAddClass('col-md-6') }}
             </div>
-
         </div>
     </div>
+
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">Conditions par catégories</h2>
+                </div>
+                <div class="box-body">
+                    @foreach($categories as $categorie)
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="categorie-{{ $categorie->id }}">
+                                Catégorie {{ $categorie->nom }}
+                            </label>
+                            <div class="col-sm-1">
+                                <input class="form-check-input" type="checkbox" name="categories[{{ $categorie->id }}][has]" value="{{ $categorie->id }}" id="categorie-{{ $categorie->id }}" {{ old('categories.'.$categorie->id.'.has', $prestation->categories->contains($categorie)) ? 'checked' : '' }}>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" name="categories[{{ $categorie->id }}][montant]" step=".001" value="{{ old('categories.'.$categorie->id.'.montant', $prestation->categories->contains($categorie) ? $prestation->categories->find($categorie)->pivot->montant : null) }}">
+                                <span id="emailHelp" class="form-text text-muted">Montant à ajouter en &nbsp;&euro;</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">Conditions par lieux</h2>
+                </div>
+                <div class="box-body">
+                    @foreach($lieux as $lieu)
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="lieu-{{ $lieu->id }}">
+                                {{ $lieu->nom }}
+                            </label>
+                            <div class="col-sm-1">
+                                <input class="form-check-input" type="checkbox" name="lieux[{{ $lieu->id }}][has]" value="{{ $lieu->id }}" id="lieu-{{ $lieu->id }}" {{ old('lieux.'.$lieu->id.'.has', $prestation->lieux->contains($lieu)) ? 'checked' : '' }}>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" name="lieux[{{ $lieu->id }}][montant]" step=".001" value="{{ old('lieux.'.$lieu->id.'.montant', $prestation->lieux->contains($lieu) ? $prestation->lieux->find($lieu)->pivot->montant : null) }}">
+                                <span id="emailHelp" class="form-text text-muted">Montant à ajouter en &nbsp;&euro;</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{ Aire::close() }}
     
 @endsection

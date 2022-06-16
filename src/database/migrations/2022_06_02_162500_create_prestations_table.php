@@ -29,8 +29,7 @@ return new class extends Migration
 
         Schema::create('prestables', function (Blueprint $table) {
             $table->integer('prestation_id')->unsigned()->index();
-            $table->integer('prestable_id')->unsigned();
-            $table->string('prestable_type');
+            $table->morphs('prestable');
             $table->decimal('montant', 10, 2)->nullable();
 
             $table->primary(['prestation_id', 'prestable_id', 'prestable_type'], 'prestables_index_unique');

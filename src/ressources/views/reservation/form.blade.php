@@ -5,7 +5,7 @@
 
     <h1 class="main-title">Réservation</h1>
 
-    {{ Aire::open()->route($reservation->exists ? 'admin.reservation.update' : 'admin.reservation.store', $reservation->exists ? [$reservation] : '')->bind($reservation)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreReservation::class) }}
+    {{ Aire::open()->route($reservation->exists ? 'admin.reservation.update' : 'admin.reservation.store', $reservation->exists ? [$reservation] : '')->bind($reservation)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreAdminReservation::class) }}
     <div class="box">
         <div class="box-header">
             <h2 class="box-title">{{ $reservation->exists ? 'Modification' : 'Ajout' }}</h2>
@@ -16,11 +16,41 @@
                     <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.create') }}" data-toggle="tooltip" title="Ajouter">
                         <i class="fas fa-plus"></i>
                     </a>&nbsp;
-                    <a class="btn btn-outline-danger" href="{{ route('admin.reservation.destroy', $reservation) }}" data-toggle="tooltip" title="Supprimer">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
+                    @can('delete', $reservation)
+                        <a class="btn btn-outline-danger" href="{{ route('admin.reservation.destroy', $reservation) }}" data-toggle="tooltip" title="Supprimer">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    @endcan
                 @endif
             </div>
+        </div>
+        <div class="box-body">
+            <div class="form-row">
+                {{ Aire::textArea('observation', 'Observation client')->groupAddClass('col-md-6') }}
+
+                {{ Aire::select(collect(['' => '---- Etats -----'])->union($etats), 'etat_id', 'Etat*')->required()->groupAddClass('col-md-6') }}
+                {{ Aire::select(collect(['' => '---- Modalités -----'])->union($modalites), 'modalite_paiement_id', 'Modalité*')->required()->groupAddClass('col-md-6') }}
+
+                {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id', 'Catégorie*')->required()->groupAddClass('col-md-6') }}
+                {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
+                {{ Aire::dateTime('debut_at', 'Date départ*')->required()->groupAddClass('col-md-6') }}
+                {{ Aire::dateTime('fin_at', 'Date fin*')->required()->groupAddClass('col-md-6') }}
+                {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'debut_lieu_id', 'Lieu départ*')->required()->groupAddClass('col-md-6') }}
+                {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'fin_lieu_id', 'Lieu retour*')->required()->groupAddClass('col-md-6') }}
+
+                {{-- TODO prestations et promotions --}}
+
+                {{ Aire::number('montant_base', 'Montant de base (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
+                {{ Aire::number('total', 'Total (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
+
+                {{ Aire::textArea('note', 'Notes')->groupAddClass('col-md-6') }}
+            </div>
+        </div>
+    </div>
+
+    <div class="box">
+        <div class="box-header">
+            <h2 class="box-title">Client</h2>
         </div>
         <div class="box-body">
             <div class="form-row">
@@ -36,26 +66,21 @@
                 {{ Aire::input('permis_numero', 'Numéro')->groupAddClass('col-md-6') }}
                 {{ Aire::date('permis_at', 'Délivré le')->groupAddClass('col-md-6') }}
                 {{ Aire::input('permis_delivre', 'Délivré par')->groupAddClass('col-md-6') }}
-                {{ Aire::input('vol', 'N° de vol')->groupAddClass('col-md-6') }}
-                {{ Aire::textArea('observation', 'Observation client')->groupAddClass('col-md-6') }}
-
-                {{ Aire::select(collect(['' => '---- Etats -----'])->union($etats), 'etat_id', 'Etat*')->required()->groupAddClass('col-md-6') }}
-                {{ Aire::select(collect(['' => '---- Modalités -----'])->union($modalites), 'modalite_paiement_id', 'Modalité*')->required()->groupAddClass('col-md-6') }}
-
-                {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id', 'Catégorie*')->required()->groupAddClass('col-md-6') }}
-                {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-4') }}
-                {{ Aire::date('debut_at', 'Date départ*')->required()->groupAddClass('col-md-6') }}
-                {{ Aire::date('fin_at', 'Date fin*')->required()->groupAddClass('col-md-6') }}
-                {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'debut_lieu_id', 'Lieu départ*')->required()->groupAddClass('col-md-6') }}
-                {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'fin_lieu_id', 'Lieu retour*')->required()->groupAddClass('col-md-6') }}
-
-                {{-- TODO prestations et promotions --}}
-
-                {{ Aire::number('montant_base', 'Montant de base (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
-                {{ Aire::number('total', 'Total (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
-
-                {{ Aire::textArea('note', 'Notes')->groupAddClass('col-md-6') }}
             </div>
+        </div>
+    </div>
+
+    <div class="box">
+        <div class="box-header">
+            <h2 class="box-title">Documents</h2>
+        </div>
+        <div class="box-body">
+
+            @if($reservation->is_confirmed)
+                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir la confirmation</a>&nbsp;
+                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmationSend', [$reservation]) }}" ><i class="fas fa-envelope"></i> Renvoyer le mail de confirmation</a>&nbsp;
+            @endif
+
         </div>
     </div>
 

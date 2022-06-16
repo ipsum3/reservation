@@ -35,16 +35,16 @@ return new class extends Migration
             $table->string('permis_numero')->nullable();
             $table->date('permis_at')->nullable();
             $table->string('permis_delivre')->nullable();
-            $table->string('vol')->nullable();
             $table->text('observation')->nullable();
+            $table->text('datas')->nullable();
 
             $table->integer('categorie_id')->unsigned()->index();
             $table->string('categorie_nom');
             $table->decimal('franchise', 10, 2)->nullable();
             $table->dateTime('debut_at');
             $table->dateTime('fin_at');
-            $table->integer('debut_lieu_id')->nullable()->unsigned()->index();
-            $table->integer('fin_lieu_id')->nullable()->unsigned()->index();
+            $table->integer('debut_lieu_id')->unsigned()->index();
+            $table->integer('fin_lieu_id')->unsigned()->index();
             $table->string('debut_lieu_nom')->nullable();
             $table->string('fin_lieu_nom')->nullable();
 

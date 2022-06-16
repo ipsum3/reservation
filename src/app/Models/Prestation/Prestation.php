@@ -8,6 +8,8 @@ use Ipsum\Core\app\Models\BaseModel;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Config;
+use Ipsum\Reservation\app\Models\Categorie\Categorie;
+use Ipsum\Reservation\app\Models\Lieu\Lieu;
 
 class Prestation extends BaseModel
 {
@@ -25,6 +27,8 @@ class Prestation extends BaseModel
     {
         static::deleting(function (self $prestation) {
             $prestation->blocages()->delete();
+            $prestation->categories()->detach();
+            $prestation->lieux()->detach();
         });
     }
 
@@ -41,6 +45,16 @@ class Prestation extends BaseModel
     public function type()
     {
         return $this->belongsTo(Type::class);
+    }
+
+    public function categories()
+    {
+        return $this->morphedByMany(Categorie::class, 'prestable')->withPivot('montant');
+    }
+
+    public function lieux()
+    {
+        return $this->morphedByMany(Lieu::class, 'prestable')->withPivot('montant');
     }
 
 
@@ -66,7 +80,7 @@ class Prestation extends BaseModel
      */
 
 
-    public function montant($nb_jours, $categorie, $quantite)
+    public function tarif($nb_jours, $categorie, $quantite)
     {
         if ($quantite > $this->quantite_max) {
             throw new Exception("La quantité est supérieur à la quantité max de l'option.");

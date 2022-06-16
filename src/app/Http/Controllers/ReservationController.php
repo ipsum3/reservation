@@ -3,8 +3,10 @@
 namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
-use Ipsum\Reservation\app\Http\Requests\StoreReservation;
+use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
+use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Etat;
@@ -51,11 +53,6 @@ class ReservationController extends AdminController
         return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'modalites'));
     }
 
-    public function confirmation(Reservation $reservation)
-    {
-        return view('IpsumReservation::reservation.emails.confirmation', compact('reservation'));
-    }
-
     public function create()
     {
         $reservation = new Reservation;
@@ -69,7 +66,7 @@ class ReservationController extends AdminController
         return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux'));
     }
 
-    public function store(StoreReservation $request)
+    public function store(StoreAdminReservation $request)
     {
         $reservation = Reservation::create($request->validated());
         Alert::success("L'enregistrement a bien été ajouté")->flash();
@@ -87,7 +84,7 @@ class ReservationController extends AdminController
         return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux'));
     }
 
-    public function update(StoreReservation $request, Reservation $reservation)
+    public function update(StoreAdminReservation $request, Reservation $reservation)
     {
         $reservation->update($request->validated());
 
@@ -102,5 +99,24 @@ class ReservationController extends AdminController
         Alert::warning("L'enregistrement a bien été supprimé")->flash();
         return redirect()->route('admin.reservation.index');
 
+    }
+
+    public function confirmation(Reservation $reservation)
+    {
+        return view('IpsumReservation::reservation.emails.confirmation', compact('reservation'));
+    }
+
+    public function confirmationSend(Reservation $reservation)
+    {
+        try {
+
+            Mail::send(new Confirmation($reservation));
+            Alert::success("L'email de confirmation a bien été envoyé")->flash();
+
+        } catch (\Exception $exception) {
+            Alert::error("Impossible d'envoyer l'email")->flash();
+        }
+
+        return back();
     }
 }

@@ -41,7 +41,7 @@
                         <td>{{ $saison->nom }}</td>
                         <td>{{ $saison->debut_at->format('d/m/Y') }}</td>
                         <td>{{ $saison->fin_at->format('d/m/Y') }}</td>
-                        <td><a href="{{ route('admin.tarif.edit', $saison) }}">Grilles de tarifs</a></td>
+                        <td><a class="btn btn-outline-secondary" href="{{ route('admin.tarif.edit', $saison) }}"><i class="fa fa-table"></i> Grilles de tarifs</a></td>
                         <td class="text-right">
                             <form action="{{ route('admin.saison.destroy', $saison) }}" method="POST">
                                 @csrf

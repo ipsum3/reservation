@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Config;
 use Ipsum\Core\Concerns\Slug;
+use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
 class Lieu extends BaseModel
@@ -70,6 +71,11 @@ class Lieu extends BaseModel
     public function reservationsFin()
     {
         return $this->hasMany(Reservation::class, 'lieu_fin_id');
+    }
+
+    public function prestations()
+    {
+        return $this->morphToMany(Prestation::class, 'prestable')->withPivot('montant');
     }
 
 
