@@ -16,10 +16,10 @@ return new class extends Migration
         Schema::create('prestations', function (Blueprint $table) {
             $table->id();
             $table->integer('type_id')->unsigned()->index();
+            $table->string('tarification');
             $table->string('class')->nullable();
             $table->string('nom');
             $table->text('description')->nullable();
-            $table->string('tarification');
             $table->decimal('montant', 10, 2)->nullable();
             $table->smallInteger('quantite_max')->unsigned();
             $table->smallInteger('gratuit_apres')->nullable()->unsigned();

@@ -3,7 +3,9 @@
 namespace Ipsum\Reservation\app\Http\Requests;
 
 
+use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
+use Ipsum\Reservation\app\Models\Prestation\Prestation;
 
 class StorePrestation extends FormRequest
 {
@@ -26,7 +28,7 @@ class StorePrestation extends FormRequest
     {
         return [
             "type_id" => "required|exists:prestation_types,id",
-
+            "tarification" => ["required", Rule::in(Prestation::$LISTE_TARIFICATION)],
             "nom" => "required|max:255",
 
         ];

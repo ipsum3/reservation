@@ -3,7 +3,9 @@
 namespace Ipsum\Reservation;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
+use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
 use Ipsum\Reservation\app\Models\Reservation;
 use Ipsum\Reservation\app\Policies\ReservationPolicy;
 
@@ -44,6 +46,8 @@ class ReservationServiceProvider extends ServiceProvider
 
         $this->publishFiles();
 
+        $this->registerMiddlewareGroup($this->app->router);
+
         //$this->addPolicies();
 
     }
@@ -77,6 +81,7 @@ class ReservationServiceProvider extends ServiceProvider
         ], 'seeds');
     }
 
+
     /**
      * Register the application services.
      *
@@ -91,5 +96,11 @@ class ReservationServiceProvider extends ServiceProvider
 
         // register the artisan commands
         $this->commands($this->commands);
+    }
+
+
+    public function registerMiddlewareGroup(Router $router)
+    {
+        $router->aliasMiddleware('adminReservationConfirmed', ReservationConfirmed::class);
     }
 }

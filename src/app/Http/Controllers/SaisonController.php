@@ -62,7 +62,6 @@ class SaisonController extends AdminController
 
     public function destroy(Saison $saison)
     {
-        $saison->tarifs()->delete();
         $saison->delete();
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();

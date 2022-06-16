@@ -70,17 +70,17 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Date</th>
-                    <th scope="col">Méthode</th>
+                    <th scope="col">Moyen</th>
                     <th scope="col">Montant</th>
                     <th scope="col">Transaction</th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($reservation->paiements()->ok()->orderBy('created_at', 'desc')->get() as $paiement)
+                @foreach($reservation->paiements()->ok()->with('moyen')->orderBy('created_at', 'desc')->get() as $paiement)
                     <tr>
                         <td>{{ $paiement->id }}</td>
                         <td>{{ $paiement->created_at->format('d/m/Y H:i:s') }}</td>
-                        <td>{{ $paiement->methode }}</td>
+                        <td>{{ $paiement->moyen ? $paiement->moyen->nom : '' }}</td>
                         <td>@prix($paiement->montant) €</td>
                         <td>{{ $paiement->transaction_ref }}</td>
                     </tr>

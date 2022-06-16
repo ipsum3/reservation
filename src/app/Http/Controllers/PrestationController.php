@@ -52,7 +52,7 @@ class PrestationController extends AdminController
 
     public function store(StorePrestation $request)
     {
-        $prestation = Prestation::create($request->all());
+        $prestation = Prestation::create($request->validated());
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.prestation.edit', [$prestation->id]);
     }
@@ -66,7 +66,7 @@ class PrestationController extends AdminController
 
     public function update(StorePrestation $request, Prestation $prestation)
     {
-        $prestation->update($request->all());
+        $prestation->update($request->validated());
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
@@ -74,7 +74,6 @@ class PrestationController extends AdminController
 
     public function destroy(Prestation $prestation)
     {
-        $prestation->blocages()->delete();
         $prestation->delete();
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();

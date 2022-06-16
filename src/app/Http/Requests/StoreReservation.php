@@ -26,7 +26,7 @@ class StoreReservation extends FormRequest
     public function rules()
     {
         return [
-            "categorie_id" => "nullable|integer|exists:reservation_categories,id",
+            "categorie_id" => "nullable|integer|exists:categories,id",
         ];
     }
 

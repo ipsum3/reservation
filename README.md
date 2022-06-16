@@ -13,4 +13,4 @@ php artisan vendor:publish --provider="Ipsum\Reservation\ReservationServiceProvi
 ```
 
 ### Add Reservation seeder to DatabaseSeeder.php file
-`$this->call(ReservationTableSeeder::class);`
+`$this->call(\Ipsum\Reservation\database\seeds\DatabaseSeeder::class);`

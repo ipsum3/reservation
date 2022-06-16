@@ -28,8 +28,17 @@ class Lieu extends BaseModel
         'emails' => 'array',
         'emails_reservation' => 'array',
     ];
-    
-    
+
+
+    protected static function booted()
+    {
+        static::deleting(function (self $lieu) {
+            $lieu->fermetures()->delete();
+            $lieu->horaires()->delete();
+            $lieu->feries()->delete();
+        });
+    }
+
     
 
     /*

@@ -50,9 +50,11 @@ class Reservation extends BaseModel
         return ReservationFactory::new();
     }
 
-    public static function boot()
+    protected static function booted()
     {
-        parent::boot();
+        static::deleting(function (self $reservation) {
+            $reservation->paiements()->delete();
+        });
 
         self::created(function ($reservation) {
             // Génération de la référence
@@ -106,6 +108,7 @@ class Reservation extends BaseModel
     }
 
 
+
     /*
      * Relations
      */
@@ -137,12 +140,12 @@ class Reservation extends BaseModel
 
     public function lieuDebut()
     {
-        return $this->belongsTo(Lieu::class, 'debut_lieu_id')->withTrashed();
+        return $this->belongsTo(Lieu::class, 'debut_lieu_id');
     }
 
     public function lieuFin()
     {
-        return $this->belongsTo(Lieu::class, 'fin_lieu_id')->withTrashed();
+        return $this->belongsTo(Lieu::class, 'fin_lieu_id');
     }
 
     /*
@@ -160,26 +163,14 @@ class Reservation extends BaseModel
      * Scopes
      */
 
-    public function scopeConfirmee($query)
+    public function scopeConfirmed($query)
     {
-        return $query->where(function ($query) {
-            $query->where(function ($query) {
-                $query->where('type', 'agence')->whereIn('etat_id', [Etat::NON_PAYEE_ID, Etat::PAYEE_ID]);
-            })->orWhere(function ($query) {
-                $query->where('type', 'ligne')->where('etat_id', Etat::PAYEE_ID);
-            });
-        });
+        return $query->where('etat_id', Etat::VALIDEE_ID);
     }
 
-    public function scopeNonConfirmee($query)
+    public function scopeNotConfirmed($query)
     {
-        return $query->where(function ($query) {
-            $query->where(function ($query) {
-                $query->where('type', 'agence')->whereNotIn('etat_id', [Etat::NON_PAYEE_ID, Etat::PAYEE_ID]);
-            })->orWhere(function ($query) {
-                $query->where('type', 'ligne')->where('etat_id', '<>', Etat::PAYEE_ID);
-            });
-        });
+        return $query->where('etat_id', '!=', Etat::VALIDEE_ID);
     }
 
 
@@ -390,15 +381,15 @@ class Reservation extends BaseModel
      * Accessors & Mutators
      */
 
-    public function getIsConfirmeeAttribute()
+    public function getIsConfirmedAttribute()
     {
-        return in_array($this->etat_id, [Etat::PAYEE_ID]) or ($this->type == 'agence' and in_array($this->etat_id, [Etat::NON_PAYEE_ID, Etat::PAYEE_ID]));
+        return $this->etat_id === Etat::VALIDEE_ID;
     }
 
-    public function getIsPayeeAttribute()
+    /*public function getIsPayeeAttribute()
     {
         return in_array($this->etat_id, [Etat::PAYEE_ID]);
-    }
+    }*/
 
     /*
      * S'il y a plus d'une heure entre le début et la fin, on rajoute une journée

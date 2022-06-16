@@ -15,6 +15,13 @@ class Duree extends BaseModel
     public $timestamps = false;
 
 
+    protected static function booted()
+    {
+        static::deleting(function (self $duree) {
+            $duree->tarifs()->delete();
+        });
+    }
+
 
     /*
      * Relations

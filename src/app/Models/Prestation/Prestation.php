@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Prestation;
 
 use App\Article\Translatable;
+use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
@@ -10,15 +11,22 @@ use Config;
 
 class Prestation extends BaseModel
 {
+    use Sortable;
 
     public $timestamps = false;
 
     public static $LISTE_TARIFICATION = array('jour', 'forfait', 'agence');
-    //public static $TYPE_OBLIGATOIRES = array('navette');
 
 
     protected $guarded = ['id'];
 
+
+    protected static function booted()
+    {
+        static::deleting(function (self $prestation) {
+            $prestation->blocages()->delete();
+        });
+    }
 
 
     /*

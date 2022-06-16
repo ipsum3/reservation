@@ -97,7 +97,6 @@ class ReservationController extends AdminController
 
     public function destroy(Reservation $reservation)
     {
-        $reservation->paiements()->delete();
         $reservation->delete();
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();

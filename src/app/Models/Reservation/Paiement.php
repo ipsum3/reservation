@@ -17,19 +17,14 @@ class Paiement extends BaseModel
      * Relations
      */
 
-    public function payable()
-    {
-        return $this->morphTo();
-    }
-
-    public function type()
-    {
-        return $this->belongsTo(Moyen::class);
-    }
-    
     public function reservation()
     {
         return $this->belongsTo(Reservation::class, 'reservation_id');
+    }
+
+    public function moyen()
+    {
+        return $this->belongsTo(Moyen::class, 'paiement_moyen_id');
     }
 
 
@@ -38,11 +33,18 @@ class Paiement extends BaseModel
      * Scopes
      */
 
-    
+    public function scopeOk($query)
+    {
+        return $query->whereNull('erreur');
+    }
     
 
     /*
      * Accessors & Mutators
      */
 
+    public function getIsOKAttribute()
+    {
+        return $this->erreur !== null;
+    }
 }

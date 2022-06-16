@@ -64,7 +64,9 @@
                         <td>{{ $reservation->modalite ? $reservation->modalite->nom : '' }}</td>
                         <td class="text-right">
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
-                                <a class="btn btn-primary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir</a>
+                                @if($reservation->is_confirmed)
+                                    <a class="btn btn-primary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir</a>
+                                @endif
                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$reservation]) }}"><i class="fa fa-edit"></i></a>
                                 @can('delete', $reservation)
                                     @csrf

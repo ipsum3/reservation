@@ -17,6 +17,15 @@ class Saison extends BaseModel
         'fin_at',
     ];
 
+
+    protected static function booted()
+    {
+        static::deleting(function (self $saison) {
+            $saison->tarifs()->delete();
+        });
+    }
+
+
     /*
      * Relations
      */

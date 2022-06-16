@@ -46,7 +46,6 @@ class DureeController extends AdminController
 
     public function destroy(Duree $duree)
     {
-        $duree->tarifs()->delete();
         $duree->delete();
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();

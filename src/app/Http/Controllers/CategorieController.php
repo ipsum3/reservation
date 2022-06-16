@@ -89,7 +89,6 @@ class CategorieController extends AdminController
 
     public function destroy(Categorie $categorie)
     {
-        $categorie->blocages()->delete();
         $categorie->delete();
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();

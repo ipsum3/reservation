@@ -54,7 +54,7 @@ class LieuController extends AdminController
 
     public function store(StoreLieu $request)
     {
-        $lieu = Lieu::create($request->all());
+        $lieu = Lieu::create($request->validated());
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.lieu.edit', [$lieu->id]);
     }
@@ -68,7 +68,7 @@ class LieuController extends AdminController
 
     public function update(StoreLieu $request, Lieu $lieu)
     {
-        $lieu->update($request->all());
+        $lieu->update($request->validated());
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
@@ -76,9 +76,6 @@ class LieuController extends AdminController
 
     public function destroy(Lieu $lieu)
     {
-        $lieu->fermetures()->delete();
-        $lieu->horaires()->delete();
-        $lieu->feries()->delete();
         $lieu->delete();
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();

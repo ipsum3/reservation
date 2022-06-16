@@ -26,6 +26,14 @@ class Categorie extends BaseModel
     }
 
 
+    protected static function booted()
+    {
+        static::deleting(function (self $categorie) {
+            $categorie->blocages()->delete();
+        });
+    }
+
+
     /*
      * Relations
      */

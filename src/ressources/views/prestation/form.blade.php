@@ -24,8 +24,14 @@
         </div>
         <div class="box-body">
             <div class="form-row">
-                {{ Aire::input('nom', 'Nom*')->groupAddClass('col-md-6') }}
+                {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Types -----'])->union($types), 'type_id', 'Type*')->groupAddClass('col-md-6') }}
+                {{ Aire::select(collect(['' => '---- Tarifications -----'])->union(array_combine(\Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_TARIFICATION, \Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_TARIFICATION)), 'tarification', 'Tarification*')->groupAddClass('col-md-6') }}
+                {{ Aire::textArea('description', 'Description')->groupAddClass('col-md-6') }}
+                {{ Aire::number('montant', 'Montant')->step(.01)->groupAddClass('col-md-6') }}
+                {{ Aire::number('quantite_max', 'Quantité max')->groupAddClass('col-md-6') }}
+                {{ Aire::number('gratuit_apres', 'Gratuit après')->groupAddClass('col-md-6') }}
+                {{ Aire::number('jour_fact_max', 'Jour max facturé')->groupAddClass('col-md-6') }}
             </div>
 
         </div>
