@@ -16,6 +16,10 @@
         </div>
         <div class="box-body">
 
+            <div class="alert alert-secondary" role="alert">
+                Les jours fériés "{{ config('ipsum.reservation.jours-feries.zone') }}" seront automatiquement ajoutées
+            </div>
+
             {{ Aire::open()->class('form-inline mt-4 mb-1')->route('admin.lieuFerie.index') }}
             <label class="sr-only" for="search">Recherche</label>
             {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
