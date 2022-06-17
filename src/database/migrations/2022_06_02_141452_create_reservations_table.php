@@ -36,7 +36,7 @@ return new class extends Migration
             $table->date('permis_at')->nullable();
             $table->string('permis_delivre')->nullable();
             $table->text('observation')->nullable();
-            $table->text('datas')->nullable();
+            $table->text('custom_fields')->nullable();
 
             $table->integer('categorie_id')->unsigned()->index();
             $table->string('categorie_nom');
@@ -67,6 +67,10 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->text('description')->nullable();
+            $table->smallInteger('duree_min')->unsigned()->nullable();
+            $table->string('acompte_type')->nullable();
+            $table->smallInteger('acompte_value')->unsigned()->nullable();
+            $table->smallInteger('echeance_nombre')->unsigned()->nullable();
         });
     }
 

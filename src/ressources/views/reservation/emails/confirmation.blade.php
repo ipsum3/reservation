@@ -294,6 +294,33 @@
                         <td height="10" style="font-size:10px; line-height:10px;">&nbsp;</td>
                     </tr>
                 </table>
+                @if ($reservation->custom_fields)
+                    <div style="font-size:10px; line-height:10px;">&nbsp;</div>
+                    <table width="640" cellpadding="0" cellspacing="0" border="0" class="wrapper" bgcolor="#FFFFFF">
+                        <tr>
+                            <td align="center" valign="top">
+                                <table width="600" cellpadding="0" cellspacing="0" border="0" class="container">
+                                    <tr>
+                                        <td align="center" valign="top">
+                                            <h2 style="margin: 12px 0; padding: 5px 10px; font-size: 15px; line-height: 20px; text-align: center; background-color: {{ $couleur }}; color: white; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">{{ _('Informations complémentaires') }}</h2>
+                                            <table width="100%" cellpadding="0" cellspacing="0" border="0" class="table" style="font-size: 12px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
+                                                @foreach($reservation->custom_fields as $key => $value)
+                                                    <tr>
+                                                        <th valign="top">{{ $key }}</th>{{-- TODO label : enregistrer en base ? --}}
+                                                        <td align="top">{{ $value }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="10" style="font-size:10px; line-height:10px;">&nbsp;</td>
+                        </tr>
+                    </table>
+                @endif
                 <div style="font-size:10px; line-height:10px;">&nbsp;</div>
                 <table width="640" cellpadding="0" cellspacing="0" border="0" class="wrapper" bgcolor="#FFFFFF">
                     <tr>

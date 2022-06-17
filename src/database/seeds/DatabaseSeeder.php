@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TarifSeeder::class);
         $this->call(LieuSeeder::class);
         $this->call(PaysTableSeeder::class);
+        $this->call(SettingsTableSeeder::class);
     }
 
 

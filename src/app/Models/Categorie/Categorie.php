@@ -17,9 +17,13 @@ class Categorie extends BaseModel
     use HasFactory, Htmlable, Mediable;
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    //protected $fillable = array('nom', 'modeles', 'nb_vehicules', 'description', 'texte', 'place', 'porte', 'bagage', 'climatisation', 'transmission_id', 'motorisation_id', 'carrosserie_id', 'reservoir', 'franchise_eur', 'franchise_rachat_eur', 'franchise_usd', 'franchise_rachat_usd', 'age_minimum', 'annee_permis_minimum'/*, 'tarif_a_partir'*/);
-    
+
     protected $htmlable = ['description', 'texte'];
+
+    protected $casts = [
+        'custom_fields' => 'array',
+    ];
+
     
     protected static function newFactory()
     {

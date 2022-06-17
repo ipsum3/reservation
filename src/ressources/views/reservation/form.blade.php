@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <h1 class="main-title">Réservation</h1>
+    <h1 class="main-title">Réservation {{ $reservation->exists ? $reservation->reference : '' }}</h1>
 
     {{ Aire::open()->route($reservation->exists ? 'admin.reservation.update' : 'admin.reservation.store', $reservation->exists ? [$reservation] : '')->bind($reservation)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreAdminReservation::class) }}
     <div class="box">
@@ -47,6 +47,27 @@
             </div>
         </div>
     </div>
+
+    @if (config('ipsum.reservation.custom_fields'))
+        <div class="box">
+            <div class="box-header">
+                <h2 class="box-title">
+                    Informations complémentaires
+                </h2>
+            </div>
+            <div class="box-body">
+                @foreach(config('ipsum.reservation.custom_fields') as $field)
+                    <x-admin::custom
+                            name="{{ 'custom_fields['.$field['name'].']' }}"
+                            label="{{ $field['label'] }}"
+                            description="{{ $field['description'] }}"
+                            value="{{ old('custom_fields.'.$field['name'], isset($reservation->custom_fields[$field['name']]) ? $reservation->custom_fields[$field['name']] : null) }}"
+                            type="{{ $field['type'] }}"
+                    />
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     <div class="box">
         <div class="box-header">

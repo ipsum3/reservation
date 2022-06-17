@@ -2,6 +2,18 @@
 
 return [
 
+    'categorie' => [
+        'custom_fields' => [
+            [
+                'name' => 'tarif_a_partir',
+                'label' => 'A partir de (€)',
+                'description' => '',
+                'defaut' => '',
+                'type' => 'number',
+                'rules' => 'required|numeric'
+            ]
+        ]
+    ],
     'client' => [
         'model' => \App\Models\User::class,
     ],
@@ -14,6 +26,16 @@ return [
         //'url' => 'https://etalab.github.io/jours-feries-france-data/json/martinique.json'
         //'url' => 'https://calendrier.api.gouv.fr/jours-feries/metropole.json'
         'url' => 'https://etalab.github.io/jours-feries-france-data/json/metropole.json'
+    ],
+    'custom_fields' => [
+        [
+            'name' => 'vol',
+            'label' => 'Numéro de vol',
+            'description' => '',
+            'defaut' => '',
+            'type' => 'input',
+            'rules' => ''
+        ]
     ]
 
 ];

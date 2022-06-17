@@ -72,6 +72,26 @@
             </div>
         </div>
         <div class="col-md-6">
+            @if (config('ipsum.reservation.categorie.custom_fields'))
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="box-title">
+                            Informations complémentaires
+                        </h2>
+                    </div>
+                    <div class="box-body">
+                        @foreach(config('ipsum.reservation.categorie.custom_fields') as $field)
+                            <x-admin::custom
+                                    name="{{ 'custom_fields['.$field['name'].']' }}"
+                                    label="{{ $field['label'] }}"
+                                    description="{{ $field['description'] }}"
+                                    value="{{ old('custom_fields.'.$field['name'], isset($categorie->custom_fields[$field['name']]) ? $categorie->custom_fields[$field['name']] : '') }}"
+                                    type="{{ $field['type'] }}"
+                            />
+                        @endforeach
+                    </div>
+                </div>
+            @endif
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
@@ -81,7 +101,7 @@
                 <div class="box-body">
                     <div class="form-row">
                         {{ Aire::number('age_minimum', 'Age minimum*')->groupAddClass('col-md-4') }}
-                        {{ Aire::number('annee_permis_minimum', 'Année de permis minimum*')->groupAddClass('col-md-4') }}
+                        {{ Aire::number('annee_permis_minimum', "Années minimum*")->groupAddClass('col-md-4')->helpText("Nombre d'années de permis minimum") }}
                         {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-4') }}
                     </div>
                 </div>

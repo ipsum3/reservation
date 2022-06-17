@@ -21,6 +21,10 @@ class Reservation extends BaseModel
     const SESSION_ID = 'reservation';
 
 
+    protected $casts = [
+        'custom_fields' => 'array',
+    ];
+    
 
     protected static function newFactory()
     {

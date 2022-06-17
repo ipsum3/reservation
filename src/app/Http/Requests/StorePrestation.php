@@ -60,6 +60,7 @@ class StorePrestation extends FormRequest
             "quantite_max" => "required|numeric",
             "gratuit_apres" => "nullable|numeric",
             "jour_fact_max" => "nullable|numeric",
+            "age_max" => "nullable|numeric|min:16|max:120",
 
             /*"categories.*.montant" => "numeric",
             "categories.*.montant" => "required|exists:categories,id",

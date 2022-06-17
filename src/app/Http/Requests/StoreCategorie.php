@@ -26,6 +26,14 @@ class StoreCategorie extends FormRequest
     {
         $current_params = \Route::current()->parameters();
 
+        $rules = [];
+
+        if (config('ipsum.reservation.categorie.custom_fields')) {
+            foreach (config('ipsum.reservation.categorie.custom_fields') as $field) {
+                $rules['custom_fields.'.$field['name']] = $field['rules'];
+            }
+        }
+
         return [
             "type_id" => "required|exists:categorie_types,id",
 
@@ -50,7 +58,7 @@ class StoreCategorie extends FormRequest
             "age_minimum" => 'required|numeric',
             "annee_permis_minimum" => 'required|numeric',
 
-        ];
+        ] + $rules;
     }
 
 }

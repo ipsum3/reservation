@@ -24,6 +24,7 @@ return new class extends Migration
             $table->smallInteger('quantite_max')->unsigned();
             $table->smallInteger('gratuit_apres')->nullable()->unsigned();
             $table->smallInteger('jour_fact_max')->nullable()->unsigned();
+            $table->smallInteger('age_max')->nullable()->unsigned();
             $table->smallInteger('order')->unsigned();
         });
 

@@ -25,6 +25,14 @@ class StoreAdminReservation extends FormRequest
      */
     public function rules()
     {
+        $rules = [];
+
+        if (config('ipsum.reservation.custom_fields')) {
+            foreach (config('ipsum.reservation.custom_fields') as $field) {
+                $rules['custom_fields.'.$field['name']] = $field['rules'];
+            }
+        }
+
         return [
             "etat_id" => "required|integer|exists:reservation_etats,id",
             "modalite_paiement_id" => "required|integer|exists:modalite_paiements,id",
@@ -56,7 +64,7 @@ class StoreAdminReservation extends FormRequest
             "montant_paye" => "nullable|numeric",
 
             "note" => "nullable",
-        ];
+        ] + $rules;
     }
 
 }
