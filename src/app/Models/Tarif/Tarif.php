@@ -8,6 +8,25 @@ use Config;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Reservation\Modalite;
 
+/**
+ * Ipsum\Reservation\app\Models\Tarif\Tarif
+ *
+ * @property int $id
+ * @property int $categorie_id
+ * @property int $duree_id
+ * @property int|null $saison_id
+ * @property string|null $montant
+ * @property string $modalite_paiement_id
+ * @property-read Categorie|null $categorie
+ * @property-read \Ipsum\Reservation\app\Models\Tarif\Duree|null $duree
+ * @property-read Modalite|null $modalite
+ * @property-read \Ipsum\Reservation\app\Models\Tarif\Saison|null $saison
+ * @method static \Illuminate\Database\Eloquent\Builder|Tarif hasSaisonEnCoursOuFutur()
+ * @method static \Illuminate\Database\Eloquent\Builder|Tarif newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Tarif newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Tarif query()
+ * @mixin \Eloquent
+ */
 class Tarif extends BaseModel
 {
 

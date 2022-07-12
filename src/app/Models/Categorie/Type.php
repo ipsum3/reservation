@@ -4,6 +4,18 @@ namespace Ipsum\Reservation\app\Models\Categorie;
 
 use Ipsum\Core\app\Models\BaseModel;
 
+/**
+ * Ipsum\Reservation\app\Models\Categorie\Type
+ *
+ * @property int $id
+ * @property string $nom
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Categorie\Categorie[] $categories
+ * @property-read int|null $categories_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Type newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Type newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Type query()
+ * @mixin \Eloquent
+ */
 class Type extends BaseModel
 {
 

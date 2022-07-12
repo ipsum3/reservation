@@ -2,18 +2,28 @@
 
 namespace Ipsum\Reservation\app\Models\Promotion;
 
-use App\Article\Translatable;
 use Ipsum\Core\app\Models\BaseModel;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
+/**
+ * Ipsum\Reservation\app\Models\Promotion\Promotion
+ *
+ * @property-read mixed $active
+ * @property-read mixed $en_cours
+ * @property-write mixed $activation_at
+ * @property-write mixed $desactivation_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Promotion active()
+ * @method static \Illuminate\Database\Eloquent\Builder|Promotion affichable()
+ * @method static \Illuminate\Database\Eloquent\Builder|Promotion enCours()
+ * @method static \Illuminate\Database\Eloquent\Builder|Promotion newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Promotion newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Promotion query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Promotion valide($debut_at, $fin_at, $lieu_id, $code)
+ * @method static \Illuminate\Database\Eloquent\Builder|Promotion visible()
+ * @mixin \Eloquent
+ */
 class Promotion extends BaseModel
 {
-    use SoftDeletingTrait, Translatable {
-        Translatable::__construct as private _translatableConstruct;
-    }
-
-    static protected $translatedAttributes = ['nom', 'extrait'];
 
     protected $table = 'promotion';
 
@@ -41,11 +51,6 @@ class Promotion extends BaseModel
         return $rules;
     }
 
-    public function __construct(array $attributes = array())
-    {
-        $this->_translatableConstruct();
-        parent::__construct($attributes);
-    }
 
 
     /*
@@ -69,8 +74,8 @@ class Promotion extends BaseModel
 
     public function scopeValide($query, $debut_at, $fin_at, $lieu_id, $code)
     {
-        $debut_at->startOfDay();
-        $fin_at->startOfDay();
+        $debut_at->copy()->startOfDay();
+        $fin_at->copy()->startOfDay();
 
         return $query->active()
             ->where('debut_at', '<=', $debut_at)

@@ -11,6 +11,37 @@ use Config;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 
+/**
+ * Ipsum\Reservation\app\Models\Prestation\Prestation
+ *
+ * @property int $id
+ * @property int $type_id
+ * @property string $tarification
+ * @property string|null $class
+ * @property string $nom
+ * @property string|null $description
+ * @property string|null $montant
+ * @property int $quantite_max
+ * @property int|null $gratuit_apres
+ * @property int|null $jour_fact_max
+ * @property int|null $age_max
+ * @property int $order
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Prestation\Blocage[] $blocages
+ * @property-read int|null $blocages_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Categorie[] $categories
+ * @property-read int|null $categories_count
+ * @property-read mixed $is_obligatoire
+ * @property-read mixed $is_tarification_agence
+ * @property-read \Illuminate\Database\Eloquent\Collection|Lieu[] $lieux
+ * @property-read int|null $lieux_count
+ * @property-read \Ipsum\Reservation\app\Models\Prestation\Type|null $type
+ * @method static \Illuminate\Database\Eloquent\Builder|Prestation filtreSortable($objet)
+ * @method static \Illuminate\Database\Eloquent\Builder|Prestation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Prestation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Prestation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Prestation withoutBlocage($debut_at, $fin_at, $zone_id)
+ * @mixin \Eloquent
+ */
 class Prestation extends BaseModel
 {
     use Sortable;

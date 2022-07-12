@@ -4,6 +4,7 @@ namespace Ipsum\Reservation;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
@@ -63,6 +64,8 @@ class ReservationServiceProvider extends ServiceProvider
             __DIR__.'/ressources/views',
         ], 'IpsumReservation');
 
+        Blade::anonymousComponentNamespace('IpsumReservation::components', 'reservation');
+
     }
 
 
@@ -92,7 +95,6 @@ class ReservationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         $this->mergeConfigFrom(
             __DIR__.'/config/ipsum/reservation.php', 'ipsum.reservation'
         );

@@ -21,7 +21,7 @@ trait Tranche
         return $duree;
     }
 
-    public static function check()
+    /*public static function check()
     {
         $messages = null;
 
@@ -64,5 +64,5 @@ trait Tranche
         if ($messages) {
             throw new TarifException(implode($messages, ' ; '));
         }
-    }
+    }*/
 }

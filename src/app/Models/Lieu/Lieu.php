@@ -13,6 +13,50 @@ use Ipsum\Core\Concerns\Slug;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
+/**
+ * Ipsum\Reservation\app\Models\Lieu\Lieu
+ *
+ * @property int $id
+ * @property string $slug
+ * @property int $type_id
+ * @property int $is_actif
+ * @property string $nom
+ * @property string $telephone
+ * @property string $adresse
+ * @property string|null $instruction
+ * @property string $horaires_txt
+ * @property string $gps
+ * @property array $emails
+ * @property array $emails_reservation
+ * @property int $order
+ * @property string|null $seo_title
+ * @property string|null $seo_description
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Lieu\Fermeture[] $fermetures
+ * @property-read int|null $fermetures_count
+ * @property-read mixed $email_first
+ * @property-read mixed $email_reservation_first
+ * @property-read mixed $lat
+ * @property-read mixed $lng
+ * @property-read mixed $tag_meta_description
+ * @property-read mixed $tag_title
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Lieu\Horaire[] $horaires
+ * @property-read int|null $horaires_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Prestation[] $prestations
+ * @property-read int|null $prestations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Reservation[] $reservationsDebut
+ * @property-read int|null $reservations_debut_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Reservation[] $reservationsFin
+ * @property-read int|null $reservations_fin_count
+ * @property-read \Ipsum\Reservation\app\Models\Lieu\Type|null $type
+ * @method static \Illuminate\Database\Eloquent\Builder|Lieu agences()
+ * @method static \Illuminate\Database\Eloquent\Builder|Lieu filtreSortable($objet)
+ * @method static \Illuminate\Database\Eloquent\Builder|Lieu newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Lieu newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Lieu query()
+ * @mixin \Eloquent
+ */
 class Lieu extends BaseModel
 {
     use Slug, Sortable;
@@ -85,7 +129,7 @@ class Lieu extends BaseModel
      * Functions
      */
 
-    public function isOuvert(Carbon $date)
+    public function isOuvert(Carbon $date): bool
     {
         // Vérification fermeture
         $count = Fermeture::where(function ($query) {
@@ -108,10 +152,10 @@ class Lieu extends BaseModel
 
         if ($count) {
             // Vérification jour férié
-            $ferie = $this->zone()->first()->isFerie($date->copy());
+            $is_ferie = Ferie::isFerie($date->copy(), $this);
 
             $count = $this->horaires()
-                ->date($date, $ferie)
+                ->date($date, $is_ferie)
                 ->count();
         }
 
@@ -121,7 +165,7 @@ class Lieu extends BaseModel
     public function creneauxHorairesToString(Carbon $date)
     {
         $horaires = $this->horaires()->creneaux($date)->get();
-        if ($horaires->count() and $this->zone->isFerie($date->copy())) {
+        if ($horaires->count() and Ferie::isFerie($date->copy(), $this)) {
             $horaires = $this->horaires()->creneaux($date, true)->get();
         }
 

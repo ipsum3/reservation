@@ -6,6 +6,21 @@ namespace Ipsum\Reservation\app\Models\Lieu;
 use Ipsum\Core\app\Models\BaseModel;
 use Carbon\Carbon;
 
+/**
+ * Ipsum\Reservation\app\Models\Lieu\Fermeture
+ *
+ * @property int $id
+ * @property int|null $lieu_id
+ * @property string|null $nom
+ * @property \Illuminate\Support\Carbon $debut_at
+ * @property \Illuminate\Support\Carbon|null $fin_at
+ * @property-read \Ipsum\Reservation\app\Models\Lieu\Lieu|null $lieu
+ * @method static \Illuminate\Database\Eloquent\Builder|Fermeture betweenDates($date)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fermeture newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Fermeture newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Fermeture query()
+ * @mixin \Eloquent
+ */
 class Fermeture extends BaseModel
 {
 

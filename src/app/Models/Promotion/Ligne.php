@@ -3,12 +3,19 @@
 namespace Ipsum\Reservation\app\Models\Promotion;
 
 use Ipsum\Core\app\Models\BaseModel;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Config;
 
+/**
+ * Ipsum\Reservation\app\Models\Promotion\Ligne
+ *
+ * @property-read mixed $reduction
+ * @method static \Illuminate\Database\Eloquent\Builder|Ligne newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Ligne newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Ligne query()
+ * @mixin \Eloquent
+ */
 class Ligne extends BaseModel
 {
-    use SoftDeletingTrait;
 
     protected $table = 'promotion_ligne';
 

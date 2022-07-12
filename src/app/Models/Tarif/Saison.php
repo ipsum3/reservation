@@ -2,9 +2,25 @@
 
 namespace Ipsum\Reservation\app\Models\Tarif;
 
+use Illuminate\Support\Collection;
 use Ipsum\Core\app\Models\BaseModel;
 use Carbon\Carbon;
 
+/**
+ * Ipsum\Reservation\app\Models\Tarif\Saison
+ *
+ * @property int $id
+ * @property string $nom
+ * @property \Illuminate\Support\Carbon $debut_at
+ * @property \Illuminate\Support\Carbon $fin_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Tarif\Tarif[] $tarifs
+ * @property-read int|null $tarifs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Saison betweenDates(\Carbon\Carbon $debut_at, \Carbon\Carbon $fin_at)
+ * @method static \Illuminate\Database\Eloquent\Builder|Saison newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Saison newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Saison query()
+ * @mixin \Eloquent
+ */
 class Saison extends BaseModel
 {
 
@@ -43,8 +59,8 @@ class Saison extends BaseModel
 
     public function scopeBetweenDates($query, Carbon $debut_at, Carbon $fin_at)
     {
-        $debut_at->startOfDay();
-        $fin_at->startOfDay();
+        $debut_at->copy()->startOfDay();
+        $fin_at->copy()->startOfDay();
 
         return $query->where(function ($query) use ($debut_at, $fin_at) {
             return $query->where(function ($query) use ($debut_at, $fin_at) {
@@ -72,8 +88,11 @@ class Saison extends BaseModel
     /*
      * Functions
      */
-    
-    public function replicateWithTarifs()
+
+    /**
+     * Pour dupliquer les grilles en admin
+     */
+    public function replicateWithTarifs(): self
     {
         $saison_clone = $this->replicate();
         $saison_clone->push();
@@ -83,25 +102,37 @@ class Saison extends BaseModel
         return $saison_clone;
     }
 
-    public static function getByDates(Carbon $date_arrivee, Carbon $date_depart)
+    /**
+     * @param Carbon $date_arrivee
+     * @param Carbon $date_depart
+     * @return Collection
+     * @throws TarifException
+     */
+    public static function getByDates(Carbon $date_arrivee, Carbon $date_depart): Collection
     {
         $saisons = self::betweenDates($date_arrivee, $date_depart)->orderBy('fin_at', 'asc')->get();
 
         if (!$saisons->count()) {
-            $message = _('Aucune saison pour la date de départ ').$date_arrivee->format('d/m/Y').'.';
-            throw new TarifException($message);
+            throw new TarifException(_('Aucune saison pour la date de départ ').$date_arrivee->format('d/m/Y').'.');
         }
 
         if ($saisons->last()->fin_at->lt($date_depart)) {
-            $message = _('La date limite de retour est le ').$saisons->last()->fin_at->format('d/m/Y');
-            throw new TarifException($message);
+            throw new TarifException(_('La date limite de retour est le ').$saisons->last()->fin_at->format('d/m/Y'));
         }
 
         return $saisons;
     }
 
 
-    public function getDuree(Carbon $date_debut, Carbon $date_fin)
+    /**
+     * Durée de la réservation sur cette saison
+     *
+     * @param Carbon $date_debut
+     * @param Carbon $date_fin
+     * @return int
+     * @desc
+     */
+    public function getDuree(Carbon $date_debut, Carbon $date_fin): int
     {
         // La saison ne correspond pas
         if ($date_fin->lt($this->debut_at) or $date_debut->gt($this->fin_at)) {

@@ -19,8 +19,13 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Ipsum\\Reservation\\ReservationServiceProvider"
-            ]
+                "Ipsum\\Reservation\\ReservationServiceProvider",
+                "Ipsum\\Reservation\\LocationServiceProvider"
+            ],
+            "aliases":
+            {
+                "Location": "Ipsum\\Reservation\\app\\Location\\Facades\\location"
+            }
         }
     }
 }

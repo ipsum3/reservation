@@ -4,6 +4,18 @@ namespace Ipsum\Reservation\app\Models\Reservation;
 
 use Ipsum\Core\app\Models\BaseModel;
 
+/**
+ * Ipsum\Reservation\app\Models\Reservation\Etat
+ *
+ * @property int $id
+ * @property string $nom
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Reservation[] $reservations
+ * @property-read int|null $reservations_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Etat newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Etat newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Etat query()
+ * @mixin \Eloquent
+ */
 class Etat extends BaseModel
 {
 

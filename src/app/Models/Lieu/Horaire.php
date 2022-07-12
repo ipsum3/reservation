@@ -6,6 +6,23 @@ namespace Ipsum\Reservation\app\Models\Lieu;
 use Ipsum\Core\app\Models\BaseModel;
 use Carbon\Carbon;
 
+/**
+ * Ipsum\Reservation\app\Models\Lieu\Horaire
+ *
+ * @property int $id
+ * @property int $lieu_id
+ * @property int $jour
+ * @property string $debut
+ * @property string $fin
+ * @property-read mixed $creneau_to_string
+ * @property-read \Ipsum\Reservation\app\Models\Lieu\Lieu|null $lieu
+ * @method static \Illuminate\Database\Eloquent\Builder|Horaire creneaux(\Carbon\Carbon $date, $is_ferie = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Horaire date(\Carbon\Carbon $date, $is_ferie = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Horaire newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Horaire newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Horaire query()
+ * @mixin \Eloquent
+ */
 class Horaire extends BaseModel
 {
 
@@ -35,16 +52,16 @@ class Horaire extends BaseModel
      * Scopes
      */
 
-    public function scopeDate($query, Carbon $date, $ferie = false)
+    public function scopeDate($query, Carbon $date, $is_ferie = false)
     {
-        return $query->where('jour', $ferie ? self::JOUR_FERIE : $date->dayOfWeek)
+        return $query->where('jour', $is_ferie ? self::JOUR_FERIE : $date->dayOfWeek)
             ->where('debut', '<=', $date->format('H:i:s'))
             ->where('fin', '>=', $date->format('H:i:s'));
     }
 
-    public function scopeCreneaux($query, Carbon $date, $ferie = false)
+    public function scopeCreneaux($query, Carbon $date, $is_ferie = false)
     {
-        return $query->where('jour', $ferie ? self::JOUR_FERIE : $date->dayOfWeek);
+        return $query->where('jour', $is_ferie ? self::JOUR_FERIE : $date->dayOfWeek);
 
     }
 
