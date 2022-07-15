@@ -45,7 +45,7 @@ use Config;
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Categorie\Blocage[] $blocages
  * @property-read int|null $blocages_count
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Carrosserie|null $carrosserie
- * @property-read mixed $is_disponible
+ * @property-read bool $has_no_blocage
  * @property-read mixed $tag_meta_description
  * @property-read mixed $tag_title
  * @property-read mixed $tarif_a_partir
@@ -213,22 +213,17 @@ class Categorie extends BaseModel
         return $this->attributes['seo_description'] == '' ? $this->extrait : $this->attributes['seo_description'];
     }
 
-    public function getIsDisponibleAttribute()
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function getHasNoBlocageAttribute(): bool
     {
-        if (! array_key_exists('blocagesCount', $this->relations)) {
-            return null;
+        if ($this->blocages_count === null) {
+            throw new \Exception('A utiliser avec scopeWithCountBlocage');
         }
 
-        $blocages_count = $this->getRelation('blocagesCount');
-
-        // $blocages_count ne retourne rien si pas d'enregistrement
-        $is_ok_blocage = !$blocages_count or !$blocages_count->aggregate;
-
-        if (!$is_ok_blocage) {
-            return false;
-        }
-
-        return true;
+        return $this->blocages_count === 0;
     }
 
 

@@ -2,7 +2,7 @@
 
 namespace Ipsum\Reservation\app\Location\Exceptions;
 
-class PanierException extends \Exception
+class PrixInvalide extends \Exception
 {
-    const CATEGORIE_CODE = 100;
+
 }

@@ -51,6 +51,10 @@ class Ouvert implements InvokableRule, DataAwareRule
     public function __invoke($attribute, $value, $fail)
     {
 
+        if (!isset($this->data[$this->lieu])) {
+            return;
+        }
+
         $lieu = Lieu::find($this->data[$this->lieu]);
 
         if(!$lieu) {

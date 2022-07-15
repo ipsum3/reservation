@@ -48,10 +48,12 @@ class ReservationSeeder extends Seeder
             array(
                 'id' => 1,
                 'nom' => 'En ligne',
+                'order' => 1
             ),
             array(
                 'id' => 2,
                 'nom' => 'En agence',
+                'order' => 2
             ),
         );
     }

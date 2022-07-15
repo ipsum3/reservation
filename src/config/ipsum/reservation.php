@@ -37,6 +37,9 @@ return [
             'type' => 'input',
             'rules' => ''
         ]
+    ],
+    'recherche' => [
+        'date_format' => 'd/m/Y H:i',
     ]
 
 ];

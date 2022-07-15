@@ -1,62 +1,40 @@
 <?php
 
-namespace Ipsum\Reservation\app\Panier;
+namespace Ipsum\Reservation\app\Location;
 
 
-use Carbon\Carbon;
-use Illuminate\Support\Collection;
-use Ipsum\Reservation\app\Models\Categorie\Categorie;
-use Ipsum\Reservation\app\Models\Lieu\Lieu;
-use Ipsum\Reservation\app\Models\Reservation\Modalite;
-use Ipsum\Reservation\app\Models\Tarif\Duree;
+use Ipsum\Reservation\app\Location\Exceptions\PrixInvalide;
+use Ipsum\Reservation\app\Models\Reservation\Etat;
+use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Tarif\Saison;
-use Ipsum\Reservation\app\Panier\Concerns\Sessionable;
 
 class Devis
 {
-    use Sessionable;
 
-    protected ?Carbon $debut_at = null;
-
-    protected ?Carbon $fin_at = null;
-
-    protected ?Lieu $lieu_debut = null;
-
-    protected ?Lieu $lieu_fin = null;
-
-    protected Collection $saisons;
-
-    protected Duree $duree;
-
-    protected Categorie $categorie;
-
-    protected Modalite $modalite;
-
+    protected float $montant_base;
     protected float $total;
 
+    protected Location $location;
+
+    protected ?PrestationCollection $prestations = null;
 
 
 
-    public function setRecherche(array $inputs): void
+    public function __construct(Location $location, bool $without_prestations_optionnelles = false)
     {
-        $this->setLieuDebut(Lieu::find($inputs['debut_lieu_id']));
-        $this->setLieuFin(Lieu::find($inputs['fin_lieu_id']));
-        $this->setDebutAt(Carbon::createFromFormat('d/m/Y H:i', $inputs['debut_at']));
-        $this->setFinAt(Carbon::createFromFormat('d/m/Y H:i', $inputs['fin_at']));
+        $this->location = $location;
+        $this->prestations = $without_prestations_optionnelles ? new PrestationCollection() : $this->location->getPrestations();
     }
 
 
-    public function calculer(bool $load_tarifs = true, bool $without_prestations_optionnelles = false): self
-    {
-        if ($load_tarifs) {
-            // Permet de ne pas refaire toutes les requêtes dans le cas de la liste
-            $this->loadTarifs();
-        }
 
+    public function calculer(): self
+    {
         $this->montant_base = $this->_calculerTarif();
 
-        /*$total_options = $without_options ? 0 : $this->_calculerOptions($categorie);
-        $taxe_aeroport = $this->_calculerTaxeAeroport();*/
+        $this->_loadPrestationsObligatoire()->_calculerPrestations();
+
+        $total_prestations = $this->prestations->montantTotal();
 
         /*$remise;
         if (isset($this->_promotions_object['reduction'])) {
@@ -65,7 +43,11 @@ class Devis
         }*/
 
         // Calcul total
-        $this->total = $this->montant_base /*+ $total_options - $remise*/;
+        $this->total = $this->montant_base + $total_prestations /*- $remise*/;
+
+        if (!$this->total) {
+            throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
+        }
 
         return $this;
     }
@@ -77,32 +59,52 @@ class Devis
     protected function _calculerTarif(): float
     {
         $total = $duree_total = 0;
-        foreach ($this->saisons as $saison) {
+        foreach ($this->location->getSaisons() as $saison) {
             /* @var $saison Saison */
 
-            $tarif = $this->categorie->tarifs()
-                ->where('duree_id', $this->duree->id)
+            $tarif = $this->location->getCategorie()->tarifs()
+                ->where('duree_id', $this->location->getDuree()->id)
                 ->where('saison_id', $saison->id)
-                ->where('modalite_paiement_id', $this->modalite->id)
+                ->where('modalite_paiement_id', $this->location->getModalite()->id)
                 ->first();
 
             if ($tarif === null) {
-                throw new PanierException(_('Aucun montant trouvé pour la catégorie : ').$this->categorie->nom, PanierException::CATEGORIE_CODE);
+                throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
             }
 
-            $total += $tarif->montant * $saison->getDuree($this->debut_at, $this->fin_at);
+            $total += $tarif->montant * $saison->getDuree($this->location->getDebutAt(), $this->location->getFinAt());
         }
 
         return $total;
     }
 
-
-    public function loadTarifs(): self
+    /**
+     * Calcul des prestations
+     * @desc
+     */
+    protected function _calculerPrestations(): self
     {
-        $this->saisons = Saison::getByDates($this->debut_at, $this->fin_at);
-        $this->duree = Duree::findByNbJours($this->getNbJours());
+        $this->prestations->calculer($this->getLocation()->getNbJours(), $this->getLocation()->getCategorie(), $this->getLocation()->getLieuDebut());
 
         return $this;
+    }
+
+    protected function _loadPrestationsObligatoire(): self
+    {
+        $prestations = Prestation::withoutBlocage($this->getLocation()->getDebutAt(), $this->getLocation()->getFinAt())
+            ->obligatoire()
+            ->condition($this->getLocation()->getCategorie(), $this->getLocation()->getLieuDebut())
+            ->orderBy('order', 'asc')
+            ->get();
+
+        $this->prestations = $this->prestations->merge($prestations);
+
+        return $this;
+    }
+
+    public function getPrestations(): ?PrestationCollection
+    {
+        return $this->prestations;
     }
 
 
@@ -113,109 +115,7 @@ class Devis
         return true;
     }
 
-    /**
-     * @return int
-     */
-    public function getNbJours(): int
-    {
-        return \Ipsum\Reservation\app\Models\Reservation\Reservation::calculDuree($this->debut_at, $this->fin_at);
-    }
 
-    /**
-     * @return Carbon|null
-     */
-    public function getDebutAt(): ?Carbon
-    {
-        return $this->debut_at;
-    }
-
-    /**
-     * @param Carbon $debut_at
-     */
-    public function setDebutAt(Carbon $debut_at): void
-    {
-        $this->debut_at = $debut_at;
-    }
-
-    /**
-     * @return Carbon|null
-     */
-    public function getFinAt(): ?Carbon
-    {
-        return $this->fin_at;
-    }
-
-    /**
-     * @param Carbon $fin_at
-     */
-    public function setFinAt(Carbon $fin_at): void
-    {
-        $this->fin_at = $fin_at;
-    }
-
-    /**
-     * @return Lieu|null
-     */
-    public function getLieuDebut(): ?Lieu
-    {
-        return $this->lieu_debut;
-    }
-
-    /**
-     * @param Lieu $lieu_debut
-     */
-    public function setLieuDebut(Lieu $lieu_debut): void
-    {
-        $this->lieu_debut = $lieu_debut;
-    }
-
-    /**
-     * @return Lieu|null
-     */
-    public function getLieuFin(): ?Lieu
-    {
-        return $this->lieu_fin;
-    }
-
-    /**
-     * @param Lieu $lieu_fin
-     */
-    public function setLieuFin(Lieu $lieu_fin): void
-    {
-        $this->lieu_fin = $lieu_fin;
-    }
-
-    /**
-     * @return Categorie
-     */
-    public function getCategorie(): Categorie
-    {
-        return $this->categorie;
-    }
-
-    /**
-     * @param Categorie $categorie
-     */
-    public function setCategorie(Categorie $categorie): void
-    {
-        $this->categorie = $categorie;
-    }
-
-    /**
-     * @return Modalite
-     */
-    public function getModalite(): Modalite
-    {
-        return $this->modalite;
-    }
-
-    /**
-     * @param Modalite $modalite
-     */
-    public function setModalite(Modalite $modalite): void
-    {
-        $this->modalite = $modalite;
-    }
 
     /**
      * @return float
@@ -225,13 +125,51 @@ class Devis
         return $this->total;
     }
 
-
-
-
-    public function clone(): self
+    public function getLocation(): Location
     {
-        return clone $this;
+        return $this->location;
     }
 
+
+
+    public function updateOrCreateReservation(): Reservation
+    {
+        $reservation = Reservation::updateOrCreate([
+            'id' => $this->getLocation()->getReservationId()
+        ],
+        [
+            'id' => $this->getLocation()->getReservationId(),
+            'etat_id' => Etat::NON_VALIDEE_ID,
+            'modalite_paiement_id' => $this->getLocation()->getModalite()->id,
+            'client_id' => null,
+            'nom' => 'TODO',
+            'prenom' => null,
+            'email' => null,
+            'telephone' => null,
+            'adresse' => null,
+            'cp' => null,
+            'ville' => null,
+            'pays_id' => null,
+            'naissance_at' => null,
+            'permis_numero' => null,
+            'permis_at' => null,
+            'permis_delivre' => null,
+            'observation' => null,
+            'custom_fields' => null,
+            'categorie_id' => $this->getLocation()->getCategorie()->id,
+            'franchise' => $this->getLocation()->getCategorie()->franchise,
+            'debut_at' => $this->getLocation()->getDebutAt(),
+            'fin_at' => $this->getLocation()->getFinAt(),
+            'debut_lieu_id' => $this->getLocation()->getLieuDebut()->id,
+            'fin_lieu_id' => $this->getLocation()->getLieuFin()->id,
+            'montant_base' => $this->montant_base,
+            'prestations' => null,
+            'promotions' => null,
+            'total' => $this->total,
+            'montant_paye' => null,
+        ]);
+
+        return $reservation;
+    }
 
 }

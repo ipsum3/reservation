@@ -3,11 +3,9 @@
 namespace Ipsum\Reservation\app\Models\Lieu;
 
 
-use App\Article\Translatable;
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Config;
 use Ipsum\Core\Concerns\Slug;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;

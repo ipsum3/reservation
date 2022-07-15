@@ -3,7 +3,10 @@
 namespace Ipsum\Reservation\app\Models\Reservation;
 
 use App\Article\Translatable;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
 
 /**
@@ -16,9 +19,11 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property string|null $acompte_type
  * @property int|null $acompte_value
  * @property int|null $echeance_nombre
+ * @property int $order
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Reservation[] $reservations
  * @property-read int|null $reservations_count
  * @method static Builder|Modalite byDuree(int $duree)
+ * @method static Builder|Modalite filtreSortable($objet)
  * @method static Builder|Modalite newModelQuery()
  * @method static Builder|Modalite newQuery()
  * @method static Builder|Modalite query()
@@ -26,6 +31,7 @@ use Ipsum\Core\app\Models\BaseModel;
  */
 class Modalite extends BaseModel
 {
+    use Sortable;
 
     protected $table = 'modalite_paiements';
 
@@ -56,14 +62,57 @@ class Modalite extends BaseModel
 
     public function scopeByDuree(Builder $query, int $duree)
     {
-        return $query->where(function (Builder $query) use ($duree) {
+        $query->where(function (Builder $query) use ($duree) {
             $query->where('duree_min', '<=', $duree)->orWhereNull('duree_min');
         });
     }
 
 
+
+
+    /*
+     * Functions
+     */
+
+    public function acompte(float $montant): float
+    {
+        switch ($this->acompte_type) {
+            case 'pourcentage' :
+                $acompte = $this->acompte_value * $montant / 100;
+                break;
+
+            case 'forfait' :
+                $acompte = $this->acompte_value;
+                break;
+
+            default:
+                throw new Exception("Le type d'acompte n'existe pas.");
+                break;
+        }
+
+        return $acompte;
+    }
+
+
+
+
     /*
      * Accessors & Mutators
      */
+
+    protected function getIsLigneAttribute(): bool
+    {
+        return $this->id === self::LIGNE_ID;
+    }
+
+    protected function getIsAgenceAttribute(): bool
+    {
+        return $this->id === self::AGENCE_ID;
+    }
+
+    protected function getHasAcompteAttribute(): bool
+    {
+        return $this->acompte_value !== null;
+    }
 
 }

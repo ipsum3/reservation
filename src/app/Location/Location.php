@@ -6,7 +6,6 @@ namespace Ipsum\Reservation\app\Location;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Ipsum\Reservation\app\Location\Exceptions\PrixInvalide;
-use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Modalite;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
@@ -18,31 +17,48 @@ class Location
 {
     use Sessionable;
 
-    protected ?Carbon $debut_at = null;
+    protected Carbon $debut_at;
 
-    protected ?Carbon $fin_at = null;
+    protected Carbon $fin_at;
 
     protected ?Lieu $lieu_debut = null;
 
     protected ?Lieu $lieu_fin = null;
 
-    protected Categorie $categorie;
+    protected ?Categorie $categorie = null;
 
-    protected Modalite $modalite;
+    protected ?Modalite $modalite = null;
 
-
-
-    protected Collection $saisons;
-
-    protected Duree $duree;
+    protected PrestationCollection $prestations;
 
 
-    public function setRecherche(array $inputs): void
+
+    protected ?Collection $saisons = null;
+
+    protected ?Duree $duree = null;
+
+
+
+    protected ?int $reservation_id = null;
+
+
+    public function __construct()
+    {
+        $this->prestations = new PrestationCollection();
+        $this->debut_at = Carbon::now()->addDays(7);
+        $this->fin_at = Carbon::now()->addDays(14);
+
+    }
+
+
+    public function setRecherche(array $inputs): self
     {
         $this->setLieuDebut($inputs['debut_lieu_id']);
         $this->setLieuFin($inputs['fin_lieu_id']);
         $this->setDebutAt($inputs['debut_at']);
         $this->setFinAt($inputs['fin_at']);
+
+        return $this;
     }
 
 
@@ -62,40 +78,59 @@ class Location
      * @return Devis
      * @throws \Ipsum\Reservation\app\Models\Tarif\TarifException
      */
-    public function devis()
+    public function devis(bool $without_prestations_optionnelles = false)
     {
         if ($this->saisons === null or $this->duree === null) {
             // Permet de ne pas refaire toutes les requêtes dans le cas de la liste
             $this->loadTarifs();
         }
 
-        return new Devis($this);
+        return new Devis($this, $without_prestations_optionnelles);
     }
 
 
     /**
      * @param Collection $categories
      * @param Collection $modalites
-     * @return DevisCollection
-     * @throws Exceptions\PrixInvalide
+     * @return CategorieCollection
      * @throws \Ipsum\Reservation\app\Models\Tarif\TarifException
      */
-    public function createDevisCollection(Collection $categories, Collection $modalites) {
-        $devis = [];
+    public function createCategorieCollection(Collection $categories, Collection $modalites): CategorieCollection
+    {
+        $categorie_collection = [];
         foreach ($categories as $categorie) {
+            /* @var $categorie Categorie */
             foreach ($modalites as $modalite) {
                 try {
-                    $devis[] = $this->clone()->setCategorie($categorie)->setModalite($modalite)->devis()->calculer();
+                    $categorie->devis->add($this->clone()->setCategorie($categorie)->setModalite($modalite)->devis(true)->calculer(true));
                 } catch (PrixInvalide $exception) { }
+            }
+            if ($categorie->devis->count()) {
+                $categorie_collection[] = $categorie;
             }
         }
 
-        return new DevisCollection($devis);
+        return new CategorieCollection($categorie_collection);
     }
 
 
+    /**
+     * @param Collection $prestations
+     * @return PrestationCollection
+     */
+    public function createPrestationCollection(Collection $prestations): PrestationCollection
+    {
+        $prestation_collection = [];
+        foreach ($prestations as $prestation) {
+            /* @var $prestation Prestation */
+            try {
+                $prestation->setQuantite(1)->calculer($this->getNbJours(), $this->categorie, $this->lieu_debut);
+                $prestation_collection[] = $prestation;
+            } catch (\Exception $exception) { }
+        }
 
-
+        return new PrestationCollection($prestation_collection);
+    }
 
 
     public function getNbJours(): int
@@ -103,26 +138,24 @@ class Location
         return Reservation::calculDuree($this->debut_at, $this->fin_at);
     }
 
-    public function getDebutAt(): ?Carbon
+    public function getDebutAt(): Carbon
     {
         return $this->debut_at;
     }
 
     public function setDebutAt(string $debut_at): void
     {
-        // TODO mettre format en config
-        $this->debut_at = Carbon::createFromFormat('d/m/Y H:i', $debut_at);
+        $this->debut_at = Carbon::createFromFormat(config('ipsum.reservation.recherche.date_format'), $debut_at);
     }
 
-    public function getFinAt(): ?Carbon
+    public function getFinAt(): Carbon
     {
         return $this->fin_at;
     }
 
     public function setFinAt(string $fin_at): void
     {
-        // TODO mettre format en config
-        $this->fin_at = Carbon::createFromFormat('d/m/Y H:i', $fin_at);
+        $this->fin_at = Carbon::createFromFormat(config('ipsum.reservation.recherche.date_format'), $fin_at);
     }
 
     public function getLieuDebut(): ?Lieu
@@ -145,6 +178,11 @@ class Location
         $this->lieu_fin = Lieu::findOrFail($lieu_fin);
     }
 
+    public function hasCategorie(): bool
+    {
+        return $this->categorie !== null;
+    }
+
     public function getCategorie(): Categorie
     {
         return $this->categorie;
@@ -154,6 +192,11 @@ class Location
     {
         $this->categorie = $categorie;
         return $this;
+    }
+
+    public function hasModalite(): bool
+    {
+        return $this->modalite !== null;
     }
 
     public function getModalite(): Modalite
@@ -177,6 +220,38 @@ class Location
         return $this->duree;
     }
 
+    public function getPrestations(): PrestationCollection
+    {
+        return $this->prestations;
+    }
+
+    public function setPrestations(?array $prestations): self
+    {
+        $this->prestations = new PrestationCollection();
+        if ($prestations !== null) {
+            foreach ($prestations as $prestation) {
+                if (isset($prestation['has'])) {
+                    $quantite = (int) isset($prestation['quantite']) ? $prestation['quantite'] : 1;
+                    $presta = Prestation::find($prestation['has']);
+                    $presta->setQuantite($quantite);
+                    $this->prestations->add($presta);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    public function getReservationId(): ?int
+    {
+        return $this->reservation_id;
+    }
+
+    public function setReservationId(int $reservation_id): self
+    {
+        $this->reservation_id = $reservation_id;
+        return $this;
+    }
 
     public function getInstance(): self
     {
@@ -187,4 +262,5 @@ class Location
     {
         return clone $this;
     }
+
 }

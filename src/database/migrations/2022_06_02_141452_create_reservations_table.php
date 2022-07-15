@@ -71,6 +71,7 @@ return new class extends Migration
             $table->string('acompte_type')->nullable();
             $table->smallInteger('acompte_value')->unsigned()->nullable();
             $table->smallInteger('echeance_nombre')->unsigned()->nullable();
+            $table->smallInteger('order')->unsigned();
         });
     }
 

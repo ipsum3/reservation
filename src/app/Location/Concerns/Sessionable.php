@@ -1,6 +1,6 @@
 <?php
 
-namespace Ipsum\Reservation\app\Panier\Concerns;
+namespace Ipsum\Reservation\app\Location\Concerns;
 
 
 use Session;

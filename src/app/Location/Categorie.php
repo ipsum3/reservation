@@ -1,22 +1,22 @@
 <?php
 
 
-namespace Ipsum\Reservation\app\Panier;
+namespace Ipsum\Reservation\app\Location;
 
 
-use Illuminate\Database\Eloquent\Collection;
+
+use Illuminate\Support\Collection;
 
 class Categorie extends \Ipsum\Reservation\app\Models\Categorie\Categorie
 {
+    public ?DevisModaliteCollection $devis = null;
 
-    protected Collection $modalites;
-    protected ?float $total_min = null;
 
 
     public function __construct(array $attributes = [])
     {
-        $this->modalites = collect();
         parent::__construct($attributes);
-    }
 
+        $this->devis = new DevisModaliteCollection();
+    }
 }

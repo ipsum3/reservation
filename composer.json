@@ -24,7 +24,7 @@
             ],
             "aliases":
             {
-                "Location": "Ipsum\\Reservation\\app\\Location\\Facades\\location"
+                "Location": "Ipsum\\Reservation\\app\\Location\\Facades\\Location"
             }
         }
     }
