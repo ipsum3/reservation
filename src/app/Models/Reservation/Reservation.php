@@ -88,6 +88,8 @@ class Reservation extends BaseModel
 
     protected $casts = [
         'custom_fields' => 'array',
+        'prestations' => 'array',
+        'promotions' => 'array',
     ];
 
 
@@ -199,22 +201,22 @@ class Reservation extends BaseModel
      * Accessors & Mutators
      */
 
-    public function getIsConfirmedAttribute()
+    public function getIsConfirmedAttribute(): bool
     {
         return $this->etat_id === Etat::VALIDEE_ID;
     }
 
-    public function getIsPayeeAttribute()
+    public function getIsPayeeAttribute(): bool
     {
-        return $this->total > $this->montant_paye;
+        return $this->total <= $this->montant_paye;
     }
 
-    public function getNbJoursAttribute()
+    public function getNbJoursAttribute(): int
     {
         return self::calculDuree($this->debut_at, $this->fin_at);
     }
 
-    public function getHasPromotionsVisibleAttribute()
+    public function getHasPromotionsVisibleAttribute(): bool
     {
         return count($this->promotions_visible) ? true : false;
     }

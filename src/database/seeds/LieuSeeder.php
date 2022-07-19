@@ -95,8 +95,8 @@ class LieuSeeder extends Seeder
                 'instruction' => '',
                 'horaires_txt' => '',
                 'gps' => '14.593218867470167,-61.00341788085939',
-                'emails' => [['lieu1@example.com']],
-                'emails_reservation' => [['lieu1@example.com']],
+                'emails' => ['lieu1@example.com'],
+                'emails_reservation' => ['lieu1@example.com'],
                 'order' => '3'
             ),
             array(
@@ -108,8 +108,8 @@ class LieuSeeder extends Seeder
                 'instruction' => '',
                 'horaires_txt' => '',
                 'gps' => '14.593218867470167,-61.00341788085939',
-                'emails' => [['lieu1@example.com']],
-                'emails_reservation' => [['lieu1@example.com']],
+                'emails' => ['lieu1@example.com'],
+                'emails_reservation' => ['lieu1@example.com'],
                 'order' => '3'
             ),
         );

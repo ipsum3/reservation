@@ -279,10 +279,12 @@
                                                     <th valign="top">{{ _('Modéle') }}</th>
                                                     <td valign="top">{{ $reservation->categorie->modeles }} {{ _('ou équivalent') }}</td>
                                                 </tr>
-                                                <tr>
-                                                    <th valign="top">{{ _('Franchise') }}</th>
-                                                    <td valign="top">@prix($reservation->franchise)&nbsp;€</td>
-                                                </tr>
+                                                @if($reservation->franchise)
+                                                    <tr>
+                                                        <th valign="top">{{ _('Franchise') }}</th>
+                                                        <td valign="top">@prix($reservation->franchise)&nbsp;€</td>
+                                                    </tr>
+                                                @endif
                                             @endif
                                         </table>
                                     </td>
@@ -340,18 +342,12 @@
                                                 <th valign="top">{{ _('Prix de base') }} ({{ $reservation->nb_jours }} {{ _('jours') }})</th>
                                                 <td align="right">@prix($reservation->montant_base)&nbsp;€</td>
                                             </tr>
-                                            @if ($reservation->options)
-                                                @foreach ($reservation->options as $option)
+                                            @if ($reservation->prestations)
+                                                @foreach ($reservation->prestations as $prestation)
                                                     <tr>
-                                                        <th>{{ $option['quantite'] }} {{ strtolower($option['nom']) }} {{ !empty($option['choix']) ? '('.$option['choix'].')' : '' }}</th>
+                                                        <th>{{ $prestation['quantite'] }} {{ strtolower($prestation['nom']) }} {{ !empty($prestation['choix']) ? '('.$prestation['choix'].')' : '' }}</th>
                                                         <td align="right">
-                                                            @if ($option['tarif'] === null)
-                                                                {{ _('facturation en agence') }}
-                                                            @elseif(empty($option['reduction']) and empty($option['tarif']))
-                                                                {{ _('gratuit') }}
-                                                            @else
-                                                                @prix($option['tarif'] + (isset($option['reduction']) ? $option['reduction'] : 0)) €
-                                                            @endif
+                                                            {{ $prestation['tarif_libelle'] }}
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -371,9 +367,9 @@
                                             @endif
                                             <tr>
                                                 <th valign="top">{{ _('Total (TTC)') }}</th>
-                                                <td align="right"><strong style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;">@prix($reservation->total)&nbsp;€</strong></td>
+                                                <td align="right"><strong {{ $reservation->is_payee ?  'style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;"' : '' }}>@prix($reservation->total)&nbsp;€</strong></td>
                                             </tr>
-                                            @if ($reservation->is_payee)
+                                            @if (!$reservation->is_payee)
                                                 <tr>
                                                     <th valign="top">{{ _('Reste à régler') }}</th>
                                                     <td align="right"><strong style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;">@prix($reservation->total - $reservation->montant_paye)&nbsp;€</strong></td>

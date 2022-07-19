@@ -19,4 +19,12 @@ class Categorie extends \Ipsum\Reservation\app\Models\Categorie\Categorie
 
         $this->devis = new DevisModaliteCollection();
     }
+
+    /**
+     * @desc Permet de faire fonctioner la relation morph avec cette class extends
+     */
+    public function getMorphClass()
+    {
+        return parent::class;
+    }
 }

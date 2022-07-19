@@ -58,6 +58,11 @@ class StoreCategorie extends FormRequest
             "age_minimum" => 'required|numeric',
             "annee_permis_minimum" => 'required|numeric',
 
+            "texte" => '',
+            "seo_title" => 'nullable|max:255',
+            "seo_description" => '',
+
+
         ] + $rules;
     }
 

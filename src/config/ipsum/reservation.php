@@ -10,7 +10,7 @@ return [
                 'description' => '',
                 'defaut' => '',
                 'type' => 'number',
-                'rules' => 'required|numeric'
+                'rules' => 'nullable|numeric'
             ]
         ]
     ],
@@ -40,6 +40,8 @@ return [
     ],
     'recherche' => [
         'date_format' => 'd/m/Y H:i',
+        'jour_format' => 'd/m/Y',
+        'pays_defaut_id' => 75
     ]
 
 ];

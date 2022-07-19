@@ -51,4 +51,20 @@ class PrestationCollection extends Collection
     }
 
 
+    public function toArray()
+    {
+        return $this->map(function (Prestation $prestation) {
+            return [
+                'id' => $prestation->id,
+                'quantite' => $prestation->getQuantite(),
+                'nom' => $prestation->nom,
+                'tarif' => $prestation->getTarif(),
+                'tarif_libelle' => $prestation->getTarifLibelle(),
+                'choix' => null,
+            ];
+        })->all();
+
+    }
+
+
 }
