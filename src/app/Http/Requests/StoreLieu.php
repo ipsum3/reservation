@@ -24,6 +24,7 @@ class StoreLieu extends FormRequest
      */
     public function rules()
     {
+        // TODO check gps
         return [
             "type_id" => "required|exists:lieu_types,id",
 

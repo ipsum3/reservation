@@ -31,7 +31,7 @@
                     {{ Aire::hidden('type_id', $types->take(1)->keys()->first()) }}
                 @endif
                 {{ Aire::select(array_combine(old('emails', $lieu->emails), old('emails', $lieu->emails)), 'emails', 'Emails contact*')->multiple()->groupAddClass('col-md-6')->addClass('js-example-basic-single js-states')->data('tags', '1')->data('token-separators', "[',', ' ', ';]") }}
-                {{ Aire::select(array_combine(old('emails_reservation', $lieu->emails_reservation), old('emails_reservation', $lieu->emails_reservation)), 'emails_reservation', 'Emails réservation*')->multiple()->value($lieu->emails_reservation)->groupAddClass('col-md-6')->addClass('js-example-basic-single js-states')->data('tags', '1')->data('token-separators', "[',', ' ', ';]") }}
+                {{ Aire::select(array_combine(old('emails_reservation', $lieu->emails_reservation), old('emails_reservation', $lieu->emails_reservation)), 'emails_reservation', 'Emails réservation*')->multiple()->groupAddClass('col-md-6')->addClass('js-example-basic-single js-states')->data('tags', '1')->data('token-separators', "[',', ' ', ';]") }}
                 {{ Aire::input('telephone', 'Téléphone*')->groupAddClass('col-md-6') }}
                 {{ Aire::input('gps', 'Coordonnées GPS*')->groupAddClass('col-md-6') }}
                 {{ Aire::textArea('adresse', 'Adresse*')->groupAddClass('col-md-6') }}

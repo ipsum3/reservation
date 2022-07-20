@@ -207,13 +207,13 @@ class Lieu extends BaseModel
     public function getLatAttribute()
     {
         $gps = explode(',', $this->gps);
-        return isset($gps[0]) ? $gps[0] : null;
+        return isset($gps[0]) ? trim($gps[0]) : null;
     }
 
     public function getLngAttribute()
     {
         $gps = explode(',', $this->gps);
-        return isset($gps[1]) ? $gps[1] : null;
+        return isset($gps[1]) ? trim($gps[1]) : null;
     }
 
     public function getTagTitleAttribute()

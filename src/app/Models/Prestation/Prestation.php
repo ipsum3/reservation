@@ -114,19 +114,25 @@ class Prestation extends BaseModel
         $query->where('type_id', Type::FRAIS_ID);
     }
 
-    public function scopeCondition(Builder $query, Categorie $categorie, Lieu $lieu)
+    public function scopeCondition(Builder $query, Categorie $categorie, Lieu $lieu, ?int $age = null)
     {
-        $query->where(function (Builder $query) use ($categorie, $lieu) {
-            $query->where(function (Builder $query) use ($categorie) {
-                $query->whereHas('categories', function (Builder $query) use ($categorie) {
-                    $query->where('id', $categorie->id);
-                })->orWhereDoesntHave('categories');
-            })->where(function (Builder $query) use ($lieu) {
-                $query->whereHas('lieux', function (Builder $query) use ($lieu) {
-                    $query->where('id', $lieu->id);
-                })->orWhereDoesntHave('lieux');
-            });
+        $query->where(function (Builder $query) use ($categorie) {
+            $query->whereHas('categories', function (Builder $query) use ($categorie) {
+                $query->where('id', $categorie->id);
+            })->orWhereDoesntHave('categories');
+        })->where(function (Builder $query) use ($lieu) {
+            $query->whereHas('lieux', function (Builder $query) use ($lieu) {
+                $query->where('id', $lieu->id);
+            })->orWhereDoesntHave('lieux');
         });
+
+        if ($age !== null) {
+            $query->where(function (Builder $query) use ($age) {
+                $query->where('age_max', '>', $age)->orWhereNull('age_max');
+            });
+        } else {
+            $query->whereNull('age_max');
+        }
     }
 
 

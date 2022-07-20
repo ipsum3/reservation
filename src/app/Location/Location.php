@@ -375,6 +375,11 @@ class Location
         return $this->debut_at->clone()->subYears($this->getCategorie()->age_minimum);
     }
 
+    public function age(): ?int
+    {
+        return $this->naissance_at !== null ? $this->naissance_at->age : null;
+    }
+
     public function getPermisNumero(): ?string
     {
         return $this->permis_numero;
