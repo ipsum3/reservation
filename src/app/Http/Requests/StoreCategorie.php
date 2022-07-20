@@ -41,6 +41,7 @@ class StoreCategorie extends FormRequest
 
             "nom" => 'required|max:255|unique:categories,nom,'.(isset($current_params['categorie']) ? $current_params['categorie']->id : '').',id',
             "modeles" => 'required|max:255',
+            "description" => '',
 
             "place" => 'required|integer|min:1|max:50',
             "porte" => 'required|integer|min:1|max:10',

@@ -25,6 +25,7 @@ class Type extends BaseModel
 
     const AGENCE_ID = 1;
     const DEPOT_ID = 2;
+    const AEROPORT_ID = 3;
 
     
     /*

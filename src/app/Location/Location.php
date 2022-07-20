@@ -81,20 +81,19 @@ class Location
     public function setInformations(array $inputs): self
     {
         $this->setNom($inputs['nom']);
-        $this->setPrenom($inputs['prenom']);
+        $this->setPrenom($inputs['prenom'] ?? null);
         $this->setEmail($inputs['email']);
-        $this->setTelephone($inputs['telephone']);
-        $this->setAdresse($inputs['adresse']);
-        $this->setCp($inputs['cp']);
-        $this->setVille($inputs['ville']);
+        $this->setTelephone($inputs['telephone'] ?? null);
+        $this->setAdresse($inputs['adresse'] ?? null);
+        $this->setCp($inputs['cp'] ?? null);
+        $this->setVille($inputs['ville'] ?? null);
         $this->setPays($inputs['pays_id']);
         $this->setNaissanceAt($inputs['naissance_at']);
-        $this->setPermisNumero($inputs['permis_numero']);
+        $this->setPermisNumero($inputs['permis_numero'] ?? null);
         $this->setPermisAt($inputs['permis_at']);
-        $this->setPermisDelivre($inputs['permis_delivre']);
-        $this->setObservation($inputs['observation']);
-
-        // TODO  custom_fields
+        $this->setPermisDelivre($inputs['permis_delivre'] ?? null);
+        $this->setObservation($inputs['observation'] ?? null);
+        $this->setCustomFields($inputs['custom_fields'] ?? null);
 
         return $this;
     }
@@ -428,6 +427,11 @@ class Location
     public function getCustomFields(): ?array
     {
         return $this->custom_fields;
+    }
+
+    public function getCustomField($field)
+    {
+        return isset($this->custom_fields[$field]) ? $this->custom_fields[$field] : null;
     }
 
     public function setCustomFields(?array $custom_fields): void

@@ -15,10 +15,17 @@ class PrestationCollection extends Collection
         return $this->groupBy('type_id')->collect();
     }
 
-    public function removeOptionnelle(): Collection
+    public function removeOptionnelle(): self
     {
         return $this->filter(function (Prestation $value) {
             return !$value->is_optionnelle;
+        });
+    }
+
+    public function removeObligatoire(): self
+    {
+        return $this->filter(function (Prestation $value) {
+            return !$value->is_obligatoire;
         });
     }
 

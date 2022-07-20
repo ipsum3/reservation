@@ -184,7 +184,7 @@ class Lieu extends BaseModel
 
     public function scopeAgences($query)
     {
-        return $query->where('type', 'agence');
+        return $query->where('type_id', Type::AGENCE_ID);
     }
 
 
@@ -193,6 +193,11 @@ class Lieu extends BaseModel
     /*
      * Accessors & Mutators
      */
+
+    public function getIsAeroportAttribute()
+    {
+        return $this->type_id === Type::AEROPORT_ID;
+    }
 
     public function getEmailFirstAttribute()
     {

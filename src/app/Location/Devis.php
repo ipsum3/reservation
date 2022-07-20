@@ -97,7 +97,7 @@ class Devis
             ->orderBy('order', 'asc')
             ->get();
 
-        $this->prestations = $this->prestations->merge($prestations);
+        $this->prestations = $this->prestations->merge($prestations)->unique('id');
 
         return $this;
     }

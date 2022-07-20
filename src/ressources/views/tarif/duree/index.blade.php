@@ -44,7 +44,7 @@
         {{ Aire::open()->route('admin.duree.store')->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreDuree::class)->addClass('col-md-6') }}
             <div class="box">
                 <div class="box-header">
-                    <h2 class="box-title">Ajouter une duree de tarif</h2>
+                    <h2 class="box-title">Ajouter une durée de tarif</h2>
                 </div>
                 <div class="box-body">
                     <div class="form-row">

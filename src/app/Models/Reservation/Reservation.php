@@ -154,9 +154,6 @@ class Reservation extends BaseModel
         return $this->belongsTo(Lieu::class, 'fin_lieu_id');
     }
 
-    /*
-     * TODO ! mettre class en config ?
-     */
     public function client()
     {
         return $this->belongsTo(config('ipsum.reservation.client.model'));

@@ -194,6 +194,10 @@ class LieuSeeder extends Seeder
                 'id' => '2',
                 'nom' => "Dépot",
             ),
+            array(
+                'id' => '3',
+                'nom' => "Aéroport",
+            ),
         );
     }
 

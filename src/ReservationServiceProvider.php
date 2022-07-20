@@ -59,10 +59,7 @@ class ReservationServiceProvider extends ServiceProvider
 
     public function loadViews()
     {
-        $this->loadViewsFrom([
-            resource_path('views/ipsum/reservation'),
-            __DIR__.'/ressources/views',
-        ], 'IpsumReservation');
+        $this->loadViewsFrom(__DIR__.'/ressources/views', 'IpsumReservation');
 
         Blade::anonymousComponentNamespace('IpsumReservation::components', 'reservation');
 

@@ -18,7 +18,7 @@ return [
         'model' => \App\Models\User::class,
     ],
     'confirmation' => [
-        'logo' => null, // asset('theme/logos/logo-header.jpg')
+        'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
         'couleur' => '#bbb'
     ],
     'jours-feries' => [
