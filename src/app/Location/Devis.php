@@ -142,7 +142,7 @@ class Devis
             'id' => $this->getLocation()->getReservationId(),
             'etat_id' => $this->getLocation()->getModalite()->is_agence ? Etat::VALIDEE_ID : Etat::NON_VALIDEE_ID,
             'modalite_paiement_id' => $this->getLocation()->getModalite()->id,
-            'client_id' => null,
+            'client_id' => auth()->check() ? auth()->id() : null,
             'nom' => $this->getLocation()->getNom(),
             'prenom' => $this->getLocation()->getPrenom(),
             'email' => $this->getLocation()->getEmail(),
