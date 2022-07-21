@@ -4,12 +4,16 @@ namespace Ipsum\Reservation\app\Models\Promotion;
 
 use Ipsum\Core\app\Models\BaseModel;
 use Carbon\Carbon;
+use Ipsum\Reservation\app\Models\Lieu\Lieu;
 
 /**
  * Ipsum\Reservation\app\Models\Promotion\Promotion
  *
  * @property-read mixed $active
  * @property-read mixed $en_cours
+ * @property-read Lieu|null $lieu
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Promotion\Ligne[] $lignes
+ * @property-read int|null $lignes_count
  * @property-write mixed $activation_at
  * @property-write mixed $desactivation_at
  * @method static \Illuminate\Database\Eloquent\Builder|Promotion active()
@@ -59,12 +63,12 @@ class Promotion extends BaseModel
 
     public function lignes()
     {
-        return $this->hasMany('App\Promotion\Ligne');
+        return $this->hasMany(Ligne::class);
     }
 
     public function lieu()
     {
-        return $this->belongsTo('App\Lieu\Lieu');
+        return $this->belongsTo(Lieu::class);
     }
 
 

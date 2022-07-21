@@ -35,6 +35,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property-read int|null $fermetures_count
  * @property-read mixed $email_first
  * @property-read mixed $email_reservation_first
+ * @property-read mixed $is_aeroport
  * @property-read mixed $lat
  * @property-read mixed $lng
  * @property-read mixed $tag_meta_description

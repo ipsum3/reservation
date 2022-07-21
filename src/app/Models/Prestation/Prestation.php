@@ -31,12 +31,13 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
  * @property-read int|null $blocages_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Categorie[] $categories
  * @property-read int|null $categories_count
+ * @property-read bool $is_obligatoire
  * @property-read bool $is_optionnelle
  * @property-read bool $is_tarification_agence
  * @property-read \Illuminate\Database\Eloquent\Collection|Lieu[] $lieux
  * @property-read int|null $lieux_count
  * @property-read \Ipsum\Reservation\app\Models\Prestation\Type|null $type
- * @method static Builder|Prestation condition(\Ipsum\Reservation\app\Models\Categorie\Categorie $categorie, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu)
+ * @method static Builder|Prestation condition(\Ipsum\Reservation\app\Models\Categorie\Categorie $categorie, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu, ?int $age = null)
  * @method static Builder|Prestation filtreSortable($objet)
  * @method static Builder|Prestation newModelQuery()
  * @method static Builder|Prestation newQuery()

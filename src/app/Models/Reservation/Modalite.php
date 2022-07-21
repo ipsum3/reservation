@@ -37,6 +37,8 @@ class Modalite extends BaseModel
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
     const LIGNE_ID = 1;
     const AGENCE_ID = 2;
 
@@ -74,8 +76,12 @@ class Modalite extends BaseModel
      * Functions
      */
 
-    public function acompte(float $montant): float
+    public function acompte(float $montant): ?float
     {
+        if (!$this->has_acompte) {
+            return null;
+        }
+
         switch ($this->acompte_type) {
             case 'pourcentage' :
                 $acompte = $this->acompte_value * $montant / 100;

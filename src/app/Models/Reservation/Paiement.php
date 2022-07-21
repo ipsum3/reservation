@@ -33,6 +33,17 @@ class Paiement extends BaseModel
 
 
 
+    protected static function booted()
+    {
+        self::created(function (self $paiement) {
+            $reservation = $paiement->reservation;
+            $reservation->montant_paye = $reservation->paiements()->sum('montant');
+            $reservation->save();
+        });
+    }
+
+
+
     /*
      * 
      * Relations

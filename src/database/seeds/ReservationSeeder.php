@@ -53,6 +53,8 @@ class ReservationSeeder extends Seeder
             array(
                 'id' => 2,
                 'nom' => 'En agence',
+                'acompte_type' => 'pourcentage',
+                'acompte_value' => 30,
                 'order' => 2
             ),
         );

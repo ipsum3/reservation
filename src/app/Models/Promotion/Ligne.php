@@ -4,11 +4,17 @@ namespace Ipsum\Reservation\app\Models\Promotion;
 
 use Ipsum\Core\app\Models\BaseModel;
 use Config;
+use Ipsum\Reservation\app\Models\Categorie\Categorie;
+use Ipsum\Reservation\app\Models\Prestation\Prestation;
 
 /**
  * Ipsum\Reservation\app\Models\Promotion\Ligne
  *
+ * @property-read Categorie|null $categorie
+ * @property-read Categorie|null $categorieSurclassement
  * @property-read mixed $reduction
+ * @property-read Prestation|null $prestation
+ * @property-read \Ipsum\Reservation\app\Models\Promotion\Promotion|null $promotion
  * @method static \Illuminate\Database\Eloquent\Builder|Ligne newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Ligne newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Ligne query()
@@ -58,22 +64,22 @@ class Ligne extends BaseModel
 
     public function promotion()
     {
-        return $this->belongsTo('App\Promotion\Promotion');
+        return $this->belongsTo(Promotion::class);
     }
 
-    public function option()
+    public function prestation()
     {
-        return $this->belongsTo('App\Option\Option');
+        return $this->belongsTo(Prestation::class);
     }
 
     public function categorie()
     {
-        return $this->belongsTo('App\Categorie\Categorie');
+        return $this->belongsTo(Categorie::class);
     }
 
     public function categorieSurclassement()
     {
-        return $this->belongsTo('App\Categorie\Categorie');
+        return $this->belongsTo(Categorie::class);
     }
 
 

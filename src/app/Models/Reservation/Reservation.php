@@ -46,22 +46,23 @@ use Ipsum\Reservation\app\Models\Reservation\Concerns\Sessionable;
  * @property string|null $debut_lieu_nom
  * @property string|null $fin_lieu_nom
  * @property string|null $montant_base
- * @property string|null $prestations
- * @property string|null $promotions
+ * @property array|null $prestations
+ * @property array|null $promotions
  * @property string|null $total
  * @property string|null $montant_paye
  * @property string|null $note
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Categorie|null $categorie
- * @property-read \App\Models\User|null $client
+ * @property-read \App\Models\Client|null $client
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Etat|null $etat
+ * @property-read float|null $acompte
  * @property-read mixed $date_naissance_minimum
  * @property-read mixed $date_permis_minimum
- * @property-read mixed $has_promotions_visible
- * @property-read mixed $is_confirmed
- * @property-read mixed $is_payee
- * @property-read mixed $nb_jours
+ * @property-read bool $has_promotions_visible
+ * @property-read bool $is_confirmed
+ * @property-read bool $is_payed
+ * @property-read int $nb_jours
  * @property-read mixed $tarif_journalier
  * @property-read Lieu|null $lieuDebut
  * @property-read Lieu|null $lieuFin
@@ -203,7 +204,7 @@ class Reservation extends BaseModel
         return $this->etat_id === Etat::VALIDEE_ID;
     }
 
-    public function getIsPayeeAttribute(): bool
+    public function getIsPayedAttribute(): bool
     {
         return $this->total <= $this->montant_paye;
     }
@@ -231,6 +232,31 @@ class Reservation extends BaseModel
     public function getTarifJournalierAttribute()
     {
         return $this->total / $this->nb_jours;
+    }
+
+    public function getAcompteAttribute(): ?float
+    {
+        $modalite = $this->modalite;
+        if (!$modalite) {
+            return null;
+        }
+        return $modalite->acompte($this->total);
+    }
+
+    /**
+     * Suppression des champs vides
+     * @param array|null $custom_fields
+     */
+    public function setCustomFieldsAttribute(?array $custom_fields): void
+    {
+        $fields = null;
+        foreach ($custom_fields as $field => $value) {
+            if ($value !== null) {
+                $fields[$field] = $value;
+            }
+        }
+
+        $this->attributes['custom_fields'] = $fields === null ? null : $this->castAttributeAsJson('custom_fields', $fields);
     }
 
 
