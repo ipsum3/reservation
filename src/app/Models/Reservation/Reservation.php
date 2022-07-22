@@ -10,7 +10,6 @@ use Carbon\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\database\factories\ReservationFactory;
-use Ipsum\Reservation\app\Models\Reservation\Concerns\Sessionable;
 
 
 /**
@@ -250,9 +249,11 @@ class Reservation extends BaseModel
     public function setCustomFieldsAttribute(?array $custom_fields): void
     {
         $fields = null;
-        foreach ($custom_fields as $field => $value) {
-            if ($value !== null) {
-                $fields[$field] = $value;
+        if ($custom_fields !== null) {
+            foreach ($custom_fields as $field => $value) {
+                if ($value !== null) {
+                    $fields[$field] = $value;
+                }
             }
         }
 

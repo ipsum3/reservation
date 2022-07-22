@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController::class)->prefix('reservation')->name('admin.reservation.')->group(
     function () {
         Route::get('', 'index')->name('index');
+        Route::get('export', 'export')->name('export');
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
         Route::any('{reservation}/destroy', 'destroy')->name('destroy');

@@ -11,6 +11,10 @@
                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.create') }}">
                     <i class="fas fa-plus"></i>
                     Ajouter
+                </a>&nbsp;
+                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.export', request()->all()) }}">
+                    <i class="fas fa-upload"></i>
+                    Export
                 </a>
             </div>
         </div>
@@ -59,7 +63,7 @@
                                 {{ $reservation->prenom }} {{ $reservation->nom }}
                             @endif
                         </td>
-                        <td>{{ $reservation->total }}</td>
+                        <td class="text-right">@prix($reservation->total) &nbsp;€</td>
                         <td>{{ $reservation->etat ? $reservation->etat->nom : '' }}</td>
                         <td>{{ $reservation->modalite ? $reservation->modalite->nom : '' }}</td>
                         <td class="text-right">

@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Http\Controllers;
 
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
@@ -19,10 +20,13 @@ class ReservationController extends AdminController
 {
     protected $acces = 'reservation';
 
-    public function index(Request $request)
+    protected function query(Request $request)
     {
         $query = Reservation::with('etat', 'modalite', 'client');
 
+        if ($request->filled('client_id')) {
+            $query->where('client_id', $request->get('client_id'));
+        }
         if ($request->filled('etat_id')) {
             $query->where('etat_id', $request->get('etat_id'));
         }
@@ -45,12 +49,103 @@ class ReservationController extends AdminController
         if ($request->filled('tri')) {
             $query->orderBy($request->tri, $request->order);
         }
-        $reservations = $query->latest()->paginate();
+
+        return $query->latest();
+    }
+
+    public function index(Request $request)
+    {
+
+        $reservations = $this->query($request)->paginate();
 
         $etats = Etat::all()->pluck('nom', 'id');
         $modalites = Modalite::all()->pluck('nom', 'id');
 
         return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'modalites'));
+    }
+
+    public function export(Request $request)
+    {
+
+        $reservations = $this->query($request)->get();
+
+        $entete = [
+            'Date',
+            'Date modification',
+            'Email',
+            'Nom',
+            'Prénom',
+            'Téléphone',
+            'Adresse',
+            'Cp',
+            'Ville',
+            'Pays',
+            'Date de naissance',
+            'Numéro de permis',
+            'Date permis',
+            'Permis délivré par',
+            'Observation',
+            'Catégorie',
+            'Franchise',
+            'Date début',
+            'Date fin',
+            'Début',
+            'Fin',
+            'Montant de base',
+            'Total',
+            'Montant payé',
+            'Note',
+            'Etat',
+            'Modalité',
+        ];
+
+
+        $fileName = "export-reservation-" . date('d-m-Y_H-i-s') . ".csv";
+
+        $writer = WriterEntityFactory::createCSVWriter();
+        $writer->setFieldDelimiter(';');
+        $writer->setFieldEnclosure('"');
+        $writer->openToBrowser($fileName);
+        $row = WriterEntityFactory::createRowFromArray($entete);
+        $writer->addRow($row);
+
+        foreach ($reservations as $reservation) {
+
+            $data = [
+                $reservation->created_at,
+                $reservation->updated_at,
+                $reservation->email,
+                $reservation->nom,
+                $reservation->prenom,
+                $reservation->telephone,
+                $reservation->adresse,
+                $reservation->cp,
+                $reservation->ville,
+                $reservation->pays_nom,
+                $reservation->naissance_at ? $reservation->naissance_at->format('d/m/Y') : null,
+                $reservation->permis_numero,
+                $reservation->permis_at ? $reservation->permis_at->format('d/m/Y') : null,
+                $reservation->permis_delivre,
+                $reservation->observation,
+                $reservation->categorie_nom,
+                $reservation->franchise,
+                $reservation->debut_at ? $reservation->debut_at->format('d/m/Y') : null,
+                $reservation->fin_at ? $reservation->fin_at->format('d/m/Y') : null,
+                $reservation->debut_lieu_nom,
+                $reservation->fin_lieu_nom,
+                $reservation->montant_base,
+                $reservation->total,
+                $reservation->montant_paye,
+                $reservation->note,
+                $reservation->etat ? $reservation->etat->nom : null,
+                $reservation->modalite ? $reservation->modalite->nom : null,
+            ];
+            $row = WriterEntityFactory::createRowFromArray($data);
+            $writer->addRow($row);
+        }
+        $writer->close();
+
+        return null;
     }
 
     public function create()

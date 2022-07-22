@@ -308,7 +308,7 @@
                                             <table width="100%" cellpadding="0" cellspacing="0" border="0" class="table" style="font-size: 12px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
                                                 @foreach($reservation->custom_fields as $key => $value)
                                                     <tr>
-                                                        <th valign="top">{{ $key }}</th>{{-- TODO label : enregistrer en base ? --}}
+                                                        <th valign="top">{{ $key }}</th>
                                                         <td align="top">{{ $value }}</td>
                                                     </tr>
                                                 @endforeach
@@ -367,9 +367,9 @@
                                             @endif
                                             <tr>
                                                 <th valign="top">{{ _('Total (TTC)') }}</th>
-                                                <td align="right"><strong {{ $reservation->is_payee ?  'style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;"' : '' }}>@prix($reservation->total)&nbsp;€</strong></td>
+                                                <td align="right"><strong {{ $reservation->is_payed ?  'style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;"' : '' }}>@prix($reservation->total)&nbsp;€</strong></td>
                                             </tr>
-                                            @if (!$reservation->is_payee)
+                                            @if (!$reservation->is_payed)
                                                 <tr>
                                                     <th valign="top">{{ _('Reste à régler') }}</th>
                                                     <td align="right"><strong style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;">@prix($reservation->total - $reservation->montant_paye)&nbsp;€</strong></td>
