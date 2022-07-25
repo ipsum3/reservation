@@ -84,9 +84,9 @@
                 {{ Aire::input('ville', 'Ville')->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Pays -----'])->union($pays), 'pays_id', 'Pays')->groupAddClass('col-md-6') }}
                 {{ Aire::date('naissance_at', 'Date de naissance')->groupAddClass('col-md-6') }}
-                {{ Aire::input('permis_numero', 'Numéro')->groupAddClass('col-md-6') }}
-                {{ Aire::date('permis_at', 'Délivré le')->groupAddClass('col-md-6') }}
-                {{ Aire::input('permis_delivre', 'Délivré par')->groupAddClass('col-md-6') }}
+                {{ Aire::input('permis_numero', 'Numéro de permis')->groupAddClass('col-md-6') }}
+                {{ Aire::date('permis_at', 'Permis délivré le')->groupAddClass('col-md-6') }}
+                {{ Aire::input('permis_delivre', 'Permis délivré par')->groupAddClass('col-md-6') }}
             </div>
         </div>
     </div>

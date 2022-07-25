@@ -12,8 +12,8 @@
             </div>
             <div class="box-body">
                 <div class="form-row">
-                    {{ Aire::input('min', 'Mini (€)*')->groupAddClass('col-md-6') }}
-                    {{ Aire::input('max', 'Maxi (€)')->groupAddClass('col-md-6') }}
+                    {{ Aire::input('min', 'Mini (jour)*')->groupAddClass('col-md-6') }}
+                    {{ Aire::input('max', 'Maxi (jour)')->groupAddClass('col-md-6') }}
                 </div>
             </div>
             <div class="box-footer">
