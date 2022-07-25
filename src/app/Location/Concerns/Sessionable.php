@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Location\Concerns;
 
 
+use Ipsum\Reservation\app\Location\Location;
 use Session;
 
 trait Sessionable
@@ -14,12 +15,15 @@ trait Sessionable
         return Session::has(self::class);
     }
 
-    static public function newBySession()
+    static public function newBySession(): Location
     {
         if (self::hasSession()) {
-            return unserialize(Session::get(self::class));
+            $resa = unserialize(Session::get(self::class));
+            $resa->sessions = null;
+            $resa->duree = null;
+            return $resa;
         } else {
-            return new self;
+            return new Location();
         }
     }
 

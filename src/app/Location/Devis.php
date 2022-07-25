@@ -68,7 +68,8 @@ class Devis
                 ->where('modalite_paiement_id', $this->location->getModalite()->id)
                 ->first();
 
-            if ($tarif === null) {
+
+            if ($tarif === null or $tarif->montant === null) {
                 throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
             }
 
