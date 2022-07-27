@@ -79,7 +79,6 @@ class Lieu extends BaseModel
         static::deleting(function (self $lieu) {
             $lieu->fermetures()->delete();
             $lieu->horaires()->delete();
-            $lieu->feries()->delete();
         });
     }
 
