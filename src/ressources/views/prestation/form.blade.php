@@ -32,7 +32,17 @@
                 {{ Aire::number('quantite_max', 'Quantité max*')->required()->defaultValue(1)->groupAddClass('col-md-6') }}
                 {{ Aire::number('gratuit_apres', 'Gratuit après x jours')->groupAddClass('col-md-6') }}
                 {{ Aire::number('jour_fact_max', 'Nombre de jour maximum facturé')->groupAddClass('col-md-6') }}
-                {{ Aire::number('age_max', 'Age maximum')->groupAddClass('col-md-6') }}
+            </div>
+        </div>
+    </div>
+
+    <div class="box">
+        <div class="box-header">
+            <h2 class="box-title">Conditions</h2>
+        </div>
+        <div class="box-body">
+            <div class="form-row">
+                {{ Aire::number('age_max', 'Age inférieur à')->groupAddClass('col-md-6') }}
             </div>
         </div>
     </div>
