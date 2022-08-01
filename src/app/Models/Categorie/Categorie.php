@@ -11,7 +11,7 @@ use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Tarif\Tarif;
 use Ipsum\Reservation\database\factories\CategorieFactory;
-use Config;
+
 
 /**
  * Ipsum\Reservation\app\Models\Categorie\Categorie

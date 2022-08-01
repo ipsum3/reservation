@@ -4,7 +4,7 @@ namespace Ipsum\Reservation\app\Models\Lieu;
 
 
 use Ipsum\Core\app\Models\BaseModel;
-use Carbon\Carbon;
+use Ipsum\Reservation\app\Classes\Carbon;
 
 /**
  * Ipsum\Reservation\app\Models\Lieu\Horaire
@@ -16,8 +16,8 @@ use Carbon\Carbon;
  * @property string $fin
  * @property-read mixed $creneau_to_string
  * @property-read \Ipsum\Reservation\app\Models\Lieu\Lieu|null $lieu
- * @method static \Illuminate\Database\Eloquent\Builder|Horaire creneaux(\Carbon\Carbon $date, $is_ferie = false)
- * @method static \Illuminate\Database\Eloquent\Builder|Horaire date(\Carbon\Carbon $date, $is_ferie = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Horaire creneaux(\Ipsum\Reservation\app\Classes\Carbon $date, $is_ferie = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Horaire date(\Ipsum\Reservation\app\Classes\Carbon $date, $is_ferie = false)
  * @method static \Illuminate\Database\Eloquent\Builder|Horaire newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Horaire newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Horaire query()

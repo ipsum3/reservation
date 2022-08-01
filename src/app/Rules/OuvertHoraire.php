@@ -3,11 +3,10 @@
 namespace Ipsum\Reservation\app\Rules;
 
 
-use Carbon\Carbon;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\InvokableRule;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
-use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
 class OuvertHoraire implements InvokableRule, DataAwareRule
 {

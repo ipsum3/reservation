@@ -4,7 +4,6 @@
 namespace Ipsum\Reservation\app\Location;
 
 
-use Illuminate\Database\Eloquent\Collection;
 use Exception;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 

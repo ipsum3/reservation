@@ -4,7 +4,7 @@ namespace Ipsum\Reservation\app\Models\Tarif;
 
 use Illuminate\Support\Collection;
 use Ipsum\Core\app\Models\BaseModel;
-use Carbon\Carbon;
+use Ipsum\Reservation\app\Classes\Carbon;
 
 /**
  * Ipsum\Reservation\app\Models\Tarif\Saison
@@ -15,7 +15,7 @@ use Carbon\Carbon;
  * @property \Illuminate\Support\Carbon $fin_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Tarif\Tarif[] $tarifs
  * @property-read int|null $tarifs_count
- * @method static \Illuminate\Database\Eloquent\Builder|Saison betweenDates(\Carbon\Carbon $debut_at, \Carbon\Carbon $fin_at)
+ * @method static \Illuminate\Database\Eloquent\Builder|Saison betweenDates(\Ipsum\Reservation\app\Classes\Carbon $debut_at, \Ipsum\Reservation\app\Classes\Carbon $fin_at)
  * @method static \Illuminate\Database\Eloquent\Builder|Saison newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Saison newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Saison query()

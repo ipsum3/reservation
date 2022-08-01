@@ -4,7 +4,7 @@ namespace Ipsum\Reservation\app\Models\Reservation;
 
 
 use App\Lieu\Lieu;
-use Carbon\Carbon;
+use Ipsum\Reservation\app\Classes\Carbon;
 
 trait ReservationValidatorTrait {
 

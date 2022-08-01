@@ -3,8 +3,8 @@
 namespace Ipsum\Reservation\app\Location;
 
 
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Location\Exceptions\PrixInvalide;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Modalite;

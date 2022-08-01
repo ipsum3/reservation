@@ -3,8 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Tarif;
 
 use Ipsum\Core\app\Models\BaseModel;
-use Carbon\Carbon;
-use Config;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Reservation\Modalite;
 

@@ -2,7 +2,7 @@
 
 namespace Ipsum\Reservation\app\Http\Controllers;
 
-use Carbon\Carbon;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Ipsum\Admin\app\Http\Controllers\AdminController;

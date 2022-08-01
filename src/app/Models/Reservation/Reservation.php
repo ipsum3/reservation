@@ -3,10 +3,9 @@
 namespace Ipsum\Reservation\app\Models\Reservation;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ipsum\Core\app\Models\BaseModel;
-use Carbon\Carbon;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\database\factories\ReservationFactory;

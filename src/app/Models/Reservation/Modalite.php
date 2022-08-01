@@ -5,7 +5,6 @@ namespace Ipsum\Reservation\app\Models\Reservation;
 use App\Article\Translatable;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
 

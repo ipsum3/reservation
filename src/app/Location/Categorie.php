@@ -5,8 +5,6 @@ namespace Ipsum\Reservation\app\Location;
 
 
 
-use Illuminate\Support\Collection;
-
 class Categorie extends \Ipsum\Reservation\app\Models\Categorie\Categorie
 {
     public ?DevisModaliteCollection $devis = null;

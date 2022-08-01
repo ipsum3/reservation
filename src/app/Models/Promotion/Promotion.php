@@ -3,7 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Promotion;
 
 use Ipsum\Core\app\Models\BaseModel;
-use Carbon\Carbon;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 
 /**

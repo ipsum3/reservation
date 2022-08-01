@@ -2,7 +2,7 @@
 
 namespace Ipsum\Reservation\app\Console\Commands;
 
-use Carbon\Carbon;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Core\app\Console\Commands\Command;
 use Ipsum\Reservation\app\Models\Lieu\Ferie;
 

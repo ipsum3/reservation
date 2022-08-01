@@ -3,12 +3,10 @@
 namespace Ipsum\Reservation\app\Models\Prestation;
 
 
-use Carbon\Carbon;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
-use Exception;
-use Config;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 
@@ -26,7 +24,11 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
  * @property int|null $gratuit_apres
  * @property int|null $jour_fact_max
  * @property int|null $age_max
+ * @property string|null $heure_max
+ * @property string|null $heure_min
+ * @property int|null $jour
  * @property int $order
+ * @property string|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Prestation\Blocage[] $blocages
  * @property-read int|null $blocages_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Categorie[] $categories
@@ -37,7 +39,7 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
  * @property-read \Illuminate\Database\Eloquent\Collection|Lieu[] $lieux
  * @property-read int|null $lieux_count
  * @property-read \Ipsum\Reservation\app\Models\Prestation\Type|null $type
- * @method static Builder|Prestation condition(\Ipsum\Reservation\app\Models\Categorie\Categorie $categorie, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu, ?int $age = null)
+ * @method static Builder|Prestation condition(\Ipsum\Reservation\app\Models\Categorie\Categorie $categorie, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_debut, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_fin, \Carbon\Carbon $debut_at, \Carbon\Carbon $fin_at, ?int $age = null)
  * @method static Builder|Prestation filtreSortable($objet)
  * @method static Builder|Prestation newModelQuery()
  * @method static Builder|Prestation newQuery()
@@ -54,6 +56,7 @@ class Prestation extends BaseModel
     public $timestamps = false;
 
     public static $LISTE_TARIFICATION = array('jour', 'forfait', 'agence');
+    public static $LISTE_CONDITION = array('depart' => 'Uniquement sur le départ', 'retour' => 'Uniquement sur le retour');
 
 
     protected $guarded = ['id'];
@@ -115,18 +118,45 @@ class Prestation extends BaseModel
         $query->where('type_id', Type::FRAIS_ID);
     }
 
-    public function scopeCondition(Builder $query, Categorie $categorie, Lieu $lieu, ?int $age = null)
+    public function scopeCondition(Builder $query, Categorie $categorie, Lieu $lieu_debut, Lieu $lieu_fin, Carbon $debut_at, Carbon $fin_at, ?int $age = null)
     {
+        // Catégories
         $query->where(function (Builder $query) use ($categorie) {
             $query->whereHas('categories', function (Builder $query) use ($categorie) {
                 $query->where('id', $categorie->id);
             })->orWhereDoesntHave('categories');
-        })->where(function (Builder $query) use ($lieu) {
-            $query->whereHas('lieux', function (Builder $query) use ($lieu) {
-                $query->where('id', $lieu->id);
+        })
+
+        // Lieux
+        ->where(function (Builder $query) use ($lieu_debut, $lieu_fin) {
+            $query->whereHas('lieux', function (Builder $query) use ($lieu_debut, $lieu_fin) {
+                $query->where(function (Builder $query) use ($lieu_debut) {
+                    $query->where('id', $lieu_debut->id)->where(function (Builder $query) {
+                        $query->where('condition', '!=', 'retour')->orWhereNull('condition');
+                    });
+                })->orWhere(function (Builder $query) use ($lieu_fin) {
+                    $query->where('id', $lieu_fin->id)->where(function (Builder $query) {
+                        $query->where('condition', '!=', 'depart')->orWhereNull('condition');
+                    });
+                });
             })->orWhereDoesntHave('lieux');
+        })
+
+        // Horaires
+        ->where(function (Builder $query) use ($debut_at, $fin_at) {
+            $query->where('heure_max', '>', $debut_at->toTimeString())->orWhere('heure_max', '>', $fin_at->toTimeString())
+                ->orWhere('heure_min', '<', $debut_at->toTimeString())->orWhere('heure_min', '<', $fin_at->toTimeString())
+                ->orWhere(function (Builder $query) {
+                    $query->whereNull('heure_max')->whereNull('heure_min');
+                });
+        })
+
+        // Jour de la semaine
+        ->where(function (Builder $query) use ($debut_at, $fin_at, $lieu_debut, $lieu_fin) {
+            $query->where('jour', $debut_at->dayOfWeekWithFerie($lieu_debut))->orWhere('jour', $fin_at->dayOfWeekWithFerie($lieu_fin))->orWhereNull('jour');
         });
 
+        // Age
         if ($age !== null) {
             $query->where(function (Builder $query) use ($age) {
                 $query->where('age_max', '>', $age)->orWhereNull('age_max');
@@ -164,6 +194,16 @@ class Prestation extends BaseModel
     {
         return !$this->is_optionnelle;
     }
-    
+
+    public function getHeureMaxAttribute()
+    {
+        return (isset($this->attributes['heure_max']) and $this->attributes['heure_max'] !== null) ? substr($this->attributes['heure_max'], 0, -3) : null;
+    }
+
+    public function getHeureMinAttribute()
+    {
+        return (isset($this->attributes['heure_min']) and $this->attributes['heure_min'] !== null)  ? substr($this->attributes['heure_min'], 0, -3) : null;
+    }
+
 
 }

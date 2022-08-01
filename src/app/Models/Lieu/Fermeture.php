@@ -4,7 +4,7 @@ namespace Ipsum\Reservation\app\Models\Lieu;
 
 
 use Ipsum\Core\app\Models\BaseModel;
-use Carbon\Carbon;
+
 
 /**
  * Ipsum\Reservation\app\Models\Lieu\Fermeture

@@ -5,9 +5,8 @@ namespace Ipsum\Reservation\app\Models\Lieu;
 
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
-use Carbon\Carbon;
-use Config;
 use Ipsum\Core\Concerns\Slug;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
@@ -150,10 +149,8 @@ class Lieu extends BaseModel
 
         if ($count) {
             // Vérification jour férié
-            $is_ferie = Ferie::isFerie($date->copy(), $this);
-
             $count = $this->horaires()
-                ->date($date, $is_ferie)
+                ->date($date, $date->isFerie($this))
                 ->count();
         }
 

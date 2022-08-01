@@ -61,6 +61,10 @@ class StorePrestation extends FormRequest
             "gratuit_apres" => "nullable|numeric",
             "jour_fact_max" => "nullable|numeric",
             "age_max" => "nullable|numeric|min:16|max:120",
+            "jour" => ["nullable", Rule::in(array_keys(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS))],
+            "condition" => ["nullable", Rule::in(array_keys(Prestation::$LISTE_CONDITION))],
+            "heure_max" => ["nullable"],
+            "heure_min" => ["nullable"],
 
             /*"categories.*.montant" => "numeric",
             "categories.*.montant" => "required|exists:categories,id",

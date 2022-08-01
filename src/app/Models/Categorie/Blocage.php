@@ -2,7 +2,7 @@
 
 namespace Ipsum\Reservation\app\Models\Categorie;
 
-use Carbon\Carbon;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Core\app\Models\BaseModel;
 
 /**
@@ -14,7 +14,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property \Illuminate\Support\Carbon $debut_at
  * @property \Illuminate\Support\Carbon $fin_at
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Categorie|null $categorie
- * @method static \Illuminate\Database\Eloquent\Builder|Blocage betweenDates(\Carbon\Carbon $debut_at, \Carbon\Carbon $fin_at)
+ * @method static \Illuminate\Database\Eloquent\Builder|Blocage betweenDates(\Ipsum\Reservation\app\Classes\Carbon $debut_at, \Ipsum\Reservation\app\Classes\Carbon $fin_at)
  * @method static \Illuminate\Database\Eloquent\Builder|Blocage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Blocage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Blocage query()
