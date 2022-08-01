@@ -43,6 +43,24 @@
         <div class="box-body">
             <div class="form-row">
                 {{ Aire::number('age_max', 'Age inférieur à')->groupAddClass('col-md-6') }}
+                <div class="form-group col-md-6" data-aire-component="group" data-aire-for="jour">
+                    <label class=" cursor-pointer" data-aire-component="label" for="jour">
+                        Jour
+                    </label>
+                    <select name="jour" class="form-control" id="jour">
+                        <option value="">----- Jours -----</option>
+                        @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
+                            <option value="{{ $key }}" @selected(old('jour', $prestation->jour) === $key) >{{ $jour }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                {{ Aire::time('heure_max', 'Heure inférieur à')->groupAddClass('col-md-6') }}
+                {{ Aire::time('heure_min', 'Heure supérieur à')->groupAddClass('col-md-6') }}
+            </div>
+            <div class="form-row">
+                {{ Aire::select(collect(['' => '---- Conditions -----'])->union(\Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_CONDITION), 'condition', 'Condition')->groupAddClass('col-md-6') }}
             </div>
         </div>
     </div>
