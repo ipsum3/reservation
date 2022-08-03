@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Models\Reservation;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ipsum\Core\app\Models\BaseModel;
@@ -182,12 +183,12 @@ class Reservation extends BaseModel
 
     /**
      * Calcul la durée de la réservation
-     * @param Carbon $date_debut
-     * @param Carbon $date_fin
+     * @param CarbonInterface $date_debut
+     * @param CarbonInterface $date_fin
      * @return int
      * @note S'il y a plus d'une heure entre le début et la fin, on rajoute une journée
      */
-    public static function calculDuree(Carbon $date_debut, Carbon $date_fin): int
+    public static function calculDuree(CarbonInterface $date_debut, CarbonInterface $date_fin): int
     {
         return $date_debut->diffInDays($date_fin->copy()->subMinutes(61)) + 1;
     }
