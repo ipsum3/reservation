@@ -18,7 +18,7 @@ class ReservationPolicy
         }
     }
 
-    public function viewAny(Admin $user)
+    /*public function viewAny(Admin $user)
     {
         if ($user->isAdmin()) {
             return true;
@@ -37,7 +37,7 @@ class ReservationPolicy
         if ($user->isAdmin()) {
             return true;
         }
-    }
+    }*/
 
     public function delete(Admin $user, Reservation $model)
     {
