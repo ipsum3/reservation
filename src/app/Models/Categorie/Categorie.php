@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Models\Categorie;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Admin\Concerns\Htmlable;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Media\Concerns\Mediable;
@@ -39,7 +40,7 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property int $annee_permis_minimum
  * @property string|null $seo_title
  * @property string|null $seo_description
- * @property array|null $custom_fields
+ * @property mixed|null $custom_fields
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Categorie\Blocage[] $blocages
@@ -78,7 +79,7 @@ class Categorie extends BaseModel
     protected $htmlable = ['description', 'texte'];
 
     protected $casts = [
-        'custom_fields' => 'array',
+        'custom_fields' => AsCustomFieldsObject::class,
     ];
 
     

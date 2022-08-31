@@ -27,8 +27,8 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
  * @property string|null $heure_max
  * @property string|null $heure_min
  * @property int|null $jour
- * @property int $order
  * @property string|null $condition
+ * @property int $order
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Prestation\Blocage[] $blocages
  * @property-read int|null $blocages_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Categorie[] $categories
@@ -39,7 +39,7 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
  * @property-read \Illuminate\Database\Eloquent\Collection|Lieu[] $lieux
  * @property-read int|null $lieux_count
  * @property-read \Ipsum\Reservation\app\Models\Prestation\Type|null $type
- * @method static Builder|Prestation condition(\Ipsum\Reservation\app\Models\Categorie\Categorie $categorie, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_debut, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_fin, \Carbon\Carbon $debut_at, \Carbon\Carbon $fin_at, ?int $age = null)
+ * @method static Builder|Prestation condition(\Ipsum\Reservation\app\Models\Categorie\Categorie $categorie, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_debut, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_fin, \Ipsum\Reservation\app\Classes\Carbon $debut_at, \Ipsum\Reservation\app\Classes\Carbon $fin_at, ?int $age = null)
  * @method static Builder|Prestation filtreSortable($objet)
  * @method static Builder|Prestation newModelQuery()
  * @method static Builder|Prestation newQuery()

@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Models\Reservation;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
@@ -34,7 +35,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property \Illuminate\Support\Carbon|null $permis_at
  * @property string|null $permis_delivre
  * @property string|null $observation
- * @property array|null $custom_fields
+ * @property mixed|null $custom_fields
  * @property int $categorie_id
  * @property string $categorie_nom
  * @property string|null $franchise
@@ -87,7 +88,7 @@ class Reservation extends BaseModel
 
 
     protected $casts = [
-        'custom_fields' => 'array',
+        'custom_fields' => AsCustomFieldsObject::class,
         'prestations' => 'array',
         'promotions' => 'array',
     ];

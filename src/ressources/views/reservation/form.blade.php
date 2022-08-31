@@ -61,7 +61,7 @@
                             name="{{ 'custom_fields['.$field['name'].']' }}"
                             label="{{ $field['label'] }}"
                             description="{{ $field['description'] }}"
-                            value="{{ old('custom_fields.'.$field['name'], isset($reservation->custom_fields[$field['name']]) ? $reservation->custom_fields[$field['name']] : null) }}"
+                            value="{{ old('custom_fields.'.$field['name'], $reservation->custom_fields->{$field['name']}) }}"
                             type="{{ $field['type'] }}"
                     />
                 @endforeach
