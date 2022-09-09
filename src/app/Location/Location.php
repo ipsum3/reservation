@@ -6,6 +6,7 @@ namespace Ipsum\Reservation\app\Location;
 use Illuminate\Support\Collection;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Location\Exceptions\PrixInvalide;
+use Ipsum\Reservation\app\Models\Categorie\Type;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Modalite;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
@@ -26,6 +27,10 @@ class Location
 
     protected ?Lieu $lieu_fin = null;
 
+    protected ?string $code_promo = null;
+
+    protected ?Type $type = null;
+
     protected ?Categorie $categorie = null;
 
     protected ?Modalite $modalite = null;
@@ -39,6 +44,7 @@ class Location
     protected ?Duree $duree = null;
 
 
+    protected ?string $civilite = null;
     protected ?string $nom = null;
     protected ?string $prenom = null;
     protected ?string $email = null;
@@ -48,6 +54,7 @@ class Location
     protected ?string $ville = null;
     protected ?Pays $pays = null;
     protected ?Carbon $naissance_at = null;
+    protected ?string $naissance_lieu = null;
     protected ?string $permis_numero = null;
     protected ?Carbon $permis_at = null;
     protected ?string $permis_delivre = null;
@@ -73,6 +80,8 @@ class Location
         $this->setLieuFin($inputs['fin_lieu_id']);
         $this->setDebutAt($inputs['debut_at']);
         $this->setFinAt($inputs['fin_at']);
+        $this->setType($inputs['type'] ?? null);
+        $this->setCodePromo($inputs['code_promo'] ?? null);
 
         return $this;
     }
@@ -80,6 +89,7 @@ class Location
 
     public function setInformations(array $inputs): self
     {
+        $this->setCivilite($inputs['civilite'] ?? null);
         $this->setNom($inputs['nom']);
         $this->setPrenom($inputs['prenom'] ?? null);
         $this->setEmail($inputs['email']);
@@ -89,6 +99,7 @@ class Location
         $this->setVille($inputs['ville'] ?? null);
         $this->setPays($inputs['pays_id']);
         $this->setNaissanceAt($inputs['naissance_at']);
+        $this->setNaissanceLieu($inputs['naissance_lieu'] ?? null);
         $this->setPermisNumero($inputs['permis_numero'] ?? null);
         $this->setPermisAt($inputs['permis_at']);
         $this->setPermisDelivre($inputs['permis_delivre'] ?? null);
@@ -215,6 +226,26 @@ class Location
         $this->lieu_fin = Lieu::findOrFail($lieu_fin);
     }
 
+    public function getType(): ?Type
+    {
+        return $this->type;
+    }
+
+    public function setType(?int $type_id): void
+    {
+        $this->type = is_null($type_id) ? null : Type::findOrFail($type_id);
+    }
+
+    public function getCodePromo(): ?string
+    {
+        return $this->code_promo;
+    }
+
+    public function setCodePromo(?string $code_promo): void
+    {
+        $this->code_promo = $code_promo;
+    }
+
     public function hasCategorie(): bool
     {
         return $this->categorie !== null;
@@ -277,6 +308,16 @@ class Location
         }
 
         return $this;
+    }
+
+    public function getCivilite(): ?string
+    {
+        return $this->civilite;
+    }
+
+    public function setCivilite(?string $civilite): void
+    {
+        $this->civilite = $civilite;
     }
 
     public function getNom(): ?string
@@ -377,6 +418,16 @@ class Location
     public function age(): ?int
     {
         return $this->naissance_at !== null ? $this->naissance_at->age : null;
+    }
+
+    public function getNaissanceLieu(): ?string
+    {
+        return $this->naissance_lieu;
+    }
+
+    public function setNaissanceLieu(?string $naissance_lieu): void
+    {
+        $this->naissance_lieu = $naissance_lieu;
     }
 
     public function getPermisNumero(): ?string

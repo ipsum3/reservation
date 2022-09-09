@@ -2,151 +2,122 @@
 
 namespace Ipsum\Reservation\app\Models\Promotion;
 
+use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Core\Concerns\Slug;
 use Ipsum\Reservation\app\Classes\Carbon;
+use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
+use Ipsum\Reservation\app\Models\Prestation\Prestation;
+use Ipsum\Reservation\app\Models\Reservation\Modalite;
 
 /**
  * Ipsum\Reservation\app\Models\Promotion\Promotion
  *
- * @property-read mixed $active
- * @property-read mixed $en_cours
- * @property-read Lieu|null $lieu
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Promotion\Ligne[] $lignes
- * @property-read int|null $lignes_count
- * @property-write mixed $activation_at
- * @property-write mixed $desactivation_at
- * @method static \Illuminate\Database\Eloquent\Builder|Promotion active()
- * @method static \Illuminate\Database\Eloquent\Builder|Promotion affichable()
- * @method static \Illuminate\Database\Eloquent\Builder|Promotion enCours()
- * @method static \Illuminate\Database\Eloquent\Builder|Promotion newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Promotion newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Promotion query()
- * @method static \Illuminate\Database\Eloquent\Builder|Promotion valide($debut_at, $fin_at, $lieu_id, $code)
- * @method static \Illuminate\Database\Eloquent\Builder|Promotion visible()
+ * @property int $id
+ * @property string $slug
+ * @property int|null $client_id
+ * @property string $type
+ * @property string|null $reference
+ * @property string $nom
+ * @property string|null $extrait
+ * @property string|null $texte
+ * @property int|null $modalite_paiement_id
+ * @property string|null $code
+ * @property \Illuminate\Support\Carbon $debut_at
+ * @property \Illuminate\Support\Carbon $fin_at
+ * @property \Illuminate\Support\Carbon|null $activation_at
+ * @property \Illuminate\Support\Carbon|null $desactivation_at
+ * @property int|null $duree_min
+ * @property int|null $duree_max
+ * @property string $reduction_type
+ * @property string|null $reduction_valeur
+ * @property string|null $seo_title
+ * @property string|null $seo_description
+ * @property string|null $created_at
+ * @property string|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|Categorie[] $categories
+ * @property-read int|null $categories_count
+ * @property-read bool $is_active
+ * @property-read bool $is_en_cours
+ * @property-read \Illuminate\Database\Eloquent\Collection|Lieu[] $lieux
+ * @property-read int|null $lieux_count
+ * @property-read Modalite|null $modalite
+ * @property-read \Illuminate\Database\Eloquent\Collection|Prestation[] $prestations
+ * @property-read int|null $prestations_count
+ * @method static Builder|Promotion enCours()
+ * @method static Builder|Promotion newModelQuery()
+ * @method static Builder|Promotion newQuery()
+ * @method static Builder|Promotion query()
  * @mixin \Eloquent
  */
 class Promotion extends BaseModel
 {
+    use Slug;
 
-    protected $table = 'promotion';
+    protected $guarded = ['id'];
 
-    protected $fillable = array('lieu_id', 'type', 'reference', 'nom', 'code', 'extrait', 'debut_at', 'fin_at', 'activation_at', 'desactivation_at', 'duree_minimum', 'duree_maximum');
+    protected $slugBase = 'nom';
 
-    protected $nullable = ['lieu_id', 'code', 'activation_at', 'desactivation_at', 'duree_minimum', 'duree_maximum'];
 
-    static public $TYPES = ['reduction', 'compte'];
-
-    public static function getRulesWithoutLocal()
-    {
-        $rules = array(
-            "lieu_id"          => "integer|exists:lieu,id",
-            "type"             => "required|in:reduction,compte",
-            "reference"        => "required|max:255",
-            "nom"              => "required|max:255",
-            "code"             => "max:255",
-            "debut_at"         => "required|date_format:d/m/Y",
-            "fin_at"           => "required|date_format:d/m/Y|date_greater_than:debut_at,d/m/Y",
-            "activation_at"    => "date_format:d/m/Y",
-            "desactivation_at" => "date_format:d/m/Y",
-            "duree_minimum"    => "integer",
-            "duree_maximum"    => "integer",
-        );
-        return $rules;
-    }
-
+    const REDUCTION_TYPES = ['pourcentage' => 'Pourcentage', 'montant' => 'Montant'];
 
 
     /*
      * Relations
      */
 
-    public function lignes()
+    public function categories()
     {
-        return $this->hasMany(Ligne::class);
+        return $this->morphedByMany(Categorie::class, 'promotionable')->withPivot(['reduction']);
     }
 
-    public function lieu()
+    public function prestations()
     {
-        return $this->belongsTo(Lieu::class);
+        return $this->morphedByMany(Prestation::class, 'promotionable')->withPivot(['reduction']);
     }
+
+    public function lieux()
+    {
+        return $this->morphedByMany(Lieu::class, 'promotionable')->withPivot(['reduction']);
+    }
+
+    public function modalite()
+    {
+        return $this->belongsTo(Modalite::class, 'modalite_paiement_id');
+    }
+
 
 
     /*
      * Scopes
      */
 
-    public function scopeValide($query, $debut_at, $fin_at, $lieu_id, $code)
+    public function scopeActive(Builder|self $query): void
     {
-        $debut_at->copy()->startOfDay();
-        $fin_at->copy()->startOfDay();
+        $now = Carbon::now();
 
-        return $query->active()
-            ->where('debut_at', '<=', $debut_at)
-            ->where('fin_at', '>=', $fin_at)
-            ->where(function ($query) use ($debut_at, $fin_at) {
-                $query->where('duree_minimum', '<=', $debut_at->diffInDays($fin_at))->orWhereNull('duree_minimum');
-            })
-            ->where(function ($query) use ($debut_at, $fin_at) {
-                $query->where('duree_maximum', '>=', $debut_at->diffInDays($fin_at))->orWhereNull('duree_maximum');
-            })
-            ->where(function ($query) use ($lieu_id) {
-                $query->where('lieu_id', $lieu_id)->orWhereNull('lieu_id');
-            })
-            ->where('code', $code);
-    }
-
-    public function scopeActive($query)
-    {
-        $date = Carbon::now();
-
-        return $query->where(function ($query) use ($date) {
-            $query->where('activation_at', '<=', $date->startOfDay())->orWhereNull('activation_at');
+        // Activation
+        $query->where(function (Builder $query) use ($now) {
+            $query->where('activation_at', '<=', $now->startOfDay())->orWhereNull('activation_at');
         })
-            ->where(function ($query) use ($date) {
-                $query->where('desactivation_at', '>=', $date->startOfDay())->orWhereNull('desactivation_at');
-            });
+        ->where(function (Builder $query) use ($now) {
+            $query->where('desactivation_at', '>=', $now->startOfDay())->orWhereNull('desactivation_at');
+        });
     }
 
-    public function scopeVisible($query)
+    public function scopeEnCours(Builder|self $query): void
     {
-        return $query;
+        $query->active()->where('fin_at', '>=', Carbon::now()->startOfDay());
     }
 
-    public function scopeEnCours($query)
-    {
-        return $query->active()->where('fin_at', '>=', Carbon::now()->startOfDay());
-    }
 
-    public function scopeAffichable($query)
-    {
-        return $query->enCours()->visible();
-    }
 
 
     /*
      * Accessors & Mutators
      */
 
-    /*public function setDebutAtAttribute($value)
-    {
-        $this->attributes['debut_at'] = Carbon::createFromFormat('d/m/Y', $value);
-    }
-
-    public function setFinAtAttribute($value)
-    {
-        $this->attributes['fin_at'] = Carbon::createFromFormat('d/m/Y', $value);
-    }*/
-
-    public function setActivationAtAttribute($value)
-    {
-        $this->attributes['activation_at'] = $value  ? Carbon::createFromFormat('d/m/Y', $value) : null;
-    }
-
-    public function setDesactivationAtAttribute($value)
-    {
-        $this->attributes['desactivation_at'] = $value ? Carbon::createFromFormat('d/m/Y', $value) : null;
-    }
 
     public function getDates()
     {
@@ -154,15 +125,15 @@ class Promotion extends BaseModel
     }
 
 
-    public function getActiveAttribute()
+    public function getIsActiveAttribute(): bool
     {
         $date = Carbon::now();
         return ($this->activation_at <= $date->startOfDay() or $this->activation_at == null) and ($this->desactivation_at >= $date->startOfDay() or $this->desactivation_at == null);
     }
 
-    public function getEnCoursAttribute()
+    public function getIsEnCoursAttribute(): bool
     {
-        return $this->active and $this->fin_at >= Carbon::now()->startOfDay();
+        return $this->is_active and $this->fin_at >= Carbon::now()->startOfDay();
     }
 
 }

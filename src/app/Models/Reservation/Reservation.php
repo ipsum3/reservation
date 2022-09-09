@@ -21,6 +21,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property int $etat_id
  * @property int $modalite_paiement_id
  * @property int|null $client_id
+ * @property string|null $civilite
  * @property string $nom
  * @property string|null $prenom
  * @property string|null $email
@@ -31,6 +32,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property int|null $pays_id
  * @property string|null $pays_nom
  * @property \Illuminate\Support\Carbon|null $naissance_at
+ * @property string|null $naissance_lieu
  * @property string|null $permis_numero
  * @property \Illuminate\Support\Carbon|null $permis_at
  * @property string|null $permis_delivre
@@ -48,6 +50,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property string|null $montant_base
  * @property array|null $prestations
  * @property array|null $promotions
+ * @property array|null $echeancier
  * @property string|null $total
  * @property string|null $montant_paye
  * @property string|null $note
@@ -59,6 +62,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property-read float|null $acompte
  * @property-read mixed $date_naissance_minimum
  * @property-read mixed $date_permis_minimum
+ * @property-read bool $has_echeancier
  * @property-read bool $has_promotions_visible
  * @property-read bool $is_confirmed
  * @property-read bool $is_payed
@@ -91,6 +95,7 @@ class Reservation extends BaseModel
         'custom_fields' => AsCustomFieldsObject::class,
         'prestations' => 'array',
         'promotions' => 'array',
+        'echeancier' => 'array',
     ];
 
 
@@ -241,6 +246,11 @@ class Reservation extends BaseModel
             return null;
         }
         return $modalite->acompte($this->total);
+    }
+
+    public function getHasEcheancierAttribute(): bool
+    {
+        return $this->echeancier !== null and count($this->echeancier);
     }
 
     /**

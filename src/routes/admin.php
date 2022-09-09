@@ -137,3 +137,15 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\PrestationBlocageContr
         Route::get('{blocage}/edit', 'edit')->name('edit');
     }
 );
+
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\PromotionController::class)->prefix('promotion')->name('admin.promotion.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::post('', 'store')->name('store');
+        Route::get('create', 'create')->name('create');
+        Route::any('{promotion}/destroy', 'destroy')->name('destroy');
+        Route::put('{promotion}', 'update')->name('update');
+        Route::get('{promotion}/edit', 'edit')->name('edit');
+        Route::get('{promotion}/desactivation', 'desactivation')->name('desactivation');
+    }
+);

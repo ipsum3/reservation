@@ -60,7 +60,7 @@
                             @if ($reservation->client)
                                 <a href="{{ route('admin.client.edit', $reservation->client) }}">{{ $reservation->prenom }} {{ $reservation->nom }}</a>
                             @else
-                                {{ $reservation->prenom }} {{ $reservation->nom }}
+                                {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}
                             @endif
                         </td>
                         <td class="text-right">@prix($reservation->total) &nbsp;€</td>

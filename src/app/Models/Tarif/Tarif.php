@@ -15,7 +15,7 @@ use Ipsum\Reservation\app\Models\Reservation\Modalite;
  * @property int $duree_id
  * @property int|null $saison_id
  * @property string|null $montant
- * @property string $modalite_paiement_id
+ * @property string|null $modalite_paiement_id
  * @property-read Categorie|null $categorie
  * @property-read \Ipsum\Reservation\app\Models\Tarif\Duree|null $duree
  * @property-read Modalite|null $modalite

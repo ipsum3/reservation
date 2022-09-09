@@ -75,8 +75,9 @@
         </div>
         <div class="box-body">
             <div class="form-row">
-                {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-6') }}
-                {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-6') }}
+                {{ Aire::select(collect(['' => '---- Civilité -----', 'M.' => 'Monsieur', 'Mme' => 'Madame']), 'civilite', 'Civilité')->groupAddClass('col-md-2') }}
+                {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-5') }}
+                {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-5') }}
                 {{ Aire::input('email', 'Email')->groupAddClass('col-md-6') }}
                 {{ Aire::input('telephone', 'Téléphone')->groupAddClass('col-md-6') }}
                 {{ Aire::input('adresse', 'Adresse')->groupAddClass('col-md-6') }}
@@ -84,6 +85,7 @@
                 {{ Aire::input('ville', 'Ville')->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Pays -----'])->union($pays), 'pays_id', 'Pays')->groupAddClass('col-md-6') }}
                 {{ Aire::date('naissance_at', 'Date de naissance')->groupAddClass('col-md-6') }}
+                {{ Aire::input('naissance_lieu', 'Lieu de naissance')->groupAddClass('col-md-6') }}
                 {{ Aire::input('permis_numero', 'Numéro de permis')->groupAddClass('col-md-6') }}
                 {{ Aire::date('permis_at', 'Permis délivré le')->groupAddClass('col-md-6') }}
                 {{ Aire::input('permis_delivre', 'Permis délivré par')->groupAddClass('col-md-6') }}

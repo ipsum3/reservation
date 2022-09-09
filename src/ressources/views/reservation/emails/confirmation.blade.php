@@ -126,7 +126,7 @@
                                 </tr>
                                 <tr>
                                     <td align="center" valign="top" style="font-size: 12px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
-                                        {{ $reservation->prenom }} {{ $reservation->nom }}, {{ _("nous vous remercions d'avoir choisi") }} {{  config('settings.nom_site') }}. {{ _('Votre réservation a bien été enregistrée sous la référence') }} {{ $reservation->reference }}. {{ _("Veuillez vous présenter à l'agence de départ muni de ce document.") }}
+                                        {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}, {{ _("nous vous remercions d'avoir choisi") }} {{  config('settings.nom_site') }}. {{ _('Votre réservation a bien été enregistrée sous la référence') }} {{ $reservation->reference }}. {{ _("Veuillez vous présenter à l'agence de départ muni de ce document.") }}
                                     </td>
                                 </tr>
                             </table>
@@ -227,7 +227,7 @@
                                         <table width="100%" cellpadding="0" cellspacing="0" border="0" class="table" style="font-size: 12px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
                                             <tr>
                                                 <th valign="top">{{ _('Nom') }}</th>
-                                                <td valign="top">{{ $reservation->prenom }} {{ $reservation->nom }}</td>
+                                                <td valign="top">{{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}</td>
                                             </tr>
                                             <tr>
                                                 <th valign="top">{{ _('Email') }}</th>
@@ -338,6 +338,16 @@
                                                     <td align="right">{{ $reservation->modalite->nom }}</td>
                                                 </tr>
                                             @endif
+                                                @if ($reservation->has_echeancier)
+                                                    <tr>
+                                                        <th valign="top">{{ _('Échéancier') }}</th>
+                                                        <td align="right">
+                                                            @foreach($reservation->echeancier as $echeance)
+                                                                {{ \Carbon\Carbon::make($echeance['date'])->format('d/m/Y') }} : @prix($echeance['montant']) €<br>
+                                                            @endforeach
+                                                        </td>
+                                                    </tr>
+                                                @endif
                                             <tr>
                                                 <th valign="top">{{ _('Prix de base') }} ({{ $reservation->nb_jours }} {{ _('jours') }})</th>
                                                 <td align="right">@prix($reservation->montant_base)&nbsp;€</td>
@@ -357,9 +367,6 @@
                                                     <tr>
                                                         <th valign="top">
                                                             {{ _('Offre') }} {{ strtolower($promotion['nom']) }}
-                                                            @if (!empty($promotion['commentaire']))
-                                                                <br>{!! nl2br(e($promotion['commentaire'])) !!}
-                                                            @endif
                                                         </th>
                                                         <td align="right"><b>-@prix($promotion['reduction'])&nbsp;€</b></td>
                                                     </tr>

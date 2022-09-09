@@ -3,6 +3,8 @@
 namespace Ipsum\Reservation\app\Location;
 
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Ipsum\Reservation\app\Location\Exceptions\PrixInvalide;
 use Ipsum\Reservation\app\Models\Reservation\Etat;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
@@ -17,6 +19,7 @@ class Devis
     protected Location $location;
 
     protected ?PrestationCollection $prestations = null;
+    protected ?PromotionCollection $promotions = null;
 
 
 
@@ -32,18 +35,15 @@ class Devis
     {
         $this->montant_base = $this->_calculerTarif();
 
+
         $this->_loadPrestationsObligatoire()->_calculerPrestations();
 
         $total_prestations = $this->prestations->montantTotal();
 
-        /*$remise;
-        if (isset($this->_promotions_object['reduction'])) {
-            $remise = $this->_promotions_object['reduction']->lignes->first()->reduction;
-            $this->_promotions_object['reduction']->reduction = floatval($remise);
-        }*/
+        $this->_loadPromotions();
 
         // Calcul total
-        $this->total = $this->montant_base + $total_prestations /*- $remise*/;
+        $this->total = $this->montant_base + $total_prestations - $this->promotions->totalReductions();
 
         if (!$this->total) {
             throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
@@ -51,6 +51,7 @@ class Devis
 
         return $this;
     }
+
 
     /**
      * Calcul du montant de base
@@ -65,7 +66,9 @@ class Devis
             $tarif = $this->location->getCategorie()->tarifs()
                 ->where('duree_id', $this->location->getDuree()->id)
                 ->where('saison_id', $saison->id)
-                ->where('modalite_paiement_id', $this->location->getModalite()->id)
+                ->where(function (Builder $query) {
+                    $query->where('modalite_paiement_id', $this->location->getModalite()->id)->orWhereNull('modalite_paiement_id');
+                })
                 ->first();
 
 
@@ -108,12 +111,25 @@ class Devis
         return $this->prestations;
     }
 
+    protected function _loadPromotions(): self
+    {
+        $promotions = Promotion::condition($this)->get();
+
+        // Posibilité de ne pas cumuler les promos ?
+        $promotion_collection = new PromotionCollection($promotions);
+        $this->promotions = $promotion_collection->unique('id')->calculer($this);
+
+        return $this;
+    }
+
+    public function getPromotions(): ?PromotionCollection
+    {
+        return $this->promotions;
+    }
 
     public function hasPromotions(): bool
     {
-        // TODO
-
-        return true;
+        return $this->promotions->count() != 0;
     }
 
 
@@ -131,6 +147,11 @@ class Devis
         return $this->location;
     }
 
+    public function getMontantBase(): float
+    {
+        return $this->montant_base;
+    }
+
 
 
     public function updateOrCreateReservation(): Reservation
@@ -144,6 +165,7 @@ class Devis
             'etat_id' => Etat::NON_VALIDEE_ID,
             'modalite_paiement_id' => $this->getLocation()->getModalite()->id,
             'client_id' => auth()->check() ? auth()->id() : null,
+            'civilite' => $this->getLocation()->getCivilite(),
             'nom' => $this->getLocation()->getNom(),
             'prenom' => $this->getLocation()->getPrenom(),
             'email' => $this->getLocation()->getEmail(),
@@ -153,6 +175,7 @@ class Devis
             'ville' => $this->getLocation()->getVille(),
             'pays_id' => $this->getLocation()->getPays()->id,
             'naissance_at' => $this->getLocation()->getNaissanceAt(),
+            'naissance_lieu' => $this->getLocation()->getNaissanceLieu(),
             'permis_numero' => $this->getLocation()->getPermisNumero(),
             'permis_at' => $this->getLocation()->getPermisAt(),
             'permis_delivre' => $this->getLocation()->getPermisDelivre(),
@@ -166,12 +189,14 @@ class Devis
             'fin_lieu_id' => $this->getLocation()->getLieuFin()->id,
             'montant_base' => $this->montant_base,
             'prestations' => $this->getLocation()->getPrestations()->toArray(),
-            'promotions' => null,
+            'promotions' => $this->getPromotions()->toArray(),
+            'echeancier' => $this->getLocation()->getModalite()->echeancier($this->total),
             'total' => $this->total,
             'montant_paye' => null,
         ]);
 
         return $reservation;
     }
+
 
 }

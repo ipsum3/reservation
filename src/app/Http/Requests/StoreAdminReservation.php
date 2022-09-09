@@ -37,6 +37,7 @@ class StoreAdminReservation extends FormRequest
             "etat_id" => "required|integer|exists:reservation_etats,id",
             "modalite_paiement_id" => "required|integer|exists:modalite_paiements,id",
 
+            "civilite" => "nullable|in:M.,Mme",
             "nom" => "required|max:255",
             "prenom" => "nullable|max:255",
             "email" => "nullable|email|max:255",
@@ -46,6 +47,7 @@ class StoreAdminReservation extends FormRequest
             "ville" => "nullable|max:255",
             "pays_id" => "nullable|integer|exists:pays,id",
             "naissance_at" => "nullable|date_format:Y-m-d",
+            'naissance_lieu' => 'nullable|max:255',
             "permis_numero" => "nullable|max:255",
             "permis_at" => "nullable|date_format:Y-m-d",
             "permis_delivre" => "nullable|max:255",

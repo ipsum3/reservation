@@ -42,6 +42,10 @@ return [
         'date_format' => 'd/m/Y H:i',
         'jour_format' => 'd/m/Y',
         'pays_defaut_id' => 75
-    ]
+    ],
+    'tarif' => [
+        // Attention aux promotions avec une condition modalité
+        'has_multiple_grille_by_modalite' => true,
+    ],
 
 ];

@@ -27,7 +27,7 @@ class TarifController extends AdminController
 
         $durees = Duree::orderBy('min')->get();
         $categories = Categorie::orderBy('nom')->get();
-        $modalites = Modalite::all();
+        $modalites = config('ipsum.reservation.tarif.has_multiple_grille_by_modalite') ? Modalite::all() : null;
 
         return view('IpsumReservation::tarif.grille', compact('saison', 'tarifs', 'durees', 'categories', 'modalites'));
     }
@@ -37,7 +37,7 @@ class TarifController extends AdminController
         $tarifs = array();
 
         foreach($saison->tarifs as $tarif) {
-            $tarifs[$tarif->modalite_paiement_id]
+            $tarifs[$tarif->modalite_paiement_id ?? 'x']
             [$tarif->categorie_id]
             [$tarif->duree_id] = $tarif;
         }
@@ -51,7 +51,7 @@ class TarifController extends AdminController
                         $tarif = new Tarif();
                         $tarif->categorie_id = $categorie_id;
                         $tarif->duree_id = $duree_id;
-                        $tarif->modalite_paiement_id = $modalite_id;
+                        $tarif->modalite_paiement_id = $modalite_id == 'x' ? null : $modalite_id;
                     }
                     //$montant = $montant === null ? 0 : $montant;
                     $tarif->montant = $montant;

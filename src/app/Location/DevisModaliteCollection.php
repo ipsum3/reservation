@@ -24,7 +24,7 @@ class DevisModaliteCollection extends Collection
     }
 
     /**
-     * @desc  en dessous de 1 euros on concidére qu'il n'y as pas d'économie
+     * @desc  en dessous de 1 euros on considére qu'il n'y as pas d'économie
      */
     public function hasEconomie(): bool
     {
@@ -36,5 +36,10 @@ class DevisModaliteCollection extends Collection
         return $this->totalMax() - $this->totalMin();
     }
 
-
+    public function hasPromotions(): bool
+    {
+        return $this->contains(function (Devis $devis) {
+            return $devis->hasPromotions();
+        });
+    }
 }
