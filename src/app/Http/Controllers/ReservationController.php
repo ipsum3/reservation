@@ -9,6 +9,7 @@ use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
 use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
+use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Etat;
 use Ipsum\Reservation\app\Models\Reservation\Modalite;
@@ -29,6 +30,9 @@ class ReservationController extends AdminController
         }
         if ($request->filled('etat_id')) {
             $query->where('etat_id', $request->get('etat_id'));
+        }
+        if ($request->filled('vehicule_id')) {
+            $query->where('vehicule_id', $request->get('vehicule_id'));
         }
         if ($request->filled('modalite_paiement_id')) {
             $query->where('modalite_paiement_id', $request->get('modalite_paiement_id'));
@@ -174,9 +178,18 @@ class ReservationController extends AdminController
         $modalites = Modalite::all()->pluck('nom', 'id');
         $pays = Pays::all()->pluck('nom', 'id');
         $categories = Categorie::all()->pluck('nom', 'id');
+        $vehicules = Vehicule::with('categorie')
+            ->where(function ($query) use ($reservation) {
+                $query->whereDoesntHaveReservationConfirmed($reservation->debut_at, $reservation->fin_at)->orWhere('id', $reservation->vehicule_id);
+            })
+            ->orderBy('categorie_id')->orderBy('immatriculation')
+            ->get()
+            ->mapWithKeys(function ($vehicule) {
+                return [$vehicule->id => $vehicule->categorie->nom.' : '.$vehicule->immatriculation.' '.$vehicule->marque_modele];
+            });
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux', 'vehicules'));
     }
 
     public function update(StoreAdminReservation $request, Reservation $reservation)

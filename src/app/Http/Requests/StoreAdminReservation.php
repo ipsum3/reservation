@@ -55,6 +55,7 @@ class StoreAdminReservation extends FormRequest
             "datas" => "nullable|array",
 
             "categorie_id" => "required|integer|exists:categories,id",
+            "vehicule_id" => "nullable|integer|exists:vehicules,id",
             "franchise" => "nullable|numeric",
             "debut_at" => "required|date_format:Y-m-d H:i:s",
             "fin_at" => "required|date_format:Y-m-d H:i:s",

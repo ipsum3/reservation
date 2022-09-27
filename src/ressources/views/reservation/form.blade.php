@@ -32,6 +32,9 @@
                 {{ Aire::select(collect(['' => '---- Modalités -----'])->union($modalites), 'modalite_paiement_id', 'Modalité*')->required()->groupAddClass('col-md-6') }}
 
                 {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id', 'Catégorie*')->required()->groupAddClass('col-md-6') }}
+                @if ($reservation->is_confirmed and $vehicules->count())
+                    {{ Aire::select(collect(['' => '---- Véhicules -----'])->union($vehicules), 'vehicule_id', 'Véhicule')->class('js-example-basic-single js-states form-control')->groupAddClass('col-md-6') }}
+                @endif
                 {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
                 {{ Aire::dateTime('debut_at', 'Date départ*')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::dateTime('fin_at', 'Date fin*')->required()->groupAddClass('col-md-6') }}

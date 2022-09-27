@@ -37,6 +37,16 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\CategorieBlocageContro
         Route::get('{blocage}/edit', 'edit')->name('edit');
     }
 );
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\VehiculeController::class)->prefix('vehicule')->name('admin.vehicule.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::post('', 'store')->name('store');
+        Route::get('create', 'create')->name('create');
+        Route::any('{vehicule}/destroy', 'destroy')->name('destroy');
+        Route::put('{vehicule}', 'update')->name('update');
+        Route::get('{vehicule}/edit', 'edit')->name('edit');
+    }
+);
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\CarrosserieController::class)->prefix('carrosserie')->name('admin.carrosserie.')->group(
     function () {
         Route::get('', 'index')->name('index');

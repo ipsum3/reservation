@@ -45,6 +45,7 @@ use Ipsum\Reservation\app\Models\Reservation\Modalite;
  * @property-read Modalite|null $modalite
  * @property-read \Illuminate\Database\Eloquent\Collection|Prestation[] $prestations
  * @property-read int|null $prestations_count
+ * @method static Builder|Promotion active()
  * @method static Builder|Promotion enCours()
  * @method static Builder|Promotion newModelQuery()
  * @method static Builder|Promotion newQuery()

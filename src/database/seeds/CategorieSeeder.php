@@ -8,6 +8,7 @@ use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Motorisation;
 use Ipsum\Reservation\app\Models\Categorie\Transmission;
 use Ipsum\Reservation\app\Models\Categorie\Type;
+use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 
 
 class CategorieSeeder extends Seeder
@@ -20,6 +21,9 @@ class CategorieSeeder extends Seeder
                 'nom' => $nom,
             ]);
         }
+
+
+        Vehicule::factory(10)->create();
 
 
         foreach ($this->getMotorisations() as $data) {

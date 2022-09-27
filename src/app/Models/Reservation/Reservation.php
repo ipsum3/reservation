@@ -9,6 +9,7 @@ use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
+use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\database\factories\ReservationFactory;
 
@@ -39,6 +40,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property string|null $observation
  * @property mixed|null $custom_fields
  * @property int $categorie_id
+ * @property int|null $vehicule_id
  * @property string $categorie_nom
  * @property string|null $franchise
  * @property \Illuminate\Support\Carbon $debut_at
@@ -74,6 +76,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Paiement[] $paiements
  * @property-read int|null $paiements_count
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Pays|null $pays
+ * @property-read Vehicule|null $vehicule
  * @method static Builder|Reservation confirmed()
  * @method static \Ipsum\Reservation\database\factories\ReservationFactory factory(...$parameters)
  * @method static Builder|Reservation newModelQuery()
@@ -88,7 +91,6 @@ class Reservation extends BaseModel
 
     protected $guarded = ['id', 'reference', 'pays_nom', 'categorie_nom', 'debut_lieu_nom', 'fin_lieu_nom'];
 
-    const SESSION_ID = 'reservation';
 
 
     protected $casts = [
@@ -111,10 +113,26 @@ class Reservation extends BaseModel
             $reservation->paiements()->delete();
         });
 
-        self::created(function ($reservation) {
+        self::created(function (self $reservation) {
             // Génération de la référence
             $reservation->reference = str_pad($reservation->id, 6, "0", STR_PAD_LEFT);
             $reservation->save();
+        });
+
+        self::saving(function (self $reservation) {
+            // Attribution automatique d'un véhicule pour une réservation confirmée
+            // S'il n'y a pas de véhicule dispo cela ne bloque pas
+            // Pas de vérification sur la catégorie pour permettre un surbooking
+            if ($reservation->is_confirmed
+                and (
+                    $reservation->etat_id != $reservation->getOriginal('etat_id')
+                    or $reservation->vehicule_id != $reservation->getOriginal('vehicule_id')
+                    or $reservation->vehicule_id === null
+                )
+            ) {
+                $vehicule = Vehicule::where('categorie_id', $reservation->categorie_id)->whereDoesntHaveReservationConfirmed($reservation->debut_at, $reservation->fin_at)->orderBy('mise_en_circualtion_at', 'desc')->first();
+                $reservation->vehicule_id = !is_null($vehicule) ? $vehicule->id : null;
+            }
         });
 
     }
@@ -128,6 +146,11 @@ class Reservation extends BaseModel
     public function categorie()
     {
         return $this->belongsTo(Categorie::class);
+    }
+
+    public function vehicule()
+    {
+        return $this->belongsTo(Vehicule::class);
     }
 
     public function paiements()
@@ -182,6 +205,23 @@ class Reservation extends BaseModel
         return $query->where('etat_id', '!=', Etat::VALIDEE_ID);
     }
 
+    public function scopeConfirmedBetweenDates(Builder $query, CarbonInterface $debut_at, CarbonInterface $fin_at)
+    {
+        $debut_at->copy()->subHours(config('settings.reservation.battement_entre_reservations'));
+        $fin_at->copy()->addHours(config('settings.reservation.battement_entre_reservations'));
+
+        return $query->confirmed()->where(function (Builder $query) use ($debut_at, $fin_at) {
+            return $query->where(function (Builder $query) use ($debut_at, $fin_at) {
+                $query->where('debut_at', '>=', $debut_at)->where('debut_at', '<=', $fin_at);
+            })->orWhere(function ($query) use ($debut_at, $fin_at) {
+                $query->where('fin_at', '>=', $debut_at)->where('fin_at', '<=', $fin_at);
+            })->orWhere(function ($query) use ($debut_at, $fin_at) {
+                $query->where('debut_at', '<=', $debut_at)->where('fin_at', '>=', $fin_at);
+            });
+        });
+    }
+
+
 
     /*
      * Functions
@@ -206,7 +246,7 @@ class Reservation extends BaseModel
 
     public function getIsConfirmedAttribute(): bool
     {
-        return $this->etat_id === Etat::VALIDEE_ID;
+        return $this->etat_id == Etat::VALIDEE_ID;
     }
 
     public function getIsPayedAttribute(): bool

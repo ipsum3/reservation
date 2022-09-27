@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Models\Categorie;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
@@ -62,6 +63,8 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property-read int|null $tarifs_count
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Transmission|null $transmission
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Type|null $type
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Categorie\Vehicule[] $vehicules
+ * @property-read int|null $vehicules_count
  * @method static \Ipsum\Reservation\database\factories\CategorieFactory factory(...$parameters)
  * @method static Builder|Categorie newModelQuery()
  * @method static Builder|Categorie newQuery()
@@ -136,10 +139,10 @@ class Categorie extends BaseModel
         return $this->hasMany('App\Categorie\Modele');
     }*/
 
-    /*public function vehicules()
+    public function vehicules()
     {
-        return $this->hasMany('App\Categorie\Vehicule');
-    }*/
+        return $this->hasMany(Vehicule::class);
+    }
 
     public function tarifs()
     {
@@ -151,50 +154,32 @@ class Categorie extends BaseModel
         return $this->morphToMany(Prestation::class, 'prestable')->withPivot('montant');
     }
 
-    
-    /*
-     * TODO
-     */
-    /*public function promotionsLignes()
-    {
-        return $this->hasMany('App\Promotion\Ligne');
-    }
-
-    public function promotionsLignesSuperieur()
-    {
-        return $this->hasMany('App\Promotion\Ligne');
-    }*/
-
 
 
     /*
-     * Eager Loading spécifiques
+     * Scopes
      */
 
-    /*public function tarifsEnCoursOuFutur()
-    {
-        return $this->tarifs()->hasSaisonEnCoursOuFutur()->orderBy('montant_eur', 'asc');
-    }*/
-
-    public function scopeWithoutBlocage($query, $date_debut, $date_fin)
+    /*public function scopeWithoutBlocage($query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
         $query->whereDoesntHave('blocages', function (Builder $query) use ($date_debut, $date_fin) {
             $query->betweenDates($date_debut, $date_fin);
         });
-    }
+    }*/
 
-    public function scopeWithCountBlocage(Builder $query, $date_debut, $date_fin)
+    public function scopeWithCountBlocage(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
         $query->withCount(['blocages' => function (Builder $query) use ($date_debut, $date_fin) {
             $query->betweenDates($date_debut, $date_fin);
         }]);
     }
 
-
-
-    /*
-     * Scopes
-     */
+    public function scopeWithCountVehiculeDispo(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    {
+        $query->withCount(['vehicules' => function (Builder $query) use ($date_debut, $date_fin) {
+            $query->whereDoesntHaveReservationConfirmed($date_debut, $date_fin);
+        }]);
+    }
 
 
 
@@ -214,17 +199,45 @@ class Categorie extends BaseModel
         return $this->attributes['seo_description'] == '' ? $this->extrait : $this->attributes['seo_description'];
     }
 
-    /**
-     * @return bool
-     * @throws \Exception
-     */
-    public function getHasNoBlocageAttribute(): bool
+    public function hasNoBlocage(?CarbonInterface $date_debut = null, ?CarbonInterface $date_fin = null): bool
     {
-        if ($this->blocages_count === null) {
+        if ($date_debut !== null) {
+            $this->loadCount(['blocages' => function (Builder $query) use ($date_debut, $date_fin) {
+                $query->betweenDates($date_debut, $date_fin);
+            }]);
+        } elseif ($this->blocages_count === null) {
             throw new \Exception('A utiliser avec scopeWithCountBlocage');
         }
 
         return $this->blocages_count === 0;
+    }
+
+    public function getHasNoBlocageAttribute(): bool
+    {
+        return $this->hasVehicule();
+    }
+
+    public function hasVehicule(?CarbonInterface $date_debut = null, ?CarbonInterface $date_fin = null): bool
+    {
+        if ($date_debut !== null) {
+            $this->loadCount(['vehicules' => function (Builder $query) use ($date_debut, $date_fin) {
+                $query->whereDoesntHaveReservationConfirmed($date_debut, $date_fin);
+            }]);
+        } elseif ($this->vehicules_count === null) {
+            throw new \Exception('A utiliser avec scopeWithCountVehiculeDispo');
+        }
+
+        return $this->vehicules_count !== 0;
+    }
+
+    public function getHasVehiculeAttribute(): bool
+    {
+        return $this->hasVehicule();
+    }
+
+    public function getIsDispoAttribute(): bool
+    {
+        return $this->has_vehicule and $this->has_no_blocage;
     }
 
 

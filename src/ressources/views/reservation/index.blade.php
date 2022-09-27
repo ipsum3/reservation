@@ -51,7 +51,7 @@
                 </thead>
                 <tbody>
                 @foreach ($reservations as $reservation)
-                    <tr>
+                    <tr class="{{ $reservation->fin_at->lt(\Carbon\Carbon::now()) ? 'text-muted' : '' }}">
                         <td>{{ $reservation->reference }}</td>
                         <td>{{ $reservation->created_at->format('d/m/Y') }}</td>
                         <td>{{ $reservation->debut_at->format('d/m/Y') }}</td>
