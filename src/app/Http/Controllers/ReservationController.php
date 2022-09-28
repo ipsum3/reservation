@@ -236,14 +236,19 @@ class ReservationController extends AdminController
         $date_fin = $request->filled('date_fin') ? Carbon::createFromFormat('Y-m-d', $request->date_fin) : $date_debut->copy()->addMonths(3);
 
         $categories = Categorie::when($request->categorie_id, function ($query, $categorie_id) {
-            $query->where('categorie_id', $categorie_id);
-        })->with(['vehicules.reservations' => function ($query) use ($date_debut, $date_fin) {
-            $query->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
+            $query->where('id', $categorie_id);
+        })->with(['vehicules' => function ($query) use ($date_debut, $date_fin) {
+            $query->with(['reservations' => function ($query) use ($date_debut, $date_fin) {
+                $query->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
+            }])->orderBy('mise_en_circualtion_at', 'desc');
         }])->with(['reservations' => function ($query) use ($date_debut, $date_fin) {
             $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
-        }])->has('vehicules')
-            ->orderBy('nom')->get();
+        }])->where(function ($query) {
+            $query->has('vehicules')->orHas('reservations');
+        })->orderBy('nom')->get();
 
-        return view('IpsumReservation::reservation.planning', compact('categories', 'date_debut', 'date_fin'));
+        $categories_all = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
+
+        return view('IpsumReservation::reservation.planning.index', compact('categories', 'date_debut', 'date_fin', 'categories_all'));
     }
 }
