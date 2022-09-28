@@ -13,6 +13,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('{reservation}/edit', 'edit')->name('edit');
         Route::get('{reservation}/confirmation', 'confirmation')->name('confirmation')->middleware('adminReservationConfirmed');
         Route::get('{reservation}/confirmation-send', 'confirmationSend')->name('confirmationSend')->middleware('adminReservationConfirmed');
+        Route::get('planning', 'planning')->name('planning');
     }
 );
 

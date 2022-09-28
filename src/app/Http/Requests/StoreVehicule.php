@@ -36,7 +36,8 @@ class StoreVehicule extends FormRequest
             "sortie_at" => [
                 "nullable",
                 "date_format:Y-m-d",
-                /*Rule::unique(Reservation::class)->where(function ($query) {
+                /* TODO check date de sortie en fonction des résa associé
+                 * Rule::unique(Reservation::class)->where(function ($query) {
                     return $query->where('account_id', 1);
                 }),*/
             ],

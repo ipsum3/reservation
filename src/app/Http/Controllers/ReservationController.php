@@ -3,9 +3,11 @@
 namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
+use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
 use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
@@ -226,5 +228,22 @@ class ReservationController extends AdminController
         }
 
         return back();
+    }
+
+    public function planning(ShowPlanning $request)
+    {
+        $date_debut = $request->filled('date_debut') ? Carbon::createFromFormat('Y-m-d', $request->date_debut) : Carbon::now()->subDays(4)->startOfDay();
+        $date_fin = $request->filled('date_fin') ? Carbon::createFromFormat('Y-m-d', $request->date_fin) : $date_debut->copy()->addMonths(3);
+
+        $categories = Categorie::when($request->categorie_id, function ($query, $categorie_id) {
+            $query->where('categorie_id', $categorie_id);
+        })->with(['vehicules.reservations' => function ($query) use ($date_debut, $date_fin) {
+            $query->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
+        }])->with(['reservations' => function ($query) use ($date_debut, $date_fin) {
+            $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
+        }])->has('vehicules')
+            ->orderBy('nom')->get();
+
+        return view('IpsumReservation::reservation.planning', compact('categories', 'date_debut', 'date_fin'));
     }
 }
