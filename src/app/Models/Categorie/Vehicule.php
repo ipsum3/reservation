@@ -14,8 +14,10 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  *
  * @property int $id
  * @property string $immatriculation
+ * @property \Illuminate\Support\Carbon $mise_en_circualtion_at
  * @property int|null $categorie_id
  * @property string $marque_modele
+ * @property \Illuminate\Support\Carbon|null $sortie_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Categorie|null $categorie
@@ -29,6 +31,7 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @method static Builder|Vehicule newModelQuery()
  * @method static Builder|Vehicule newQuery()
  * @method static Builder|Vehicule query()
+ * @method static Builder|Vehicule whereDoesntHaveReservationConfirmed($date_debut, $date_fin)
  * @mixin \Eloquent
  */
 class Vehicule extends BaseModel

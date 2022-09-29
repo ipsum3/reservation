@@ -48,6 +48,8 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property-read int|null $blocages_count
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Carrosserie|null $carrosserie
  * @property-read bool $has_no_blocage
+ * @property-read bool $has_vehicule
+ * @property-read bool $is_dispo
  * @property-read mixed $tag_meta_description
  * @property-read mixed $tag_title
  * @property-read mixed $tarif_a_partir
@@ -69,8 +71,8 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @method static Builder|Categorie newModelQuery()
  * @method static Builder|Categorie newQuery()
  * @method static Builder|Categorie query()
- * @method static Builder|Categorie withCountBlocage($date_debut, $date_fin)
- * @method static Builder|Categorie withoutBlocage($date_debut, $date_fin)
+ * @method static Builder|Categorie withCountBlocage(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
+ * @method static Builder|Categorie withCountVehiculeDispo(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @mixin \Eloquent
  */
 class Categorie extends BaseModel

@@ -78,6 +78,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Pays|null $pays
  * @property-read Vehicule|null $vehicule
  * @method static Builder|Reservation confirmed()
+ * @method static Builder|Reservation confirmedBetweenDates(\Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at)
  * @method static \Ipsum\Reservation\database\factories\ReservationFactory factory(...$parameters)
  * @method static Builder|Reservation newModelQuery()
  * @method static Builder|Reservation newQuery()

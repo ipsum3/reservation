@@ -85,7 +85,7 @@
                                     name="{{ 'custom_fields['.$field['name'].']' }}"
                                     label="{{ $field['label'] }}"
                                     description="{{ $field['description'] }}"
-                                    value="{{ old('custom_fields.'.$field['name'], $categorie->custom_fields->{$field['name']}) }}"
+                                    value="{!! old('custom_fields.'.$field['name'], $categorie->custom_fields->{$field['name']}) !!}"
                                     type="{{ $field['type'] }}"
                             />
                         @endforeach
