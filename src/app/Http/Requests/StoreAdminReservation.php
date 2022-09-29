@@ -34,6 +34,7 @@ class StoreAdminReservation extends FormRequest
         }
 
         return [
+            "client_id" => "nullable|integer|exists:clients,id",
             "etat_id" => "required|integer|exists:reservation_etats,id",
             "modalite_paiement_id" => "required|integer|exists:modalite_paiements,id",
 

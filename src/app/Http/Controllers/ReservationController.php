@@ -160,9 +160,15 @@ class ReservationController extends AdminController
         return null;
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $reservation = new Reservation;
+
+
+        if ($request->filled('client_id')) {
+            $client = config('ipsum.reservation.client.model')::findOrFail($request->client_id);
+            $reservation->fill($client->toArray()); // TODO pas terrible... Trouver autre chose pour peupler les données
+        }
 
         $etats = Etat::all()->pluck('nom', 'id');
         $modalites = Modalite::all()->pluck('nom', 'id');
