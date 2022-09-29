@@ -2,11 +2,13 @@
 
 namespace Ipsum\Reservation\app\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
+use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
 use Ipsum\Reservation\app\Mail\Confirmation;
@@ -47,7 +49,7 @@ class ReservationController extends AdminController
         }
         if ($request->filled('search')) {
             $query->where(function($query) use ($request) {
-                foreach (['reference', 'nom', 'prenom', 'email', 'telephone'] as $colonne) {
+                foreach (['reference', 'contrat', 'nom', 'prenom', 'email', 'telephone'] as $colonne) {
                     $query->orWhere($colonne, 'like', '%'.$request->get('search').'%');
                 }
             });
@@ -78,6 +80,8 @@ class ReservationController extends AdminController
         $entete = [
             'Date',
             'Date modification',
+            'Réfèrence',
+            'Contrat',
             'Email',
             'Nom',
             'Prénom',
@@ -120,6 +124,8 @@ class ReservationController extends AdminController
             $data = [
                 $reservation->created_at,
                 $reservation->updated_at,
+                $reservation->reference,
+                $reservation->contrat,
                 $reservation->email,
                 $reservation->nom,
                 $reservation->prenom,
@@ -213,7 +219,7 @@ class ReservationController extends AdminController
 
     public function confirmation(Reservation $reservation)
     {
-        return view('IpsumReservation::reservation.emails.confirmation', compact('reservation'));
+        return view(config('ipsum.reservation.confirmation.view'), compact('reservation'));
     }
 
     public function confirmationSend(Reservation $reservation)
@@ -250,5 +256,13 @@ class ReservationController extends AdminController
         $categories_all = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
 
         return view('IpsumReservation::reservation.planning.index', compact('categories', 'date_debut', 'date_fin', 'categories_all'));
+    }
+
+    public function contrat(Reservation $reservation)
+    {
+        $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
+
+        $pdf = Pdf::loadView(config('ipsum.reservation.contrat.view'), compact('reservation', 'cgl'));
+        return $pdf->stream();
     }
 }

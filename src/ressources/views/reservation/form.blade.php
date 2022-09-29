@@ -107,6 +107,10 @@
                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmationSend', [$reservation]) }}" ><i class="fas fa-envelope"></i> Renvoyer le mail de confirmation</a>&nbsp;
             @endif
 
+            @if($reservation->contrat)
+                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i> Voir le contrat</a>&nbsp;
+            @endif
+
         </div>
     </div>
 

@@ -19,6 +19,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  *
  * @property int $id
  * @property string|null $reference
+ * @property string|null $contrat
  * @property int $etat_id
  * @property int $modalite_paiement_id
  * @property int|null $client_id
@@ -134,6 +135,11 @@ class Reservation extends BaseModel
                 $vehicule = Vehicule::where('categorie_id', $reservation->categorie_id)->whereDoesntHaveReservationConfirmed($reservation->debut_at, $reservation->fin_at)->orderBy('mise_en_circualtion_at', 'desc')->first();
                 $reservation->vehicule_id = !is_null($vehicule) ? $vehicule->id : null;
             }
+
+            if($reservation->is_confirmed and !$reservation->contrat) {
+                // Création du contrat
+                $reservation->generationReferenceContrat();
+            }
         });
 
     }
@@ -238,6 +244,27 @@ class Reservation extends BaseModel
     public static function calculDuree(CarbonInterface $date_debut, CarbonInterface $date_fin): int
     {
         return $date_debut->diffInDays($date_fin->copy()->subMinutes(61)) + 1;
+    }
+
+    protected function generationReference($id)
+    {
+        return date('ymd').str_pad($id, 6, "0", STR_PAD_LEFT);
+    }
+
+    public function generationReferenceContrat()
+    {
+        if ($this->contrat !== null) {
+            throw new \Exception('Contrat déjà généré');
+        }
+
+        $last_contrat = self::whereNotNull('contrat')->orderBy('contrat', 'desc')->first();
+        if(!$last_contrat) {
+            $id = 1;
+        } else {
+            $id = substr($last_contrat->contrat, -6);
+            $id++;
+        }
+        $this->contrat = 'C'.$this->generationReference($id);
     }
 
 

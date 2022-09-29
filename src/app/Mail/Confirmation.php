@@ -31,7 +31,7 @@ class Confirmation extends Mailable
      */
     public function build()
     {
-        return $this->view('IpsumReservation::reservation.emails.confirmation')
+        return $this->view(config('ipsum.reservation.confirmation.view'))
             ->from($this->reservation->lieuDebut->email_first, config('settings.nom_site'))
             ->to($this->reservation->email, $this->reservation->prenom.' '.$this->reservation->nom)
             ->cc($this->reservation->lieuDebut->email_reservation_first, config('settings.nom_site'))

@@ -246,7 +246,7 @@
                                             @if ($reservation->naissance_at)
                                                 <tr>
                                                     <th valign="top">{{ _('Né le') }}</th>
-                                                    <td valign="top">{{ $reservation->naissance_at->format('d/m/Y') }}</td>
+                                                    <td valign="top">{{ $reservation->naissance_at->format('d/m/Y') }} {{ $reservation->naissance_lieu ? 'à '.$reservation->naissance_lieu : ''  }}</td>
                                                 </tr>
                                             @endif
                                             @if ($reservation->permis_numero or $reservation->permis_at)
@@ -279,12 +279,12 @@
                                                     <th valign="top">{{ _('Modéle') }}</th>
                                                     <td valign="top">{{ $reservation->categorie->modeles }} {{ _('ou équivalent') }}</td>
                                                 </tr>
-                                                @if($reservation->franchise)
-                                                    <tr>
-                                                        <th valign="top">{{ _('Franchise') }}</th>
-                                                        <td valign="top">@prix($reservation->franchise)&nbsp;€</td>
-                                                    </tr>
-                                                @endif
+                                            @endif
+                                            @if($reservation->franchise)
+                                                <tr>
+                                                    <th valign="top">{{ _('Franchise') }}</th>
+                                                    <td valign="top">@prix($reservation->franchise)&nbsp;€</td>
+                                                </tr>
                                             @endif
                                         </table>
                                     </td>
