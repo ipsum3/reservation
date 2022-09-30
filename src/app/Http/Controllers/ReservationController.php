@@ -11,6 +11,7 @@ use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
+use Ipsum\Reservation\app\Location\Location;
 use Ipsum\Reservation\app\Location\Prestation;
 use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
@@ -215,6 +216,32 @@ class ReservationController extends AdminController
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
+    }
+
+    public function updateTarifs(StoreAdminReservation $request, Reservation $reservation)
+    {
+        $reservation->fill($request->validated());
+
+        // TODO supprimer promos
+
+        config()->set('ipsum.reservation.recherche.date_format', 'Y-m-d H:i:s');
+        config()->set('ipsum.reservation.recherche.jour_format', 'Y-m-d');
+        $location = new Location;
+        $location->setRecherche($request->all());
+        $location->setModalite($reservation->modalite);
+        $location->setCategorie(\Ipsum\Reservation\app\Location\Categorie::findOrFail($reservation->categorie_id));
+        $location->setPrestations(collect($request->prestations)->map(function ($prestation) {
+            if (!empty($prestation['quantite'])) {
+                $prestation['has'] = $prestation['id'];
+            }
+            return $prestation;
+        })->all());
+        $devis = $location->devis()->calculer();
+
+
+        $prestations = Prestation::orderBy('order', 'asc')->get();
+
+        return view('IpsumReservation::reservation._tarification', compact('reservation', 'devis', 'prestations'));
     }
 
     public function destroy(Reservation $reservation)

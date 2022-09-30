@@ -79,59 +79,7 @@
                     </h2>
                 </div>
                 <div class="box-body">
-                    @if ($reservation->promotions)
-                        <div class="alert alert-info">
-                            @foreach ($reservation->promotions as $promotion)
-                                {{ _('Offre') }} {{ strtolower($promotion['nom']) }} : -@prix($promotion['reduction'])&nbsp;€<br>
-                            @endforeach
-                        </div>
-                    @endif
-
-                    @if ($reservation->prestations)
-                        <div class="form-row">
-                            @foreach($prestations as $prestation)
-                                @php
-                                    $presta = $reservation->prestations->getById($prestation->id);
-                                @endphp
-                                <div class="form-group col-md-6">
-                                    <label class=" cursor-pointer" data-aire-component="label" for="presta-{{ $prestation->id }}">
-                                        {{ $prestation->nom }}
-                                    </label>
-                                    <div class="form-row">
-                                        <div class="form-group col-6">
-                                            <label class=" cursor-pointer" data-aire-component="label" for="presta-{{ $prestation->id }}">
-                                                Quantité
-                                            </label>
-                                            <select class="form-control " data-aire-component="select" name="prestations[{{ $prestation->id }}][quantite]" id="presta-{{ $prestation->id }}">
-                                                <option value=""> ---- Quantité ----- </option>
-                                                @for($i = 1; $i < 6; $i++)
-                                                    <option value="{{ $i }}" @selected(($presta->quantite ?? null) == $i)>{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label class="cursor-pointer" data-aire-component="label" for="presta-tarif-{{ $prestation->id }}">
-                                                Tarif €
-                                            </label>
-                                            <input class="form-control" type="text" name="prestations[{{ $prestation->id }}][tarif]" value="{{ $presta->tarif ?? null }}" id="presta-tarif-{{ $prestation->id }}">
-                                        </div>
-                                    </div>
-                                    <input type="hidden" name="prestations[{{ $prestation->id }}][id]" value="{{ $prestation->id }}">
-                                    <input type="hidden" name="prestations[{{ $prestation->id }}][nom]" value="{{ $prestation->nom }}">
-                                    <input type="hidden" name="prestations[{{ $prestation->id }}][tarification]" value="{{ $presta->tarification ?? $prestation->tarification }}">
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
-
-                    <div class="form-row">
-
-                        {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
-
-                        {{ Aire::number('montant_base', 'Montant de base (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
-                        {{ Aire::number('total', 'Total (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
-
-                    </div>
+                    @include('IpsumReservation::reservation._tarification')
                 </div>
             </div>
 
