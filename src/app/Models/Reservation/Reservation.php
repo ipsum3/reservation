@@ -11,6 +11,7 @@ use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
+use Ipsum\Reservation\app\Models\Reservation\Casts\PrestationCollection;
 use Ipsum\Reservation\database\factories\ReservationFactory;
 
 
@@ -96,7 +97,7 @@ class Reservation extends BaseModel
 
     protected $casts = [
         'custom_fields' => AsCustomFieldsObject::class,
-        'prestations' => 'array',
+        'prestations' => PrestationCollection::class,
         'promotions' => 'array',
         'echeancier' => 'array',
     ];

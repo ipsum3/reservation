@@ -98,16 +98,21 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
         return $this->tarif;
     }
 
-    public function getTarifLibelle(): string
+    public static function tarifLibelle($tarif, $tarification): string
     {
-        if ($this->is_tarification_agence) {
+        if ($tarification == self::TARIFICATION_AGENCE) {
             $libelle = 'en agence';
-        } elseif (empty($this->tarif)) {
+        } elseif (empty($tarif)) {
             $libelle = 'gratuit';
         } else {
-            $libelle = number_format($this->tarif, ((int) $this->tarif == $this->tarif ? 0 : 2), ',', '&nbsp;').' €';
+            $libelle = number_format($tarif, ((int) $tarif == $tarif ? 0 : 2), ',', ' ').' €';
         }
 
         return $libelle;
+    }
+
+    public function getTarifLibelle(): string
+    {
+        return self::tarifLibelle($this->tarif, $this->tarification);
     }
 }

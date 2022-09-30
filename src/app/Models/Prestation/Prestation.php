@@ -58,6 +58,8 @@ class Prestation extends BaseModel
     public static $LISTE_TARIFICATION = array('jour', 'forfait', 'agence');
     public static $LISTE_CONDITION = array('depart' => 'Uniquement sur le départ', 'retour' => 'Uniquement sur le retour');
 
+    const TARIFICATION_AGENCE = 'agence';
+
 
     protected $guarded = ['id'];
 
@@ -182,7 +184,7 @@ class Prestation extends BaseModel
 
     public function getIsTarificationAgenceAttribute(): bool
     {
-        return $this->tarification === 'agence';
+        return $this->tarification === self::TARIFICATION_AGENCE;
     }
 
     public function getIsOptionnelleAttribute(): bool

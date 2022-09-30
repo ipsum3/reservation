@@ -66,6 +66,7 @@ class PrestationCollection extends Collection
                 'quantite' => $prestation->getQuantite(),
                 'nom' => $prestation->nom,
                 'tarif' => $prestation->getTarif(),
+                'tarification' => $prestation->tarification,
                 'tarif_libelle' => $prestation->getTarifLibelle(),
                 'choix' => null,
             ];

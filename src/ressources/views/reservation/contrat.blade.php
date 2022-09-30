@@ -193,9 +193,9 @@
                                 <table class="tableau3">
                                     @foreach ($reservation->prestations as $prestation)
                                         <tr>
-                                            <td>{{ $prestation['quantite'] }} {{ strtolower($prestation['nom']) }} {{ !empty($prestation['choix']) ? '('.$prestation['choix'].')' : '' }}</td>
+                                            <td>{{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }}</td>
                                             <td align="right">
-                                                {{ $prestation['tarif_libelle'] }}
+                                                {{ $prestation->tarif_libelle }}
                                             </td>
                                         </tr>
                                     @endforeach

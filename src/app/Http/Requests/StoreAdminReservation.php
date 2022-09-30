@@ -3,7 +3,9 @@
 namespace Ipsum\Reservation\app\Http\Requests;
 
 
+use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
+use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation;
 
 class StoreAdminReservation extends FormRequest
@@ -62,6 +64,12 @@ class StoreAdminReservation extends FormRequest
             "fin_at" => "required|date_format:Y-m-d H:i:s",
             "debut_lieu_id" => "required|integer|exists:lieux,id",
             "fin_lieu_id" => "required|integer|exists:lieux,id",
+
+            "prestations.*.id" => "nullable|integer|exists:prestations,id",
+            "prestations.*.quantite" => "nullable|integer",
+            "prestations.*.tarif" => "nullable|numeric",
+            "prestations.*.nom" => "nullable|max:255",
+            "prestations.*.tarification" => ["nullable", Rule::in(Prestation::$LISTE_TARIFICATION)],
 
             "montant_base" => "nullable|numeric",
             "total" => "nullable|numeric",

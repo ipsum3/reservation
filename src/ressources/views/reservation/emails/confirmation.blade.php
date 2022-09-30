@@ -355,9 +355,9 @@
                                             @if ($reservation->prestations)
                                                 @foreach ($reservation->prestations as $prestation)
                                                     <tr>
-                                                        <th>{{ $prestation['quantite'] }} {{ strtolower($prestation['nom']) }} {{ !empty($prestation['choix']) ? '('.$prestation['choix'].')' : '' }}</th>
+                                                        <th>{{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }}</th>
                                                         <td align="right">
-                                                            {{ $prestation['tarif_libelle'] }}
+                                                            {{ $prestation->tarif_libelle }}
                                                         </td>
                                                     </tr>
                                                 @endforeach
