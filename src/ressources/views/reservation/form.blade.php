@@ -79,11 +79,38 @@
                     </h2>
                 </div>
                 <div class="box-body">
+                    @if ($reservation->promotions)
+                        <div class="alert alert-info">
+                            @foreach ($reservation->promotions as $promotion)
+                                {{ _('Offre') }} {{ strtolower($promotion['nom']) }} : -@prix($promotion['reduction'])&nbsp;€<br>
+                            @endforeach
+                        </div>
+                    @endif
+
                     <div class="form-row">
+
+                        @foreach($prestations as $prestation)
+                            @php
+                                $presta = collect($reservation->prestations)->firstWhere('id', $prestation->id);
+                            @endphp
+                            <div class="form-group col-md-6">
+                                <label class=" cursor-pointer" data-aire-component="label" for="resta-{{ $prestation->id }}">
+                                    {{ $prestation->nom }}
+                                </label>
+
+                                <select class="form-control " data-aire-component="select" name="prestas[resta-{{ $prestation->id }}][quantite]" id="resta-{{ $prestation->id }}">
+                                    <option value=""> ---- Quantité ----- </option>
+                                    @for($i = 1; $i < 6; $i++)
+                                        <option value="{{ $i }}" @selected(($presta['quantite'] ?? null) == $i)>{{ $i }}</option>
+                                    @endfor
+                                </select>
+
+                                <input class="form-control" type="text" name="prestas[resta-{{ $prestation->id }}][tarif]" value="{{ $presta['tarif'] ?? null }}">
+                                <input type="hidden" name="prestas[resta-{{ $prestation->id }}][nom]" value="{{ $presta['nom'] ?? null }}">
+                            </div>
+                        @endforeach
+
                         {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
-
-
-                        {{-- TODO prestations et promotions --}}
 
                         {{ Aire::number('montant_base', 'Montant de base (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
                         {{ Aire::number('total', 'Total (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}

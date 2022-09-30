@@ -19,7 +19,6 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  *
  * @property int $id
  * @property string|null $reference
- * @property string|null $contrat
  * @property int $etat_id
  * @property int $modalite_paiement_id
  * @property int|null $client_id

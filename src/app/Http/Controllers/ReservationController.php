@@ -11,6 +11,7 @@ use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
+use Ipsum\Reservation\app\Location\Prestation;
 use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
@@ -175,8 +176,9 @@ class ReservationController extends AdminController
         $pays = Pays::all()->pluck('nom', 'id');
         $categories = Categorie::all()->pluck('nom', 'id');
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
+        $prestations = Prestation::orderBy('order', 'asc')->get();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux', 'prestations'));
     }
 
     public function store(StoreAdminReservation $request)
@@ -202,8 +204,9 @@ class ReservationController extends AdminController
                 return [$vehicule->id => $vehicule->categorie->nom.' : '.$vehicule->immatriculation.' '.$vehicule->marque_modele];
             });
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
+        $prestations = Prestation::orderBy('order', 'asc')->get();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux', 'vehicules'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux', 'vehicules', 'prestations'));
     }
 
     public function update(StoreAdminReservation $request, Reservation $reservation)
