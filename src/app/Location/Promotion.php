@@ -112,7 +112,7 @@ class Promotion extends \Ipsum\Reservation\app\Models\Promotion\Promotion
         return $this;
     }
 
-    public function getReduction(): ?float
+    public function getReductionAttribute(): ?float
     {
         return $this->reduction;
     }

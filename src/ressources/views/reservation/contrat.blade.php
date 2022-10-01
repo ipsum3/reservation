@@ -241,10 +241,10 @@
                     </tr>
                 </table>
 
-                @if ($reservation->promotions)
+                @if ($reservation->promotions->count())
                     <table class="tableau2" style="margin-top: 10px">
                         <tr>
-                            <th>Promotion{{ count($reservation->promotions) > 1 ? 's' : '' }}</th>
+                            <th>Promotion{{ $reservation->promotions->count() > 1 ? 's' : '' }}</th>
                         </tr>
                         <tr>
                             <td>
@@ -252,9 +252,9 @@
                                 <table class="tableau3">
                                     @foreach ($reservation->promotions as $promotion)
                                         <tr>
-                                            <td>{{ _('Offre') }} {{ strtolower($promotion['nom']) }}</td>
+                                            <td>{{ _('Offre') }} {{ strtolower($promotion->nom) }}</td>
                                             <td align="right">
-                                                -@prix($promotion['reduction'])&nbsp;€
+                                                -@prix($promotion->reduction)&nbsp;€
                                             </td>
                                         </tr>
                                     @endforeach

@@ -1,14 +1,14 @@
 @php
-    $promotions = isset($devis) ? $devis->getPromotions()->toArray() : $reservation->promotions ?? [];
+    $promotions = isset($devis) ? $devis->getPromotions() : $reservation->promotions ?? [];
 @endphp
-@if (count($promotions))
+@if ($promotions->count())
     <div class="alert alert-info">
         @foreach ($promotions as $promotion)
-            {{ _('Offre') }} {{ strtolower($promotion['nom']) }} : -@prix($promotion['reduction'])&nbsp;€<br>
-            <input type="hidden" name="promotions[{{ $promotion['id'] }}][id]" value="{{ $promotion['id'] }}">
-            <input type="hidden" name="promotions[{{ $promotion['id'] }}][nom]" value="{{ $promotion['nom'] }}">
-            <input type="hidden" name="promotions[{{ $promotion['id'] }}][reference]" value="{{ $promotion['reference'] }}">
-            <input type="hidden" name="promotions[{{ $promotion['id'] }}][reduction]" value="{{ $promotion['reduction'] }}">
+            {{ _('Offre') }} {{ strtolower($promotion->nom) }} : -@prix($promotion->reduction)&nbsp;€<br>
+            <input type="hidden" name="promotions[{{ $promotion->id }}][id]" value="{{ $promotion->id }}">
+            <input type="hidden" name="promotions[{{ $promotion->id }}][nom]" value="{{ $promotion->nom }}">
+            <input type="hidden" name="promotions[{{ $promotion->id }}][reference]" value="{{ $promotion->reference }}">
+            <input type="hidden" name="promotions[{{ $promotion->id }}][reduction]" value="{{ $promotion->reduction }}">
         @endforeach
     </div>
 @endif

@@ -12,7 +12,7 @@ class PromotionCollection extends Collection
     public function totalReductions(): ?float
     {
         return $this->sum(function (Promotion $promotion) {
-            return $promotion->getReduction();
+            return $promotion->reduction;
         });
     }
 
@@ -45,7 +45,7 @@ class PromotionCollection extends Collection
                 'id' => $promotion->id,
                 'nom' => $promotion->nom,
                 'reference' => $promotion->reference,
-                'reduction' => $promotion->getReduction(),
+                'reduction' => $promotion->reduction,
             ];
         })->all();
 

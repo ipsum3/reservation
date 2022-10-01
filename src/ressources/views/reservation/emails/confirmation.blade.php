@@ -338,40 +338,36 @@
                                                     <td align="right">{{ $reservation->modalite->nom }}</td>
                                                 </tr>
                                             @endif
-                                                @if ($reservation->has_echeancier)
-                                                    <tr>
-                                                        <th valign="top">{{ _('Échéancier') }}</th>
-                                                        <td align="right">
-                                                            @foreach($reservation->echeancier as $echeance)
-                                                                {{ \Carbon\Carbon::make($echeance['date'])->format('d/m/Y') }} : @prix($echeance['montant']) €<br>
-                                                            @endforeach
-                                                        </td>
-                                                    </tr>
-                                                @endif
+                                            @if ($reservation->echeancier->count())
+                                                <tr>
+                                                    <th valign="top">{{ _('Échéancier') }}</th>
+                                                    <td align="right">
+                                                        @foreach($reservation->echeancier as $echeance)
+                                                            {{ $echeance->date->format('d/m/Y') }} : @prix($echeance->montant) €<br>
+                                                        @endforeach
+                                                    </td>
+                                                </tr>
+                                            @endif
                                             <tr>
                                                 <th valign="top">{{ _('Prix de base') }} ({{ $reservation->nb_jours }} {{ _('jours') }})</th>
                                                 <td align="right">@prix($reservation->montant_base)&nbsp;€</td>
                                             </tr>
-                                            @if ($reservation->prestations)
-                                                @foreach ($reservation->prestations as $prestation)
-                                                    <tr>
-                                                        <th>{{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }}</th>
-                                                        <td align="right">
-                                                            {{ $prestation->tarif_libelle }}
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
-                                            @if ($reservation->promotions)
-                                                @foreach ($reservation->promotions as $promotion)
-                                                    <tr>
-                                                        <th valign="top">
-                                                            {{ _('Offre') }} {{ strtolower($promotion['nom']) }}
-                                                        </th>
-                                                        <td align="right"><b>-@prix($promotion['reduction'])&nbsp;€</b></td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
+                                            @foreach ($reservation->prestations as $prestation)
+                                                <tr>
+                                                    <th>{{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }}</th>
+                                                    <td align="right">
+                                                        {{ $prestation->tarif_libelle }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            @foreach ($reservation->promotions as $promotion)
+                                                <tr>
+                                                    <th valign="top">
+                                                        {{ _('Offre') }} {{ strtolower($promotion->nom) }}
+                                                    </th>
+                                                    <td align="right"><b>-@prix($promotion->reduction)&nbsp;€</b></td>
+                                                </tr>
+                                            @endforeach
                                             <tr>
                                                 <th valign="top">{{ _('Total (TTC)') }}</th>
                                                 <td align="right"><strong {{ $reservation->is_payed ?  'style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;"' : '' }}>@prix($reservation->total)&nbsp;€</strong></td>
