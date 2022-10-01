@@ -150,7 +150,7 @@ class Location
             /* @var $categorie Categorie */
             foreach ($modalites as $modalite) {
                 try {
-                    $categorie->devis->add($this->clone()->setCategorie($categorie)->setModalite($modalite)->devis(true)->calculer(true));
+                    $categorie->devis->add($this->clone()->setCategorie($categorie)->setModalite($modalite)->devis(true)->calculer());
                 } catch (PrixInvalide $exception) { }
             }
             if ($categorie->devis->count()) {

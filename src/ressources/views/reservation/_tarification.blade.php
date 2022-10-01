@@ -1,11 +1,18 @@
-@if ($reservation->promotions)
+@php
+    $promotions = isset($devis) ? $devis->getPromotions()->toArray() : $reservation->promotions ?? [];
+@endphp
+@if (count($promotions))
     <div class="alert alert-info">
-        @foreach ($reservation->promotions as $promotion)
+        @foreach ($promotions as $promotion)
             {{ _('Offre') }} {{ strtolower($promotion['nom']) }} : -@prix($promotion['reduction'])&nbsp;€<br>
+            <input type="hidden" name="promotions[{{ $promotion['id'] }}][id]" value="{{ $promotion['id'] }}">
+            <input type="hidden" name="promotions[{{ $promotion['id'] }}][nom]" value="{{ $promotion['nom'] }}">
+            <input type="hidden" name="promotions[{{ $promotion['id'] }}][reference]" value="{{ $promotion['reference'] }}">
+            <input type="hidden" name="promotions[{{ $promotion['id'] }}][reduction]" value="{{ $promotion['reduction'] }}">
         @endforeach
     </div>
 @endif
-@if ($reservation->prestations)
+@if ($prestations)
     <div class="form-row">
         @foreach($prestations as $prestation)
             @php
@@ -13,7 +20,6 @@
                 if (isset($devis) and $devis->getPrestations()->hasByPrestation($prestation)) {
                     $tarif = $devis->getPrestations()->getByPrestation($prestation)->getTarif();
                     $quantite = $devis->getPrestations()->getByPrestation($prestation)->getQuantite();
-                    $quantite = empty($quantite) ? 1 : $quantite; // prestation de type frais
                 } else {
                     $tarif = $presta->tarif ?? null;
                     $quantite = $presta->quantite ?? null;
@@ -39,7 +45,7 @@
                         <label class="cursor-pointer" data-aire-component="label" for="presta-tarif-{{ $prestation->id }}">
                             Tarif €
                         </label>
-                        <input class="form-control" type="text" name="prestations[{{ $prestation->id }}][tarif]" value="{{ old('prestations.'.$prestation->id.'.tarif', $tarif) }}" id="presta-tarif-{{ $prestation->id }}">
+                        <input class="form-control" type="number" name="prestations[{{ $prestation->id }}][tarif]" value="{{ old('prestations.'.$prestation->id.'.tarif', $tarif) }}" id="presta-tarif-{{ $prestation->id }}" step="0.01">
                     </div>
                 </div>
                 <input type="hidden" name="prestations[{{ $prestation->id }}][id]" value="{{ $prestation->id }}">

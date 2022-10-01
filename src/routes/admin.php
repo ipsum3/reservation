@@ -10,7 +10,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('create', 'create')->name('create');
         Route::any('{reservation}/destroy', 'destroy')->name('destroy');
         Route::put('{reservation}', 'update')->name('update');
-        Route::put('{reservation}/tarifs', 'updateTarifs')->name('updateTarifs');
+        Route::any('tarifs/{reservation?}', 'updateTarifs')->name('updateTarifs');
         Route::get('{reservation}/edit', 'edit')->name('edit');
         Route::get('{reservation}/confirmation', 'confirmation')->name('confirmation')->middleware('adminReservationConfirmed');
         Route::get('{reservation}/confirmation-send', 'confirmationSend')->name('confirmationSend')->middleware('adminReservationConfirmed');

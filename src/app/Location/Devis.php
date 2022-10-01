@@ -188,7 +188,7 @@ class Devis
             'debut_lieu_id' => $this->getLocation()->getLieuDebut()->id,
             'fin_lieu_id' => $this->getLocation()->getLieuFin()->id,
             'montant_base' => $this->montant_base,
-            'prestations' => $this->getLocation()->getPrestations()->toArray(),
+            'prestations' => $this->getPrestations()->toArray(), // Ne pas prendre dans Location sinon il n'y aura pas les obligatoire
             'promotions' => $this->getPromotions()->toArray(),
             'echeancier' => $this->getLocation()->getModalite()->echeancier($this->total),
             'total' => $this->total,

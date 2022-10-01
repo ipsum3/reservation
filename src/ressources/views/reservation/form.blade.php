@@ -5,7 +5,7 @@
 
     <h1 class="main-title">Réservation {{ $reservation->exists ? $reservation->reference : '' }}</h1>
 
-    {{ Aire::open()->route($reservation->exists ? 'admin.reservation.update' : 'admin.reservation.store', $reservation->exists ? [$reservation] : '')->bind($reservation)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreAdminReservation::class) }}
+    {{ Aire::open()->id('reservation')->route($reservation->exists ? 'admin.reservation.update' : 'admin.reservation.store', $reservation->exists ? [$reservation] : '')->bind($reservation)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreAdminReservation::class) }}
     <div class="box">
         <div class="box-header">
             <h2 class="box-title">{{ $reservation->exists ? 'Modification' : 'Ajout' }}</h2>
@@ -77,9 +77,15 @@
                     <h2 class="box-title">
                         Tarification
                     </h2>
+                    <div class="btn-toolbar">
+                        <button id="tarification-load" class="btn btn-outline-secondary" type="button" data-ajax-url="{{ route('admin.reservation.updateTarifs', $reservation) }}" data-toggle="tooltip" title="Mettre à jour les tarifs"><i class="fas fa-redo"></i></button>&nbsp;
+                    </div>
                 </div>
                 <div class="box-body">
-                    @include('IpsumReservation::reservation._tarification')
+                    <div id="tarification-alert" class="alert alert-danger" style="display: none"></div>
+                    <div id="tarification">
+                        @include('IpsumReservation::reservation._tarification')
+                    </div>
                 </div>
             </div>
 

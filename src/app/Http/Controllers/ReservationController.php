@@ -218,30 +218,38 @@ class ReservationController extends AdminController
         return back();
     }
 
-    public function updateTarifs(StoreAdminReservation $request, Reservation $reservation)
+    public function updateTarifs(StoreAdminReservation $request, ?Reservation $reservation)
     {
-        $reservation->fill($request->validated());
 
-        // TODO supprimer promos
+        try {
 
-        config()->set('ipsum.reservation.recherche.date_format', 'Y-m-d H:i:s');
-        config()->set('ipsum.reservation.recherche.jour_format', 'Y-m-d');
-        $location = new Location;
-        $location->setRecherche($request->all());
-        $location->setModalite($reservation->modalite);
-        $location->setCategorie(\Ipsum\Reservation\app\Location\Categorie::findOrFail($reservation->categorie_id));
-        $location->setPrestations(collect($request->prestations)->map(function ($prestation) {
-            if (!empty($prestation['quantite'])) {
-                $prestation['has'] = $prestation['id'];
-            }
-            return $prestation;
-        })->all());
-        $devis = $location->devis()->calculer();
+            $reservation->fill(collect($request->validated())->except('promotions')->all());
 
+            config()->set('ipsum.reservation.recherche.date_format', 'Y-m-d H:i:s');
+            config()->set('ipsum.reservation.recherche.jour_format', 'Y-m-d');
+            $location = new Location;
+            $location->setRecherche($request->all());
+            $location->setModalite($reservation->modalite);
+            $location->setCategorie(\Ipsum\Reservation\app\Location\Categorie::findOrFail($reservation->categorie_id));
+            $location->setPrestations(collect($request->prestations)->map(function ($prestation) {
+                if (!empty($prestation['quantite'])) {
+                    $prestation['has'] = $prestation['id'];
+                }
+                return $prestation;
+            })->all());
+            $devis = $location->devis()->calculer();
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ])->setStatusCode(422);
+        }
 
         $prestations = Prestation::orderBy('order', 'asc')->get();
 
-        return view('IpsumReservation::reservation._tarification', compact('reservation', 'devis', 'prestations'));
+        return response()->json([
+            'tarification' => view('IpsumReservation::reservation._tarification', compact('reservation', 'devis', 'prestations'))->render(),
+        ]);
     }
 
     public function destroy(Reservation $reservation)

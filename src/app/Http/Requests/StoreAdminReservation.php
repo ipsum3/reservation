@@ -65,6 +65,11 @@ class StoreAdminReservation extends FormRequest
             "debut_lieu_id" => "required|integer|exists:lieux,id",
             "fin_lieu_id" => "required|integer|exists:lieux,id",
 
+            "promotions.*.id" => "required|integer|exists:promotions,id",
+            "promotions.*.nom" => "required|max:255",
+            "promotions.*.reference" => "nullable|max:255",
+            "promotions.*.reduction" => "required|numeric",
+
             "prestations.*.id" => "nullable|integer|exists:prestations,id",
             "prestations.*.quantite" => "nullable|integer",
             "prestations.*.tarif" => "nullable|numeric",

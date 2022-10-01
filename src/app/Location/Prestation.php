@@ -17,7 +17,7 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
     /**
      * @var mixed
      */
-    protected $value = null;
+    //protected $value = null;
 
 
     /*

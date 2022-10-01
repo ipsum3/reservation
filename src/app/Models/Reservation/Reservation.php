@@ -20,6 +20,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  *
  * @property int $id
  * @property string|null $reference
+ * @property string|null $contrat
  * @property int $etat_id
  * @property int $modalite_paiement_id
  * @property int|null $client_id
@@ -51,7 +52,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property string|null $debut_lieu_nom
  * @property string|null $fin_lieu_nom
  * @property string|null $montant_base
- * @property array|null $prestations
+ * @property mixed|null $prestations
  * @property array|null $promotions
  * @property array|null $echeancier
  * @property string|null $total
