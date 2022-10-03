@@ -19,9 +19,9 @@ return new class extends Migration
             $table->integer('duree_id')->unsigned();
             $table->integer('saison_id')->unsigned()->nullable();
             $table->decimal('montant', 10, 2)->nullable();
-            $table->string('modalite_paiement_id')->nullable();
+            $table->string('condition_paiement_id')->nullable();
 
-            $table->unique(['categorie_id', 'duree_id', 'saison_id', 'modalite_paiement_id'], 'tarifs_index_unique');
+            $table->unique(['categorie_id', 'duree_id', 'saison_id', 'condition_paiement_id'], 'tarifs_index_unique');
         });
 
         Schema::create('durees', function (Blueprint $table) {

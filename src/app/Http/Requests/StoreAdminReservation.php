@@ -38,7 +38,7 @@ class StoreAdminReservation extends FormRequest
         return [
             "client_id" => "nullable|integer|exists:clients,id",
             "etat_id" => "required|integer|exists:reservation_etats,id",
-            "modalite_paiement_id" => "required|integer|exists:modalite_paiements,id",
+            "condition_paiement_id" => "required|integer|exists:condition_paiements,id",
 
             "civilite" => "nullable|in:M.,Mme",
             "nom" => "required|max:255",
@@ -59,7 +59,7 @@ class StoreAdminReservation extends FormRequest
 
             "categorie_id" => "required|integer|exists:categories,id",
             "vehicule_id" => "nullable|integer|exists:vehicules,id",
-            "vehicule_blocage" => "required|boolean",
+            "vehicule_blocage" => "nullable|boolean",
             "franchise" => "nullable|numeric",
             "debut_at" => "required|date_format:Y-m-d H:i:s",
             "fin_at" => "required|date_format:Y-m-d H:i:s",

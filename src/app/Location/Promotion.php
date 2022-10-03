@@ -17,7 +17,7 @@ class Promotion extends \Ipsum\Reservation\app\Models\Promotion\Promotion
      * Scopes
      */
 
-    public function scopeCondition(Builder $query, Devis $devis)
+    public function scopeConditionScope(Builder $query, Devis $devis)
     {
         $debut_at = $devis->getLocation()->getDebutAt()->copy()->startOfDay();
         $fin_at = $devis->getLocation()->getFinAt()->copy()->startOfDay();
@@ -57,9 +57,9 @@ class Promotion extends \Ipsum\Reservation\app\Models\Promotion\Promotion
             })
 
 
-            // Modalité
+            // Condition
             ->where(function (Builder $query) use ($devis) {
-                $query->where('modalite_paiement_id', $devis->getLocation()->getModalite()->id)->orWhereNull('modalite_paiement_id');
+                $query->where('condition_paiement_id', $devis->getLocation()->getCondition()->id)->orWhereNull('condition_paiement_id');
             })
 
             // Code promo

@@ -7,7 +7,7 @@ namespace Ipsum\Reservation\app\Location;
 
 class Categorie extends \Ipsum\Reservation\app\Models\Categorie\Categorie
 {
-    public ?DevisModaliteCollection $devis = null;
+    public ?DevisConditionCollection $devis = null;
 
 
 
@@ -15,7 +15,7 @@ class Categorie extends \Ipsum\Reservation\app\Models\Categorie\Categorie
     {
         parent::__construct($attributes);
 
-        $this->devis = new DevisModaliteCollection();
+        $this->devis = new DevisConditionCollection();
     }
 
     /**

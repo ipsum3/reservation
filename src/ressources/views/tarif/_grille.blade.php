@@ -1,6 +1,6 @@
 <div class="box {{ (isset($loop) and !$loop->first) ? 'mt-20' : '' }}">
     <div class="box-header">
-        <h2 class="box-title">Grille de tarifs {{ isset($modalite) ? $modalite->nom : '' }}</h2>
+        <h2 class="box-title">Grille de tarifs {{ isset($condition) ? $condition->nom : '' }}</h2>
         @if (!isset($loop) or $loop->first)
             <div class="btn-toolbar">
                 <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Enregistrer</button>&nbsp;
@@ -30,7 +30,7 @@
                     <td>{{ $categorie->nom }}</td>
                     @foreach ($durees as $duree)
                         <td class="center">
-                            <input type="number" name="{{ 'tarifs['.(isset($modalite) ? $modalite->id : 'x').']['.$categorie->id.']['.$duree->id.']' }}" value="{{ $tarifs[(isset($modalite) ? $modalite->id : null)][$categorie->id][$duree->id] ?? null }}" step=".01" class="form-control text-right">
+                            <input type="number" name="{{ 'tarifs['.(isset($condition) ? $condition->id : 'x').']['.$categorie->id.']['.$duree->id.']' }}" value="{{ $tarifs[(isset($condition) ? $condition->id : null)][$categorie->id][$duree->id] ?? null }}" step=".01" class="form-control text-right">
                         </td>
                     @endforeach
                 </tr>

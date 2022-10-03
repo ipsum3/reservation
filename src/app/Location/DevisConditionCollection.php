@@ -6,7 +6,7 @@ namespace Ipsum\Reservation\app\Location;
 
 use Illuminate\Support\Collection;
 
-class DevisModaliteCollection extends Collection
+class DevisConditionCollection extends Collection
 {
 
     public function totalMin(): float

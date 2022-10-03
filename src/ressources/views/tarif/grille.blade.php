@@ -7,8 +7,8 @@
     <h1 class="main-title">Tarifs</h1>
     {{ Aire::open()->route('admin.tarif.update', $saison) }}
 
-        @if ($modalites)
-            @foreach($modalites as $modalite)
+        @if ($conditions)
+            @foreach($conditions as $condition)
                 @include('IpsumReservation::tarif._grille')
             @endforeach
         @else

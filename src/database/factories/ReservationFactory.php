@@ -26,7 +26,7 @@ class ReservationFactory extends Factory
 
 		return [
 			'etat_id' => rand(1, 3),
-			'modalite_paiement_id' => rand(1, 2),
+			'condition_paiement_id' => rand(1, 2),
 			'nom' => $this->faker->lastName,
 			'prenom' => $this->faker->firstName,
 			'email' => $this->faker->email,

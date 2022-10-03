@@ -8,7 +8,7 @@ use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Location\Exceptions\PrixInvalide;
 use Ipsum\Reservation\app\Models\Categorie\Type;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
-use Ipsum\Reservation\app\Models\Reservation\Modalite;
+use Ipsum\Reservation\app\Models\Reservation\Condition;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Tarif\Duree;
@@ -33,7 +33,7 @@ class Location
 
     protected ?Categorie $categorie = null;
 
-    protected ?Modalite $modalite = null;
+    protected ?Condition $condition = null;
 
     protected PrestationCollection $prestations;
 
@@ -139,18 +139,18 @@ class Location
 
     /**
      * @param Collection $categories
-     * @param Collection $modalites
+     * @param Collection $conditions
      * @return CategorieCollection
      * @throws \Ipsum\Reservation\app\Models\Tarif\TarifException
      */
-    public function createCategorieCollection(Collection $categories, Collection $modalites): CategorieCollection
+    public function createCategorieCollection(Collection $categories, Collection $conditions): CategorieCollection
     {
         $categorie_collection = [];
         foreach ($categories as $categorie) {
             /* @var $categorie Categorie */
-            foreach ($modalites as $modalite) {
+            foreach ($conditions as $condition) {
                 try {
-                    $categorie->devis->add($this->clone()->setCategorie($categorie)->setModalite($modalite)->devis(true)->calculer());
+                    $categorie->devis->add($this->clone()->setCategorie($categorie)->setCondition($condition)->devis(true)->calculer());
                 } catch (PrixInvalide $exception) { }
             }
             if ($categorie->devis->count()) {
@@ -262,19 +262,19 @@ class Location
         return $this;
     }
 
-    public function hasModalite(): bool
+    public function hasCondition(): bool
     {
-        return $this->modalite !== null;
+        return $this->condition !== null;
     }
 
-    public function getModalite(): Modalite
+    public function getCondition(): Condition
     {
-        return $this->modalite;
+        return $this->condition;
     }
 
-    public function setModalite(Modalite $modalite): Location
+    public function setCondition(Condition $condition): Location
     {
-        $this->modalite = $modalite;
+        $this->condition = $condition;
         return $this;
     }
 

@@ -4,7 +4,7 @@ namespace Ipsum\Reservation\database\seeds;
 
 use Illuminate\Database\Seeder;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
-use Ipsum\Reservation\app\Models\Reservation\Modalite;
+use Ipsum\Reservation\app\Models\Reservation\Condition;
 use Ipsum\Reservation\app\Models\Tarif\Duree;
 use Ipsum\Reservation\app\Models\Tarif\Saison;
 use Ipsum\Reservation\app\Models\Tarif\Tarif;
@@ -26,17 +26,17 @@ class TarifSeeder extends Seeder
         }
 
         $Categories = Categorie::all();
-        $modalites = Modalite::all();
+        $conditions = Condition::all();
         foreach ($Categories as $Categorie) {
             foreach ($this->getSaisons() as $saison) {
                 foreach ($this->getDurees() as $duree) {
-                    foreach ($modalites as $modalite) {
+                    foreach ($conditions as $condition) {
                         Tarif::create([
                             'categorie_id' => $Categorie->id,
                             'saison_id' => $saison['id'],
                             'duree_id' => $duree['id'],
                             'montant' => $faker->randomFloat(2, 30, 80),
-                            'modalite_paiement_id' => $modalite->id,
+                            'condition_paiement_id' => $condition->id,
                         ]);
                     }
                 }

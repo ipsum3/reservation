@@ -4,7 +4,6 @@ namespace Ipsum\Reservation\app\Location;
 
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Ipsum\Reservation\app\Location\Exceptions\PrixInvalide;
 use Ipsum\Reservation\app\Models\Reservation\Etat;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
@@ -67,7 +66,7 @@ class Devis
                 ->where('duree_id', $this->location->getDuree()->id)
                 ->where('saison_id', $saison->id)
                 ->where(function (Builder $query) {
-                    $query->where('modalite_paiement_id', $this->location->getModalite()->id)->orWhereNull('modalite_paiement_id');
+                    $query->where('condition_paiement_id', $this->location->getCondition()->id)->orWhereNull('condition_paiement_id');
                 })
                 ->first();
 
@@ -113,7 +112,7 @@ class Devis
 
     protected function _loadPromotions(): self
     {
-        $promotions = Promotion::condition($this)->get();
+        $promotions = Promotion::conditionScope($this)->get();
 
         // Posibilité de ne pas cumuler les promos ?
         $promotion_collection = new PromotionCollection($promotions);
@@ -163,7 +162,7 @@ class Devis
         [
             'id' => $this->getLocation()->getReservationId(),
             'etat_id' => Etat::NON_VALIDEE_ID,
-            'modalite_paiement_id' => $this->getLocation()->getModalite()->id,
+            'condition_paiement_id' => $this->getLocation()->getCondition()->id,
             'client_id' => auth()->check() ? auth()->id() : null,
             'civilite' => $this->getLocation()->getCivilite(),
             'nom' => $this->getLocation()->getNom(),
@@ -190,7 +189,7 @@ class Devis
             'montant_base' => $this->montant_base,
             'prestations' => $this->getPrestations()->toArray(), // Ne pas prendre dans Location sinon il n'y aura pas les obligatoire
             'promotions' => $this->getPromotions()->toArray(),
-            'echeancier' => $this->getLocation()->getModalite()->echeancier($this->total),
+            'echeancier' => $this->getLocation()->getCondition()->echeancier($this->total),
             'total' => $this->total,
             'montant_paye' => null,
         ]);

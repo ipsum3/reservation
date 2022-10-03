@@ -47,7 +47,7 @@
         </div>
         <div class="box-body">
             <div class="form-row">
-                {{ Aire::select(collect(['' => '---- Modalités -----'])->union($modalites), 'modalite_paiement_id', 'Modalité')->groupAddClass('col-md-6') }}
+                {{ Aire::select(collect(['' => '---- Conditions -----'])->union($conditions), 'condition_paiement_id', 'Condition')->groupAddClass('col-md-6') }}
             </div>
             <div class="form-row">
                 {{ Aire::input('code', 'Code')->helpText("Code promo à transmettre au client affin de bénéficier de l'offre")->groupAddClass('col-md-6') }}

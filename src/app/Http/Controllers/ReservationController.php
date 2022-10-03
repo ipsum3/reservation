@@ -19,7 +19,7 @@ use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Etat;
-use Ipsum\Reservation\app\Models\Reservation\Modalite;
+use Ipsum\Reservation\app\Models\Reservation\Condition;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Prologue\Alerts\Facades\Alert;
@@ -30,7 +30,7 @@ class ReservationController extends AdminController
 
     protected function query(Request $request)
     {
-        $query = Reservation::with('etat', 'modalite', 'client');
+        $query = Reservation::with('etat', 'condition', 'client');
 
         if ($request->filled('client_id')) {
             $query->where('client_id', $request->get('client_id'));
@@ -41,8 +41,8 @@ class ReservationController extends AdminController
         if ($request->filled('vehicule_id')) {
             $query->where('vehicule_id', $request->get('vehicule_id'));
         }
-        if ($request->filled('modalite_paiement_id')) {
-            $query->where('modalite_paiement_id', $request->get('modalite_paiement_id'));
+        if ($request->filled('condition_paiement_id')) {
+            $query->where('condition_paiement_id', $request->get('condition_paiement_id'));
         }
         if ($request->filled('date_debut')) {
             $query->where('created_at', '>=', $request->get('date_debut'));
@@ -70,9 +70,9 @@ class ReservationController extends AdminController
         $reservations = $this->query($request)->paginate();
 
         $etats = Etat::all()->pluck('nom', 'id');
-        $modalites = Modalite::all()->pluck('nom', 'id');
+        $conditions = Condition::all()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'modalites'));
+        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions'));
     }
 
     public function export(Request $request)
@@ -109,7 +109,7 @@ class ReservationController extends AdminController
             'Montant payé',
             'Note',
             'Etat',
-            'Modalité',
+            'Condition',
         ];
 
 
@@ -153,7 +153,7 @@ class ReservationController extends AdminController
                 $reservation->montant_paye,
                 $reservation->note,
                 $reservation->etat ? $reservation->etat->nom : null,
-                $reservation->modalite ? $reservation->modalite->nom : null,
+                $reservation->condition ? $reservation->condition->nom : null,
             ];
             $row = WriterEntityFactory::createRowFromArray($data);
             $writer->addRow($row);
@@ -174,18 +174,21 @@ class ReservationController extends AdminController
         }
 
         $etats = Etat::all()->pluck('nom', 'id');
-        $modalites = Modalite::all()->pluck('nom', 'id');
+        $conditions = Condition::all()->pluck('nom', 'id');
         $pays = Pays::all()->pluck('nom', 'id');
         $categories = Categorie::all()->pluck('nom', 'id');
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux', 'prestations'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'prestations'));
     }
 
     public function store(StoreAdminReservation $request)
     {
-        $reservation = Reservation::create($request->validated());
+        $reservation = new Reservation($request->validated());
+        $reservation->admin_id = auth()->user()->id;
+        $reservation->save();
+
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.reservation.edit', $reservation);
     }
@@ -193,7 +196,7 @@ class ReservationController extends AdminController
     public function edit(Reservation $reservation)
     {
         $etats = Etat::all()->pluck('nom', 'id');
-        $modalites = Modalite::all()->pluck('nom', 'id');
+        $conditions = Condition::all()->pluck('nom', 'id');
         $pays = Pays::all()->pluck('nom', 'id');
         $categories = Categorie::all()->pluck('nom', 'id');
         $vehicules = Vehicule::with('categorie')
@@ -208,7 +211,7 @@ class ReservationController extends AdminController
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'modalites', 'pays', 'categories', 'lieux', 'vehicules', 'prestations'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations'));
     }
 
     public function update(StoreAdminReservation $request, Reservation $reservation)
@@ -230,7 +233,7 @@ class ReservationController extends AdminController
             config()->set('ipsum.reservation.recherche.jour_format', 'Y-m-d');
             $location = new Location;
             $location->setRecherche($request->all());
-            $location->setModalite($reservation->modalite);
+            $location->setCondition($reservation->condition);
             $location->setCategorie(\Ipsum\Reservation\app\Location\Categorie::findOrFail($reservation->categorie_id));
             $location->setPrestations(collect($request->prestations)->map(function ($prestation) {
                 if (!empty($prestation['quantite'])) {

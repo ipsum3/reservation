@@ -12,7 +12,7 @@ use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Promotion\Promotion;
 
-use Ipsum\Reservation\app\Models\Reservation\Modalite;
+use Ipsum\Reservation\app\Models\Reservation\Condition;
 use Prologue\Alerts\Facades\Alert;
 
 class PromotionController extends AdminController
@@ -46,10 +46,10 @@ class PromotionController extends AdminController
         $categories = Categorie::orderBy('nom')->get();
         $lieux = Lieu::orderBy('order')->get();
         $prestations = Prestation::orderBy('order')->get();
-        $modalites = Modalite::orderBy('order')->get()->pluck('nom', 'id');
+        $conditions = Condition::orderBy('order')->get()->pluck('nom', 'id');
         $clients = config('ipsum.reservation.client.model')::orderBy('nom')->get()->pluck('email', 'id');
 
-        return view('IpsumReservation::promotion.form', compact('promotion', 'categories', 'lieux', 'modalites', 'prestations', 'clients'));
+        return view('IpsumReservation::promotion.form', compact('promotion', 'categories', 'lieux', 'conditions', 'prestations', 'clients'));
     }
 
     public function store(StorePromotion $request)
@@ -69,10 +69,10 @@ class PromotionController extends AdminController
         $categories = Categorie::orderBy('nom')->get();
         $lieux = Lieu::orderBy('order')->get();
         $prestations = Prestation::orderBy('order')->get();
-        $modalites = Modalite::orderBy('order')->get()->pluck('nom', 'id');
+        $conditions = Condition::orderBy('order')->get()->pluck('nom', 'id');
         $clients = config('ipsum.reservation.client.model')::orderBy('nom')->get()->pluck('email', 'id');
 
-        return view('IpsumReservation::promotion.form', compact('promotion', 'categories', 'lieux', 'modalites', 'prestations', 'clients'));
+        return view('IpsumReservation::promotion.form', compact('promotion', 'categories', 'lieux', 'conditions', 'prestations', 'clients'));
     }
 
     public function update(StorePromotion $request, Promotion $promotion)

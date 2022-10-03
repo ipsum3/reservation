@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('extrait')->nullable();
             $table->text('texte')->nullable();
 
-            $table->integer('modalite_paiement_id')->unsigned()->nullable()->index();
+            $table->integer('condition_paiement_id')->unsigned()->nullable()->index();
             $table->string('code')->nullable();
 
             $table->date('debut_at');

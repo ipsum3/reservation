@@ -216,7 +216,7 @@ class Categorie extends BaseModel
 
     public function getHasNoBlocageAttribute(): bool
     {
-        return $this->hasVehicule();
+        return $this->hasNoBlocage();
     }
 
     public function hasVehicule(?CarbonInterface $date_debut = null, ?CarbonInterface $date_fin = null): bool
@@ -239,7 +239,11 @@ class Categorie extends BaseModel
 
     public function getIsDispoAttribute(): bool
     {
-        return $this->has_vehicule and $this->has_no_blocage;
+        if (config('ipsum.reservation.check_vehicules_disponible')) {
+            return $this->has_vehicule and $this->has_no_blocage;
+        } else {
+            return $this->has_no_blocage;
+        }
     }
 
 

@@ -51,8 +51,10 @@ return [
         'pays_defaut_id' => 75
     ],
     'tarif' => [
-        // Attention aux promotions avec une condition modalité
-        'has_multiple_grille_by_modalite' => true,
+        // Attention aux promotions avec une condition de condition de paiement
+        'has_multiple_grille_by_condition' => true,
     ],
+
+    'check_vehicules_disponible' => false,
 
 ];

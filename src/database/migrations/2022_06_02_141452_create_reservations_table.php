@@ -19,7 +19,9 @@ return new class extends Migration
             $table->string('reference')->nullable()->unique();
 
             $table->integer('etat_id')->unsigned()->index();
-            $table->integer('modalite_paiement_id')->unsigned()->index();
+            $table->integer('condition_paiement_id')->unsigned()->index();
+            $table->integer('admin_id')->unsigned()->nullable()->index();
+            $table->string('source')->nullable();
 
             $table->integer('client_id')->unsigned()->nullable()->index();
             $table->string('nom');
@@ -63,9 +65,11 @@ return new class extends Migration
             $table->string('nom');
         });
 
-        Schema::create('modalite_paiements', function (Blueprint $table) {
+        Schema::create('condition_paiements', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
+            $table->string('site_nom')->nullable();
+            $table->boolean('site_actif');
             $table->text('description')->nullable();
             $table->smallInteger('duree_min')->unsigned()->nullable();
             $table->string('acompte_type')->nullable();
@@ -84,6 +88,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('reservations');
         Schema::dropIfExists('reservation_etats');
-        Schema::dropIfExists('modalite_paiements');
+        Schema::dropIfExists('condition_paiements');
     }
 };

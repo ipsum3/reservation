@@ -5,7 +5,7 @@ namespace Ipsum\Reservation\app\Models\Tarif;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
-use Ipsum\Reservation\app\Models\Reservation\Modalite;
+use Ipsum\Reservation\app\Models\Reservation\Condition;
 
 /**
  * Ipsum\Reservation\app\Models\Tarif\Tarif
@@ -15,10 +15,10 @@ use Ipsum\Reservation\app\Models\Reservation\Modalite;
  * @property int $duree_id
  * @property int|null $saison_id
  * @property string|null $montant
- * @property string|null $modalite_paiement_id
+ * @property string|null $condition_paiement_id
  * @property-read Categorie|null $categorie
  * @property-read \Ipsum\Reservation\app\Models\Tarif\Duree|null $duree
- * @property-read Modalite|null $modalite
+ * @property-read Condition|null $condition
  * @property-read \Ipsum\Reservation\app\Models\Tarif\Saison|null $saison
  * @method static \Illuminate\Database\Eloquent\Builder|Tarif hasSaisonEnCoursOuFutur()
  * @method static \Illuminate\Database\Eloquent\Builder|Tarif newModelQuery()
@@ -52,9 +52,9 @@ class Tarif extends BaseModel
         return $this->belongsTo(Duree::class);
     }
 
-    public function modalite()
+    public function condition()
     {
-        return $this->belongsTo(Modalite::class);
+        return $this->belongsTo(Condition::class);
     }
 
 

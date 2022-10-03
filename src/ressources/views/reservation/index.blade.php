@@ -25,8 +25,8 @@
             {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
             <label class="sr-only" for="type_id">Etat</label>
             {{ Aire::select(collect(['' => '---- Etat -----'])->union($etats), 'etat_id')->value(request()->get('etat_id'))->id('etat_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
-            <label class="sr-only" for="modalite_paiement_id">Modalité</label>
-            {{ Aire::select(collect(['' => '---- Modalités -----'])->union($modalites), 'modalite_paiement_id')->value(request()->get('modalite_paiement_id'))->id('modalite_paiement_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+            <label class="sr-only" for="condition_paiement_id">Condition</label>
+            {{ Aire::select(collect(['' => '---- Conditions -----'])->union($conditions), 'condition_paiement_id')->value(request()->get('condition_paiement_id'))->id('condition_paiement_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="date_debut">Date de début</label>
             {{ Aire::date('date_debut')->value(request()->get('date_debut'))->id('date_debut')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="date_debut">Date de fin</label>
@@ -45,7 +45,7 @@
                     <th>Client</th>
                     <th>Total</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Etat', 'champ' => 'etat_id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Modalité', 'champ' => 'modalite_paiement_id'])</th>
+                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Condition', 'champ' => 'condition_paiement_id'])</th>
                     <th width="180px">Actions</th>
                 </tr>
                 </thead>
@@ -65,7 +65,7 @@
                         </td>
                         <td class="text-right">@prix($reservation->total) &nbsp;€</td>
                         <td>{{ $reservation->etat ? $reservation->etat->nom : '' }}</td>
-                        <td>{{ $reservation->modalite ? $reservation->modalite->nom : '' }}</td>
+                        <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
                         <td class="text-right">
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
                                 @if($reservation->is_confirmed)

@@ -114,7 +114,7 @@
                                             <tr>
                                                 <td align="center" valign="top">
                                                     <div style="border: 1px solid #acacac; padding: 10px 20px;font-size: 14px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
-                                                        Réservation {{ $reservation->modalite ? strtolower($reservation->modalite->nom) : '' }} {{ $reservation->etat ? strtolower($reservation->etat->nom) : '' }}
+                                                        Réservation {{ $reservation->condition ? strtolower($reservation->condition->nom) : '' }} {{ $reservation->etat ? strtolower($reservation->etat->nom) : '' }}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -332,10 +332,10 @@
                                     <td align="center" valign="top">
                                         <h2 style="margin: 12px 0; padding: 5px 10px; font-size: 15px; line-height: 20px; text-align: center; background-color: {{ $couleur }}; color: white; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">{{ _('Détails du paiement') }}</h2>
                                         <table width="100%" cellpadding="0" cellspacing="0" border="0" class="table" style="font-size: 12px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
-                                            @if ($reservation->modalite)
+                                            @if ($reservation->condition)
                                                 <tr>
-                                                    <th valign="top">{{ _('Modalité de paiement') }}</th>
-                                                    <td align="right">{{ $reservation->modalite->nom }}</td>
+                                                    <th valign="top">{{ _('Condition de paiement') }}</th>
+                                                    <td align="right">{{ $reservation->condition->nom }}</td>
                                                 </tr>
                                             @endif
                                             @if ($reservation->echeancier->count())

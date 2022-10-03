@@ -28,9 +28,25 @@
             <div class="form-row">
 
                 {{ Aire::select(collect(['' => '---- Etats -----'])->union($etats), 'etat_id', 'Etat*')->required()->groupAddClass('col-md-6') }}
-                {{ Aire::select(collect(['' => '---- Modalités -----'])->union($modalites), 'modalite_paiement_id', 'Modalité de paiement*')->required()->groupAddClass('col-md-6') }}
+                {{ Aire::select(collect(['' => '---- Conditions -----'])->union($conditions), 'condition_paiement_id', 'Condition de paiement*')->required()->groupAddClass('col-md-6') }}
 
                 {{ Aire::textArea('note', 'Notes')->groupAddClass('col-md-6') }}
+
+                <div class="col-md-6">
+                    <label>Informations</label>
+                    <div>
+                        @if ($reservation->exists)
+                            Création : {{ $reservation->created_at->format('d/m/Y H:i:s') }}<br>
+                            Modification : {{ $reservation->updated_at->format('d/m/Y H:i:s') }}<br>
+                            @if ($reservation->admin)
+                                Agent : {{ $reservation->admin->firstname }} {{ $reservation->admin->name }}<br>
+                            @endif
+                            @if ($reservation->source )
+                                Source : {{ $reservation->source }}<br>
+                            @endif
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>

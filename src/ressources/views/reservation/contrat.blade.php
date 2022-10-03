@@ -78,6 +78,14 @@
     </style>
 </head>
 <body>
+<div id="footer">
+    <table>
+        <tr>
+            <td>{{ config('settings.nom_site') }} - {{ Config::get('settings.entreprise_identification') }}</td>
+            <td style="text-align: right; width: 10%"><div class="page-number"></div></td>
+        </tr>
+    </table>
+</div>
 <div>
     <table style="padding-bottom: 5mm;">
         <tr>
@@ -85,15 +93,15 @@
 
                 <div style="text-align: center; padding-bottom: 0mm;">
                     <h1>
-                        @if (config('ipsum.reservation.confirmation.logo'))
+                        @if (config('ipsum.reservation.contrat.logo'))
                             <img src="{{ config('ipsum.reservation.contrat.logo') }}" alt="{{ config('settings.nom_site') }}" width="150" style="width: 150px;">
                         @else
                             {{ config('settings.nom_site') }}
                         @endif
                     </h1>
                     <p>
-                        {{ Config::get('settings.adresse') }} - {{ Config::get('settings.cp') }} {{ Config::get('settings.ville') }} - France<br>
-                        Téléphone : {{ Config::get('settings.telephone') }}
+                        {{ Config::get('settings.adresse') }} - {{ config('settings.cp') }} {{ Config::get('settings.ville') }} - France<br>
+                        Téléphone : {{ config('settings.telephone') }}
                     </p>
                     <h2>Contrat de location {{ $reservation->contrat }}</h2>
                 </div>
@@ -316,7 +324,7 @@
     <table>
         <tr>
             <td style="border: none">
-                Par ma signature, je reconnais être d'accord avec le contrat avec le montany estimé de la location. Je reconnais avoir lu et approuvé les conditions de location figurant au verso de mon contrat de location.
+                Par ma signature, je reconnais être d'accord avec le contrat avec le montant estimé de la location. Je reconnais avoir lu et approuvé les conditions de location figurant au verso de mon contrat de location.
 
                 <div style="float: right; margin-top: 5mm">
                     A&nbsp;<span style="display: inline-block; width: 150px;"></span>,le<br>
@@ -343,14 +351,6 @@
 
 
 
-</div>
-<div id="footer">
-    <table>
-        <tr>
-            <td>{{ Config::get('settings.nom_site') }} - {{ Config::get('settings.entreprise_identification') }}</td>
-            <td style="text-align: right; width: 10%"><div class="page-number"></div></td>
-        </tr>
-    </table>
 </div>
 </body>
 </html>

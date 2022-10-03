@@ -6,6 +6,7 @@ use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
+use Ipsum\Admin\app\Models\Admin;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
@@ -24,7 +25,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property string|null $reference
  * @property string|null $contrat
  * @property int $etat_id
- * @property int $modalite_paiement_id
+ * @property int $condition_paiement_id
  * @property int|null $client_id
  * @property string|null $civilite
  * @property string $nom
@@ -76,7 +77,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property-read mixed $tarif_journalier
  * @property-read Lieu|null $lieuDebut
  * @property-read Lieu|null $lieuFin
- * @property-read \Ipsum\Reservation\app\Models\Reservation\Modalite|null $modalite
+ * @property-read \Ipsum\Reservation\app\Models\Reservation\Condition|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Paiement[] $paiements
  * @property-read int|null $paiements_count
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Pays|null $pays
@@ -173,9 +174,9 @@ class Reservation extends BaseModel
         return $this->belongsTo(Etat::class);
     }
 
-    public function modalite()
+    public function condition()
     {
-        return $this->belongsTo(Modalite::class, 'modalite_paiement_id');
+        return $this->belongsTo(Condition::class, 'condition_paiement_id');
     }
 
     public function pays()
@@ -196,6 +197,11 @@ class Reservation extends BaseModel
     public function client()
     {
         return $this->belongsTo(config('ipsum.reservation.client.model'));
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
     }
 
 
@@ -312,11 +318,11 @@ class Reservation extends BaseModel
 
     public function getAcompteAttribute(): ?float
     {
-        $modalite = $this->modalite;
-        if (!$modalite) {
+        $condition = $this->condition;
+        if (!$condition) {
             return null;
         }
-        return $modalite->acompte($this->total);
+        return $condition->acompte($this->total);
     }
 
 

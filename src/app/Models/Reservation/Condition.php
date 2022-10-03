@@ -11,7 +11,7 @@ use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Promotion\Promotion;
 
 /**
- * Ipsum\Reservation\app\Models\Reservation\Modalite
+ * Ipsum\Reservation\app\Models\Reservation\Condition
  *
  * @property int $id
  * @property string $nom
@@ -25,19 +25,19 @@ use Ipsum\Reservation\app\Models\Promotion\Promotion;
  * @property-read int|null $promotions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Reservation[] $reservations
  * @property-read int|null $reservations_count
- * @method static Builder|Modalite byDuree(int $duree)
- * @method static Builder|Modalite delaiValide(\Ipsum\Reservation\app\Classes\Carbon $debut)
- * @method static Builder|Modalite filtreSortable($objet)
- * @method static Builder|Modalite newModelQuery()
- * @method static Builder|Modalite newQuery()
- * @method static Builder|Modalite query()
+ * @method static Builder|Condition byDuree(int $duree)
+ * @method static Builder|Condition delaiValide(\Ipsum\Reservation\app\Classes\Carbon $debut)
+ * @method static Builder|Condition filtreSortable($objet)
+ * @method static Builder|Condition newModelQuery()
+ * @method static Builder|Condition newQuery()
+ * @method static Builder|Condition query()
  * @mixin \Eloquent
  */
-class Modalite extends BaseModel
+class Condition extends BaseModel
 {
     use Sortable;
 
-    protected $table = 'modalite_paiements';
+    protected $table = 'condition_paiements';
 
     public $timestamps = false;
 
@@ -169,6 +169,11 @@ class Modalite extends BaseModel
     protected function getHasEcheanceAttribute(): bool
     {
         return $this->echeance_nombre !== null;
+    }
+
+    protected function getSiteNomAttribute(): string
+    {
+        return $this->attributes['site_nom'] ?? $this->nom;
     }
 
 

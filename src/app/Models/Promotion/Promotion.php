@@ -9,7 +9,7 @@ use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
-use Ipsum\Reservation\app\Models\Reservation\Modalite;
+use Ipsum\Reservation\app\Models\Reservation\Condition;
 
 /**
  * Ipsum\Reservation\app\Models\Promotion\Promotion
@@ -22,7 +22,7 @@ use Ipsum\Reservation\app\Models\Reservation\Modalite;
  * @property string $nom
  * @property string|null $extrait
  * @property string|null $texte
- * @property int|null $modalite_paiement_id
+ * @property int|null $condition_paiement_id
  * @property string|null $code
  * @property \Illuminate\Support\Carbon $debut_at
  * @property \Illuminate\Support\Carbon $fin_at
@@ -42,7 +42,7 @@ use Ipsum\Reservation\app\Models\Reservation\Modalite;
  * @property-read bool $is_en_cours
  * @property-read \Illuminate\Database\Eloquent\Collection|Lieu[] $lieux
  * @property-read int|null $lieux_count
- * @property-read Modalite|null $modalite
+ * @property-read Condition|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|Prestation[] $prestations
  * @property-read int|null $prestations_count
  * @method static Builder|Promotion active()
@@ -83,9 +83,9 @@ class Promotion extends BaseModel
         return $this->morphedByMany(Lieu::class, 'promotionable')->withPivot(['reduction']);
     }
 
-    public function modalite()
+    public function condition()
     {
-        return $this->belongsTo(Modalite::class, 'modalite_paiement_id');
+        return $this->belongsTo(Condition::class, 'condition_paiement_id');
     }
 
 
