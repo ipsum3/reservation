@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <h1 class="main-title">Blocage</h1>
+    <h1 class="main-title">Blocage | Stop sell</h1>
 
     {{ Aire::open()->route($blocage->exists ? 'admin.categorieBlocage.update' : 'admin.categorieBlocage.store', $blocage->exists ? [$blocage] : '')->bind($blocage)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreCategorieBlocage::class) }}
     <div class="box">

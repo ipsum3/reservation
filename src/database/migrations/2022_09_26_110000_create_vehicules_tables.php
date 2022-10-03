@@ -25,6 +25,7 @@ return new class extends Migration
         });
 
         Schema::table('reservations', function (Blueprint $table) {
+            $table->boolean('vehicule_blocage')->default(0)->after('categorie_id');
             $table->integer('vehicule_id')->index()->unsigned()->nullable()->after('categorie_id');
         });
     }

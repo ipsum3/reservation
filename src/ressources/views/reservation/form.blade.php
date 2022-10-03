@@ -49,6 +49,8 @@
                         {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id', 'Catégorie*')->required()->groupAddClass('col-md-6') }}
                         @if ($reservation->is_confirmed and $vehicules->count())
                             {{ Aire::select(collect(['' => '---- Véhicules -----'])->union($vehicules), 'vehicule_id', 'Véhicule')->class('js-example-basic-single js-states form-control')->groupAddClass('col-md-6') }}
+                            <input type="hidden" name="vehicule_blocage" value="0">
+                            {{ Aire::checkbox('vehicule_blocage', 'Bloquer le véhicule sur cette réservation')->groupAddClass('col-md-6 offset-md-6') }}
                         @endif
                     </div>
                 </div>
@@ -78,7 +80,7 @@
                         Tarification
                     </h2>
                     <div class="btn-toolbar">
-                        <button id="tarification-load" class="btn btn-outline-secondary" type="button" data-ajax-url="{{ route('admin.reservation.updateTarifs', $reservation) }}" data-toggle="tooltip" title="Mettre à jour les tarifs"><i class="fas fa-redo"></i></button>&nbsp;
+                        <button id="tarification-load" class="btn btn-outline-secondary" type="button" data-ajax-url="{{ route('admin.reservation.updateTarifs', $reservation) }}" data-toggle="tooltip" title="Mettre à jour les tarifs"><i class="fas fa-sync"></i></button>&nbsp;
                     </div>
                 </div>
                 <div class="box-body">

@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Http\Controllers;
 
+use Artisan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Carbon\Carbon;
@@ -280,6 +281,14 @@ class ReservationController extends AdminController
         return back();
     }
 
+    public function contrat(Reservation $reservation)
+    {
+        $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
+
+        $pdf = Pdf::loadView(config('ipsum.reservation.contrat.view'), compact('reservation', 'cgl'));
+        return $pdf->stream();
+    }
+
     public function planning(ShowPlanning $request)
     {
         $date_debut = $request->filled('date_debut') ? Carbon::createFromFormat('Y-m-d', $request->date_debut) : Carbon::now()->subDays(4)->startOfDay();
@@ -302,11 +311,9 @@ class ReservationController extends AdminController
         return view('IpsumReservation::reservation.planning.index', compact('categories', 'date_debut', 'date_fin', 'categories_all'));
     }
 
-    public function contrat(Reservation $reservation)
+    public function planningOptimiser()
     {
-        $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
-
-        $pdf = Pdf::loadView(config('ipsum.reservation.contrat.view'), compact('reservation', 'cgl'));
-        return $pdf->stream();
+        Artisan::call('planning:optimiser');
+        return back();
     }
 }

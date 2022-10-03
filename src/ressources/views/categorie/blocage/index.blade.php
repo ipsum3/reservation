@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <h1 class="main-title">Blocage des catégories</h1>
+    <h1 class="main-title">Blocage des catégories | Stop sell</h1>
     <div class="box">
         <div class="box-header">
             <h2 class="box-title">Liste ({{ $blocages->total() }})</h2>

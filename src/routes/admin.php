@@ -16,6 +16,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('{reservation}/confirmation-send', 'confirmationSend')->name('confirmationSend')->middleware('adminReservationConfirmed');
         Route::get('{reservation}/contrat', 'contrat')->name('contrat')->middleware('adminReservationConfirmed');
         Route::get('planning', 'planning')->name('planning');
+        Route::get('planning/optimiser', 'planningOptimiser')->name('planningOptimiser');
     }
 );
 
