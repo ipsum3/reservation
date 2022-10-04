@@ -193,12 +193,12 @@ class Categorie extends BaseModel
 
     public function getTagTitleAttribute()
     {
-        return $this->attributes['seo_title'] == '' ? $this->titre : $this->attributes['seo_title'];
+        return $this->attributes['seo_title'] == '' ? 'Catégorie '.$this->nom.' : '. $this->modeles : $this->attributes['seo_title'];
     }
 
     public function getTagMetaDescriptionAttribute()
     {
-        return $this->attributes['seo_description'] == '' ? $this->extrait : $this->attributes['seo_description'];
+        return $this->attributes['seo_description'] == '' ? strip_tags($this->description) : $this->attributes['seo_description'];
     }
 
     public function hasNoBlocage(?CarbonInterface $date_debut = null, ?CarbonInterface $date_fin = null): bool
