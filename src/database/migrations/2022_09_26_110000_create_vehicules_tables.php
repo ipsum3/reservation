@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('mise_en_circualtion_at');
             $table->integer('categorie_id')->unsigned()->nullable()->index();
             $table->string('marque_modele');
+            $table->date('entree_at');
             $table->date('sortie_at')->nullable();
 
             $table->timestamps();

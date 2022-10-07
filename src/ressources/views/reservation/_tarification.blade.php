@@ -58,6 +58,7 @@
 
 <div class="form-row">
 
+    {{ Aire::number('caution', 'Caution (€)')->setAttribute('step', 0.01)->value(isset($devis) ? $reservation->categorie->caution : null)->groupAddClass('col-md-6') }}
     {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->value(isset($devis) ? $reservation->categorie->franchise : null)->groupAddClass('col-md-6') }}
 
     {{ Aire::number('montant_base', 'Montant de base (€)')->setAttribute('step', 0.01)->value(isset($devis) ? $devis->getMontantBase() : null)->groupAddClass('col-md-6') }}

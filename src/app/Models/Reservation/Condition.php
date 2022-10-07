@@ -15,6 +15,8 @@ use Ipsum\Reservation\app\Models\Promotion\Promotion;
  *
  * @property int $id
  * @property string $nom
+ * @property string|null $site_nom
+ * @property int $site_actif
  * @property string|null $description
  * @property int|null $duree_min
  * @property string|null $acompte_type

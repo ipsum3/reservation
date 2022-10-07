@@ -42,6 +42,7 @@ class Vehicule extends BaseModel
 
 
     protected $casts = [
+        'entree_at' => 'datetime:Y-m-d',
         'sortie_at' => 'datetime:Y-m-d',
         'mise_en_circualtion_at' => 'datetime:Y-m-d',
     ];
@@ -94,6 +95,10 @@ class Vehicule extends BaseModel
     {
         $query->whereDoesntHave('reservations', function (Builder $query) use ($date_debut, $date_fin) {
             $query->confirmedBetweenDates($date_debut, $date_fin);
+        })->where(function (Builder $query) use ($date_fin) {
+            $query->where('sortie_at', '>', $date_fin)->orWhereNull('sortie_at');
+        })->where(function (Builder $query) use ($date_debut) {
+            $query->where('entree_at', '<', $date_debut->copy()->startOfDay())->orWhereNull('entree_at');
         });
     }
 

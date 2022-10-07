@@ -42,6 +42,7 @@ return new class extends Migration
 
             $table->integer('categorie_id')->unsigned()->index();
             $table->string('categorie_nom');
+            $table->decimal('caution', 10, 2)->nullable();
             $table->decimal('franchise', 10, 2)->nullable();
             $table->dateTime('debut_at');
             $table->dateTime('fin_at');

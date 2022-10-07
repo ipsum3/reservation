@@ -17,8 +17,8 @@ use Ipsum\Reservation\app\Models\Reservation\Condition;
  * @property string|null $montant
  * @property string|null $condition_paiement_id
  * @property-read Categorie|null $categorie
- * @property-read \Ipsum\Reservation\app\Models\Tarif\Duree|null $duree
  * @property-read Condition|null $condition
+ * @property-read \Ipsum\Reservation\app\Models\Tarif\Duree|null $duree
  * @property-read \Ipsum\Reservation\app\Models\Tarif\Saison|null $saison
  * @method static \Illuminate\Database\Eloquent\Builder|Tarif hasSaisonEnCoursOuFutur()
  * @method static \Illuminate\Database\Eloquent\Builder|Tarif newModelQuery()

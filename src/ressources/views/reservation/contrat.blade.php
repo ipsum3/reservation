@@ -281,6 +281,14 @@
                         <td>
 
                             <table class="tableau3">
+                                @if ($reservation->caution)
+                                    <tr>
+                                        <td>{{ _('Caution') }}</td>
+                                        <td align="right">
+                                            @prix($reservation->caution)&nbsp;€
+                                        </td>
+                                    </tr>
+                                @endif
                                 @if ($reservation->franchise)
                                     <tr>
                                         <td>{{ _('Franchise') }}</td>

@@ -68,7 +68,7 @@ class Ouvert implements InvokableRule, DataAwareRule
 
 
         if (!$lieu->isOuvert($date)) {
-            $fail("Le lieu de :lieu est fermé le :date. Veuillez choisir une autre date.")->translate([
+            $fail("Le lieu de :lieu est fermé le :date. Veuillez choisir une autre date ou un autre lieu.")->translate([
                 'lieu' => $this->legende,
                 'date' => $date->format('d/m/Y'),
             ]);

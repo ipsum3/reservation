@@ -280,6 +280,12 @@
                                                     <td valign="top">{{ $reservation->categorie->modeles }} {{ _('ou équivalent') }}</td>
                                                 </tr>
                                             @endif
+                                            @if($reservation->caution)
+                                                <tr>
+                                                    <th valign="top">{{ _('Caution') }}</th>
+                                                    <td valign="top">@prix($reservation->caution)&nbsp;€</td>
+                                                </tr>
+                                            @endif
                                             @if($reservation->franchise)
                                                 <tr>
                                                     <th valign="top">{{ _('Franchise') }}</th>

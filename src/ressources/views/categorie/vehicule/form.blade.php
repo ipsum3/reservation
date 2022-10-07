@@ -28,6 +28,7 @@
                 {{ Aire::date('mise_en_circualtion_at', 'Date de mise en circulation*')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::input('marque_modele', 'Marque modèle*')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id', 'Catégorie*')->groupAddClass('col-md-4') }}
+                {{ Aire::date('entree_at', 'Date d\'entrée*')->groupAddClass('col-md-6') }}
                 {{ Aire::date('sortie_at', 'Date de sortie')->groupAddClass('col-md-6') }}
             </div>
         </div>

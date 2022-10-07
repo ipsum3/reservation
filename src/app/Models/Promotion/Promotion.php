@@ -38,11 +38,11 @@ use Ipsum\Reservation\app\Models\Reservation\Condition;
  * @property string|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|Categorie[] $categories
  * @property-read int|null $categories_count
+ * @property-read Condition|null $condition
  * @property-read bool $is_active
  * @property-read bool $is_en_cours
  * @property-read \Illuminate\Database\Eloquent\Collection|Lieu[] $lieux
  * @property-read int|null $lieux_count
- * @property-read Condition|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|Prestation[] $prestations
  * @property-read int|null $prestations_count
  * @method static Builder|Promotion active()

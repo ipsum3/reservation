@@ -33,6 +33,10 @@ class StoreVehicule extends FormRequest
             "mise_en_circualtion_at" => "required|date_format:Y-m-d",
             "categorie_id" => "required|exists:categories,id",
             "marque_modele" => 'required|max:255',
+            "entree_at" => [
+                "required",
+                "date_format:Y-m-d",
+            ],
             "sortie_at" => [
                 "nullable",
                 "date_format:Y-m-d",

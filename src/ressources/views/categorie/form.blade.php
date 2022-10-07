@@ -100,9 +100,10 @@
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::number('age_minimum', 'Age minimum*')->groupAddClass('col-md-4') }}
-                        {{ Aire::number('annee_permis_minimum', "Années minimum*")->groupAddClass('col-md-4')->helpText("Nombre d'années de permis minimum") }}
-                        {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-4') }}
+                        {{ Aire::number('age_minimum', 'Age minimum*')->groupAddClass('col-md-6') }}
+                        {{ Aire::number('annee_permis_minimum', "Années minimum*")->groupAddClass('col-md-6')->helpText("Nombre d'années de permis minimum") }}
+                        {{ Aire::number('caution', 'Caution (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
+                        {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
                     </div>
                 </div>
             </div>

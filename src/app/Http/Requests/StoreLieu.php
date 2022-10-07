@@ -32,10 +32,15 @@ class StoreLieu extends FormRequest
             "telephone" => "required|max:255",
             "adresse" => "required",
             "horaires_txt" => "required",
+            "instruction" => "",
             "gps" => "required|max:255",
             "emails" => "required|array",
             "emails.*" => "email",
             "emails_reservation" => "required|array",
+
+            "seo_title" => "nullable|max:255",
+            "seo_description" => "nullable",
+            "slug" => "nullable|max:255",
 
         ];
     }

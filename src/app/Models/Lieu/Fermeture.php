@@ -53,9 +53,11 @@ class Fermeture extends BaseModel
     public function scopeBetweenDates($query, $date)
     {
         return $query->where(function($query) use ($date) {
-            $query->where('debut_at', '<=', $date->format('Y-m-d'))->where('fin_at', '>=', $date->format('Y-m-d'))->whereNotNull('fin_at');
-        })->orWhere(function($query) use ($date) {
-            $query->where('debut_at', $date->format('Y-m-d'))->whereNull('fin_at');
+            $query->where(function($query) use ($date) {
+                $query->where('debut_at', '<=', $date->format('Y-m-d'))->where('fin_at', '>=', $date->format('Y-m-d'))->whereNotNull('fin_at');
+            })->orWhere(function($query) use ($date) {
+                $query->where('debut_at', '<=', $date->format('Y-m-d'))->whereNull('fin_at');
+            });
         });
     }
 

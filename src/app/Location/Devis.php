@@ -181,6 +181,7 @@ class Devis
             'observation' => $this->getLocation()->getObservation(),
             'custom_fields' => $this->getLocation()->getCustomFields(),
             'categorie_id' => $this->getLocation()->getCategorie()->id,
+            'caution' => $this->getLocation()->getCategorie()->caution,
             'franchise' => $this->getLocation()->getCategorie()->franchise,
             'debut_at' => $this->getLocation()->getDebutAt(),
             'fin_at' => $this->getLocation()->getFinAt(),

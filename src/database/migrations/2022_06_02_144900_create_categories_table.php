@@ -38,6 +38,7 @@ return new class extends Migration
             $table->smallInteger('motorisation_id')->unsigned();
             $table->smallInteger('carrosserie_id')->unsigned();
 
+            $table->decimal('caution', 10, 2)->nullable();
             $table->decimal('franchise', 10, 2)->nullable();
             $table->smallInteger('age_minimum')->unsigned();
             $table->smallInteger('annee_permis_minimum')->unsigned();

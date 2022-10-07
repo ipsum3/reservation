@@ -26,6 +26,8 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property string|null $contrat
  * @property int $etat_id
  * @property int $condition_paiement_id
+ * @property int|null $admin_id
+ * @property string|null $source
  * @property int|null $client_id
  * @property string|null $civilite
  * @property string $nom
@@ -46,6 +48,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property mixed|null $custom_fields
  * @property int $categorie_id
  * @property int|null $vehicule_id
+ * @property int $vehicule_blocage
  * @property string $categorie_nom
  * @property string|null $franchise
  * @property \Illuminate\Support\Carbon $debut_at
@@ -56,20 +59,21 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property string|null $fin_lieu_nom
  * @property string|null $montant_base
  * @property mixed|null $prestations
- * @property array|null $promotions
- * @property array|null $echeancier
+ * @property mixed|null $promotions
+ * @property mixed|null $echeancier
  * @property string|null $total
  * @property string|null $montant_paye
  * @property string|null $note
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Admin|null $admin
  * @property-read Categorie|null $categorie
  * @property-read \App\Models\Client|null $client
+ * @property-read \Ipsum\Reservation\app\Models\Reservation\Condition|null $condition
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Etat|null $etat
  * @property-read float|null $acompte
  * @property-read mixed $date_naissance_minimum
  * @property-read mixed $date_permis_minimum
- * @property-read bool $has_echeancier
  * @property-read bool $has_promotions_visible
  * @property-read bool $is_confirmed
  * @property-read bool $is_payed
@@ -77,13 +81,12 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property-read mixed $tarif_journalier
  * @property-read Lieu|null $lieuDebut
  * @property-read Lieu|null $lieuFin
- * @property-read \Ipsum\Reservation\app\Models\Reservation\Condition|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Paiement[] $paiements
  * @property-read int|null $paiements_count
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Pays|null $pays
  * @property-read Vehicule|null $vehicule
  * @method static Builder|Reservation confirmed()
- * @method static Builder|Reservation confirmedBetweenDates(\Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at)
+ * @method static Builder|Reservation confirmedBetweenDates(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @method static \Ipsum\Reservation\database\factories\ReservationFactory factory(...$parameters)
  * @method static Builder|Reservation newModelQuery()
  * @method static Builder|Reservation newQuery()
@@ -221,10 +224,10 @@ class Reservation extends BaseModel
         return $query->where('etat_id', '!=', Etat::VALIDEE_ID);
     }
 
-    public function scopeConfirmedBetweenDates(Builder $query, CarbonInterface $debut_at, CarbonInterface $fin_at)
+    public function scopeConfirmedBetweenDates(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
-        $debut_at->copy()->subHours(config('settings.reservation.battement_entre_reservations'));
-        $fin_at->copy()->addHours(config('settings.reservation.battement_entre_reservations'));
+        $debut_at = $date_debut->copy()->subHours(config('settings.reservation.battement_entre_reservations'));
+        $fin_at = $date_fin->copy()->addHours(config('settings.reservation.battement_entre_reservations'));
 
         return $query->confirmed()->where(function (Builder $query) use ($debut_at, $fin_at) {
             return $query->where(function (Builder $query) use ($debut_at, $fin_at) {
