@@ -12,7 +12,7 @@ class VehiculeFactory extends Factory
 {
 
     protected $model = Vehicule::class;
-    
+
     /**
      * Define the model's default state.
      *
@@ -22,13 +22,14 @@ class VehiculeFactory extends Factory
     {
 
         $this->faker->addProvider(new \Faker\Provider\Fakecar($this->faker));
-
-		return [
-			'immatriculation' => $this->faker->vehicleRegistration,
-			'mise_en_circualtion_at' => $this->faker->date(),
-			'categorie_id' => rand(1,5),
-			'marque_modele' => $this->faker->vehicle,
-		];
+        $date = $this->faker->date();
+        return [
+            'immatriculation' => $this->faker->vehicleRegistration,
+            'mise_en_circualtion_at' => $date,
+            'categorie_id' => rand(1,5),
+            'entree_at' => $date,
+            'marque_modele' => $this->faker->vehicle,
+        ];
     }
 
 }
