@@ -77,4 +77,6 @@ return [
 
     'check_vehicules_disponible' => false,
 
+    'numero_longueur' => 6,
+
 ];

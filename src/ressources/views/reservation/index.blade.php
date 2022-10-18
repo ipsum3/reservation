@@ -41,7 +41,7 @@
                     <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'reference'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Création', 'champ' => 'created_at'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Départ', 'champ' => 'debut_at'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Agence', 'champ' => 'debut_lieu_nom'])</th>
+                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'debut_lieu_nom'])</th>
                     <th>Client</th>
                     <th>Total</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Etat', 'champ' => 'etat_id'])</th>

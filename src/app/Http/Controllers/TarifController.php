@@ -27,7 +27,7 @@ class TarifController extends AdminController
 
         $durees = Duree::orderBy('min')->get();
         $categories = Categorie::orderBy('nom')->get();
-        $conditions = config('ipsum.reservation.tarif.has_multiple_grille_by_condition') ? Condition::all() : null;
+        $conditions = config('ipsum.reservation.tarif.has_multiple_grille_by_condition') ? Condition::where('site_actif', 1)->get() : null;
 
         return view('IpsumReservation::tarif.grille', compact('saison', 'tarifs', 'durees', 'categories', 'conditions'));
     }

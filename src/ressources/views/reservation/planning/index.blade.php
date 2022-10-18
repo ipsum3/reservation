@@ -84,22 +84,22 @@
     <h1 class="main-title">Planning des réservations</h1>
 
     <div class="box">
-        <div class="box-body">
-            {{ Aire::open()->class('form-inline mt-4 mb-1')->route('admin.reservation.planning') }}
-            <label class="sr-only" for="date_debut">Date de début</label>
-            {{ Aire::date('date_debut')->value($date_debut)->id('date_debut')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
-            <label class="sr-only" for="date_debut">Date de fin</label>
-            {{ Aire::date('date_fin')->value($date_fin)->id('date_fin')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
-            <label class="sr-only" for="type_id">Catégorie</label>
-            {{ Aire::select(collect(['' => '---- Catégorie -----'])->union($categories_all), 'categorie_id')->value(request()->get('categorie_id'))->id('categorie_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
-            <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
-            <a class="btn btn-outline-secondary mb-2 ml-5" href="{{ route('admin.reservation.planningOptimiser') }}">
-                <i class="fas fa-random"></i>
-                Optimiser le planning
-            </a>&nbsp;
-            {{ Aire::close() }}
-
-
+        <div class="box-header">
+            <div class="box-title">
+                {{ Aire::open()->class('form-inline')->route('admin.reservation.planning') }}
+                <label class="sr-only" for="date_debut">Date de début</label>
+                {{ Aire::date('date_debut')->value($date_debut)->id('date_debut')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+                <label class="sr-only" for="date_debut">Date de fin</label>
+                {{ Aire::date('date_fin')->value($date_fin)->id('date_fin')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+                <label class="sr-only" for="type_id">Catégorie</label>
+                {{ Aire::select(collect(['' => '---- Catégorie -----'])->union($categories_all), 'categorie_id')->value(request()->get('categorie_id'))->id('categorie_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+                <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
+                <a class="btn btn-outline-secondary mb-2 ml-5" href="{{ route('admin.reservation.planningOptimiser') }}">
+                    <i class="fas fa-random"></i>
+                    Optimiser le planning
+                </a>&nbsp;
+                {{ Aire::close() }}
+            </div>
         </div>
     </div>
 

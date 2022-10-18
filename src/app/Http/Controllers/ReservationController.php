@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
+use Ipsum\Reservation\app\Http\Requests\ShowDepartRetour;
 use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
 use Ipsum\Reservation\app\Location\Location;
@@ -292,6 +293,28 @@ class ReservationController extends AdminController
         return $pdf->stream();
     }
 
+    public function contratDepart(ShowDepartRetour $request, $date = null)
+    {
+        $date = $date !== null ? Carbon::createFromFormat('Y-m-d', $date) : Carbon::now();
+
+        $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
+
+        $reservations = Reservation::confirmed()
+            ->where(function ($query) use ($date) {
+                $query->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
+            })
+            ->get();
+
+        $html = '';
+        foreach ($reservations as $reservation) {
+            $html .= view(config('ipsum.reservation.contrat.view'), compact('reservation', 'cgl'))->render();
+        }
+
+        //$pdf = Pdf::loadView(config('ipsum.reservation.contrat.view'), compact('reservations', 'cgl'));
+        $pdf = Pdf::loadHTML($html);
+        return $pdf->stream();
+    }
+
     public function planning(ShowPlanning $request)
     {
         $date_debut = $request->filled('date_debut') ? Carbon::createFromFormat('Y-m-d', $request->date_debut) : Carbon::now()->subDays(4)->startOfDay();
@@ -318,5 +341,29 @@ class ReservationController extends AdminController
     {
         Artisan::call('planning:optimiser');
         return back();
+    }
+
+    public function departEtRetour(ShowDepartRetour $request)
+    {
+        $date = $request->filled('date') ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now();
+
+        $heures = Reservation::confirmed()
+            ->where(function ($query) use ($date) {
+                $query->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'")
+                    ->orWhereRaw("DATE_FORMAT(fin_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
+            })
+            ->get()
+            ->groupBy(function (Reservation $reservation, $key) use ($date) {
+                if ($reservation->debut_at->isSameDay($date)) {
+                    $reservation->is_debut = true;
+                    return  $reservation->debut_at->format('H:i');
+                } else {
+                    $reservation->is_debut = false;
+                    return  $reservation->fin_at->format('H:i');
+                }
+            })
+            ->sortKeys();
+
+        return view('IpsumReservation::reservation.depart-retour', compact('heures', 'date'));
     }
 }
