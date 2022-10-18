@@ -4,14 +4,34 @@ return [
 
     'categorie' => [
         'custom_fields' => [
-            [
+            /*[
                 'name' => 'tarif_a_partir',
                 'label' => 'A partir de (€)',
                 'description' => '',
                 'defaut' => '',
                 'type' => 'number',
                 'rules' => 'nullable|numeric'
-            ]
+            ]*/
+        ]
+    ],
+    'lieu' => [
+        'custom_fields' => [
+            /*[
+                'name' => 'email_debut',
+                'label' => 'Email prise de véhicule',
+                'description' => '',
+                'defaut' => '',
+                'type' => 'html-simple',
+                'rules' => 'nullable'
+            ],
+            [
+                'name' => 'email_fin',
+                'label' => 'Email retour de véhicule',
+                'description' => '',
+                'defaut' => '',
+                'type' => 'html-simple',
+                'rules' => 'nullable'
+            ]*/
         ]
     ],
     'client' => [

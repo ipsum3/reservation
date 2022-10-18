@@ -43,11 +43,11 @@ return new class extends Migration
             $table->smallInteger('age_minimum')->unsigned();
             $table->smallInteger('annee_permis_minimum')->unsigned();
 
+            $table->text('custom_fields')->nullable();
+
             $table->string('seo_title')->nullable();
             $table->text('seo_description')->nullable();
 
-            $table->text('custom_fields')->nullable();
-            
             $table->timestamps();
         });
 

@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Lieu;
 
 
+use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Core\Concerns\Slug;
@@ -70,6 +71,7 @@ class Lieu extends BaseModel
     protected $casts = [
         'emails' => 'array',
         'emails_reservation' => 'array',
+        'custom_fields' => AsCustomFieldsObject::class,
     ];
 
 

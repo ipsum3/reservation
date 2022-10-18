@@ -24,6 +24,14 @@ class StoreLieu extends FormRequest
      */
     public function rules()
     {
+        $rules = [];
+
+        if (config('ipsum.reservation.lieu.custom_fields')) {
+            foreach (config('ipsum.reservation.lieu.custom_fields') as $field) {
+                $rules['custom_fields.'.$field['name']] = $field['rules'];
+            }
+        }
+
         // TODO check gps
         return [
             "type_id" => "required|exists:lieu_types,id",
@@ -42,7 +50,7 @@ class StoreLieu extends FormRequest
             "seo_description" => "nullable",
             "slug" => "nullable|max:255",
 
-        ];
+        ] + $rules;
     }
 
 }
