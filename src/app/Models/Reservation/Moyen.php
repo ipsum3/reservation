@@ -25,6 +25,8 @@ class Moyen extends BaseModel
 
     const CB_SITE_ID = 1;
 
+    protected $guarded = ['id'];
+
 
 
     /*

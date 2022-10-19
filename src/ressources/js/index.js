@@ -1,4 +1,5 @@
 import * as $ from 'jquery'
+import Mustache from 'mustache'
 
 $('#tarification-load').click(function () {
     $.ajax({
@@ -12,5 +13,17 @@ $('#tarification-load').click(function () {
         error: function (xhr, type, exception) {
             $('#tarification-alert').show().html(xhr.responseJSON.message)
         }
+    })
+})
+
+$('#paiement-add').on('click', function () {
+    let template = $('#paiement-add-template').html()
+    Mustache.parse(template)
+    let rendered = Mustache.render(template, {
+        indice: $('#paiement-lignes tr').length
+    })
+    $('#paiement-lignes').prepend(rendered)
+    $('.paiement-delete').on('click', function () {
+        $(this).parent().parent().remove()
     })
 })

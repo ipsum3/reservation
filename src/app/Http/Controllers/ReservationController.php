@@ -21,6 +21,8 @@ use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Etat;
 use Ipsum\Reservation\app\Models\Reservation\Condition;
+use Ipsum\Reservation\app\Models\Reservation\Moyen;
+use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Prologue\Alerts\Facades\Alert;
@@ -180,8 +182,9 @@ class ReservationController extends AdminController
         $categories = Categorie::all()->pluck('nom', 'id');
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
+        $moyens = Moyen::all();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'prestations'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'prestations', 'moyens'));
     }
 
     public function store(StoreAdminReservation $request)
@@ -189,6 +192,15 @@ class ReservationController extends AdminController
         $reservation = new Reservation($request->validated());
         $reservation->admin_id = auth()->user()->id;
         $reservation->save();
+
+        if ($request->validated('paiements')) {
+            // Pas de mass assignment pour déclencher les événements
+            $datas = [];
+            foreach ($request->validated('paiements') as $paiement) {
+                $datas[] = new Paiement($paiement);
+            }
+            $reservation->paiements()->saveMany($datas);
+        }
 
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.reservation.edit', $reservation);
@@ -211,13 +223,23 @@ class ReservationController extends AdminController
             });
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
+        $moyens = Moyen::all();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens'));
     }
 
     public function update(StoreAdminReservation $request, Reservation $reservation)
     {
         $reservation->update($request->validated());
+
+        if ($request->validated('paiements')) {
+            // Pas de mass assignment pour déclencher les événements
+            $datas = [];
+            foreach ($request->validated('paiements') as $paiement) {
+                $datas[] = new Paiement($paiement);
+            }
+            $reservation->paiements()->saveMany($datas);
+        }
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();

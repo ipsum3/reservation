@@ -83,6 +83,11 @@ class StoreAdminReservation extends FormRequest
             "montant_paye" => "nullable|numeric",
 
             "note" => "nullable",
+
+            "paiements.*.created_at" => "nullable|date_format:Y-m-d",
+            "paiements.*.paiement_moyen_id" => "nullable|integer|exists:paiement_moyens,id",
+            "paiements.*.montant" => "nullable|numeric",
+            "paiements.*.transaction_ref" => "nullable|max:255",
         ] + $rules;
     }
 

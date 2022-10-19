@@ -30,22 +30,22 @@
                     {{ $prestation->nom }}
                 </label>
                 <div class="form-row">
-                    <div class="form-group col-6">
-                        <label class=" cursor-pointer" data-aire-component="label" for="presta-{{ $prestation->id }}">
+                    <div class="form-group col-4">
+                        <label class="sr-only cursor-pointer" data-aire-component="label" for="presta-{{ $prestation->id }}">
                             Quantité
                         </label>
                         <select class="form-control " data-aire-component="select" name="prestations[{{ $prestation->id }}][quantite]" id="presta-{{ $prestation->id }}">
-                            <option value=""> ---- Quantité ----- </option>
+                            <option value="">0</option>
                             @for($i = 1; $i <= $prestation->quantite_max; $i++)
                                 <option value="{{ $i }}" @selected(old('prestations.'.$prestation->id.'.quantite', $quantite) == $i)>{{ $i }}</option>
                             @endfor
                         </select>
                     </div>
-                    <div class="form-group col-6">
-                        <label class="cursor-pointer" data-aire-component="label" for="presta-tarif-{{ $prestation->id }}">
+                    <div class="form-group col-8">
+                        <label class="sr-only cursor-pointer" data-aire-component="label" for="presta-tarif-{{ $prestation->id }}">
                             Tarif €
                         </label>
-                        <input class="form-control" type="number" name="prestations[{{ $prestation->id }}][tarif]" value="{{ old('prestations.'.$prestation->id.'.tarif', $tarif) }}" id="presta-tarif-{{ $prestation->id }}" step="0.01">
+                        <input class="form-control" type="number" name="prestations[{{ $prestation->id }}][tarif]" value="{{ old('prestations.'.$prestation->id.'.tarif', $tarif) }}" id="presta-tarif-{{ $prestation->id }}" step="0.01" placeholder="Tarif €">
                     </div>
                 </div>
                 <input type="hidden" name="prestations[{{ $prestation->id }}][id]" value="{{ $prestation->id }}">

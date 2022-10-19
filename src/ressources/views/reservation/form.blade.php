@@ -32,10 +32,10 @@
 
                 {{ Aire::textArea('note', 'Notes')->groupAddClass('col-md-6') }}
 
-                <div class="col-md-6">
-                    <label>Informations</label>
-                    <div>
-                        @if ($reservation->exists)
+                @if ($reservation->exists)
+                    <div class="col-md-6">
+                        <label>Informations</label>
+                        <div>
                             Création : {{ $reservation->created_at->format('d/m/Y H:i:s') }}<br>
                             Modification : {{ $reservation->updated_at->format('d/m/Y H:i:s') }}<br>
                             @if ($reservation->admin)
@@ -44,9 +44,9 @@
                             @if ($reservation->source )
                                 Source : {{ $reservation->source }}<br>
                             @endif
-                        @endif
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -81,8 +81,8 @@
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::dateTime('debut_at', 'Date départ*')->required()->groupAddClass('col-md-6') }}
-                        {{ Aire::dateTime('fin_at', 'Date retour*')->required()->groupAddClass('col-md-6') }}
+                        {{ Aire::dateTime('debut_at', 'Date départ*')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
+                        {{ Aire::dateTime('fin_at', 'Date retour*')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
                         {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'debut_lieu_id', 'Lieu départ*')->required()->groupAddClass('col-md-6') }}
                         {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'fin_lieu_id', 'Lieu retour*')->required()->groupAddClass('col-md-6') }}
                         {{ Aire::textArea('observation', 'Observation client')->groupAddClass('col-md-6') }}
@@ -110,8 +110,16 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Paiements</h2>
+                    <div class="btn-toolbar">
+                        <button class="btn btn-outline-secondary" id="paiement-add" type="button" data-toggle="tooltip" title="Ajouter">
+                            <i class="fas fa-plus"></i>
+                        </button>&nbsp;
+                    </div>
                 </div>
                 <div class="box-body">
+                    @error('paiements.*')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
 
                     <table class="table table-hover table-striped">
                         <thead>
@@ -123,7 +131,7 @@
                             <th scope="col">Transaction</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="paiement-lignes">
                         @foreach($reservation->paiements()->ok()->with('moyen')->orderBy('created_at', 'desc')->get() as $paiement)
                             <tr>
                                 <td>{{ $paiement->id }}</td>
@@ -133,6 +141,22 @@
                                 <td>{{ $paiement->transaction_ref }}</td>
                             </tr>
                         @endforeach
+                        <script id="paiement-add-template" type="x-tmpl-mustache">
+                            <tr>
+                                <td><button type="button" class="paiement-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></td>
+                                <td><input type="date" class="form-control" name="paiements[@{{ indice }}][created_at]" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required></td>
+                                <td>
+                                    <select class="form-control" name="paiements[@{{ indice }}][paiement_moyen_id]" required>
+                                        <option value="">-- Moyens --</option>
+                                        @foreach($moyens as $moyen)
+                                            <option value="{{ $moyen->id }}">{{ $moyen->nom }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
+                                <td><input type="text" class="form-control" value="" name="paiements[@{{ indice }}][transaction_ref]"></td>
+                            </tr>
+                        </script>
                         </tbody>
                     </table>
 

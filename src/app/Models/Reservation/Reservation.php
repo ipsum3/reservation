@@ -50,7 +50,6 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property int|null $vehicule_id
  * @property int $vehicule_blocage
  * @property string $categorie_nom
- * @property string|null $caution
  * @property string|null $franchise
  * @property \Illuminate\Support\Carbon $debut_at
  * @property \Illuminate\Support\Carbon $fin_at
