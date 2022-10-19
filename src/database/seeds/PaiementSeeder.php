@@ -41,7 +41,15 @@ class PaiementSeeder extends Seeder
             ),
             array(
                 'id' => 5,
-                'nom' => 'Espéce',
+                'nom' => 'Espèce',
+            ),
+            array(
+                'id' => 6,
+                'nom' => 'Chèque vacances',
+            ),
+            array(
+                'id' => 6,
+                'nom' => 'Chèque tourisme',
             ),
         );
     }

@@ -21,6 +21,12 @@ php artisan vendor:publish --provider="Ipsum\Reservation\ReservationServiceProvi
 
 ## Lexique
 
+Réservation / Location
+: Action de louer à l'avance une voiture.
+
+Louer
+: Concéder contre paiement à quelqu'un l'usage de quelque chose dont on reste propriétaire
+
 Départ et retour  
 : Départ/Début/Arrivée/Retrait/prise en charge =>  Retour/fin/Restitution. 
 Privilègier Départ et retour

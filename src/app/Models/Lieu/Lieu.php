@@ -26,12 +26,12 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property string $gps
  * @property array $emails
  * @property array $emails_reservation
+ * @property mixed|null $custom_fields
  * @property int $order
  * @property string|null $seo_title
  * @property string|null $seo_description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property mixed $custom_fields
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Lieu\Fermeture[] $fermetures
  * @property-read int|null $fermetures_count
  * @property-read mixed $email_first

@@ -36,6 +36,7 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property int $transmission_id
  * @property int $motorisation_id
  * @property int $carrosserie_id
+ * @property string|null $caution
  * @property string|null $franchise
  * @property int $age_minimum
  * @property int $annee_permis_minimum

@@ -109,7 +109,19 @@
 
             <div class="box">
                 <div class="box-header">
-                    <h2 class="box-title">Paiements</h2>
+                    <h2 class="box-title">
+                        Paiements
+                        @if ($reservation->total >= $reservation->montant_paye)
+                            <span class="badge {{ $reservation->total == $reservation->montant_paye ? 'badge-light' : 'badge-danger' }}">
+                                @prix($reservation->total - $reservation->montant_paye) &nbsp;€ reste à payer
+                            </span>
+                        @else
+                            <span class="badge badge-warning">
+                                @prix($reservation->montant_paye - $reservation->total) &nbsp;€ de trop perçu
+                             </span>
+                        @endif
+                    </h2>
+
                     <div class="btn-toolbar">
                         <button class="btn btn-outline-secondary" id="paiement-add" type="button" data-toggle="tooltip" title="Ajouter">
                             <i class="fas fa-plus"></i>
