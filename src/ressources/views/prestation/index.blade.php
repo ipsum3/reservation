@@ -41,10 +41,9 @@
                         <td>{{ $prestation->nom }}</td>
                         <td>{{ $prestation->type ? $prestation->type->nom : '' }}</td>
                         <td>
-                            <a href="{{ route('admin.prestationBlocage.index') }}?prestation_id={{ $prestation->id }}">{{ $prestation->blocages_count }} blocage{{ $prestation->blocages_count > 1 ? 's' : '' }}</a>
-                            @if($prestation->blocages_count)
-                                <i class="fas fa-exclamation-triangle text-danger"></i>
-                            @endif
+                            <a href="{{ route('admin.prestationBlocage.index') }}?prestation_id={{ $prestation->id }}" class="badge {{ $prestation->blocages_count ? 'badge-danger' : 'badge-light' }}">
+                                {{ $prestation->blocages_count }} blocage{{ $prestation->blocages_count > 1 ? 's' : '' }}
+                            </a>
                         </td>
                         <td class="text-right">
                             <form action="{{ route('admin.prestation.destroy', $prestation) }}" method="POST">

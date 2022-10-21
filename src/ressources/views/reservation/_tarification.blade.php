@@ -1,7 +1,11 @@
 @php
     $promotions = isset($devis) ? $devis->getPromotions() : $reservation->promotions ?? [];
 @endphp
+
 @if ($promotions->count())
+    @error('promotions.*')
+    <div class="alert alert-warning">{{ $message }}</div>
+    @enderror
     <div class="alert alert-info">
         @foreach ($promotions as $promotion)
             {{ _('Offre') }} {{ strtolower($promotion->nom) }} : -@prix($promotion->reduction)&nbsp;€<br>
@@ -51,6 +55,9 @@
                 <input type="hidden" name="prestations[{{ $prestation->id }}][id]" value="{{ $prestation->id }}">
                 <input type="hidden" name="prestations[{{ $prestation->id }}][nom]" value="{{ $prestation->nom }}">
                 <input type="hidden" name="prestations[{{ $prestation->id }}][tarification]" value="{{ $presta->tarification ?? $prestation->tarification }}">
+                @error('prestations.'.$prestation->id)
+                <div class="alert alert-warning">{{ $message }}</div>
+                @enderror
             </div>
         @endforeach
     </div>

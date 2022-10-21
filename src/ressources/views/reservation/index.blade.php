@@ -23,8 +23,10 @@
             {{ Aire::open()->class('form-inline mt-4 mb-1')->route('admin.reservation.index') }}
             <label class="sr-only" for="search">Recherche</label>
             {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
+            <label class="sr-only" for="type_id">Catégorie</label>
+            {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id')->value(request()->get('categorie_id'))->id('categorie_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="type_id">Etat</label>
-            {{ Aire::select(collect(['' => '---- Etat -----'])->union($etats), 'etat_id')->value(request()->get('etat_id'))->id('etat_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+            {{ Aire::select(collect(['' => '---- Etats -----'])->union($etats), 'etat_id')->value(request()->get('etat_id'))->id('etat_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="condition_paiement_id">Condition</label>
             {{ Aire::select(collect(['' => '---- Conditions -----'])->union($conditions), 'condition_paiement_id')->value(request()->get('condition_paiement_id'))->id('condition_paiement_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="date_debut">Date de début</label>
@@ -63,8 +65,16 @@
                                 {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}
                             @endif
                         </td>
-                        <td class="text-right">@prix($reservation->total) &nbsp;€</td>
-                        <td>{{ $reservation->etat ? $reservation->etat->nom : '' }}</td>
+                        <td class="text-right">
+                            @if ($reservation->total)
+                                @prix($reservation->total) &nbsp;€
+                            @endif
+                        </td>
+                        <td>
+                            @if ($reservation->etat)
+                                <span class="badge badge-{{ $reservation->is_confirmed ? 'success' : 'light' }}">{{ $reservation->etat->nom }}</span>
+                            @endif
+                        </td>
                         <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
                         <td class="text-right">
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">

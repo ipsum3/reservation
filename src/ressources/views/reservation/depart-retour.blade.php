@@ -36,7 +36,7 @@
                             <th>Véhicule</th>
                             <th style="width: 20%">Lieu</th>
                             <th style="width: 20%">Client</th>
-                            <th style="width: 100px">Dû</th>
+                            <th style="width: 180px">Balance</th>
                             <th style="width: 10%">Condition</th>
                             <th style="width: 140px">Actions</th>
                         </tr>
@@ -45,7 +45,15 @@
                         @foreach ($reservations as $reservation)
                             <tr>
                                 <td class="text-white {{ $reservation->is_debut ? 'bg-success' : 'bg-info' }}">{{ $reservation->is_debut ? 'Départ' : 'Retour' }}</td>
-                                <td>Catégorie {{ $reservation->categorie_nom }}<br>{{ $reservation->vehicule ? $reservation->vehicule->immatriculation : '' }}</td>
+                                <td>
+                                    <a href="{{ $reservation->categorie ? route('admin.categorie.edit', $reservation->categorie) : '#' }}">
+                                        Catégorie {{ $reservation->categorie_nom }}
+                                    </a>
+                                    <br>
+                                    <a href="{{ $reservation->vehicule ? route('admin.vehicule.edit', $reservation->vehicule) : '#' }}">
+                                        {{ $reservation->vehicule ? $reservation->vehicule->immatriculation : '' }}
+                                    </a>
+                                </td>
                                 <td>{{ $reservation->is_debut ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}</td>
                                 <td>
                                     @if ($reservation->client)
@@ -53,12 +61,12 @@
                                     @else
                                         {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}
                                     @endif
-                                    <br>{{ $reservation->telephone }}
-                                </td>
-                                <td class="text-right">
-                                    @if ($reservation->total != $reservation->montant_paye)
-                                        @prix($reservation->total - $reservation->montant_paye) &nbsp;€
+                                    @if ($reservation->telephone)
+                                        <br><a href="tel:{{ $reservation->telephone }}"><i class="fa fa-phone-square"></i> {{ $reservation->telephone }}</a>
                                     @endif
+                                </td>
+                                <td>
+                                    <x-reservation::reste_a_payer total="{{ $reservation->total }}"  montant_paye="{{ $reservation->montant_paye }}" />
                                 </td>
                                 <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
                                 <td class="text-right">

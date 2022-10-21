@@ -47,10 +47,9 @@
                         <td>{{ $categorie->nom }}</td>
                         <td>{{ $categorie->modeles }}</td>
                         <td>
-                            <a href="{{ route('admin.categorieBlocage.index') }}?categorie_id={{ $categorie->id }}">{{ $categorie->blocages_count }} blocage{{ $categorie->blocages_count > 1 ? 's' : '' }}</a>
-                            @if($categorie->blocages_count)
-                                <i class="fas fa-exclamation-triangle text-danger"></i>
-                            @endif
+                            <a href="{{ route('admin.categorieBlocage.index') }}?categorie_id={{ $categorie->id }}" class="badge {{ $categorie->blocages_count ? 'badge-danger' : 'badge-light' }}">
+                                {{ $categorie->blocages_count }} blocage{{ $categorie->blocages_count > 1 ? 's' : '' }}
+                            </a>
                         </td>
                         <td>
                             @if ($categorie->illustration)

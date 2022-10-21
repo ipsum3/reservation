@@ -1,12 +1,18 @@
 @php
-    $resas = addInfosToReservation($type == 'vehicule' ? $vehicule->reservations : [$reservation], $date_debut, $date_fin);
+    list($resas, $decalage_max) = addInfosToReservation($type == 'vehicule' ? $vehicule->reservations : collect([$reservation]), $date_debut, $date_fin);
 @endphp
 
 <tr class="planning-ligne">
-    <th class="planning-{{ $type }}-entete">
+    <th class="planning-{{ $type }}-entete"
+        @if ($decalage_max)
+            style="height: {{ 10 + (50 * ($decalage_max + 1)) }}px"
+        @endif
+    >
         @if ($type == 'vehicule')
-            {{ $vehicule->immatriculation }}<br>
-            {{ $vehicule->marque_modele }}
+            <a href="{{ route('admin.vehicule.edit', $vehicule) }}">
+                {{ $vehicule->immatriculation }}<br>
+                {{ $vehicule->marque_modele }}
+            </a>
         @else
             Réservation {{ $reservation->reference }}
         @endif
@@ -16,8 +22,8 @@
             <div>
                 @if (isset($resas[$date->format('Y-m-d')]))
                     @foreach($resas[$date->format('Y-m-d')] as $resa)
-                        <a href="{{ route('admin.reservation.edit', $resa) }}" style="width: {{ $resa->width }}px; left: {{ $resa->decalage }}px;"
-                           class="planning-reservation {{ $type == 'vehicule' ? 'bg-success' : 'bg-danger' }}"
+                        <a href="{{ route('admin.reservation.edit', $resa) }}" style="width: {{ $resa->width }}px; left: {{ $resa->decalage }}px; top: {{ $resa->top }}px;"
+                           class="planning-reservation {{ ($type == 'vehicule' and !$resa->has_conflit) ? 'bg-success' : 'bg-danger' }}"
                            data-toggle="tooltip" data-placement="auto" data-html="true" title="
                                                          <div>Réservation : {{ $resa->reference }}</div>
                                                          <div>
@@ -25,7 +31,10 @@
                                                             Retour : {{ $resa->fin_lieu_nom }} {{ $resa->fin_at->format('d/m/Y H\hi') }}<br>
                                                          </div>"
                         >
-                            {{ $resa->prenom.' '.$resa->nom }}
+                            @if ($resa->has_conflit)
+                                <i class="fa fa-exclamation-triangle"></i>
+                            @endif
+                            {{ $resa->prenom.' '.$resa->nom }} {{$resa->overlaps}}
                         </a>
                     @endforeach
                 @endif

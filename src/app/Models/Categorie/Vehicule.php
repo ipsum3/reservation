@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Models\Categorie;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ipsum\Core\app\Models\BaseModel;
@@ -59,7 +60,7 @@ class Vehicule extends BaseModel
     /*protected static function booted()
     {
         static::deleting(function (self $categorie) {
-            $categorie->blocages()->delete();
+            $categorie->interventions()->delete();
         });
     }*/
 
@@ -78,9 +79,10 @@ class Vehicule extends BaseModel
         return $this->hasMany(Reservation::class);
     }
 
-    /*public function blocages()
+    /* TODO mettre en place intervention
+     public function interventions()
     {
-        return $this->hasMany(Blocage::class);
+        return $this->hasMany(Intervention::class);
     }*/
 
 
@@ -92,11 +94,24 @@ class Vehicule extends BaseModel
      * Scopes
      */
 
-    public function scopeWhereDoesntHaveReservationConfirmed(Builder $query, $date_debut, $date_fin)
+    public function scopeWhereDoesntHaveReservationConfirmed(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
         $query->whereDoesntHave('reservations', function (Builder $query) use ($date_debut, $date_fin) {
             $query->confirmedBetweenDates($date_debut, $date_fin);
-        })->where(function (Builder $query) use ($date_fin) {
+        })->enService($date_debut, $date_fin);
+    }
+
+    public function scopeWithCountReservationConfirmed(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    {
+        $query->withCount(['reservations' => function (Builder $query) use ($date_debut, $date_fin) {
+            $query->confirmedBetweenDates($date_debut, $date_fin);
+        }])->enService($date_debut, $date_fin);
+    }
+
+    public function scopeEnService(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    {
+        // TODO ajouter intervention
+        $query->where(function (Builder $query) use ($date_fin) {
             $query->where('sortie_at', '>', $date_fin)->orWhereNull('sortie_at');
         })->where(function (Builder $query) use ($date_debut) {
             $query->where('entree_at', '<', $date_debut->copy()->startOfDay())->orWhereNull('entree_at');

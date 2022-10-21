@@ -41,6 +41,9 @@ class ReservationController extends AdminController
         if ($request->filled('etat_id')) {
             $query->where('etat_id', $request->get('etat_id'));
         }
+        if ($request->filled('categorie_id')) {
+            $query->where('categorie_id', $request->get('categorie_id'));
+        }
         if ($request->filled('vehicule_id')) {
             $query->where('vehicule_id', $request->get('vehicule_id'));
         }
@@ -74,8 +77,9 @@ class ReservationController extends AdminController
 
         $etats = Etat::all()->pluck('nom', 'id');
         $conditions = Condition::all()->pluck('nom', 'id');
+        $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions'));
+        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions', 'categories'));
     }
 
     public function export(Request $request)
@@ -179,7 +183,7 @@ class ReservationController extends AdminController
         $etats = Etat::all()->pluck('nom', 'id');
         $conditions = Condition::all()->pluck('nom', 'id');
         $pays = Pays::all()->pluck('nom', 'id');
-        $categories = Categorie::all()->pluck('nom', 'id');
+        $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
         $moyens = Moyen::all();
@@ -211,16 +215,11 @@ class ReservationController extends AdminController
         $etats = Etat::all()->pluck('nom', 'id');
         $conditions = Condition::all()->pluck('nom', 'id');
         $pays = Pays::all()->pluck('nom', 'id');
-        $categories = Categorie::all()->pluck('nom', 'id');
-        $vehicules = Vehicule::with('categorie')
-            ->where(function ($query) use ($reservation) {
-                $query->whereDoesntHaveReservationConfirmed($reservation->debut_at, $reservation->fin_at)->orWhere('id', $reservation->vehicule_id);
-            })
-            ->orderBy('categorie_id')->orderBy('immatriculation')
-            ->get()
-            ->mapWithKeys(function ($vehicule) {
-                return [$vehicule->id => $vehicule->categorie->nom.' : '.$vehicule->immatriculation.' '.$vehicule->marque_modele];
-            });
+        $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
+        $vehicules = $reservation->categorie->vehicules()->with('categorie')
+            ->withCountReservationConfirmed($reservation->debut_at, $reservation->fin_at)
+            ->orderBy('mise_en_circualtion_at', 'desc')
+            ->get();
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
         $moyens = Moyen::all();

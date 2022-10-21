@@ -37,10 +37,9 @@
                         <td>{{ $lieu->id }}</td>
                         <td>{{ $lieu->nom }}</td>
                         <td>
-                            <a href="{{ route('admin.lieuFermeture.index') }}?lieu_id={{ $lieu->id }}">{{ $lieu->fermetures_count }} fermeture{{ $lieu->fermetures_count > 1 ? 's' : '' }}</a>
-                            @if($lieu->fermetures_count)
-                                <i class="fas fa-exclamation-triangle text-danger"></i>
-                            @endif
+                            <a href="{{ route('admin.lieuFermeture.index') }}?lieu_id={{ $lieu->id }}" class="badge {{ $lieu->fermetures_count ? 'badge-danger' : 'badge-light' }}">
+                                {{ $lieu->fermetures_count }} fermeture{{ $lieu->fermetures_count > 1 ? 's' : '' }}
+                            </a>
                         </td>
                         <td class="text-right">
                             <form action="{{ route('admin.lieu.destroy', $lieu) }}" method="POST">

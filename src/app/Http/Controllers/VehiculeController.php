@@ -62,6 +62,10 @@ class VehiculeController extends AdminController
 
     public function edit(Vehicule $vehicule)
     {
+        $vehicule->load(['reservations' => function ($query) {
+            $query->confirmed()->orderBy('debut_at', 'asc')->limit('20');
+        }]);
+
         $types = Type::get()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
 

@@ -64,7 +64,24 @@
                     <div class="form-row">
                         {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id', 'Catégorie*')->required()->groupAddClass('col-md-6') }}
                         @if ($reservation->is_confirmed and $vehicules->count())
-                            {{ Aire::select(collect(['' => '---- Véhicules -----'])->union($vehicules), 'vehicule_id', 'Véhicule')->class('js-example-basic-single js-states form-control')->groupAddClass('col-md-6') }}
+                            <div class="form-group col-md-6">
+                                <label for="vehicule_id">Véhicule</label>
+                                <select class="form-control" name="vehicule_id" id="vehicule_id" tabindex="-1" aria-hidden="true">
+                                    <option value="">---- Véhicules -----</option>
+                                    @foreach($vehicules as $vehicule)
+                                        <option value="{{ $vehicule->id }}"
+                                                class="{{ (!$vehicule->reservations_count or ($vehicule->reservations_count == 1 and $vehicule->id == $reservation->vehicule_id)) ? 'text-success' : 'text-danger' }}"
+                                                {{ old('vehicule_id', $reservation->vehicule_id) == $vehicule->id ? 'selected' : '' }}>
+                                            {{ $vehicule->categorie->nom.' : '.$vehicule->immatriculation.' '.$vehicule->marque_modele }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('vehicule_id')
+                                <ul class="invalid-feedback d-block">
+                                    <li>{{ $message }}</li>
+                                </ul>
+                                @enderror
+                            </div>
                             <input type="hidden" name="vehicule_blocage" value="0">
                             {{ Aire::checkbox('vehicule_blocage', 'Bloquer le véhicule sur cette réservation')->groupAddClass('col-md-6 offset-md-6') }}
                         @endif
@@ -100,7 +117,7 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <div id="tarification-alert" class="alert alert-danger" style="display: none"></div>
+                    <div id="tarification-alert" class="alert alert-warning" style="display: none"></div>
                     <div id="tarification">
                         @include('IpsumReservation::reservation._tarification')
                     </div>
@@ -111,15 +128,7 @@
                 <div class="box-header">
                     <h2 class="box-title">
                         Paiements
-                        @if ($reservation->total >= $reservation->montant_paye)
-                            <span class="badge {{ $reservation->total == $reservation->montant_paye ? 'badge-light' : 'badge-danger' }}">
-                                @prix($reservation->total - $reservation->montant_paye) &nbsp;€ reste à payer
-                            </span>
-                        @else
-                            <span class="badge badge-warning">
-                                @prix($reservation->montant_paye - $reservation->total) &nbsp;€ de trop perçu
-                             </span>
-                        @endif
+                        <x-reservation::reste_a_payer total="{{ $reservation->total }}"  montant_paye="{{ $reservation->montant_paye }}" />
                     </h2>
 
                     <div class="btn-toolbar">
@@ -130,7 +139,7 @@
                 </div>
                 <div class="box-body">
                     @error('paiements.*')
-                    <div class="alert alert-danger">{{ $message }}</div>
+                    <div class="alert alert-warning">{{ $message }}</div>
                     @enderror
 
                     <table class="table table-hover table-striped">

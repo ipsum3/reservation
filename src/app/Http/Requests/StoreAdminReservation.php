@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
+use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation;
 
@@ -58,7 +59,13 @@ class StoreAdminReservation extends FormRequest
             "datas" => "nullable|array",
 
             "categorie_id" => "required|integer|exists:categories,id",
-            "vehicule_id" => "nullable|integer|exists:vehicules,id",
+            "vehicule_id" => [
+                "nullable",
+                "integer",
+                Rule::exists(Vehicule::class, 'id')->where(function ($query) {
+                    return $query->where('categorie_id', $this->categorie_id);
+                })
+            ],
             "vehicule_blocage" => "nullable|boolean",
             "caution" => "nullable|numeric",
             "franchise" => "nullable|numeric",

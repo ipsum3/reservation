@@ -3,18 +3,36 @@
 
 @php
 
+    use Carbon\CarbonPeriod;
+
     function addInfosToReservation($reservations, $date_debut, $date_fin): array {
         $resas = [];
-        foreach($reservations as $reservation) {
+        $top = 10;
+        $decalage_max = 0;
+        $decalage_last = 0;
+        foreach($reservations as $key_repere => $reservation) {
             $resa_debut_at = $reservation->debut_at->greaterThanOrEqualTo($date_debut) ? $reservation->debut_at->copy() : $date_debut->copy();
             $resa_fin_at = $reservation->fin_at->lessThan($date_fin) ? $reservation->fin_at->copy() : $date_fin->copy()->endOfDay();
 
             $reservation->width = $resa_debut_at->floatDiffInDays($resa_fin_at) * 35;
             $reservation->decalage = $resa_debut_at->copy()->startOfDay()->floatDiffInDays($resa_debut_at) * 35;
+
+            $reservation->top = $top + (50 * $decalage_last);
+
+            $period = CarbonPeriod::create($resa_debut_at, $resa_fin_at);
+            if (isset($reservations[$key_repere + 1]) and $period->overlaps($reservations[$key_repere + 1]->debut_at, $reservations[$key_repere + 1]->fin_at)) {
+                $decalage_last ++;
+                $reservation->has_conflit = true;
+            } else {
+                $reservation->has_conflit = false;
+            }
+
+            $decalage_max = $decalage_max < $decalage_last ? $decalage_last : $decalage_max;
+
             $resas[$resa_debut_at->format('Y-m-d')][] = $reservation;
         }
 
-        return $resas;
+        return [$resas, $decalage_max];
     }
 
 @endphp

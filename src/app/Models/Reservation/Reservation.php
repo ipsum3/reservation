@@ -131,12 +131,11 @@ class Reservation extends BaseModel
 
         self::saving(function (self $reservation) {
             // Attribution automatique d'un véhicule pour une réservation confirmée
-            // S'il n'y a pas de véhicule dispo cela ne bloque pas
-            // Pas de vérification sur la catégorie pour permettre un surbooking
+            // S'il n'y a pas de véhicule dispo cela ne bloque pas -> surbooking
+            // Attention, possibilité d'avoir 2 résas sur un même véhicule
             if ($reservation->is_confirmed
                 and (
                     $reservation->etat_id != $reservation->getOriginal('etat_id')
-                    or $reservation->vehicule_id != $reservation->getOriginal('vehicule_id')
                     or $reservation->vehicule_id === null
                 )
             ) {
