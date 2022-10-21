@@ -10,7 +10,9 @@ use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
+use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\app\Policies\PaiementPolicy;
 use Ipsum\Reservation\app\Policies\ReservationPolicy;
 
 class ReservationServiceProvider extends ServiceProvider
@@ -31,6 +33,7 @@ class ReservationServiceProvider extends ServiceProvider
 
     protected $policies = [
         Reservation::class => ReservationPolicy::class,
+        Paiement::class => PaiementPolicy::class,
     ];
 
     /**

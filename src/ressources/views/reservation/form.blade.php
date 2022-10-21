@@ -150,7 +150,7 @@
                             <th scope="col">Date</th>
                             <th scope="col">Moyen</th>
                             <th scope="col">Montant</th>
-                            <th scope="col">Transaction</th>
+                            <th scope="col">Note</th>
                         </tr>
                         </thead>
                         <tbody id="paiement-lignes">
@@ -158,9 +158,14 @@
                             <tr>
                                 <td>{{ $paiement->id }}</td>
                                 <td>{{ $paiement->created_at->format('d/m/Y H:i:s') }}</td>
-                                <td>{{ $paiement->moyen ? $paiement->moyen->nom : '' }}</td>
+                                <td>
+                                    {{ $paiement->moyen ? $paiement->moyen->nom : '' }}
+                                    @if ($paiement->transaction_ref or $paiement->autorisation_ref)
+                                        <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="auto" title="{{ $paiement->transaction_ref ? 'Réf transaction : '.$paiement->transaction_ref : '' }} {{ $paiement->autorisation_ref ? 'Réf autorisation : '.$paiement->autorisation_ref : '' }}"></i>
+                                    @endif
+                                </td>
                                 <td>@prix($paiement->montant) €</td>
-                                <td>{{ $paiement->transaction_ref }}</td>
+                                <td>{!! nl2br(e($paiement->note )) !!}</td>
                             </tr>
                         @endforeach
                         <script id="paiement-add-template" type="x-tmpl-mustache">
@@ -176,7 +181,7 @@
                                     </select>
                                 </td>
                                 <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
-                                <td><input type="text" class="form-control" value="" name="paiements[@{{ indice }}][transaction_ref]"></td>
+                                <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
                             </tr>
                         </script>
                         </tbody>

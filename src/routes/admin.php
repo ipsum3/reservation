@@ -23,6 +23,14 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
     }
 );
 
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\PaiementController::class)->prefix('paiement')->name('admin.paiement.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::get('export', 'export')->name('export');
+        Route::any('{paiement}/destroy', 'destroy')->name('destroy');
+    }
+);
+
 
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\CategorieController::class)->prefix('categorie')->name('admin.categorie.')->group(
     function () {

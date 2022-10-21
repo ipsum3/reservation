@@ -29,11 +29,13 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @property-read mixed $tarif_a_partir
  * @property-read \Illuminate\Database\Eloquent\Collection|Reservation[] $reservations
  * @property-read int|null $reservations_count
+ * @method static Builder|Vehicule enService(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @method static \Ipsum\Reservation\database\factories\VehiculeFactory factory(...$parameters)
  * @method static Builder|Vehicule newModelQuery()
  * @method static Builder|Vehicule newQuery()
  * @method static Builder|Vehicule query()
- * @method static Builder|Vehicule whereDoesntHaveReservationConfirmed($date_debut, $date_fin)
+ * @method static Builder|Vehicule whereDoesntHaveReservationConfirmed(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
+ * @method static Builder|Vehicule withCountReservationConfirmed(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @mixin \Eloquent
  */
 class Vehicule extends BaseModel
