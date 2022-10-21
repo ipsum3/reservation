@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
+use Ipsum\Reservation\app\Http\Requests\GetReservationVehiculeSelect;
 use Ipsum\Reservation\app\Http\Requests\ShowDepartRetour;
 use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
@@ -275,6 +276,25 @@ class ReservationController extends AdminController
 
         return response()->json([
             'tarification' => view('IpsumReservation::reservation._tarification', compact('reservation', 'devis', 'prestations'))->render(),
+        ]);
+    }
+
+    public function vehiculeSelect(GetReservationVehiculeSelect $request)
+    {
+        $categorie = Categorie::findOrFail($request->categorie_id);
+
+        $debut_at = Carbon::createFromFormat('Y-m-d H:i:s', $request->debut_at);
+        $fin_at = Carbon::createFromFormat('Y-m-d H:i:s', $request->fin_at);
+
+        $vehicules = $categorie->vehicules()->with('categorie')
+            ->withCountReservationConfirmed($debut_at, $fin_at)
+            ->orderBy('mise_en_circualtion_at', 'desc')
+            ->get();
+
+        $vehicule_id = $request->vehicule_id;
+
+        return response()->json([
+            'select' => view('IpsumReservation::reservation._vehicules_select', compact('vehicules', 'vehicule_id'))->render(),
         ]);
     }
 

@@ -61,30 +61,31 @@
                     </h2>
                 </div>
                 <div class="box-body">
+                    <div id="vehicule-alert" class="alert alert-warning" style="display: none"></div>
                     <div class="form-row">
-                        {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id', 'Catégorie*')->required()->groupAddClass('col-md-6') }}
-                        @if ($reservation->is_confirmed and $vehicules->count())
-                            <div class="form-group col-md-6">
-                                <label for="vehicule_id">Véhicule</label>
-                                <select class="form-control" name="vehicule_id" id="vehicule_id" tabindex="-1" aria-hidden="true">
-                                    <option value="">---- Véhicules -----</option>
-                                    @foreach($vehicules as $vehicule)
-                                        <option value="{{ $vehicule->id }}"
-                                                class="{{ (!$vehicule->reservations_count or ($vehicule->reservations_count == 1 and $vehicule->id == $reservation->vehicule_id)) ? 'text-success' : 'text-danger' }}"
-                                                {{ old('vehicule_id', $reservation->vehicule_id) == $vehicule->id ? 'selected' : '' }}>
-                                            {{ $vehicule->categorie->nom.' : '.$vehicule->immatriculation.' '.$vehicule->marque_modele }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('vehicule_id')
-                                <ul class="invalid-feedback d-block">
-                                    <li>{{ $message }}</li>
-                                </ul>
-                                @enderror
+                        {{
+                            Aire::select(collect(['' => '---- Catégories -----'])
+                                ->union($categories), 'categorie_id', 'Catégorie*')
+                                ->id('reservation-categorie')
+                                ->data('ajax-url', route('admin.reservation.vehiculeSelect', ['vehicule_id' => $reservation->vehicule_id]))
+                                ->required()
+                                ->groupAddClass('col-md-6')
+                        }}
+                        <div class="form-group col-md-6">
+                            <label for="vehicule_id">Véhicule</label>
+                            <div id="vehicule-select">
+                                @if ($reservation->is_confirmed and $vehicules->count())
+                                    @include('IpsumReservation::reservation._vehicules_select', ['vehicule_id' => $reservation->vehicule_id])
+                                @endif
                             </div>
-                            <input type="hidden" name="vehicule_blocage" value="0">
-                            {{ Aire::checkbox('vehicule_blocage', 'Bloquer le véhicule sur cette réservation')->groupAddClass('col-md-6 offset-md-6') }}
-                        @endif
+                            @error('vehicule_id')
+                            <ul class="invalid-feedback d-block">
+                                <li>{{ $message }}</li>
+                            </ul>
+                            @enderror
+                        </div>
+                        <input type="hidden" name="vehicule_blocage" value="0">
+                        {{ Aire::checkbox('vehicule_blocage', 'Bloquer le véhicule sur cette réservation')->groupAddClass('col-md-6 offset-md-6') }}
                     </div>
                 </div>
             </div>
@@ -98,8 +99,8 @@
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::dateTime('debut_at', 'Date départ*')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
-                        {{ Aire::dateTime('fin_at', 'Date retour*')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
+                        {{ Aire::dateTime('debut_at', 'Date départ*')->id('debut_at')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
+                        {{ Aire::dateTime('fin_at', 'Date retour*')->id('fin_at')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
                         {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'debut_lieu_id', 'Lieu départ*')->required()->groupAddClass('col-md-6') }}
                         {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'fin_lieu_id', 'Lieu retour*')->required()->groupAddClass('col-md-6') }}
                         {{ Aire::textArea('observation', 'Observation client')->groupAddClass('col-md-6') }}

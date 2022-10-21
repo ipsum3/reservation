@@ -1,6 +1,21 @@
 import * as $ from 'jquery'
 import Mustache from 'mustache'
 
+$('#reservation-categorie').on('change', function () {
+    $.ajax({
+        method: 'GET',
+        url: $(this).data('ajax-url'),
+        data: $('#reservation').serialize(),
+        success: function (data) {
+            $('#vehicule-alert').hide()
+            $('#vehicule-select').html(data.select)
+        },
+        error: function (xhr, type, exception) {
+            $('#vehicule-alert').show().html(xhr.responseJSON.message)
+        }
+    })
+})
+
 $('#tarification-load').click(function () {
     $.ajax({
         method: 'POST',
