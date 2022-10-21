@@ -19,7 +19,7 @@
 
             $reservation->top = $top + (50 * $decalage_last);
 
-            $period = CarbonPeriod::create($resa_debut_at, $resa_fin_at);
+            $period = CarbonPeriod::create($reservation->debut_at->copy()->subHours(config('settings.reservation.battement_entre_reservations')), $reservation->fin_at->copy()->addHours(config('settings.reservation.battement_entre_reservations')));
             if (isset($reservations[$key_repere + 1]) and $period->overlaps($reservations[$key_repere + 1]->debut_at, $reservations[$key_repere + 1]->fin_at)) {
                 $decalage_last ++;
                 $reservation->has_conflit = true;

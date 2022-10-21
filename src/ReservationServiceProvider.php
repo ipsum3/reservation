@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
+use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Policies\ReservationPolicy;
@@ -17,7 +18,8 @@ class ReservationServiceProvider extends ServiceProvider
 
     protected $commands = [
         Install::class,
-        JoursFeries::class
+        JoursFeries::class,
+        PlanningOptimiser::class,
     ];
 
     /**
