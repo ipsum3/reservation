@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Alert;
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Models\Reservation\Moyen;
@@ -24,9 +25,14 @@ class PaiementController extends AdminController
         if ($request->filled('reservation_id')) {
             $query->where('reservation_id', $request->get('reservation_id'));
         }
-        /*if ($request->filled('created_at')) {
-            $query->where('created_at', $request->get('created_at'));
-        }*/
+        if ($request->filled('date_creation')) {
+            try {
+                $date = explode(' - ', $request->get('date_creation'));
+                $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
+                $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
+                $query->whereBetween('created_at', [$date1, $date2]);
+            } catch (\Exception $e) {}
+        }
         if ($request->filled('search')) {
             $query->where(function($query) use ($request) {
                 foreach (['id', 'montant', 'transaction_ref', 'autorisation_ref'] as $colonne) {

@@ -22,17 +22,19 @@
 
             {{ Aire::open()->class('form-inline mt-4 mb-1')->route('admin.reservation.index') }}
             <label class="sr-only" for="search">Recherche</label>
-            {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
+            {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->style('width: 180px')->withoutGroup() }}
             <label class="sr-only" for="type_id">Catégorie</label>
             {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id')->value(request()->get('categorie_id'))->id('categorie_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="type_id">Etat</label>
             {{ Aire::select(collect(['' => '---- Etats -----'])->union($etats), 'etat_id')->value(request()->get('etat_id'))->id('etat_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="condition_paiement_id">Condition</label>
             {{ Aire::select(collect(['' => '---- Conditions -----'])->union($conditions), 'condition_paiement_id')->value(request()->get('condition_paiement_id'))->id('condition_paiement_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+            <label class="sr-only" for="date_creation">Date de création</label>
+            {{ Aire::input('date_creation')->value(request()->get('date_creation'))->id('date_creation')->placeholder('Date de création')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
             <label class="sr-only" for="date_debut">Date de début</label>
-            {{ Aire::date('date_debut')->value(request()->get('date_debut'))->id('date_debut')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
-            <label class="sr-only" for="date_debut">Date de fin</label>
-            {{ Aire::date('date_fin')->value(request()->get('date_fin'))->id('date_fin')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+            {{ Aire::input('date_debut')->value(request()->get('date_debut'))->id('date_debut')->placeholder('Date de début')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
+            <label class="sr-only" for="date_fin">Date de fin</label>
+            {{ Aire::input('date_fin')->value(request()->get('date_fin'))->id('date_fin')->placeholder('Date de fin')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
 
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}

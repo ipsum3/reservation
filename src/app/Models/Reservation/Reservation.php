@@ -108,6 +108,8 @@ class Reservation extends BaseModel
         'prestations' => PrestationCollection::class,
         'promotions' => PromotionCollection::class,
         'echeancier' => EcheancierCollection::class,
+        'debut_at' => 'datetime:Y-m-d\TH:i',
+        'fin_at' => 'datetime:Y-m-d\TH:i',
     ];
 
 
@@ -372,16 +374,6 @@ class Reservation extends BaseModel
     {
         $this->attributes['fin_lieu_id'] = $value;
         $this->attributes['fin_lieu_nom'] = $this->lieuFin ? $this->lieuFin->nom : '';
-    }
-
-    public function setDebutAtAttribute($value)
-    {
-        $this->attributes['debut_at'] = Carbon::createFromFormat('Y-m-d H:i:s', $value);
-    }
-
-    public function setFinAtAttribute($value)
-    {
-        $this->attributes['fin_at'] = Carbon::createFromFormat('Y-m-d H:i:s', $value);
     }
 
     public function getDates()

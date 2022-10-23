@@ -1,5 +1,6 @@
 import * as $ from 'jquery'
 import Mustache from 'mustache'
+import './datepicker'
 
 $('#reservation-categorie').on('change', function () {
     $.ajax({

@@ -51,11 +51,29 @@ class ReservationController extends AdminController
         if ($request->filled('condition_paiement_id')) {
             $query->where('condition_paiement_id', $request->get('condition_paiement_id'));
         }
+        if ($request->filled('date_creation')) {
+            try {
+                $date = explode(' - ', $request->get('date_creation'));
+                $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
+                $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
+                $query->whereBetween('created_at', [$date1, $date2]);
+            } catch (\Exception $e) {}
+        }
         if ($request->filled('date_debut')) {
-            $query->where('created_at', '>=', $request->get('date_debut'));
+            try {
+                $date = explode(' - ', $request->get('date_debut'));
+                $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
+                $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
+                $query->whereBetween('debut_at', [$date1, $date2]);
+            } catch (\Exception $e) {}
         }
         if ($request->filled('date_fin')) {
-            $query->where('created_at', '<=', $request->get('date_fin'));
+            try {
+                $date = explode(' - ', $request->get('date_fin'));
+                $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
+                $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
+                $query->whereBetween('fin_at', [$date1, $date2]);
+            } catch (\Exception $e) {}
         }
         if ($request->filled('search')) {
             $query->where(function($query) use ($request) {

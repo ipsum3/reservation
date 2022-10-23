@@ -99,8 +99,8 @@
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::dateTime('debut_at', 'Date départ*')->id('debut_at')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
-                        {{ Aire::dateTime('fin_at', 'Date retour*')->id('fin_at')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
+                        {{ Aire::dateTimeLocal('debut_at', 'Date départ*')->id('debut_at')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
+                        {{ Aire::dateTimeLocal('fin_at', 'Date retour*')->id('fin_at')->required()->defaultValue(\Carbon\Carbon::now()->format('Y-m-d H:00:00'))->groupAddClass('col-md-6') }}
                         {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'debut_lieu_id', 'Lieu départ*')->required()->groupAddClass('col-md-6') }}
                         {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'fin_lieu_id', 'Lieu retour*')->required()->groupAddClass('col-md-6') }}
                         {{ Aire::textArea('observation', 'Observation client')->groupAddClass('col-md-6') }}

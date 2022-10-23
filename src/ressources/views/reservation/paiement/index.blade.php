@@ -21,8 +21,8 @@
             {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
             <label class="sr-only" for="paiement_moyen_id">Moyen</label>
             {{ Aire::select(collect(['' => '---- Moyens -----'])->union($moyens), 'paiement_moyen_id')->value(request()->get('paiement_moyen_id'))->id('paiement_moyen_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
-            {{--<label class="sr-only" for="date_debut">Date</label>
-            {{ Aire::date('created_at')->value(request()->get('created_at'))->id('created_at')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}--}}
+            <label class="sr-only" for="date_creation">Date de création</label>
+            {{ Aire::input('date_creation')->value(request()->get('date_creation'))->id('date_creation')->placeholder('Date de création')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
 
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
