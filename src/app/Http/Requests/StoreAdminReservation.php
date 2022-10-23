@@ -7,7 +7,6 @@ use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
-use Ipsum\Reservation\app\Models\Reservation;
 
 class StoreAdminReservation extends FormRequest
 {
@@ -69,7 +68,7 @@ class StoreAdminReservation extends FormRequest
             "vehicule_blocage" => "nullable|boolean",
             "caution" => "nullable|numeric",
             "franchise" => "nullable|numeric",
-            "debut_at" => "required|date_format:Y-m-d\TH:i",
+            "debut_at" => "required|date_format:Y-m-d\TH:i|before-or-equal:fin_at",
             "fin_at" => "required|date_format:Y-m-d\TH:i",
             "debut_lieu_id" => "required|integer|exists:lieux,id",
             "fin_lieu_id" => "required|integer|exists:lieux,id",

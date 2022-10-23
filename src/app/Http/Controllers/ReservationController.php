@@ -235,10 +235,16 @@ class ReservationController extends AdminController
         $conditions = Condition::all()->pluck('nom', 'id');
         $pays = Pays::all()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
-        $vehicules = $reservation->categorie->vehicules()->with('categorie')
-            ->withCountReservationConfirmed($reservation->debut_at, $reservation->fin_at)
-            ->orderBy('mise_en_circualtion_at', 'desc')
-            ->get();
+
+        if ($reservation->categorie) {
+            $vehicules = $reservation->categorie->vehicules()->with('categorie')
+                ->withCountReservationConfirmed($reservation->debut_at, $reservation->fin_at)
+                ->orderBy('mise_en_circualtion_at', 'desc')
+                ->get();
+        } else {
+            $vehicules = collect();
+        }
+
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
         $moyens = Moyen::all();
@@ -270,7 +276,7 @@ class ReservationController extends AdminController
 
             $reservation->fill(collect($request->validated())->except('promotions')->all());
 
-            config()->set('ipsum.reservation.recherche.date_format', 'Y-m-d H:i:s');
+            config()->set('ipsum.reservation.recherche.date_format', 'Y-m-d\TH:i');
             config()->set('ipsum.reservation.recherche.jour_format', 'Y-m-d');
             $location = new Location;
             $location->setRecherche($request->all());
@@ -301,8 +307,8 @@ class ReservationController extends AdminController
     {
         $categorie = Categorie::findOrFail($request->categorie_id);
 
-        $debut_at = Carbon::createFromFormat('Y-m-d H:i:s', $request->debut_at);
-        $fin_at = Carbon::createFromFormat('Y-m-d H:i:s', $request->fin_at);
+        $debut_at = Carbon::createFromFormat('Y-m-d\TH:i', $request->debut_at);
+        $fin_at = Carbon::createFromFormat('Y-m-d\TH:i', $request->fin_at);
 
         $vehicules = $categorie->vehicules()->with('categorie')
             ->withCountReservationConfirmed($debut_at, $fin_at)
@@ -384,6 +390,10 @@ class ReservationController extends AdminController
         })->with(['vehicules' => function ($query) use ($date_debut, $date_fin) {
             $query->with(['reservations' => function ($query) use ($date_debut, $date_fin) {
                 $query->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
+            }])->orderBy('mise_en_circualtion_at', 'desc');
+
+            $query->with(['interventions' => function ($query) use ($date_debut, $date_fin) {
+                $query->with('type')->betweenDates($date_debut, $date_fin)->orderBy('debut_at');
             }])->orderBy('mise_en_circualtion_at', 'desc');
         }])->with(['reservations' => function ($query) use ($date_debut, $date_fin) {
             $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');

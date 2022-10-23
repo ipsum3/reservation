@@ -62,6 +62,16 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\VehiculeController::cl
         Route::get('{vehicule}/edit', 'edit')->name('edit');
     }
 );
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\InterventionController::class)->prefix('intervention')->name('admin.intervention.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::post('', 'store')->name('store');
+        Route::get('create', 'create')->name('create');
+        Route::any('{intervention}/destroy', 'destroy')->name('destroy');
+        Route::put('{intervention}', 'update')->name('update');
+        Route::get('{intervention}/edit', 'edit')->name('edit');
+    }
+);
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\CarrosserieController::class)->prefix('carrosserie')->name('admin.carrosserie.')->group(
     function () {
         Route::get('', 'index')->name('index');

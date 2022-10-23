@@ -2,14 +2,12 @@
 
 namespace Ipsum\Reservation\app\Http\Requests;
 
-
 use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
+use Ipsum\Reservation\app\Models\Categorie\InterventionType;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
-use Ipsum\Reservation\app\Models\Prestation\Prestation;
-use Ipsum\Reservation\app\Models\Reservation;
 
-class GetReservationVehiculeSelect extends FormRequest
+class StoreIntervention extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,9 +27,12 @@ class GetReservationVehiculeSelect extends FormRequest
     public function rules()
     {
         return [
-            "categorie_id" => "required|integer|exists:categories,id",
-            "debut_at" => "required|date_format:Y-m-d\TH:i",
-            "fin_at" => "required|date_format:Y-m-d\TH:i",
+            "type_id" => ["required", Rule::exists(InterventionType::class, 'id')],
+            "vehicule_id" => ["required", Rule::exists(Vehicule::class, 'id')],
+            "intervenant" => "nullable|max:255",
+            "information" => "nullable|max:255",
+            "debut_at" => "required|date_format:Y-m-d\TH:i|before-or-equal:fin_at",
+            "fin_at" => "required|date_format:Y-m-d\TH:i"
         ];
     }
 

@@ -1,4 +1,8 @@
 @php
+    $interventions = [];
+    if ($type == 'vehicule') {
+        list($interventions) = addInfosToReservation($vehicule->interventions, $date_debut, $date_fin);
+    }
     list($resas, $decalage_max) = addInfosToReservation($type == 'vehicule' ? $vehicule->reservations : collect([$reservation]), $date_debut, $date_fin);
 @endphp
 
@@ -20,6 +24,21 @@
     @for($date = $date_debut->copy(); $date->lte($date_fin); $date->addDay())
         <td class="planning-case">
             <div>
+                @if (isset($interventions[$date->format('Y-m-d')]))
+                    @foreach($interventions[$date->format('Y-m-d')] as $intervention)
+                        <a href="{{ route('admin.intervention.edit', $intervention) }}" style="width: {{ $intervention->width }}px; left: {{ $intervention->decalage }}px; top: {{ $intervention->top }}px;"
+                           class="planning-reservation bg-info"
+                           data-toggle="tooltip" data-placement="auto" data-html="true" title="
+                                                         <div>Intervention : {{ $intervention->type->nom }}</div>
+                                                         <div>
+                                                            Début : {{ $intervention->debut_at->format('d/m/Y H\hi') }}<br>
+                                                            Fin : {{ $intervention->fin_at->format('d/m/Y H\hi') }}<br>
+                                                         </div>"
+                        >
+                            Intervention
+                        </a>
+                    @endforeach
+                @endif
                 @if (isset($resas[$date->format('Y-m-d')]))
                     @foreach($resas[$date->format('Y-m-d')] as $resa)
                         <a href="{{ route('admin.reservation.edit', $resa) }}" style="width: {{ $resa->width }}px; left: {{ $resa->decalage }}px; top: {{ $resa->top }}px;"
@@ -34,7 +53,7 @@
                             @if ($resa->has_conflit)
                                 <i class="fa fa-exclamation-triangle"></i>
                             @endif
-                            {{ $resa->prenom.' '.$resa->nom }} {{$resa->overlaps}}
+                            {{ $resa->prenom.' '.$resa->nom }}
                         </a>
                     @endforeach
                 @endif

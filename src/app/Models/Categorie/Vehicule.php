@@ -59,12 +59,12 @@ class Vehicule extends BaseModel
     }
 
 
-    /*protected static function booted()
+    protected static function booted()
     {
         static::deleting(function (self $categorie) {
             $categorie->interventions()->delete();
         });
-    }*/
+    }
 
 
     /*
@@ -81,13 +81,10 @@ class Vehicule extends BaseModel
         return $this->hasMany(Reservation::class);
     }
 
-    /* TODO mettre en place intervention
-     public function interventions()
+    public function interventions()
     {
         return $this->hasMany(Intervention::class);
-    }*/
-
-
+    }
 
 
 
@@ -112,11 +109,14 @@ class Vehicule extends BaseModel
 
     public function scopeEnService(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
-        // TODO ajouter intervention
         $query->where(function (Builder $query) use ($date_fin) {
             $query->where('sortie_at', '>', $date_fin)->orWhereNull('sortie_at');
         })->where(function (Builder $query) use ($date_debut) {
             $query->where('entree_at', '<', $date_debut->copy()->startOfDay())->orWhereNull('entree_at');
+        });
+
+        $query->whereDoesntHave('interventions', function (Builder $query) use ($date_debut, $date_fin) {
+            $query->betweenDates($date_debut, $date_fin);
         });
     }
 

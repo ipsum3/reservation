@@ -64,6 +64,9 @@ class VehiculeController extends AdminController
     {
         $vehicule->load(['reservations' => function ($query) {
             $query->confirmed()->orderBy('debut_at', 'asc')->limit('20');
+        },
+        'interventions' => function ($query) {
+            $query->where('fin_at', '>=', Carbon::now())->orderBy('debut_at', 'asc')->limit('20');
         }]);
 
         $types = Type::get()->pluck('nom', 'id');

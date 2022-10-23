@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call(CategorieSeeder::class);
+        $this->call(InterventionSeeder::class);
         $this->call(ReservationSeeder::class);
         $this->call(PaiementSeeder::class);
         $this->call(PrestationSeeder::class);

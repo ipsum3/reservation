@@ -1,5 +1,5 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Catégories')
+@section('title', 'Véhicule')
 
 @section('content')
 
@@ -39,7 +39,43 @@
         </div>
 
         <div class="col-md-6">
-            <div class="box" id="demandes">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">Prochaines interventions</h2>
+                    <div class="btn-toolbar">
+                        @if ($vehicule->exists)
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.create', ['vehicule_id' => $vehicule]) }}" data-toggle="tooltip" title="Ajouter">
+                                <i class="fas fa-plus"></i>
+                            </a>&nbsp;
+                        @endif
+                    </div>
+                </div>
+                <div class="box-body">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Type.</th>
+                            <th scope="col">Début</th>
+                            <th scope="col">Fin</th>
+                            <th scope="col">Intervenant</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($vehicule->interventions as $intervention)
+                            <tr>
+                                <td><a href="{{ route('admin.intervention.edit', $intervention) }}">{{ $intervention->id }}</a></td>
+                                <td>{{ $intervention->type ? $intervention->type->nom : '' }}</td>
+                                <td>{{ $intervention->debut_at->format('d/m/Y H:i') }}</td>
+                                <td>{{ $intervention->fin_at->format('d/m/Y H:i') }}</td>
+                                <td>{{ $intervention->intervenant }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Prochaines réservations</h2>
                 </div>
@@ -65,7 +101,7 @@
                                         <span class="badge badge-{{ $reservation->is_confirmed ? 'success' : 'light' }}">{{ $reservation->etat->nom }}</span>
                                     @endif
                                 </td>
-                                <td>{{ $reservation->created_at->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ $reservation->debut_at->format('d/m/Y H:i:s') }}</td>
                             </tr>
                         @endforeach
                         </tbody>
