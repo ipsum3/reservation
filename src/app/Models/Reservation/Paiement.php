@@ -11,6 +11,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property int|null $reservation_id
  * @property int $paiement_moyen_id
  * @property string $montant
+ * @property string|null $note
  * @property string|null $transaction_ref
  * @property string|null $autorisation_ref
  * @property string|null $erreur

@@ -18,7 +18,7 @@ use Ipsum\Reservation\app\Location\Location;
 use Ipsum\Reservation\app\Location\Prestation;
 use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
-use Ipsum\Reservation\app\Models\Categorie\Vehicule;
+use Ipsum\Reservation\app\Models\Client;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Etat;
 use Ipsum\Reservation\app\Models\Reservation\Condition;
@@ -195,7 +195,7 @@ class ReservationController extends AdminController
 
 
         if ($request->filled('client_id')) {
-            $client = config('ipsum.reservation.client.model')::findOrFail($request->client_id);
+            $client = Client::findOrFail($request->client_id);
             $reservation->fill($client->toArray()); // TODO pas terrible... Trouver autre chose pour peupler les données
         }
 

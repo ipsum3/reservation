@@ -7,6 +7,28 @@ use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 
+/**
+ * Ipsum\Reservation\app\Models\Categorie\Intervention
+ *
+ * @property int $id
+ * @property int $vehicule_id
+ * @property int $type_id
+ * @property \Illuminate\Support\Carbon $debut_at
+ * @property \Illuminate\Support\Carbon $fin_at
+ * @property string|null $intervenant
+ * @property string|null $information
+ * @property string|null $cout
+ * @property mixed|null $custom_fields
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Ipsum\Reservation\app\Models\Categorie\InterventionType|null $type
+ * @property-read \Ipsum\Reservation\app\Models\Categorie\Vehicule|null $vehicule
+ * @method static \Illuminate\Database\Eloquent\Builder|Intervention betweenDates(\Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at)
+ * @method static \Illuminate\Database\Eloquent\Builder|Intervention newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Intervention newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Intervention query()
+ * @mixin \Eloquent
+ */
 class Intervention extends BaseModel
 {
 

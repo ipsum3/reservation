@@ -101,7 +101,7 @@
                                         <span class="badge badge-{{ $reservation->is_confirmed ? 'success' : 'light' }}">{{ $reservation->etat->nom }}</span>
                                     @endif
                                 </td>
-                                <td>{{ $reservation->debut_at->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ $reservation->debut_at->format('d/m/Y H:i') }}</td>
                             </tr>
                         @endforeach
                         </tbody>

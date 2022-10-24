@@ -11,6 +11,7 @@ use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
+use Ipsum\Reservation\app\Models\Client;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Casts\EcheancierCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\PrestationCollection;
@@ -69,7 +70,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Admin|null $admin
  * @property-read Categorie|null $categorie
- * @property-read \App\Models\Client|null $client
+ * @property-read Client|null $client
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Condition|null $condition
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Etat|null $etat
  * @property-read float|null $acompte
@@ -201,7 +202,7 @@ class Reservation extends BaseModel
 
     public function client()
     {
-        return $this->belongsTo(config('ipsum.reservation.client.model'));
+        return $this->belongsTo(Client::class);
     }
 
     public function admin()

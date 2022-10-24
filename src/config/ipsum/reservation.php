@@ -34,9 +34,6 @@ return [
             ]*/
         ]
     ],
-    'client' => [
-        'model' => \App\Models\User::class,
-    ],
     'confirmation' => [
         'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
         'couleur' => '#bbb',

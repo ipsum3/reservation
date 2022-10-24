@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
+use Ipsum\Reservation\app\Models\Client;
 use Ipsum\Reservation\app\Models\Promotion\Promotion;
 
 class StorePromotion extends FormRequest
@@ -65,7 +66,7 @@ class StorePromotion extends FormRequest
         $current_params = \Route::current()->parameters();
 
         return [
-            "client_id" => ['nullable', Rule::exists(config('ipsum.reservation.client.model'), 'id')],
+            "client_id" => ['nullable', Rule::exists(Client::class, 'id')],
             "type" => 'required|in:reduction',
 
             "reference" => 'nullable|max:255|unique:promotions,reference,'.(isset($current_params['promotion']) ? $current_params['promotion']->id : '').',id',

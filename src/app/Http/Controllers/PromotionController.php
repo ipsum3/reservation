@@ -9,6 +9,7 @@ use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\StorePromotion;
 use Ipsum\Reservation\app\Location\Prestation;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
+use Ipsum\Reservation\app\Models\Client;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Promotion\Promotion;
 
@@ -47,7 +48,7 @@ class PromotionController extends AdminController
         $lieux = Lieu::orderBy('order')->get();
         $prestations = Prestation::orderBy('order')->get();
         $conditions = Condition::orderBy('order')->get()->pluck('nom', 'id');
-        $clients = config('ipsum.reservation.client.model')::orderBy('nom')->get()->pluck('email', 'id');
+        $clients = Client::orderBy('nom')->get()->pluck('email', 'id');
 
         return view('IpsumReservation::promotion.form', compact('promotion', 'categories', 'lieux', 'conditions', 'prestations', 'clients'));
     }
@@ -70,7 +71,7 @@ class PromotionController extends AdminController
         $lieux = Lieu::orderBy('order')->get();
         $prestations = Prestation::orderBy('order')->get();
         $conditions = Condition::orderBy('order')->get()->pluck('nom', 'id');
-        $clients = config('ipsum.reservation.client.model')::orderBy('nom')->get()->pluck('email', 'id');
+        $clients = Client::orderBy('nom')->get()->pluck('email', 'id');
 
         return view('IpsumReservation::promotion.form', compact('promotion', 'categories', 'lieux', 'conditions', 'prestations', 'clients'));
     }

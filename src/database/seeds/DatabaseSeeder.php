@@ -3,12 +3,15 @@
 namespace Ipsum\Reservation\database\seeds;
 
 use Illuminate\Database\Seeder;
+use Ipsum\Reservation\app\Models\Client;
 
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
+
+        Client::factory(10)->create();
 
         $this->call(CategorieSeeder::class);
         $this->call(InterventionSeeder::class);

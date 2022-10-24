@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Ipsum\Reservation\app\Http\Controllers\ClientController;
 
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController::class)->prefix('reservation')->name('admin.reservation.')->group(
     function () {
@@ -182,5 +183,17 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\PromotionController::c
         Route::put('{promotion}', 'update')->name('update');
         Route::get('{promotion}/edit', 'edit')->name('edit');
         Route::get('{promotion}/desactivation', 'desactivation')->name('desactivation');
+    }
+);
+
+Route::controller(ClientController::class)->prefix('client')->name('admin.client.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::get('export', 'export')->name('export');
+        Route::post('', 'store')->name('store');
+        Route::get('create', 'create')->name('create');
+        Route::any('{client}/destroy', 'destroy')->name('destroy');
+        Route::put('{client}', 'update')->name('update');
+        Route::get('{client}/edit', 'edit')->name('edit');
     }
 );

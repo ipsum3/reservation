@@ -27,6 +27,8 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @property-read mixed $tag_meta_description
  * @property-read mixed $tag_title
  * @property-read mixed $tarif_a_partir
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Categorie\Intervention[] $interventions
+ * @property-read int|null $interventions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Reservation[] $reservations
  * @property-read int|null $reservations_count
  * @method static Builder|Vehicule enService(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
