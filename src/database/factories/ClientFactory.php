@@ -1,16 +1,19 @@
 <?php
 
-namespace Database\Factories;
+namespace Ipsum\Reservation\database\factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Ipsum\Reservation\app\Models\Reservation\Pays;
+use Ipsum\Reservation\app\Models\Client;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
 class ClientFactory extends Factory
 {
+
+    protected $model = Client::class;
+
     /**
      * Define the model's default state.
      *

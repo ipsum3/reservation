@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\database\factories\ClientFactory;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -77,6 +78,13 @@ class Client extends Authenticatable
         'naissance_at' => 'datetime',
         'permis_at' => 'datetime',
     ];
+
+
+
+    protected static function newFactory()
+    {
+        return ClientFactory::new();
+    }
 
 
 

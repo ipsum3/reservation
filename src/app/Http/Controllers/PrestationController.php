@@ -11,6 +11,7 @@ use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Prestation\Type;
+use Ipsum\Reservation\app\Models\Categorie\Type as CategorieType;
 use Prologue\Alerts\Facades\Alert;
 
 class PrestationController extends AdminController
@@ -50,8 +51,9 @@ class PrestationController extends AdminController
         $types = Type::all()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get();
         $lieux = Lieu::orderBy('order')->get();
+        $categorie_types = CategorieType::get();
 
-        return view('IpsumReservation::prestation.form', compact('prestation', 'types', 'categories', 'lieux'));
+        return view('IpsumReservation::prestation.form', compact('prestation', 'types', 'categories', 'lieux', 'categorie_types'));
     }
 
     public function store(StorePrestation $request)
@@ -70,8 +72,9 @@ class PrestationController extends AdminController
         $types = Type::all()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get();
         $lieux = Lieu::orderBy('order')->get();
+        $categorie_types = CategorieType::get()->pluck('nom', 'id');
         
-        return view('IpsumReservation::prestation.form', compact('prestation', 'types', 'categories', 'lieux'));
+        return view('IpsumReservation::prestation.form', compact('prestation', 'types', 'categories', 'lieux', 'categorie_types'));
     }
 
     public function update(StorePrestation $request, Prestation $prestation)

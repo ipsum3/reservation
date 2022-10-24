@@ -48,7 +48,7 @@ class PaiementSeeder extends Seeder
                 'nom' => 'Chèque vacances',
             ),
             array(
-                'id' => 6,
+                'id' => 7,
                 'nom' => 'Chèque tourisme',
             ),
         );

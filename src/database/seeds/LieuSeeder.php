@@ -176,7 +176,7 @@ class LieuSeeder extends Seeder
                 'fin_at' => '2022-01-01',
             ),
             array(
-                'lieu_id' => '1',
+                'lieu_id' => '2',
                 'nom' => "Test fermeture 2",
                 'debut_at' => '2022-04-02',
             ),

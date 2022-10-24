@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
+use Ipsum\Reservation\app\Models\Categorie\Type;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 
 class StorePrestation extends FormRequest
@@ -63,6 +64,7 @@ class StorePrestation extends FormRequest
             "age_max" => "nullable|numeric|min:16|max:120",
             "jour" => ["nullable", Rule::in(array_keys(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS))],
             "condition" => ["nullable", Rule::in(array_keys(Prestation::$LISTE_CONDITION))],
+            "categorie_type_id" => ["nullable", Rule::exists(Type::class, 'id')],
             "heure_max" => ["nullable"],
             "heure_min" => ["nullable"],
 

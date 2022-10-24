@@ -144,6 +144,11 @@ class Prestation extends BaseModel
             })->orWhereDoesntHave('lieux');
         })
 
+        // Type de véhicule
+        ->where(function (Builder $query) use ($categorie) {
+            $query->where('categorie_type_id', $categorie->type_id)->orWhereNull('categorie_type_id');
+        })
+
         // Horaires
         ->where(function (Builder $query) use ($debut_at, $fin_at) {
             $query->where('heure_max', '>', $debut_at->toTimeString())->orWhere('heure_max', '>', $fin_at->toTimeString())
