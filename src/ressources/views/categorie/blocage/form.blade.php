@@ -24,10 +24,10 @@
         </div>
         <div class="box-body">
             <div class="form-row">
-                {{ Aire::input('nom', 'Nom (raison)')->groupAddClass('col-md-6') }}
+                {{ Aire::input('nom', 'Nom')->groupAddClass('col-md-6')->helpText('Raison du blocage. Facultatif et non visible par les clients.') }}
                 {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id', 'Catégorie*')->groupAddClass('col-md-6') }}
-                {{ Aire::date('debut_at', 'Début*')->groupAddClass('col-md-6') }}
-                {{ Aire::date('fin_at', 'Fin*')->groupAddClass('col-md-6') }}
+                {{ Aire::date('debut_at', 'Début*')->groupAddClass('col-md-6')->helpText('Date incluse') }}
+                {{ Aire::date('fin_at', 'Fin*')->groupAddClass('col-md-6')->helpText('Date incluse') }}
             </div>
         </div>
     </div>

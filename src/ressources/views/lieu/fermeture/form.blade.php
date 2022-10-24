@@ -26,8 +26,8 @@
             <div class="form-row">
                 {{ Aire::input('nom', 'Nom (raison)')->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'lieu_id', 'Lieux*')->groupAddClass('col-md-6') }}
-                {{ Aire::date('debut_at', 'Début*')->groupAddClass('col-md-6') }}
-                {{ Aire::date('fin_at', 'Fin')->groupAddClass('col-md-6') }}
+                {{ Aire::date('debut_at', 'Début*')->groupAddClass('col-md-6')->helpText('Date incluse') }}
+                {{ Aire::date('fin_at', 'Fin')->groupAddClass('col-md-6')->helpText("Date incluse. Laisser vide si la date de réouverture n'est pas connue.") }}
             </div>
         </div>
     </div>

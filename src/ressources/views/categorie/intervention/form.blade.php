@@ -26,8 +26,8 @@
             <div class="form-row">
                 {{ Aire::select(collect(['' => '---- Types -----'])->union($types), 'type_id', 'Type*')->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Véhicules -----'])->union($vehicules), 'vehicule_id', 'Véhicule*')->defaultValue(old('vehicule_id', request('vehicule_id', $intervention->vehicule_id)))->class('js-example-basic-single js-states form-control')->groupAddClass('col-md-6') }}
-                {{ Aire::dateTimeLocal('debut_at', 'Début*')->defaultValue(\Carbon\Carbon::now()->startOfHour())->required()->groupAddClass('col-md-6') }}
-                {{ Aire::dateTimeLocal('fin_at', 'Fin*')->defaultValue(\Carbon\Carbon::now()->startOfHour())->required()->groupAddClass('col-md-6') }}
+                {{ Aire::dateTimeLocal('debut_at', 'Début*')->defaultValue(\Carbon\Carbon::now()->startOfHour())->required()->groupAddClass('col-md-6')->helpText('Date incluse') }}
+                {{ Aire::dateTimeLocal('fin_at', 'Fin*')->defaultValue(\Carbon\Carbon::now()->startOfHour())->required()->groupAddClass('col-md-6')->helpText('Date incluse') }}
                 {{ Aire::input('intervenant', 'Intervenant')->groupAddClass('col-md-6') }}
                 {{ Aire::textArea('information', 'Information')->groupAddClass('col-md-6') }}
             </div>

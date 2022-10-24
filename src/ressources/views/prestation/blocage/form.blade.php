@@ -25,9 +25,9 @@
         <div class="box-body">
             <div class="form-row">
                 {{ Aire::input('nom', 'Nom (raison)')->groupAddClass('col-md-6') }}
-                {{ Aire::select(collect(['' => '---- Prestations -----'])->union($prestations), 'prestation_id', 'Prestations*')->groupAddClass('col-md-6') }}
-                {{ Aire::date('debut_at', 'Début*')->groupAddClass('col-md-6') }}
-                {{ Aire::date('fin_at', 'Fin*')->groupAddClass('col-md-6') }}
+                {{ Aire::select(collect(['' => '---- Prestations -----'])->union($prestations), 'prestation_id', 'Prestations*')->groupAddClass('col-md-6')->helpText('Date incluse') }}
+                {{ Aire::date('debut_at', 'Début*')->groupAddClass('col-md-6')->helpText('Date incluse') }}
+                {{ Aire::date('fin_at', 'Fin*')->groupAddClass('col-md-6')->helpText('Date incluse') }}
             </div>
         </div>
     </div>
