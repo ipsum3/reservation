@@ -34,6 +34,15 @@ return [
             ]*/
         ]
     ],
+    'prestation' => [
+        'custom_fields' => []
+    ],
+    'saison' => [
+        'custom_fields' => []
+    ],
+    'client' => [
+        'custom_fields' => [ ]
+    ],
     'confirmation' => [
         'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
         'couleur' => '#bbb',

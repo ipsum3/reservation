@@ -24,12 +24,19 @@ class StoreSaison extends FormRequest
      */
     public function rules()
     {
+        $rules = [];
+
+        if (config('ipsum.reservation.lieu.custom_fields')) {
+            foreach (config('ipsum.reservation.lieu.custom_fields') as $field) {
+                $rules['custom_fields.'.$field['name']] = $field['rules'];
+            }
+        }
 
         return [
             "nom" => "nullable|max:255",
             "debut_at" => "required|date_format:Y-m-d|before-or-equal:fin_at",
             "fin_at" => "required|date_format:Y-m-d"
-        ];
+        ] + $rules;
     }
 
 }

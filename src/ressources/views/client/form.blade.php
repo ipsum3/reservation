@@ -61,6 +61,26 @@
                     </div>
                 </div>
             </div>
+            @if (config('ipsum.reservation.client.custom_fields'))
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="box-title">
+                            Informations complémentaires
+                        </h2>
+                    </div>
+                    <div class="box-body">
+                        @foreach(config('ipsum.reservation.client.custom_fields') as $field)
+                            <x-admin::custom
+                                    name="{{ 'custom_fields['.$field['name'].']' }}"
+                                    label="{{ $field['label'] }}"
+                                    description="{{ $field['description'] }}"
+                                    value="{!! old('custom_fields.'.$field['name'], $client->custom_fields->{$field['name']}) !!}"
+                                    type="{{ $field['type'] }}"
+                            />
+                        @endforeach
+                    </div>
+                </div>
+            @endif
             {{ Aire::close() }}
         </div>
         <div class="col-md-6">

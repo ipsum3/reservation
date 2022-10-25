@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\database\factories\ClientFactory;
@@ -77,6 +78,7 @@ class Client extends Authenticatable
     protected $casts = [
         'naissance_at' => 'datetime',
         'permis_at' => 'datetime',
+        'custom_fields' => AsCustomFieldsObject::class,
     ];
 
 

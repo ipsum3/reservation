@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Tarif;
 
 use Illuminate\Support\Collection;
+use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 
@@ -31,6 +32,10 @@ class Saison extends BaseModel
     protected $dates = [
         'debut_at',
         'fin_at',
+    ];
+
+    protected $casts = [
+        'custom_fields' => AsCustomFieldsObject::class,
     ];
 
 

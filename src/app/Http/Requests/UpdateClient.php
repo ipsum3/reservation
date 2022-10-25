@@ -27,6 +27,13 @@ class UpdateClient extends FormRequest
 
     public function rules()
     {
+        $rules = [];
+
+        if (config('ipsum.reservation.lieu.custom_fields')) {
+            foreach (config('ipsum.reservation.lieu.custom_fields') as $field) {
+                $rules['custom_fields.'.$field['name']] = $field['rules'];
+            }
+        }
 
         $current_params = \Route::current()->parameters();
 
@@ -51,7 +58,7 @@ class UpdateClient extends FormRequest
                 'date_format:Y-m-d'
             ],
             'permis_delivre' => 'required|max:255',
-        ];
+        ] + $rules;
     }
 
 }

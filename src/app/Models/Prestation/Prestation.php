@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Prestation;
 
 
+use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Admin\Concerns\Sortable;
@@ -62,6 +63,11 @@ class Prestation extends BaseModel
 
 
     protected $guarded = ['id'];
+
+
+    protected $casts = [
+        'custom_fields' => AsCustomFieldsObject::class,
+    ];
 
 
     protected static function booted()

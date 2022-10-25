@@ -52,6 +52,14 @@ class StorePrestation extends FormRequest
      */
     public function rules()
     {
+        $rules = [];
+
+        if (config('ipsum.reservation.lieu.custom_fields')) {
+            foreach (config('ipsum.reservation.lieu.custom_fields') as $field) {
+                $rules['custom_fields.'.$field['name']] = $field['rules'];
+            }
+        }
+
         return [
             "type_id" => "required|exists:prestation_types,id",
             "tarification" => ["required", Rule::in(Prestation::$LISTE_TARIFICATION)],
@@ -71,7 +79,7 @@ class StorePrestation extends FormRequest
             /*"categories.*.montant" => "numeric",
             "categories.*.montant" => "required|exists:categories,id",
             "lieux.*" => "required|exists:lieux,id",*/
-        ];
+        ] + $rules;
     }
 
 }
