@@ -1,5 +1,6 @@
 import * as $ from 'jquery'
 import Mustache from 'mustache'
+import 'ipsum3-admin-assets/src/js/index'
 import './datepicker'
 
 $('#reservation-categorie').on('change', function () {

@@ -1,0 +1,16 @@
+{
+  "name": "ipsum3-reservation",
+  "version": "1.0.0",
+  "description": "Assets for Ipsum3 admin reservation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ipsum3/reservation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "ipsum3-admin-assets": "ipsum3/admin-assets#master",
+    "daterangepicker": "^3.1.0"
+  }
+}
