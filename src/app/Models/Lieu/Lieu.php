@@ -3,11 +3,11 @@
 namespace Ipsum\Reservation\app\Models\Lieu;
 
 
+use Carbon\CarbonInterface;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Core\Concerns\Slug;
-use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
@@ -129,7 +129,7 @@ class Lieu extends BaseModel
      * Functions
      */
 
-    public function isOuvert(Carbon $date): bool
+    public function isOuvert(CarbonInterface $date): bool
     {
         // Vérification fermeture
         $count = Fermeture::where(function ($query) {
@@ -144,7 +144,7 @@ class Lieu extends BaseModel
         return true;
     }
 
-    public function isOuvertHoraire(Carbon $date)
+    public function isOuvertHoraire(CarbonInterface $date)
     {
         $count = $this->horaires()
             ->creneaux($date)
@@ -160,7 +160,7 @@ class Lieu extends BaseModel
         return $count ? true : false;
     }
 
-    public function creneauxHorairesToString(Carbon $date)
+    public function creneauxHorairesToString(CarbonInterface $date)
     {
         $horaires = $this->horaires()->creneaux($date)->get();
         if ($horaires->count() and Ferie::isFerie($date->copy(), $this)) {

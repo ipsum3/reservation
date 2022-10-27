@@ -2,10 +2,10 @@
 
 namespace Ipsum\Reservation\app\Models\Tarif;
 
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Core\app\Models\BaseModel;
-use Ipsum\Reservation\app\Classes\Carbon;
 
 /**
  * Ipsum\Reservation\app\Models\Tarif\Saison
@@ -62,7 +62,7 @@ class Saison extends BaseModel
      * Scopes
      */
 
-    public function scopeBetweenDates($query, Carbon $debut_at, Carbon $fin_at)
+    public function scopeBetweenDates($query, CarbonInterface $debut_at, CarbonInterface $fin_at)
     {
         $debut_at->copy()->startOfDay();
         $fin_at->copy()->endOfDay();
@@ -108,12 +108,12 @@ class Saison extends BaseModel
     }
 
     /**
-     * @param Carbon $date_arrivee
-     * @param Carbon $date_depart
+     * @param CarbonInterface $date_arrivee
+     * @param CarbonInterface $date_depart
      * @return Collection
      * @throws TarifException
      */
-    public static function getByDates(Carbon $date_arrivee, Carbon $date_depart): Collection
+    public static function getByDates(CarbonInterface $date_arrivee, CarbonInterface $date_depart): Collection
     {
         $saisons = self::betweenDates($date_arrivee, $date_depart)->orderBy('fin_at', 'asc')->get();
 
@@ -132,12 +132,12 @@ class Saison extends BaseModel
     /**
      * Durée de la réservation sur cette saison
      *
-     * @param Carbon $date_debut
-     * @param Carbon $date_fin
+     * @param CarbonInterface $date_debut
+     * @param CarbonInterface $date_fin
      * @return int
      * @desc
      */
-    public function getDuree(Carbon $date_debut, Carbon $date_fin): int
+    public function getDuree(CarbonInterface $date_debut, CarbonInterface $date_fin): int
     {
         // La saison ne correspond pas
         if ($date_fin->lt($this->debut_at) or $date_debut->gt($this->fin_at)) {

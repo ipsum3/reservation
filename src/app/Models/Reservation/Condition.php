@@ -2,11 +2,11 @@
 
 namespace Ipsum\Reservation\app\Models\Reservation;
 
+use Carbon\CarbonInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
-use DB;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Promotion\Promotion;
 
@@ -83,7 +83,7 @@ class Condition extends BaseModel
     /**
      * @desc Le paiement en x fois doit être disponible uniquement si la date du début de la réservation est postérieure à la date de la dernière échéance + 2 jours.
      */
-    public function scopeDelaiValide(Builder $query, Carbon $debut)
+    public function scopeDelaiValide(Builder $query, CarbonInterface $debut)
     {
         $query->where(function (Builder $query) use ($debut) {
             $query->whereRaw("'".$debut->format('Y-m-d H:i:s')."' > NOW() + INTERVAL echeance_nombre - 1 MONTH + INTERVAL 2 DAY")->orWhereNull('echeance_nombre');

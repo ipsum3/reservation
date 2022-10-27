@@ -3,8 +3,8 @@
 namespace Ipsum\Reservation\app\Models\Prestation;
 
 
+use Carbon\CarbonInterface;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
-use Ipsum\Reservation\app\Classes\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
@@ -109,7 +109,7 @@ class Prestation extends BaseModel
      * Scopes
      */
 
-    public function scopeWithoutBlocage(Builder $query, $debut_at, $fin_at)
+    public function scopeWithoutBlocage(Builder $query, CarbonInterface $debut_at, CarbonInterface $fin_at)
     {
         $query->whereDoesntHave('blocages', function ($query) use ($debut_at, $fin_at) {
             $query->betweenDates($debut_at, $fin_at);
@@ -126,7 +126,7 @@ class Prestation extends BaseModel
         $query->where('type_id', Type::FRAIS_ID);
     }
 
-    public function scopeCondition(Builder $query, Categorie $categorie, Lieu $lieu_debut, Lieu $lieu_fin, Carbon $debut_at, Carbon $fin_at, ?int $age = null)
+    public function scopeCondition(Builder $query, Categorie $categorie, Lieu $lieu_debut, Lieu $lieu_fin, CarbonInterface $debut_at, CarbonInterface $fin_at, ?int $age = null)
     {
         // Catégories
         $query->where(function (Builder $query) use ($categorie) {

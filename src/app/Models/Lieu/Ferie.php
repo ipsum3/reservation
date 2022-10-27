@@ -3,9 +3,9 @@
 namespace Ipsum\Reservation\app\Models\Lieu;
 
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Core\app\Models\BaseModel;
-use Ipsum\Reservation\app\Classes\Carbon;
 
 /**
  * Ipsum\Reservation\app\Models\Lieu\Ferie
@@ -34,7 +34,7 @@ class Ferie extends BaseModel
     ];
 
 
-    static public function isFerie(Carbon $date, Lieu $lieu): bool
+    static public function isFerie(CarbonInterface $date, Lieu $lieu): bool
     {
         return self::where('jour_at', $date->format('Y-m-d'))
             ->where(function (Builder $query) use ($lieu) {

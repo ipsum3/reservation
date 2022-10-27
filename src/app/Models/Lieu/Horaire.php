@@ -3,8 +3,8 @@
 namespace Ipsum\Reservation\app\Models\Lieu;
 
 
+use Carbon\CarbonInterface;
 use Ipsum\Core\app\Models\BaseModel;
-use Ipsum\Reservation\app\Classes\Carbon;
 
 /**
  * Ipsum\Reservation\app\Models\Lieu\Horaire
@@ -52,14 +52,14 @@ class Horaire extends BaseModel
      * Scopes
      */
 
-    public function scopeDate($query, Carbon $date, $is_ferie = false)
+    public function scopeDate($query, CarbonInterface $date, $is_ferie = false)
     {
         return $query->where('jour', $is_ferie ? self::JOUR_FERIE : $date->dayOfWeek)
             ->where('debut', '<=', $date->format('H:i:s'))
             ->where('fin', '>=', $date->format('H:i:s'));
     }
 
-    public function scopeCreneaux($query, Carbon $date, $is_ferie = false)
+    public function scopeCreneaux($query, CarbonInterface $date, $is_ferie = false)
     {
         return $query->where('jour', $is_ferie ? self::JOUR_FERIE : $date->dayOfWeek);
 

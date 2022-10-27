@@ -2,7 +2,7 @@
 
 namespace Ipsum\Reservation\app\Models\Categorie;
 
-use Ipsum\Reservation\app\Classes\Carbon;
+use Carbon\CarbonInterface;
 use Ipsum\Core\app\Models\BaseModel;
 
 /**
@@ -48,7 +48,7 @@ class Blocage extends BaseModel
      * Scopes
      */
 
-    public function scopeBetweenDates($query, Carbon $debut_at, Carbon $fin_at)
+    public function scopeBetweenDates($query, CarbonInterface $debut_at, CarbonInterface $fin_at)
     {
         $debut_at->copy()->startOfDay();
         $fin_at->copy()->endOfDay();

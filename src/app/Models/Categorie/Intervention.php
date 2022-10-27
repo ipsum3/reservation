@@ -5,7 +5,6 @@ namespace Ipsum\Reservation\app\Models\Categorie;
 use Carbon\CarbonInterface;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Core\app\Models\BaseModel;
-use Ipsum\Reservation\app\Classes\Carbon;
 
 /**
  * Ipsum\Reservation\app\Models\Categorie\Intervention
