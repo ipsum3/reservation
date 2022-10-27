@@ -18,7 +18,7 @@ $('.datepicker-range').daterangepicker({
         'cancelLabel': 'Annuler',
         'fromLabel': 'Du',
         'toLabel': 'Au',
-        'customRangeLabel': 'Sélection date',
+        'customRangeLabel': 'Personnalisée',
         'weekLabel': 'W',
         'daysOfWeek': [
             'di',
