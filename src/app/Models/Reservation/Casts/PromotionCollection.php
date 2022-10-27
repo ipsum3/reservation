@@ -17,7 +17,12 @@ class PromotionCollection  extends Collection implements Castable
         });
     }
 
-
+    public function totalReductions(): ?float
+    {
+        return $this->sum(function (Promotion $promotion) {
+            return $promotion->reduction;
+        });
+    }
 
 
     /**

@@ -17,6 +17,13 @@ class PrestationCollection  extends Collection implements Castable
         });
     }
 
+    public function totalMontants(): ?float
+    {
+        return $this->sum(function (Prestation $prestation) {
+            return $prestation->tarif;
+        });
+    }
+
 
 
 

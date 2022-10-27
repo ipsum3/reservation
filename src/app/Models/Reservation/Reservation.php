@@ -330,28 +330,6 @@ class Reservation extends BaseModel
         return $condition->acompte($this->total);
     }
 
-
-    /**
-     * Suppression des champs vides
-     * @param array|null $custom_fields
-     */
-    public function setCustomFieldsAttribute(?array $custom_fields): void
-    {
-        $fields = null;
-        if ($custom_fields !== null) {
-            foreach ($custom_fields as $field => $value) {
-                if ($value !== null) {
-                    $fields[$field] = $value;
-                }
-            }
-        }
-
-        $this->attributes['custom_fields'] = $fields === null ? null : $this->castAttributeAsJson('custom_fields', $fields);
-    }
-
-
-
-
     public function setPaysIdAttribute($value)
     {
         $this->attributes['pays_id'] = $value;
