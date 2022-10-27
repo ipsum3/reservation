@@ -36,7 +36,7 @@
                 </thead>
                 <tbody>
                 @foreach ($saisons as $saison)
-                    <tr>
+                    <tr class="{{ $saison->fin_at->lt(\Carbon\Carbon::now()) ? 'text-muted' : '' }}">
                         <td>{{ $saison->id }}</td>
                         <td>{{ $saison->nom }}</td>
                         <td>{{ $saison->debut_at->format('d/m/Y') }}</td>

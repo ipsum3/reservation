@@ -27,7 +27,7 @@ class StoreDuree extends FormRequest
 
         return [
             'min' => 'required|numeric|min:0',
-            'max' => 'nullable|numeric|gt:min',
+            'max' => 'nullable|numeric|gte:min',
         ];
     }
 
