@@ -71,21 +71,21 @@
                                 ->required()
                                 ->groupAddClass('col-md-6')
                         }}
-                        <div class="form-group col-md-6">
-                            <label for="vehicule_id">Véhicule</label>
-                            <div id="vehicule-select">
-                                @if ($reservation->is_confirmed and $vehicules->count())
+                        @if ($reservation->is_confirmed and !$vehicules->count())
+                            <div class="form-group col-md-6">
+                                <label for="vehicule_id">Véhicule</label>
+                                <div id="vehicule-select">
                                     @include('IpsumReservation::reservation._vehicules_select', ['vehicule_id' => $reservation->vehicule_id])
-                                @endif
+                                </div>
+                                @error('vehicule_id')
+                                <ul class="invalid-feedback d-block">
+                                    <li>{{ $message }}</li>
+                                </ul>
+                                @enderror
                             </div>
-                            @error('vehicule_id')
-                            <ul class="invalid-feedback d-block">
-                                <li>{{ $message }}</li>
-                            </ul>
-                            @enderror
-                        </div>
-                        <input type="hidden" name="vehicule_blocage" value="0">
-                        {{ Aire::checkbox('vehicule_blocage', 'Bloquer le véhicule sur cette réservation')->groupAddClass('col-md-6 offset-md-6') }}
+                            <input type="hidden" name="vehicule_blocage" value="0">
+                            {{ Aire::checkbox('vehicule_blocage', 'Bloquer le véhicule sur cette réservation')->groupAddClass('col-md-6 offset-md-6') }}
+                        @endif
                     </div>
                 </div>
             </div>
