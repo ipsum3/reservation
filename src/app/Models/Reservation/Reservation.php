@@ -75,7 +75,6 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property-read float|null $acompte
  * @property-read mixed $date_naissance_minimum
  * @property-read mixed $date_permis_minimum
- * @property-read bool $has_promotions_visible
  * @property-read bool $is_confirmed
  * @property-read bool $is_payed
  * @property-read int $nb_jours
@@ -299,11 +298,6 @@ class Reservation extends BaseModel
     public function getNbJoursAttribute(): int
     {
         return self::calculDuree($this->debut_at, $this->fin_at);
-    }
-
-    public function getHasPromotionsVisibleAttribute(): bool
-    {
-        return count($this->promotions_visible) ? true : false;
     }
 
     public function getDateNaissanceMinimumAttribute()

@@ -314,7 +314,7 @@
                                             <table width="100%" cellpadding="0" cellspacing="0" border="0" class="table" style="font-size: 12px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
                                                 @foreach($reservation->custom_fields->fields as $key => $value)
                                                     <tr>
-                                                        <th valign="top">{{ $key }}</th>
+                                                        <th valign="top">{{ collect(config('ipsum.reservation.custom_fields'))->where('name', $key)->first()['label'] ?? $key }}</th>
                                                         <td align="top">{{ $value }}</td>
                                                     </tr>
                                                 @endforeach
