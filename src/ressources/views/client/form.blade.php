@@ -24,7 +24,7 @@
                 <div class="box-body">
                     <div class="form-row">
                         {{ Aire::password('password', 'Mot de passe')->helpText('Laisser vide pour ne pas le modifier')->value('')->groupAddClass('col-md-6') }}
-                        {{ Aire::input('email', 'Email*')->groupAddClass('col-md-6') }}
+                        {{ Aire::input('email', 'Email')->groupAddClass('col-md-6') }}
                     </div>
                 </div>
             </div>
@@ -38,13 +38,13 @@
                         {{ Aire::input('prenom', 'Prénom*')->groupAddClass('col-md-6') }}
                     </div>
                     <div class="form-row">
-                        {{ Aire::input('telephone', 'Téléphone*')->groupAddClass('col-md-6') }}
+                        {{ Aire::input('telephone', 'Téléphone')->groupAddClass('col-md-6') }}
                     </div>
                     <div class="form-row">
-                        {{ Aire::input('adresse', 'Adresse*')->groupAddClass('col-md-3') }}
-                        {{ Aire::input('cp', 'Code postal*')->groupAddClass('col-md-3') }}
-                        {{ Aire::input('ville', 'Ville*')->groupAddClass('col-md-3') }}
-                        {{ Aire::select($pays, 'pays_id', 'Pays*')->groupAddClass('col-md-3') }}
+                        {{ Aire::input('adresse', 'Adresse')->groupAddClass('col-md-3') }}
+                        {{ Aire::input('cp', 'Code postal')->groupAddClass('col-md-3') }}
+                        {{ Aire::input('ville', 'Ville')->groupAddClass('col-md-3') }}
+                        {{ Aire::select(collect(['' => '---- Pays -----'])->union($pays), 'pays_id', 'Pays')->groupAddClass('col-md-3') }}
                     </div>
                 </div>
             </div>
@@ -54,10 +54,10 @@
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::date('naissance_at', 'Date de naissance*')->groupAddClass('col-md-3') }}
-                        {{ Aire::input('permis_numero', 'N° du permis*')->groupAddClass('col-md-3') }}
-                        {{ Aire::date('permis_at', 'Permis délivré le*')->groupAddClass('col-md-3') }}
-                        {{ Aire::input('permis_delivre', 'Permis délivré par*')->groupAddClass('col-md-3') }}
+                        {{ Aire::date('naissance_at', 'Date de naissance')->groupAddClass('col-md-3') }}
+                        {{ Aire::input('permis_numero', 'N° du permis')->groupAddClass('col-md-3') }}
+                        {{ Aire::date('permis_at', 'Permis délivré le')->groupAddClass('col-md-3') }}
+                        {{ Aire::input('permis_delivre', 'Permis délivré par')->groupAddClass('col-md-3') }}
                     </div>
                 </div>
             </div>

@@ -42,22 +42,22 @@ class UpdateClient extends FormRequest
             'password' => ['nullable', 'max:255', Password::min(8)->letters()->numbers()],
             'nom' => 'required|max:255',
             'prenom' => 'required|max:255',
-            'email' => ['required', 'email', Rule::unique(Client::class)->ignore($current_params['client']->id)],
-            'telephone' => 'required|min:10',
-            'adresse' => 'required',
-            'cp' => 'required|max:255',
-            'ville' => 'required|max:255',
-            'pays_id' => 'required|exists:pays,id',
+            'email' => ['nullable', 'email', Rule::unique(Client::class)->ignore($current_params['client']->id)],
+            'telephone' => 'nullable|min:10',
+            'adresse' => 'nullable',
+            'cp' => 'nullable|max:255',
+            'ville' => 'nullable|max:255',
+            'pays_id' => 'nullable|exists:pays,id',
             'naissance_at' => [
-                'required',
+                'nullable',
                 'date_format:Y-m-d'
             ],
-            'permis_numero' => 'required|max:255',
+            'permis_numero' => 'nullable|max:255',
             'permis_at' => [
-                'required',
+                'nullable',
                 'date_format:Y-m-d'
             ],
-            'permis_delivre' => 'required|max:255',
+            'permis_delivre' => 'nullable|max:255',
         ] + $rules;
     }
 
