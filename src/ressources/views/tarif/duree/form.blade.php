@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <h1 class="main-title">Durée</h1>
+    <h1 class="main-title">Tranche de durée</h1>
 
     {{ Aire::open()->route($duree->exists ? 'admin.duree.update' : 'admin.duree.store', $duree->exists ? $duree : null)->bind($duree)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreDuree::class) }}
         <div class="box">

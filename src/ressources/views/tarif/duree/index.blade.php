@@ -3,13 +3,13 @@
 
 @section('content')
 
-    <h1 class="main-title">Tranches de durée</h1>
+    <h1 class="main-title">Configuration de la grille des tarifs</h1>
 
 
     <div class="form-row">
         <div class="box col-md-6">
             <div class="box-header">
-                <h2 class="box-title">Liste des durées</h2>
+                <h2 class="box-title">Liste des tranche de durée pour une dégressivitée des tarifs</h2>
             </div>
             <div class="box-body">
                 <table class="table table-hover table-striped">
@@ -44,12 +44,39 @@
         {{ Aire::open()->route('admin.duree.store')->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreDuree::class)->addClass('col-md-6') }}
             <div class="box">
                 <div class="box-header">
-                    <h2 class="box-title">Ajouter une durée de tarif</h2>
+                    <h2 class="box-title">Ajouter une tranche de durée</h2>
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::input('min', 'Mini (jour)*')->groupAddClass('col-md-6') }}
-                        {{ Aire::input('max', 'Maxi (jour)')->groupAddClass('col-md-6') }}
+                        {{ Aire::input('min', 'Durée minimum (jour)*')->required()->groupAddClass('col-md-6') }}
+                        {{ Aire::input('max', 'Durée maximum (jour)')->groupAddClass('col-md-6') }}
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div><button class="btn btn-outline-secondary" type="reset">Annuler</button></div>
+                    <div><button class="btn btn-primary" type="submit">Ajouter</button></div>
+                </div>
+            </div>
+        {{ Aire::close() }}
+    </div>
+    <div class="form-row">
+        {{ Aire::open()->route('admin.duree.store')->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreDuree::class)->addClass('col-md-6') }}
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">Tarif spécial : forfait weekend</h2>
+                </div>
+                <div class="box-body">
+                    <div class="form-row">
+                        {{ Aire::input('min', 'Durée minimum (jour)*')->required()->groupAddClass('col-md-6') }}
+                        {{ Aire::input('max', 'Durée maximum (jour)')->groupAddClass('col-md-6') }}
+                    </div>
+                    <div class="form-row">
+                        {{ Aire::input('min_jour', 'Jour minimum du départ')->groupAddClass('col-md-6') }}
+                        {{ Aire::time('min_heure', 'heure minimum du départ')->groupAddClass('col-md-6') }}
+                    </div>
+                    <div class="form-row">
+                        {{ Aire::input('max_jour', 'Jour maximum du retour')->groupAddClass('col-md-6') }}
+                        {{ Aire::time('max_heure', 'heure maximum du retour')->groupAddClass('col-md-6') }}
                     </div>
                 </div>
                 <div class="box-footer">
