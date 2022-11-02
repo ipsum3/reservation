@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::table('durees', function (Blueprint $table) {
             $table->string('tarification')->default('jour')->after('id');
             $table->string('nom')->default('jour')->after('id');
-            $table->string('type')->unsigned()->nullable()->after('id');
+            $table->string('type')->nullable()->after('id');
             $table->boolean('is_special')->default(0)->after('id');
             $table->smallInteger('min_jour')->unsigned()->nullable();
             $table->time('min_heure')->nullable();
