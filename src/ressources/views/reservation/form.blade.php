@@ -71,7 +71,7 @@
                                 ->required()
                                 ->groupAddClass('col-md-6')
                         }}
-                        @if ($reservation->is_confirmed and !$vehicules->count())
+                        @if ($reservation->is_confirmed and $vehicules->count())
                             <div class="form-group col-md-6">
                                 <label for="vehicule_id">Véhicule</label>
                                 <div id="vehicule-select">
