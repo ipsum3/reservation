@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('durees', function (Blueprint $table) {
             $table->string('tarification')->default('jour')->after('id');
-            $table->string('nom')->default('jour')->after('id');
+            $table->string('nom')->nullable()->after('id');
             $table->string('type')->nullable()->after('id');
             $table->boolean('is_special')->default(0)->after('id');
             $table->smallInteger('min_jour')->unsigned()->nullable();
@@ -33,7 +33,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('prestations', function (Blueprint $table) {
+        Schema::table('durees', function (Blueprint $table) {
             $table->dropColumn('type');
             $table->dropColumn('is_special');
             $table->dropColumn('nom');

@@ -20,6 +20,9 @@
                         @else
                             {{ $duree->min }} jours et plus
                         @endif
+                        @if ($duree->nom)
+                            <br>{{ $duree->nom }}
+                        @endif
                     </th>
                 @endforeach
             </tr>

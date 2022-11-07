@@ -24,6 +24,8 @@ class Duree extends BaseModel
 
     protected $guarded = ['id'];
 
+    const JOURS = [0 => 'dimanche', 1 => 'lundi', 2 => 'mardi', 3 => 'mercredi', 4 => 'jeudi', 5 => 'vendredi', 6 => 'samedi'];
+
 
     public $timestamps = false;
 
@@ -43,6 +45,23 @@ class Duree extends BaseModel
     public function tarifs()
     {
         return $this->hasMany(Tarif::class);
+    }
+
+
+
+
+    /*
+     * Accessors & Mutators
+     */
+
+    public function getMinHeureAttribute()
+    {
+        return substr($this->attributes['min_heure'], 0, -3);
+    }
+
+    public function getMaxHeureAttribute()
+    {
+        return substr($this->attributes['max_heure'], 0, -3);
     }
 
 }

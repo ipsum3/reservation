@@ -14,9 +14,11 @@ class DureeController extends AdminController
 
     public function index()
     {
-        $durees = Duree::orderBy('min')->get();
+        $durees = Duree::orderBy('min')->whereNull('type')->where('is_special', 0)->get();
 
-        return view('IpsumReservation::tarif.duree.index', compact('durees'));
+        $weekend = Duree::where('nom', 'Forfait weekend')->first();
+
+        return view('IpsumReservation::tarif.duree.index', compact('durees', 'weekend'));
     }
 
 
