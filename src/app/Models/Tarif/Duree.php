@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Models\Tarif;
 
+use Carbon\CarbonInterface;
 use Ipsum\Core\app\Models\BaseModel;
 
 /**
@@ -38,6 +39,9 @@ class Duree extends BaseModel
     }
 
 
+
+
+
     /*
      * Relations
      */
@@ -47,6 +51,54 @@ class Duree extends BaseModel
         return $this->hasMany(Tarif::class);
     }
 
+
+
+    /*
+     * Scopes
+     */
+
+
+    /**
+     * Forfait weekend, forfait semaine, forfait noctambule, forfait kilométrique : 100km/jour, kilométrage illimité...
+     */
+
+    public function scopeDuree($query, int $nb_jours)
+    {
+        $query->where('min', '<=', $nb_jours)
+            ->where(function ($query) use ($nb_jours) {
+                $query->where('max', '>=', $nb_jours)->orWhereNull('max');
+            });
+    }
+
+    public function scopeJoursHeures($query, int $nb_jours, CarbonInterface $date_depart, CarbonInterface $date_fin)
+    {
+        $query->where('min_jour', $date_depart->dayOfWeek)
+            ->where(function ($query) use ($nb_jours) {
+                $query->where('max', '>=', $nb_jours)->orWhereNull('max');
+            });
+    }
+
+
+
+
+    /*
+     * Functions
+     */
+
+    public static function findByNbJours(int $nb_jours, CarbonInterface $date_depart, CarbonInterface $date_fin, ?string $type = null)
+    {
+        $duree = self::duree($nb_jours)
+            ->joursHeure($date_depart, $date_fin)
+            ->where('type', $type)
+            ->orderBy('is_special', 'desc')
+            ->first();
+
+        if ($duree === null) {
+            throw new TarifException('Aucune tranche pour '.$nb_jours.' jours.');
+        }
+
+        return $duree;
+    }
 
 
 

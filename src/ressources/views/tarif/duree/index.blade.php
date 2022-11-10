@@ -64,7 +64,7 @@
             {{ Aire::open()->route('admin.duree.update', $weekend)->bind($weekend)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreDuree::class)->addClass('col-md-6') }}
                 <div class="box">
                     <div class="box-header">
-                        <h2 class="box-title">Tarif spécial : forfait weekend</h2>
+                        <h2 class="box-title">Tarif spécial : {{ $weekend->nom }}</h2>
                     </div>
                     <div class="box-body">
                         <div class="form-row">
