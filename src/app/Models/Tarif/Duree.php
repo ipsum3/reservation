@@ -25,16 +25,13 @@ class Duree extends BaseModel
 
     protected $guarded = ['id'];
 
-    const JOURS = [0 => 'dimanche', 1 => 'lundi', 2 => 'mardi', 3 => 'mercredi', 4 => 'jeudi', 5 => 'vendredi', 6 => 'samedi'];
-
-
-    public $timestamps = false;
 
 
     protected static function booted()
     {
         static::deleting(function (self $duree) {
             $duree->tarifs()->delete();
+            $duree->jours()->delete();
         });
     }
 
@@ -51,6 +48,11 @@ class Duree extends BaseModel
         return $this->hasMany(Tarif::class);
     }
 
+    public function jours()
+    {
+        return $this->hasMany(Jour::class);
+    }
+
 
 
     /*
@@ -59,7 +61,7 @@ class Duree extends BaseModel
 
 
     /**
-     * Forfait weekend, forfait semaine, forfait noctambule, forfait kilométrique : 100km/jour, kilométrage illimité...
+     * Forfait weekend, forfait semaine, forfait 1/2 journée, forfait noctambule, forfait kilométrique : 100km/jour, kilométrage illimité...
      */
 
     public function scopeDuree($query, int $nb_jours)
@@ -70,12 +72,21 @@ class Duree extends BaseModel
             });
     }
 
-    public function scopeJoursHeures($query, int $nb_jours, CarbonInterface $date_depart, CarbonInterface $date_fin)
+    public function scopeJoursHeures($query, int $nb_jours, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
-        $query->where('min_jour', $date_depart->dayOfWeek)
-            ->where(function ($query) use ($nb_jours) {
-                $query->where('max', '>=', $nb_jours)->orWhereNull('max');
+        $query->where(function ($query) use ($date_debut, $date_fin) {
+            $query->doesntHave('jours')->orWhereHas('jours', function ($query) use ($date_debut, $date_fin) {
+                $query->where(function ($query) use ($date_debut) {
+                    $query->where('value', $date_debut->dayOfWeek)->where(function ($query) use ($date_debut) {
+                        $query->where('heure_debut_min', '>=', $date_debut->format('H:i'))->orWhereNull('heure_debut_min');
+                    });
+                })->orwhere(function ($query) use ($date_fin) {
+                    $query->where('value', $date_fin->dayOfWeek)->where(function ($query) use ($date_fin) {
+                        $query->where('heure_fin_max', '<=', $date_fin->format('H:i'))->orWhereNull('heure_fin_max');
+                    });
+                });
             });
+        });
     }
 
 

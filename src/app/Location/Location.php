@@ -117,7 +117,7 @@ class Location
     public function loadTarifs(): self
     {
         $this->saisons = Saison::getByDates($this->debut_at, $this->fin_at);
-        $this->duree = Duree::findByNbJours($this->getNbJours());
+        $this->duree = Duree::findByNbJours($this->getNbJours(), $this->debut_at, $this->fin_at);
 
         return $this;
     }

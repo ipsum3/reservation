@@ -3,7 +3,9 @@
 namespace Ipsum\Reservation\app\Http\Requests;
 
 
+use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
+use Ipsum\Reservation\app\Models\Tarif\Jour;
 
 class StoreDuree extends FormRequest
 {
@@ -32,10 +34,10 @@ class StoreDuree extends FormRequest
             'tarification' => 'nullable|in:forfait,jour',
             'min' => 'required|numeric|min:0',
             'max' => 'nullable|numeric|gte:min',
-            'min_jour' => 'required_with:min_heure|nullable|integer|min:0|max:6',
-            "min_heure" => "required_with:min_jour|date_format:H:i",
-            'max_jour' => 'required_with:max_heure|nullable|integer|min:0|max:6',
-            "max_heure" => "required_with:max_jour|nullable|date_format:H:i",
+            'jours.*' => 'nullable|array',
+            'jours.*.value' => ['required', Rule::in(array_keys(Jour::VALEURS))],
+            'jours.*.heure_debut_min' => 'nullable|date_format:H:i',
+            'jours.*.heure_fin_max' => 'nullable|date_format:H:i',
         ];
     }
 

@@ -18,11 +18,16 @@ return new class extends Migration
             $table->string('nom')->nullable()->after('id');
             $table->string('type')->nullable()->after('id');
             $table->boolean('is_special')->default(0)->after('id');
-            $table->smallInteger('min_jour')->unsigned()->nullable();
-            $table->time('min_heure')->nullable();
-            $table->smallInteger('max_jour')->unsigned()->nullable();
-            $table->time('max_heure')->nullable();
             $table->timestamps();
+        });
+
+
+        Schema::create('jours', function (Blueprint $table) {
+            $table->id();
+            $table->integer('duree_id')->nullable()->unsigned()->index();
+            $table->smallInteger('value')->unsigned();
+            $table->time('heure_debut_min')->nullable();
+            $table->time('heure_fin_max')->nullable();
         });
     }
 
@@ -38,12 +43,10 @@ return new class extends Migration
             $table->dropColumn('is_special');
             $table->dropColumn('nom');
             $table->dropColumn('tarification');
-            $table->dropColumn('min_jour');
-            $table->dropColumn('min_heure');
-            $table->dropColumn('max_jour');
-            $table->dropColumn('max_heure');
             $table->dropColumn('created_at');
             $table->dropColumn('updated_at');
         });
+
+        Schema::dropIfExists('jours');
     }
 };
