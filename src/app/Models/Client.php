@@ -19,18 +19,19 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $civilite
  * @property string $nom
  * @property string $prenom
- * @property string $email
- * @property string $telephone
- * @property string $adresse
- * @property string $cp
- * @property string $ville
- * @property int $pays_id
- * @property \Illuminate\Support\Carbon $naissance_at
- * @property string $naissance_lieu
- * @property string $permis_numero
- * @property \Illuminate\Support\Carbon $permis_at
- * @property string $permis_delivre
- * @property string $password
+ * @property string|null $email
+ * @property string|null $telephone
+ * @property string|null $adresse
+ * @property string|null $cp
+ * @property string|null $ville
+ * @property int|null $pays_id
+ * @property \Illuminate\Support\Carbon|null $naissance_at
+ * @property string|null $naissance_lieu
+ * @property string|null $permis_numero
+ * @property \Illuminate\Support\Carbon|null $permis_at
+ * @property string|null $permis_delivre
+ * @property mixed|null $custom_fields
+ * @property string|null $password
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -41,6 +42,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read int|null $reservations_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[] $tokens
  * @property-read int|null $tokens_count
+ * @method static \Ipsum\Reservation\database\factories\ClientFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Client newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Client newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Client query()

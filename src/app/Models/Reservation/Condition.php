@@ -28,7 +28,7 @@ use Ipsum\Reservation\app\Models\Promotion\Promotion;
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Reservation[] $reservations
  * @property-read int|null $reservations_count
  * @method static Builder|Condition byDuree(int $duree)
- * @method static Builder|Condition delaiValide(\Ipsum\Reservation\app\Classes\Carbon $debut)
+ * @method static Builder|Condition delaiValide(\Carbon\CarbonInterface $debut)
  * @method static Builder|Condition filtreSortable($objet)
  * @method static Builder|Condition newModelQuery()
  * @method static Builder|Condition newQuery()

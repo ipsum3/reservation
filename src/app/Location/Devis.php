@@ -54,7 +54,8 @@ class Devis
 
     /**
      * Calcul du montant de base
-     * @desc Le calcul se fait sur toutes les saisons en prenant la duree total comme base de calcul pour les tranches
+     * @desc Le calcul se fait sur toutes les saisons en prenant la duree total comme base de calcul pour les tranches.
+     *       Sauf pour les forfaits pris sur le tarif de la première saison
      */
     protected function _calculerTarif(): float
     {
@@ -75,7 +76,12 @@ class Devis
                 throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
             }
 
-            $total += $tarif->montant * $saison->getDuree($this->location->getDebutAt(), $this->location->getFinAt());
+            if ($this->location->getDuree()->is_forfait) {
+                $total = $tarif->montant;
+                break;
+            } else {
+                $total += $tarif->montant * $saison->getDuree($this->location->getDebutAt(), $this->location->getFinAt());
+            }
         }
 
         return $total;

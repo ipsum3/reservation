@@ -22,12 +22,12 @@ return new class extends Migration
         });
 
 
-        Schema::create('jours', function (Blueprint $table) {
+        Schema::create('duree_jours', function (Blueprint $table) {
             $table->id();
             $table->integer('duree_id')->nullable()->unsigned()->index();
+            $table->boolean('is_debut');
             $table->smallInteger('value')->unsigned();
-            $table->time('heure_debut_min')->nullable();
-            $table->time('heure_fin_max')->nullable();
+            $table->time('heure')->nullable();
         });
     }
 
@@ -47,6 +47,6 @@ return new class extends Migration
             $table->dropColumn('updated_at');
         });
 
-        Schema::dropIfExists('jours');
+        Schema::dropIfExists('duree_jours');
     }
 };

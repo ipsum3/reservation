@@ -11,8 +11,14 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property int $id
  * @property int $min
  * @property int|null $max
+ * @property-read mixed $max_heure
+ * @property-read mixed $min_heure
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Tarif\Jour[] $jours
+ * @property-read int|null $jours_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Tarif\Tarif[] $tarifs
  * @property-read int|null $tarifs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Duree conditions(int $nb_jours, \Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
+ * @method static \Illuminate\Database\Eloquent\Builder|Duree duree(int $nb_jours)
  * @method static \Illuminate\Database\Eloquent\Builder|Duree newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Duree newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Duree query()
@@ -24,6 +30,8 @@ class Duree extends BaseModel
 
 
     protected $guarded = ['id'];
+
+    const TARIFICATION = ['jour', 'forfait'];
 
 
 
@@ -72,21 +80,29 @@ class Duree extends BaseModel
             });
     }
 
-    public function scopeJoursHeures($query, int $nb_jours, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    public function scopeConditions($query, int $nb_jours, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
-        $query->where(function ($query) use ($date_debut, $date_fin) {
-            $query->doesntHave('jours')->orWhereHas('jours', function ($query) use ($date_debut, $date_fin) {
-                $query->where(function ($query) use ($date_debut) {
-                    $query->where('value', $date_debut->dayOfWeek)->where(function ($query) use ($date_debut) {
-                        $query->where('heure_debut_min', '>=', $date_debut->format('H:i'))->orWhereNull('heure_debut_min');
+            // Durée
+        $query->duree($nb_jours)
+
+            // Jour de la semaine et heures
+            ->where(function ($query) use ($date_debut) {
+                $query->whereDoesntHave('jours', function ($query) {
+                    $query->where('is_debut', 1);
+                })->orWhereHas('jours', function ($query) use ($date_debut) {
+                    $query->where('is_debut', 1)->where('value', $date_debut->dayOfWeek)->where(function ($query) use ($date_debut) {
+                        $query->where('heure', '<=', $date_debut->format('H:i'))->orWhereNull('heure');
                     });
-                })->orwhere(function ($query) use ($date_fin) {
-                    $query->where('value', $date_fin->dayOfWeek)->where(function ($query) use ($date_fin) {
-                        $query->where('heure_fin_max', '<=', $date_fin->format('H:i'))->orWhereNull('heure_fin_max');
+                });
+            })->where(function ($query) use ($date_fin) {
+                $query->whereDoesntHave('jours', function ($query) {
+                    $query->where('is_debut', 0);
+                })->orWhereHas('jours', function ($query) use ($date_fin) {
+                    $query->where('is_debut', 0)->where('value', $date_fin->dayOfWeek)->where(function ($query) use ($date_fin) {
+                        $query->where('heure', '>=', $date_fin->format('H:i'))->orWhereNull('heure');
                     });
                 });
             });
-        });
     }
 
 
@@ -98,8 +114,7 @@ class Duree extends BaseModel
 
     public static function findByNbJours(int $nb_jours, CarbonInterface $date_depart, CarbonInterface $date_fin, ?string $type = null)
     {
-        $duree = self::duree($nb_jours)
-            ->joursHeure($date_depart, $date_fin)
+        $duree = self::conditions($nb_jours, $date_depart, $date_fin)
             ->where('type', $type)
             ->orderBy('is_special', 'desc')
             ->first();
@@ -117,14 +132,9 @@ class Duree extends BaseModel
      * Accessors & Mutators
      */
 
-    public function getMinHeureAttribute()
+    public function getIsForfaitAttribute()
     {
-        return substr($this->attributes['min_heure'], 0, -3);
-    }
-
-    public function getMaxHeureAttribute()
-    {
-        return substr($this->attributes['max_heure'], 0, -3);
+        return $this->tarification == 'forfait';
     }
 
 }
