@@ -42,7 +42,7 @@ class Devis
         $this->_loadPromotions();
 
         // Calcul total
-        $this->total = $this->montant_base + $total_prestations - $this->promotions->totalReductions();
+        $this->total = $this->montant_base + $total_prestations + $this->location->getCondition()->frais - $this->promotions->totalReductions();
 
         if (!$this->total) {
             throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
