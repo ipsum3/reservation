@@ -298,9 +298,9 @@ class Location
         $this->prestations = new PrestationCollection();
         if ($prestations !== null) {
             foreach ($prestations as $prestation) {
-                if (isset($prestation['has'])) {
-                    $quantite = (int) isset($prestation['quantite']) ? $prestation['quantite'] : 1;
-                    $presta = Prestation::find($prestation['has']);
+                if (!empty($prestation['quantite']) ) {
+                    $quantite = (int) $prestation['quantite'];
+                    $presta = Prestation::find($prestation['id']);
                     $presta->setQuantite($quantite);
                     $this->prestations->add($presta);
                 }
