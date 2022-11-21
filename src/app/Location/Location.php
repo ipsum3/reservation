@@ -29,6 +29,8 @@ class Location
 
     protected ?string $code_promo = null;
 
+    protected ?int $age_recherche = null;
+
     protected ?Type $type = null;
 
     protected ?Categorie $categorie = null;
@@ -82,6 +84,7 @@ class Location
         $this->setFinAt($inputs['fin_at']);
         $this->setType($inputs['type'] ?? null);
         $this->setCodePromo($inputs['code_promo'] ?? null);
+        $this->setAgeRecherche($inputs['age'] ?? null);
 
         return $this;
     }
@@ -244,6 +247,16 @@ class Location
     public function setCodePromo(?string $code_promo): void
     {
         $this->code_promo = $code_promo;
+    }
+
+    public function getAgeRecherche(): ?int
+    {
+        return  $this->age_recherche;
+    }
+
+    public function setAgeRecherche($age): void
+    {
+        $this->age_recherche = $age;
     }
 
     public function hasCategorie(): bool
@@ -417,7 +430,7 @@ class Location
 
     public function age(): ?int
     {
-        return $this->naissance_at !== null ? $this->naissance_at->age : null;
+        return $this->naissance_at?->age;
     }
 
     public function getNaissanceLieu(): ?string
