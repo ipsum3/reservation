@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Location;
 
 
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Location\Exceptions\PrixInvalide;
@@ -19,9 +20,9 @@ class Location
 {
     use Sessionable;
 
-    protected Carbon $debut_at;
+    protected CarbonInterface $debut_at;
 
-    protected Carbon $fin_at;
+    protected CarbonInterface $fin_at;
 
     protected ?Lieu $lieu_debut = null;
 
@@ -55,10 +56,10 @@ class Location
     protected ?string $cp = null;
     protected ?string $ville = null;
     protected ?Pays $pays = null;
-    protected ?Carbon $naissance_at = null;
+    protected ?CarbonInterface $naissance_at = null;
     protected ?string $naissance_lieu = null;
     protected ?string $permis_numero = null;
-    protected ?Carbon $permis_at = null;
+    protected ?CarbonInterface $permis_at = null;
     protected ?string $permis_delivre = null;
     protected ?string $observation = null;
     protected ?array $custom_fields = null;
@@ -413,7 +414,7 @@ class Location
         $this->pays = Pays::findOrFail($pays_id);
     }
 
-    public function getNaissanceAt(): ?Carbon
+    public function getNaissanceAt(): ?CarbonInterface
     {
         return $this->naissance_at;
     }
@@ -453,7 +454,7 @@ class Location
         $this->permis_numero = $permis_numero;
     }
 
-    public function getPermisAt(): ?Carbon
+    public function getPermisAt(): ?CarbonInterface
     {
         return $this->permis_at;
     }

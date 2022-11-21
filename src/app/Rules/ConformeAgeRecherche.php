@@ -15,7 +15,7 @@ class ConformeAgeRecherche implements InvokableRule
     protected $date_format;
 
 
-    public function __construct(int $age_recherche, $date_format = 'd/m/Y')
+    public function __construct(?int $age_recherche, $date_format = 'd/m/Y')
     {
         $this->age_recherche = $age_recherche;
 
@@ -34,14 +34,18 @@ class ConformeAgeRecherche implements InvokableRule
     public function __invoke($attribute, $value, $fail)
     {
 
+        if ($this->age_recherche === null) {
+            return;
+        }
+
         try {
             $date_naissance = Carbon::createFromFormat($this->date_format, $value);
         } catch (\InvalidArgumentException $e) {
             return;
         }
 
-        if ($date_naissance->age > $this->age_recherche ) {
-            $fail("La date de naissance ne correspond pas à l'âge que vous avez renseigné lors de votre recherche. Vous avez renseigné ".$date_naissance->format('d/m/Y')." comme date. Si cette date de naissance est correcte nous vous invtons à refaire une recherche.");
+        if ($date_naissance->age < $this->age_recherche) {
+            $fail("La date de naissance ne correspond pas à l'âge que vous avez renseigné lors de votre recherche. Si votre date de naissance est bien le ".$date_naissance->format('d/m/Y').", nous vous invitons à modifier votre recherche de réservation. Sinon, vous devez corriger la date de naissance.");
         }
     }
 }

@@ -102,7 +102,7 @@ class Devis
     {
         $prestations = Prestation::withoutBlocage($this->getLocation()->getDebutAt(), $this->getLocation()->getFinAt())
             ->obligatoire()
-            ->condition($this->getLocation()->getCategorie(), $this->getLocation()->getLieuDebut(), $this->getLocation()->getLieuFin(), $this->getLocation()->getDebutAt(), $this->getLocation()->getFinAt(), $this->getLocation()->age())
+            ->condition($this->getLocation()->getCategorie(), $this->getLocation()->getLieuDebut(), $this->getLocation()->getLieuFin(), $this->getLocation()->getDebutAt(), $this->getLocation()->getFinAt(), $this->getLocation()->getAgeRecherche())
             ->orderBy('order', 'asc')
             ->get();
 
