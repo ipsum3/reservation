@@ -9,10 +9,15 @@ use Ipsum\Core\app\Models\BaseModel;
  * Ipsum\Reservation\app\Models\Tarif\Duree
  *
  * @property int $id
+ * @property int $is_special
+ * @property string|null $type
+ * @property string|null $nom
+ * @property string $tarification
  * @property int $min
  * @property int|null $max
- * @property-read mixed $max_heure
- * @property-read mixed $min_heure
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $is_forfait
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Tarif\Jour[] $jours
  * @property-read int|null $jours_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Tarif\Tarif[] $tarifs

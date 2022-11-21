@@ -18,7 +18,7 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @property \Illuminate\Support\Carbon $mise_en_circualtion_at
  * @property int|null $categorie_id
  * @property string $marque_modele
- * @property \Illuminate\Support\Carbon|null $entree_at
+ * @property \Illuminate\Support\Carbon $entree_at
  * @property \Illuminate\Support\Carbon|null $sortie_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

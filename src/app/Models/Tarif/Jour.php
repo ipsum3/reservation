@@ -7,6 +7,11 @@ use Ipsum\Core\app\Models\BaseModel;
 /**
  * Ipsum\Reservation\app\Models\Tarif\Jour
  *
+ * @property int $id
+ * @property int|null $duree_id
+ * @property int $is_debut
+ * @property int $value
+ * @property string|null $heure
  * @property-read \Ipsum\Reservation\app\Models\Tarif\Duree|null $durees
  * @method static \Illuminate\Database\Eloquent\Builder|Jour newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Jour newQuery()

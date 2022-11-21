@@ -39,8 +39,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\CategorieController::c
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
         Route::any('{categorie}/destroy', 'destroy')->name('destroy');
-        Route::put('{categorie}', 'update')->name('update');
-        Route::get('{categorie}/edit', 'edit')->name('edit');
+        Route::put('{categorie}/{locale?}', 'update')->name('update');
+        Route::get('{categorie}/edit/{locale?}', 'edit')->name('edit');
     }
 );
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\CategorieBlocageController::class)->prefix('categorie-blocage')->name('admin.categorieBlocage.')->group(
@@ -79,8 +79,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\CarrosserieController:
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
         Route::any('{carrosserie}/destroy', 'destroy')->name('destroy');
-        Route::put('{carrosserie}', 'update')->name('update');
-        Route::get('{carrosserie}/edit', 'edit')->name('edit');
+        Route::put('{carrosserie}/{locale?}', 'update')->name('update');
+        Route::get('{carrosserie}/edit/{locale?}', 'edit')->name('edit');
         Route::any('changeOrder', 'changeOrder')->name('changeOrder');
     }
 );
@@ -92,8 +92,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\LieuController::class)
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
         Route::any('{lieu}/destroy', 'destroy')->name('destroy');
-        Route::put('{lieu}', 'update')->name('update');
-        Route::get('{lieu}/edit', 'edit')->name('edit');
+        Route::put('{lieu}/{locale?}', 'update')->name('update');
+        Route::get('{lieu}/edit/{locale?}', 'edit')->name('edit');
         Route::get('{lieu}/activation', 'activation')->name('activation');
         Route::any('changeOrder', 'changeOrder')->name('changeOrder');
         Route::post('horaire/{horaire}', 'updateHoraire')->name('updateHoraire');
@@ -158,8 +158,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\PrestationController::
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
         Route::any('{prestation}/destroy', 'destroy')->name('destroy');
-        Route::put('{prestation}', 'update')->name('update');
-        Route::get('{prestation}/edit', 'edit')->name('edit');
+        Route::put('{prestation}/{locale?}', 'update')->name('update');
+        Route::get('{prestation}/edit/{locale?}', 'edit')->name('edit');
         Route::any('changeOrder', 'changeOrder')->name('changeOrder');
     }
 );
@@ -180,8 +180,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\PromotionController::c
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
         Route::any('{promotion}/destroy', 'destroy')->name('destroy');
-        Route::put('{promotion}', 'update')->name('update');
-        Route::get('{promotion}/edit', 'edit')->name('edit');
+        Route::put('{promotion}/{locale?}', 'update')->name('update');
+        Route::get('{promotion}/edit/{locale?}', 'edit')->name('edit');
         Route::get('{promotion}/desactivation', 'desactivation')->name('desactivation');
     }
 );

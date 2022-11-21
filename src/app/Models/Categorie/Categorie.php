@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Admin\Concerns\Htmlable;
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Core\Concerns\Translatable;
 use Ipsum\Media\Concerns\Mediable;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
@@ -78,11 +79,15 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  */
 class Categorie extends BaseModel
 {
-    use HasFactory, Htmlable, Mediable;
+    use HasFactory, Htmlable, Mediable, Translatable;
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     protected $htmlable = ['description', 'texte'];
+
+    protected $translatable_attributes = ['nom', 'modeles', 'description', 'texte', 'seo_title', 'seo_description'];
+
+    protected $translatable_attributes_adds = 'ipsum.reservation.categorie.translatable_attributes_adds';
 
     protected $casts = [
         'custom_fields' => AsCustomFieldsObject::class,

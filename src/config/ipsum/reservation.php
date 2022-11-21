@@ -12,7 +12,8 @@ return [
                 'type' => 'number',
                 'rules' => 'nullable|numeric'
             ]*/
-        ]
+        ],
+        'translatable_attributes_adds' => []
     ],
     'lieu' => [
         'custom_fields' => [
@@ -35,7 +36,8 @@ return [
         ]
     ],
     'prestation' => [
-        'custom_fields' => []
+        'custom_fields' => [],
+        'translatable_attributes_adds' => []
     ],
     'saison' => [
         'custom_fields' => []
@@ -71,6 +73,7 @@ return [
             'rules' => ''
         ]
     ],
+    'translatable_attributes_adds' => [],
     'recherche' => [
         'date_format' => 'd/m/Y H:i',
         'jour_format' => 'd/m/Y',
