@@ -6,7 +6,7 @@
     <h1 class="main-title">Configuration de la grille des tarifs</h1>
 
 
-    <div class="form-row">
+    <div class="row">
         <div class="box col-md-6">
             <div class="box-header">
                 <h2 class="box-title">Liste des tranches de durée pour une dégressivitée des tarifs</h2>
@@ -59,7 +59,7 @@
             </div>
         {{ Aire::close() }}
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="box col-md-6">
             <div class="box-header">
                 <h2 class="box-title">Liste des tarifs spéciaux</h2>

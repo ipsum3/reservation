@@ -8,6 +8,7 @@ use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Core\Concerns\Slug;
+use Ipsum\Core\Concerns\Translatable;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
@@ -59,11 +60,15 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  */
 class Lieu extends BaseModel
 {
-    use Slug, Sortable;
+    use Slug, Sortable, Translatable;
 
     protected $table = 'lieux';
 
     protected $guarded = ['id'];
+
+    protected $translatable_attributes = ['nom', 'adresse', 'instruction', 'horaires_txt', 'seo_title', 'seo_description'];
+
+    protected $translatable_attributes_adds = 'ipsum.reservation.lieu.translatable_attributes_adds';
 
     //static public $types = ['aeroport' => 'Aéroport', 'agence' => 'Agence', 'depot' => 'Dépôt', 'accueil' => 'Accueil et retour', 'navette' => 'Dépôt avec navette'];
 

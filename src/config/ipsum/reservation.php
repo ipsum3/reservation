@@ -33,7 +33,8 @@ return [
                 'type' => 'html-simple',
                 'rules' => 'nullable'
             ]*/
-        ]
+        ],
+        'translatable_attributes_adds' => []
     ],
     'prestation' => [
         'custom_fields' => [],

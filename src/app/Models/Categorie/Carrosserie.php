@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Models\Categorie;
 
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Core\Concerns\Translatable;
 
 /**
  * Ipsum\Reservation\app\Models\Categorie\Carrosserie
@@ -22,11 +23,13 @@ use Ipsum\Core\app\Models\BaseModel;
  */
 class Carrosserie extends BaseModel
 {
-    use Sortable;
+    use Sortable, Translatable;
 
     public $timestamps = false;
 
     protected $guarded = ['id'];
+
+    protected $translatable_attributes = ['nom'];
 
 
     /*

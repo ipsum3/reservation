@@ -8,6 +8,7 @@ use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Core\Concerns\Translatable;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 
@@ -54,7 +55,7 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
  */
 class Prestation extends BaseModel
 {
-    use Sortable;
+    use Sortable, Translatable;
 
     public $timestamps = false;
 
@@ -65,6 +66,9 @@ class Prestation extends BaseModel
 
 
     protected $guarded = ['id'];
+
+    protected $translatable_attributes = ['nom', 'description'];
+    protected $translatable_attributes_adds = 'ipsum.reservation.prestation.translatable_attributes_adds';
 
 
     protected $casts = [

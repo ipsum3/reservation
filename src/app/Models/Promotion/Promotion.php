@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Models\Promotion;
 use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Core\Concerns\Slug;
+use Ipsum\Core\Concerns\Translatable;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
@@ -54,7 +55,7 @@ use Ipsum\Reservation\app\Models\Reservation\Condition;
  */
 class Promotion extends BaseModel
 {
-    use Slug;
+    use Slug, Translatable;
 
     protected $guarded = ['id'];
 
@@ -62,6 +63,8 @@ class Promotion extends BaseModel
 
 
     const REDUCTION_TYPES = ['pourcentage' => 'Pourcentage', 'montant' => 'Montant'];
+
+    protected $translatable_attributes = ['nom', 'extrait', 'texte', 'seo_title', 'seo_description'];
 
 
     /*
