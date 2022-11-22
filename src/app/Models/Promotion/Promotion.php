@@ -66,6 +66,14 @@ class Promotion extends BaseModel
 
     protected $translatable_attributes = ['nom', 'extrait', 'texte', 'seo_title', 'seo_description'];
 
+    protected $casts = [
+        'debut_at' => 'date:Y-m-d',
+        'fin_at' => 'date:Y-m-d',
+        'activation_at' => 'date:Y-m-d',
+        'desactivation_at' => 'date:Y-m-d'
+    ];
+
+    
 
     /*
      * Relations
@@ -121,13 +129,6 @@ class Promotion extends BaseModel
     /*
      * Accessors & Mutators
      */
-
-
-    public function getDates()
-    {
-        return array('debut_at', 'fin_at', 'activation_at', 'desactivation_at');
-    }
-
 
     public function getIsActiveAttribute(): bool
     {
