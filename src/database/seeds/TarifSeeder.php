@@ -30,13 +30,23 @@ class TarifSeeder extends Seeder
         foreach ($Categories as $Categorie) {
             foreach ($this->getSaisons() as $saison) {
                 foreach ($this->getDurees() as $duree) {
-                    foreach ($conditions as $condition) {
+                    if( config('reservation.tarif.has_multiple_grille_by_condition')) {
+                        foreach ($conditions as $condition) {
+                            Tarif::create([
+                                'categorie_id' => $Categorie->id,
+                                'saison_id' => $saison['id'],
+                                'duree_id' => $duree['id'],
+                                'montant' => $faker->randomFloat(2, 30, 80),
+                                'condition_paiement_id' => $condition->id,
+                            ]);
+                        }
+                    } else {
                         Tarif::create([
                             'categorie_id' => $Categorie->id,
                             'saison_id' => $saison['id'],
                             'duree_id' => $duree['id'],
                             'montant' => $faker->randomFloat(2, 30, 80),
-                            'condition_paiement_id' => $condition->id,
+                            'condition_paiement_id' => null,
                         ]);
                     }
                 }
