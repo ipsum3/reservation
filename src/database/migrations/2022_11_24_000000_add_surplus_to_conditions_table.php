@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('condition_paiements', function (Blueprint $table) {
-            $table->decimal('frais', 10, 2)->nullable()->after('echeance_nombre');
+            $table->decimal('surplus_valeur', 10, 2)->nullable()->after('echeance_nombre');
+            $table->text('surplus_type')->after('echeance_nombre');
+            $table->dropColumn('frais');
         });
     }
 
@@ -26,7 +28,9 @@ return new class extends Migration
     public function down()
     {
         Schema::table('condition_paiements', function (Blueprint $table) {
-            $table->dropColumn('frais');
+            $table->dropColumn('surplus_type');
+            $table->dropColumn('surplus_valeur');
+            $table->decimal('frais', 10, 2)->nullable()->after('echeance_nombre');
         });
     }
 };

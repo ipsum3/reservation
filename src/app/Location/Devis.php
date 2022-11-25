@@ -12,6 +12,7 @@ use Ipsum\Reservation\app\Models\Tarif\Saison;
 class Devis
 {
 
+    protected float $condition_surplus;
     protected float $montant_base;
     protected float $total;
 
@@ -42,7 +43,7 @@ class Devis
         $this->_loadPromotions();
 
         // Calcul total
-        $this->total = $this->montant_base + $total_prestations + $this->location->getCondition()->frais - $this->promotions->totalReductions();
+        $this->total = $this->montant_base + (float) $total_prestations - (float) $this->promotions->totalReductions();
 
         if (!$this->total) {
             throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
@@ -84,7 +85,10 @@ class Devis
             }
         }
 
-        return $total;
+        $this->condition_surplus = $this->location->getCondition()->surplus($total, $this->getLocation()->getNbJours());
+
+
+        return $total + $this->condition_surplus;
     }
 
     /**
@@ -155,6 +159,11 @@ class Devis
     public function getMontantBase(): float
     {
         return $this->montant_base;
+    }
+
+    public function getConditionSurplus(): float
+    {
+        return $this->condition_surplus;
     }
 
 

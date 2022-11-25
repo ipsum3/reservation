@@ -48,6 +48,8 @@ class Condition extends BaseModel
     const LIGNE_ID = 1;
     const AGENCE_ID = 2;
 
+    const SURPLUS_TYPES = ['jour', 'pourcentage', 'forfait'];
+
 
 
 
@@ -114,10 +116,35 @@ class Condition extends BaseModel
 
             default:
                 throw new Exception("Le type d'acompte n'existe pas.");
-                break;
         }
 
         return $acompte;
+    }
+
+    public function surplus(float $montant, int $duree): float
+    {
+        if (!$this->surplus_type or !$this->surplus_valeur) {
+            return 0;
+        }
+
+        switch ($this->surplus_type) {
+            case 'pourcentage' :
+                $surplus = $this->surplus_valeur * $montant / 100;
+                break;
+
+            case 'forfait' :
+                $surplus = $this->surplus_valeur;
+                break;
+
+            case 'jour' :
+                $surplus = $this->surplus_valeur * $duree;
+                break;
+
+            default:
+                throw new Exception("Le type de surplus n'existe pas.");
+        }
+
+        return $surplus;
     }
 
 
