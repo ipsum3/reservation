@@ -57,9 +57,13 @@ class ClientController extends AdminController
             'Cp',
             'Ville',
             'Pays',
-            '',
         ];
 
+        if (config('ipsum.reservation.client.custom_fields')) {
+            foreach (config('ipsum.reservation.client.custom_fields') as $field) {
+                $entete[] = $field['label'];
+            }
+        }
 
         $fileName = "export-client-" . date('d-m-Y_H-i-s') . ".csv";
 
@@ -84,6 +88,12 @@ class ClientController extends AdminController
                 $client->ville,
                 $client->pays ? $client->pays->nom : null,
             ];
+            if (config('ipsum.reservation.client.custom_fields')) {
+                foreach (config('ipsum.reservation.client.custom_fields') as $field) {
+                    $data[] = $client->custom_fields->{$field['name']};
+                }
+            }
+
             $row = WriterEntityFactory::createRowFromArray($data);
             $writer->addRow($row);
         }
