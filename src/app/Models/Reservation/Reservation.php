@@ -128,7 +128,7 @@ class Reservation extends BaseModel
 
         self::created(function (self $reservation) {
             // Génération de la référence
-            $reservation->reference = str_pad($reservation->id, config('ipsum.reservation.numero_longueur'), "0", STR_PAD_LEFT);
+            $reservation->reference = $this->generationReference($reservation->id);
             $reservation->save();
         });
 
@@ -263,7 +263,7 @@ class Reservation extends BaseModel
 
     protected function generationReference($id)
     {
-        return date('ymd').str_pad($id, config('ipsum.reservation.numero_longueur'), "0", STR_PAD_LEFT);
+        return str_pad($id, config('ipsum.reservation.numero_longueur'), "0", STR_PAD_LEFT);
     }
 
     public function generationReferenceContrat()
