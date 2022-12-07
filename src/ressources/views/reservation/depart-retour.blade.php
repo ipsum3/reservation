@@ -61,6 +61,7 @@
                                     @else
                                         {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}
                                     @endif
+                                    <br><a href="mailto:{{ $reservation->email }}"><i class="fa fa-envelope"></i> {{ $reservation->email }}</a>
                                     @if ($reservation->telephone)
                                         <br><a href="tel:{{ $reservation->telephone }}"><i class="fa fa-phone-square"></i> {{ $reservation->telephone }}</a>
                                     @endif
