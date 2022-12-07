@@ -147,6 +147,7 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('ipsum/admin/dist/tinymce.js') }}"></script>
 
     {{ Aire::close() }}
     
