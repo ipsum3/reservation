@@ -176,7 +176,7 @@ class Location
         foreach ($prestations as $prestation) {
             /* @var $prestation Prestation */
             try {
-                $prestation->setQuantite(1)->calculer($this->getNbJours(), $this->categorie, $this->lieu_debut);
+                $prestation->setQuantite(1)->calculer($this->getNbJours(), $this->categorie, $this->lieu_debut, $this->lieu_fin, $this->debut_at, $this->fin_at);
                 $prestation_collection[] = $prestation;
             } catch (\Exception $exception) { }
         }

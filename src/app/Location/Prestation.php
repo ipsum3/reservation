@@ -4,6 +4,7 @@
 namespace Ipsum\Reservation\app\Location;
 
 
+use Carbon\CarbonInterface;
 use Exception;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 
@@ -32,7 +33,7 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
      * @return $this
      * @throws Exception
      */
-    public function calculer(int $nb_jours, Categorie $categorie, Lieu $lieu_debut): self
+    public function calculer(int $nb_jours, Categorie $categorie, Lieu $lieu_debut, Lieu $lieu_fin, CarbonInterface $debut_at, CarbonInterface $fin_at): self
     {
         if ($this->quantite > $this->quantite_max) {
             throw new Exception("La quantité est supérieur à la quantité max de la prestation.");
@@ -50,10 +51,60 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
             $montant += $prestation_categorie->pivot->montant;
         }
 
-        $prestation_lieu = $this->lieux()->find($lieu_debut->id);
-        if ($prestation_lieu) {
-            $montant += $prestation_lieu->pivot->montant;
+
+        if ($this->is_obligatoire) {
+
+            // Si une prestation de type frais à une condition sur jour, heure_max, heure_min, lieux,
+            // vérifier la validité des conditions sur le début et sur la fin
+            // pour voir s'il ne faut pas le facturer 2 fois la prestation
+
+            $value = 0;
+            if (
+                $this->condition != 'retour' and
+                ($this->jour === null or $this->jour == $debut_at->dayOfWeekWithFerie($lieu_debut)) and
+                ($this->heure_min === null or $this->heure_min < $debut_at->toTimeString()) and
+                ($this->heure_max === null or $this->heure_max > $debut_at->toTimeString()) and
+                (!$this->lieux->count() or $this->lieux->contains($lieu_debut->id))
+            ) {
+
+                $prestation_lieu_debut = $this->lieux->find($lieu_debut->id);
+                if ($prestation_lieu_debut) {
+                    $value += $montant + $prestation_lieu_debut->pivot->montant;
+                } else {
+                    $value += $montant;
+                }
+
+            }
+
+            if (
+                $this->condition != 'depart' and
+                ($this->jour === null or $this->jour == $fin_at->dayOfWeekWithFerie($lieu_fin)) and
+                ($this->heure_min === null or $this->heure_min < $fin_at->toTimeString()) and
+                ($this->heure_max === null or $this->heure_max > $fin_at->toTimeString()) and
+                (!$this->lieux->count() or $this->lieux->contains($lieu_fin->id))
+            ) {
+
+                $prestation_lieu_fin = $this->lieux->find($lieu_fin->id);
+                if ($prestation_lieu_fin) {
+                    $value += $montant + $prestation_lieu_fin->pivot->montant;
+                } else {
+                    $value += $montant;
+                }
+
+            }
+
+            $montant = $value;
+
+        } else {
+
+            $prestation_lieu = $this->lieux()->find($lieu_debut->id);
+            if ($prestation_lieu) {
+                $montant += $prestation_lieu->pivot->montant;
+            }
+
         }
+
+
 
         switch ($this->tarification) {
             case 'forfait':
@@ -70,7 +121,6 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
 
             default:
                 throw new Exception("Le type de tarification n'existe pas.");
-                break;
         }
 
         if ($this->gratuit_apres !== null and $duree_pour_calcul >= $this->gratuit_apres) {

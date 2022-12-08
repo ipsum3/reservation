@@ -4,6 +4,7 @@
 namespace Ipsum\Reservation\app\Location;
 
 
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 
@@ -36,10 +37,10 @@ class PrestationCollection extends Collection
         });
     }
 
-    public function calculer(int $nb_jours, Categorie $categorie, Lieu $lieu_debut): PrestationCollection
+    public function calculer(int $nb_jours, Categorie $categorie, Lieu $lieu_debut, Lieu $lieu_fin, CarbonInterface $debut_at, CarbonInterface $fin_at): PrestationCollection
     {
-        return $this->each(function (Prestation $prestation) use ($nb_jours, $categorie, $lieu_debut) {
-            return $prestation->calculer($nb_jours, $categorie, $lieu_debut);
+        return $this->each(function (Prestation $prestation) use ($nb_jours, $categorie, $lieu_debut, $lieu_fin, $debut_at, $fin_at) {
+            return $prestation->calculer($nb_jours, $categorie, $lieu_debut, $lieu_fin, $debut_at, $fin_at);
         });
     }
 
