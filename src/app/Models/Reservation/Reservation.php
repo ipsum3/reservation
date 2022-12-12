@@ -128,7 +128,7 @@ class Reservation extends BaseModel
 
         self::created(function (self $reservation) {
             // Génération de la référence
-            $reservation->reference = $this->generationReference($reservation->id);
+            $reservation->reference = $reservation->generationReference($reservation->id);
             $reservation->save();
         });
 
