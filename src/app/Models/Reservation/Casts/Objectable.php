@@ -33,4 +33,9 @@ trait Objectable
         }
     }
 
+    public function toArray()
+    {
+        return $this->attributes;
+    }
+
 }

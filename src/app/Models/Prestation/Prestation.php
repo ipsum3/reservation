@@ -11,6 +11,7 @@ use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Core\Concerns\Translatable;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
+use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
 /**
  * Ipsum\Reservation\app\Models\Prestation\Prestation
@@ -168,6 +169,14 @@ class Prestation extends BaseModel
                 ->orWhere(function (Builder $query) {
                     $query->whereNull('heure_max')->whereNull('heure_min');
                 });
+        })
+
+        // Durée de réservation
+        ->where(function (Builder $query) use ($debut_at, $fin_at) {
+            $query->where('duree_min', '<=', Reservation::calculDuree($debut_at, $fin_at))->orWhereNull('duree_min');
+        })
+        ->where(function (Builder $query) use ($debut_at, $fin_at) {
+            $query->where('duree_max', '>=', Reservation::calculDuree($debut_at, $fin_at))->orWhereNull('duree_max');
         })
 
         // Jour de la semaine

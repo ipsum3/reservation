@@ -75,6 +75,8 @@ class StorePrestation extends FormRequest
             "categorie_type_id" => ["nullable", Rule::exists(Type::class, 'id')],
             "heure_max" => ["nullable"],
             "heure_min" => ["nullable"],
+            "duree_min" => ["nullable","numeric"],
+            "duree_max" => ["nullable","numeric"],
 
             /*"categories.*.montant" => "numeric",
             "categories.*.montant" => "required|exists:categories,id",

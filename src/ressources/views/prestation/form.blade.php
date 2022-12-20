@@ -90,6 +90,10 @@
                 {{ Aire::time('heure_min', 'Heure supérieur à')->groupAddClass('col-md-6') }}
             </div>
             <div class="form-row">
+                {{ Aire::number('duree_min', 'Durée minimum de réservation')->groupAddClass('col-md-6') }}
+                {{ Aire::number('duree_max', 'Durée maximum de réservation')->groupAddClass('col-md-6') }}
+            </div>
+            <div class="form-row">
                 {{ Aire::select(collect(['' => '---- Conditions -----'])->union(\Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_CONDITION), 'condition', 'Condition')->groupAddClass('col-md-6') }}
                 @if ($categorie_types->count() > 1)
                     {{ Aire::select(collect(['' => '---- Types de catégorie -----'])->union($categorie_types), 'categorie_type_id', 'Type de catégorie')->groupAddClass('col-md-6') }}
