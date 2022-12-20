@@ -31,6 +31,7 @@ class PlanningOptimiser extends Command
     {
 
         $query = Reservation::query()
+            ->confirmed()
             ->where(function ($query) {
                 $query->where('vehicule_blocage', 0)->orWhereNull('vehicule_id');
             })
