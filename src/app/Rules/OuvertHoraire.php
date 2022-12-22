@@ -7,6 +7,7 @@ use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\InvokableRule;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
+use Ipsum\Reservation\app\Models\Lieu\Type;
 
 class OuvertHoraire implements InvokableRule, DataAwareRule
 {
@@ -68,13 +69,10 @@ class OuvertHoraire implements InvokableRule, DataAwareRule
 
 
         if (!$lieu->isOuvertHoraire($date)) {
-            $horaires = "";
-            if($lieu) {
-                $creneaux = $lieu->creneauxHorairesToString($date);
-                $horaires = $creneaux ? _("Il est ouvert ce jour là ").$creneaux.'.' : _("Veuillez choisir une autre date.");
-            }
+            $creneaux = $lieu->creneauxHorairesToString($date);
+            $horaires = $creneaux ? _("Il est ouvert ce jour là ").$creneaux.'.' : _("Veuillez choisir une autre date.");
 
-            $fail("Le lieu de :lieu est fermé le :date à :heure. :horaires.")->translate([
+            $fail($lieu->type_id === Type::DEPOT_ID ? "Les :lieus se font uniquement $creneaux sur ce lieu le :date" : "Le lieu de :lieu est fermé le :date à :heure. :horaires")->translate([
                 'lieu' => $this->legende,
                 'date' => $date->format('d/m/Y'),
                 'heure' => $date->format('H\hi'),
