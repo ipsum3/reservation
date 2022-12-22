@@ -25,6 +25,7 @@ class ReservationFactory extends Factory
         $total = $this->faker->randomFloat(2, 1, 300);
 
 		return [
+			'locale' => app()->getLocale(),
 			'etat_id' => rand(1, 3),
 			'condition_paiement_id' => rand(1, 2),
 			'nom' => $this->faker->lastName,

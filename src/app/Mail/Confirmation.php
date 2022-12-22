@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Mail;
 
+use App;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -22,6 +23,7 @@ class Confirmation extends Mailable
     public function __construct(Reservation $reservation)
     {
         $this->reservation = $reservation;
+        App::setLocale($reservation->locale);
     }
 
     /**

@@ -126,6 +126,10 @@ class Reservation extends BaseModel
             $reservation->paiements()->delete();
         });
 
+        self::creating(function ($reservation) {
+            $reservation->locale = app()->getLocale();
+        });
+
         self::created(function (self $reservation) {
             // Génération de la référence
             $reservation->reference = $reservation->generationReference($reservation->id);
