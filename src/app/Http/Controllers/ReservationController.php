@@ -416,23 +416,24 @@ class ReservationController extends AdminController
     {
         $date = $request->filled('date') ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now();
 
-        $heures = Reservation::confirmed()
-            ->where(function ($query) use ($date) {
-                $query->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'")
-                    ->orWhereRaw("DATE_FORMAT(fin_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
-            })
+        $heures_depart = Reservation::confirmed()
+            ->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'")
             ->get()
             ->groupBy(function (Reservation $reservation, $key) use ($date) {
-                if ($reservation->debut_at->isSameDay($date)) {
-                    $reservation->is_debut = true;
-                    return  $reservation->debut_at->format('H:i');
-                } else {
-                    $reservation->is_debut = false;
-                    return  $reservation->fin_at->format('H:i');
-                }
+                $reservation->is_debut = true;
+                return  $reservation->debut_at->format('H:i');
             })
             ->sortKeys();
 
-        return view('IpsumReservation::reservation.depart-retour', compact('heures', 'date'));
+        $heures_retour = Reservation::confirmed()
+            ->whereRaw("DATE_FORMAT(fin_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'")
+            ->get()
+            ->groupBy(function (Reservation $reservation, $key) use ($date) {
+                $reservation->is_debut = false;
+                return  $reservation->fin_at->format('H:i');
+            })
+            ->sortKeys();
+
+        return view('IpsumReservation::reservation.depart-retour', compact('heures_depart', 'heures_retour', 'date'));
     }
 }

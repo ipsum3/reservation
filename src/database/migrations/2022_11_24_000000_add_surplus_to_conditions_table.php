@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('condition_paiements', function (Blueprint $table) {
             $table->decimal('surplus_valeur', 10, 2)->nullable()->after('echeance_nombre');
-            $table->text('surplus_type')->after('echeance_nombre');
+            $table->text('surplus_type')->nullable()->after('echeance_nombre');
             $table->dropColumn('frais');
         });
     }
