@@ -127,7 +127,7 @@ class Saison extends BaseModel
         $lastSaisonDay->minute(59);
         $lastSaisonDay->second(59);
 
-        if ($lastSaisonDay->last()->fin_at->lt($date_depart)) {
+        if ($lastSaisonDay->lt($date_depart)) {
             throw new TarifException(_('La date limite de retour est le ').$saisons->last()->fin_at->format('d/m/Y'));
         }
 
