@@ -65,9 +65,6 @@ class Saison extends BaseModel
 
     public function scopeBetweenDates($query, CarbonInterface $debut_at, CarbonInterface $fin_at)
     {
-        $debut_at->copy()->startOfDay();
-        $fin_at->copy()->endOfDay();
-
         return $query->where(function ($query) use ($debut_at, $fin_at) {
             return $query->where(function ($query) use ($debut_at, $fin_at) {
                 $query->where('debut_at', '>=', $debut_at)->where('debut_at', '<=', $fin_at);
@@ -116,18 +113,17 @@ class Saison extends BaseModel
      */
     public static function getByDates(CarbonInterface $date_arrivee, CarbonInterface $date_depart): Collection
     {
+        $date_depart = $date_depart->copy()->startOfDay();
+
         $saisons = self::betweenDates($date_arrivee, $date_depart)->orderBy('fin_at', 'asc')->get();
 
         if (!$saisons->count()) {
             throw new TarifException(_('Aucune saison pour la date de départ ').$date_arrivee->format('d/m/Y').'.');
         }
 
-        $lastSaisonDay = $saisons->last()->fin_at;
-        $lastSaisonDay->hours(23);
-        $lastSaisonDay->minute(59);
-        $lastSaisonDay->second(59);
-
-        if ($lastSaisonDay->lt($date_depart)) {
+        // TODO vérifier qu'il existe une saison pour toutes les dates de la résa (multi saison)
+        // Peut posser un problème dans le cas d'une saison manquante s'il y a plus de 2 saisons
+        if ($saisons->last()->fin_at->lt($date_depart)) {
             throw new TarifException(_('La date limite de retour est le ').$saisons->last()->fin_at->format('d/m/Y'));
         }
 

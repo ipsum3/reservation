@@ -55,9 +55,6 @@ class Blocage extends BaseModel
 
     public function scopeBetweenDates($query, $debut_at, $fin_at)
     {
-        $debut_at->copy()->startOfDay();
-        $fin_at->copy()->endOfDay();
-
         return $query->where(function ($query) use ($debut_at, $fin_at) {
             return $query->where(function ($query) use ($debut_at, $fin_at) {
                 $query->where('debut_at', '>=', $debut_at)->where('debut_at', '<=', $fin_at);
