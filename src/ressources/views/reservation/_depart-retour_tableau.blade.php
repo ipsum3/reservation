@@ -31,8 +31,20 @@
                                 {{ $reservation->vehicule->immatriculation }}
                             @endif
                         </a>
+                        @if ($reservation->prestations->count())
+                            <i class="fa fa-clipboard-list" data-toggle="tooltip" data-placement="auto" data-html="true" title="Prestations :<br>
+                                @foreach ($reservation->prestations as $prestation)
+                                    {{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }} <br>
+                                @endforeach
+                            "></i>
+                        @endif
                     </td>
-                    <td>{{ $reservation->is_debut ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}</td>
+                    <td>
+                        {{ $reservation->is_debut ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}
+                        @if ($reservation->custom_fields->vol)
+                            <i class="fa fa-plane-arrival" data-toggle="tooltip" data-placement="auto" data-html="true" title="Numéro de vol : {{ $reservation->custom_fields->vol }}"></i>
+                        @endif
+                    </td>
                     <td>
                         @if ($reservation->client)
                             <a href="{{ route('admin.client.edit', $reservation->client) }}">{{ $reservation->prenom }} {{ $reservation->nom }}</a>
