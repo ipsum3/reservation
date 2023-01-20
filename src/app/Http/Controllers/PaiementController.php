@@ -80,11 +80,11 @@ class PaiementController extends AdminController
         ];
 
 
-        $fileName = "export-paiement-" . date('d-m-Y_H-i-s') . ".csv";
+        $fileName = "export-paiement-" . date('d-m-Y_H-i-s') . ".ods";
 
-        $writer = WriterEntityFactory::createCSVWriter();
-        $writer->setFieldDelimiter(';');
-        $writer->setFieldEnclosure('"');
+        $writer = WriterEntityFactory::createODSWriter();
+        /*$wirter->setFieldDelimiter(';');
+        $writer->setFieldEnclosure('"');*/
         $writer->openToBrowser($fileName);
         $row = WriterEntityFactory::createRowFromArray($entete);
         $writer->addRow($row);
@@ -93,7 +93,7 @@ class PaiementController extends AdminController
 
             $data = [
                 $paiement->id,
-                $paiement->created_at,
+                $paiement->created_at->format('Y-m-d H:i:s'),
                 $paiement->reservation ? $paiement->reservation->reference : null,
                 $paiement->reservation ? $paiement->reservation->contrat : null,
                 $paiement->reservation ? $paiement->reservation->nom : null,
