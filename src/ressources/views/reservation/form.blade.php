@@ -128,7 +128,7 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
-                        Paiements
+                        Réglements
                         <x-reservation::reste_a_payer total="{{ $reservation->total }}"  montant_paye="{{ $reservation->montant_paye }}" />
                     </h2>
 
@@ -149,8 +149,10 @@
                             <th scope="col">#</th>
                             <th scope="col">Date</th>
                             <th scope="col">Moyen</th>
+                            <th scope="col">Type</th>
                             <th scope="col">Montant</th>
                             <th scope="col">Note</th>
+                            <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody id="paiement-lignes">
@@ -164,13 +166,26 @@
                                         <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="auto" title="{{ $paiement->transaction_ref ? 'Réf transaction : '.$paiement->transaction_ref : '' }} {{ $paiement->autorisation_ref ? 'Réf autorisation : '.$paiement->autorisation_ref : '' }}"></i>
                                     @endif
                                 </td>
+                                <td>
+                                    {{ $paiement->type ? $paiement->type->nom : '' }}
+                                </td>
                                 <td>@prix($paiement->montant) €</td>
                                 <td>{!! nl2br(e($paiement->note )) !!}</td>
+                                <td class="text-right">
+                                    <form action="{{ route('admin.paiement.destroy', $paiement) }}" method="POST">
+                                        @can('update', $paiement)
+                                            <a class="btn btn-outline-secondary" href="{{ route('admin.paiement.edit', $paiement) }}"><i class="fa fa-edit"></i></a>
+                                        @endif
+                                        @can('delete', $paiement)
+                                            <a class="btn btn-outline-danger" href="{{ route('admin.paiement.destroy', $paiement) }}"><i class="fa fa-trash-alt"></i></a>
+                                        @endif
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                         <script id="paiement-add-template" type="x-tmpl-mustache">
                             <tr>
-                                <td><button type="button" class="paiement-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></td>
+                                <td></td>
                                 <td><input type="date" class="form-control" name="paiements[@{{ indice }}][created_at]" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required></td>
                                 <td>
                                     <select class="form-control" name="paiements[@{{ indice }}][paiement_moyen_id]" required>
@@ -180,8 +195,17 @@
                                         @endforeach
                                     </select>
                                 </td>
+                                <td>
+                                    <select class="form-control" name="paiements[@{{ indice }}][paiement_type_id]" required>
+                                        <option value="">-- Types --</option>
+                                        @foreach($types as $type)
+                                            <option value="{{ $type->id }}">{{ $type->nom }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
                                 <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
                                 <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
+                                <td><button type="button" class="paiement-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button></td>
                             </tr>
                         </script>
                         </tbody>

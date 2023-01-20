@@ -21,6 +21,8 @@
             {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
             <label class="sr-only" for="paiement_moyen_id">Moyen</label>
             {{ Aire::select(collect(['' => '---- Moyens -----'])->union($moyens), 'paiement_moyen_id')->value(request()->get('paiement_moyen_id'))->id('paiement_moyen_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+            <label class="sr-only" for="paiement_type_id">Type</label>
+            {{ Aire::select(collect(['' => '---- Types -----'])->union($types), 'paiement_type_id')->value(request()->get('paiement_type_id'))->id('paiement_type_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="date_creation">Date de création</label>
             {{ Aire::input('date_creation')->value(request()->get('date_creation'))->id('date_creation')->placeholder('Date de création')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
 
@@ -35,9 +37,10 @@
                     <th>Réservation</th>
                     <th>Client</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Moyen', 'champ' => 'paiement_moyen_id'])</th>
+                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Type', 'champ' => 'paiement_type_id'])</th>
                     <th>Total</th>
                     <th>Note</th>
-                    <th width="50px">Actions</th>
+                    <th width="100px">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -65,11 +68,16 @@
                                 <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="auto" title="{{ $paiement->transaction_ref ? 'Réf transaction : '.$paiement->transaction_ref : '' }} {{ $paiement->autorisation_ref ? 'Réf autorisation : '.$paiement->autorisation_ref : '' }}"></i>
                             @endif
                         </td>
+                        <td>
+                            {{ $paiement->type ? $paiement->type->nom : '' }}
+                        </td>
                         <td>@prix($paiement->montant) €</td>
                         <td>{!! nl2br(e($paiement->note )) !!}</td>
                         <td class="text-right">
                             <form action="{{ route('admin.paiement.destroy', $paiement) }}" method="POST">
-                                {{--<a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$paiement]) }}"><i class="fa fa-edit"></i></a>--}}
+                                @can('delete', $paiement)
+                                    <a class="btn btn-outline-secondary" href="{{ route('admin.paiement.edit', [$paiement]) }}"><i class="fa fa-edit"></i></a>
+                                @endcan
                                 @can('delete', $paiement)
                                     @csrf
                                     @method('DELETE')

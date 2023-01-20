@@ -19,9 +19,15 @@ class PaiementPolicy
     }
 
 
+    public function update(Admin $user, Paiement $model)
+    {
+        return $user->isAdmin();
+    }
+
+
     public function delete(Admin $user, Paiement $model)
     {
-        return false;
+        return $user->isAdmin();
     }
 
 

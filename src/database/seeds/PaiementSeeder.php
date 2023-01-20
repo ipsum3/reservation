@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\database\seeds;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Ipsum\Reservation\app\Models\Reservation\Moyen;
+use Ipsum\Reservation\app\Models\Reservation\Type;
 
 class PaiementSeeder extends Seeder
 {
@@ -15,12 +16,18 @@ class PaiementSeeder extends Seeder
      */
     public function run()
     {
-        foreach ($this->getDatas() as $data) {
-            Moyen::create($data);
+        if (!Moyen::count()) {
+            foreach ($this->getMoyens() as $data) {
+                Moyen::create($data);
+            }
+        }
+
+        foreach ($this->getTypes() as $data) {
+            Type::create($data);
         }
     }
 
-    private function getDatas()
+    private function getMoyens()
     {
         return array(
             array(
@@ -50,6 +57,20 @@ class PaiementSeeder extends Seeder
             array(
                 'id' => 7,
                 'nom' => 'Chèque tourisme',
+            ),
+        );
+    }
+
+    private function getTypes()
+    {
+        return array(
+            array(
+                'id' => 1,
+                'nom' => 'Paiement',
+            ),
+            array(
+                'id' => 2,
+                'nom' => 'Acompte',
             ),
         );
     }

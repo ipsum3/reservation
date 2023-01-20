@@ -36,11 +36,19 @@ class Paiement extends BaseModel
 
     protected static function booted()
     {
-        self::created(function (self $paiement) {
-            $reservation = $paiement->reservation;
-            $reservation->montant_paye = $reservation->paiements()->sum('montant');
-            $reservation->save();
+        self::saved(function (self $paiement) {
+            self::eventUpdateMontantPaye($paiement);
         });
+        self::deleted(function (self $paiement) {
+            self::eventUpdateMontantPaye($paiement);
+        });
+    }
+
+    protected static function eventUpdateMontantPaye(self $paiement)
+    {
+        $reservation = $paiement->reservation;
+        $reservation->montant_paye = $reservation->paiements()->sum('montant');
+        $reservation->save();
     }
 
 
@@ -58,6 +66,11 @@ class Paiement extends BaseModel
     public function moyen()
     {
         return $this->belongsTo(Moyen::class, 'paiement_moyen_id');
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(Type::class, 'paiement_type_id');
     }
 
 

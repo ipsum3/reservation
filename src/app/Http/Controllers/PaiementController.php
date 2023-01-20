@@ -7,8 +7,10 @@ use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
+use Ipsum\Reservation\app\Http\Requests\UpdatePaiement;
 use Ipsum\Reservation\app\Models\Reservation\Moyen;
 use Ipsum\Reservation\app\Models\Reservation\Paiement;
+use Ipsum\Reservation\app\Models\Reservation\Type;
 
 
 class PaiementController extends AdminController
@@ -17,10 +19,13 @@ class PaiementController extends AdminController
 
     protected function query(Request $request)
     {
-        $query = Paiement::with('moyen', 'reservation.client');
+        $query = Paiement::with('moyen', 'type', 'reservation.client');
 
         if ($request->filled('paiement_moyen_id')) {
             $query->where('paiement_moyen_id', $request->get('paiement_moyen_id'));
+        }
+        if ($request->filled('paiement_type_id')) {
+            $query->where('paiement_type_id', $request->get('paiement_type_id'));
         }
         if ($request->filled('reservation_id')) {
             $query->where('reservation_id', $request->get('reservation_id'));
@@ -53,8 +58,9 @@ class PaiementController extends AdminController
         $paiements = $this->query($request)->paginate();
 
         $moyens = Moyen::all()->pluck('nom', 'id');
+        $types = Type::all()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.paiement.index', compact('paiements', 'moyens'));
+        return view('IpsumReservation::reservation.paiement.index', compact('paiements', 'moyens', 'types'));
     }
 
     public function export(Request $request)
@@ -103,13 +109,28 @@ class PaiementController extends AdminController
         return null;
     }
 
+    public function edit(Paiement $paiement)
+    {
+        $moyens = Moyen::all();
+        $types = Type::all();
+        return view('IpsumReservation::reservation.paiement.form', compact('paiement', 'moyens', 'types'));
+    }
+
+    public function update(UpdatePaiement $request, Paiement $paiement)
+    {
+        $paiement->fill($request->validated())->save();
+
+        Alert::success("L'enregistrement a bien été modifié")->flash();
+        return back();
+    }
+
 
     public function destroy(Paiement $paiement)
     {
         $paiement->delete();
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();
-        return redirect()->route('admin.paiement.index');
+        return redirect()->back();
 
     }
 }

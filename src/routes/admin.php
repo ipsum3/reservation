@@ -29,6 +29,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\PaiementController::cl
         Route::get('', 'index')->name('index');
         Route::get('export', 'export')->name('export');
         Route::any('{paiement}/destroy', 'destroy')->name('destroy');
+        Route::put('{paiement}', 'update')->name('update');
+        Route::get('{paiement}/edit', 'edit')->name('edit');
     }
 );
 

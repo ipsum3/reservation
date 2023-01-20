@@ -26,6 +26,7 @@ use Ipsum\Reservation\app\Models\Reservation\Moyen;
 use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\app\Models\Reservation\Type;
 use Prologue\Alerts\Facades\Alert;
 
 class ReservationController extends AdminController
@@ -206,8 +207,9 @@ class ReservationController extends AdminController
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
         $moyens = Moyen::all();
+        $types = Type::all();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'prestations', 'moyens'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'prestations', 'moyens', 'types'));
     }
 
     public function store(StoreAdminReservation $request)
@@ -248,8 +250,9 @@ class ReservationController extends AdminController
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
         $moyens = Moyen::all();
+        $types = Type::all();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens', 'types'));
     }
 
     public function update(StoreAdminReservation $request, Reservation $reservation)
