@@ -23,7 +23,7 @@ return new class extends Migration
         });
 
         if (\Ipsum\Reservation\app\Models\Reservation\Moyen::count()) {
-            Artisan::call('db:seed', ['class' => "\Ipsum\Reservation\database\seeds\PaiementTypeSeeder"]);
+            Artisan::call('db:seed', ['class' => "\Ipsum\Reservation\database\seeds\PaiementTypeSeeder", 'force' => true]);
         }
     }
 

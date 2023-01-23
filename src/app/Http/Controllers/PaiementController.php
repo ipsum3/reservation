@@ -45,7 +45,7 @@ class PaiementController extends AdminController
                 $date = explode(' - ', $request->get('date_debut'));
                 $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
                 $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
-                $query->whereHas('reservations', function ($query) use($date1, $date2) {
+                $query->whereHas('reservation', function ($query) use($date1, $date2) {
                     $query->whereBetween('debut_at', [$date1, $date2]);
                 });
             } catch (\Exception $e) {}
