@@ -3,7 +3,6 @@
 namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Alert;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
@@ -11,6 +10,9 @@ use Ipsum\Reservation\app\Http\Requests\UpdatePaiement;
 use Ipsum\Reservation\app\Models\Reservation\Moyen;
 use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Type;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 
 
 class PaiementController extends AdminController
@@ -36,6 +38,16 @@ class PaiementController extends AdminController
                 $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
                 $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
                 $query->whereBetween('created_at', [$date1, $date2]);
+            } catch (\Exception $e) {}
+        }
+        if ($request->filled('date_debut')) {
+            try {
+                $date = explode(' - ', $request->get('date_debut'));
+                $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
+                $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
+                $query->whereHas('reservations', function ($query) use($date1, $date2) {
+                    $query->whereBetween('debut_at', [$date1, $date2]);
+                });
             } catch (\Exception $e) {}
         }
         if ($request->filled('search')) {
@@ -78,17 +90,16 @@ class PaiementController extends AdminController
             'Nom',
             'Prénom',
             'Moyen',
+            'Type',
             'Montant',
         ];
 
 
-        $fileName = "export-paiement-" . date('d-m-Y_H-i-s') . ".ods";
+        $fileName = "export-paiement-" . date('d-m-Y_H-i-s') . ".xlsx";
 
-        $writer = WriterEntityFactory::createODSWriter();
-        /*$wirter->setFieldDelimiter(';');
-        $writer->setFieldEnclosure('"');*/
+        $writer = new Writer();
         $writer->openToBrowser($fileName);
-        $row = WriterEntityFactory::createRowFromArray($entete);
+        $row = Row::fromValues($entete);
         $writer->addRow($row);
 
         foreach ($paiements as $paiement) {
@@ -103,11 +114,18 @@ class PaiementController extends AdminController
                 $paiement->reservation ? $paiement->reservation->nom : null,
                 $paiement->reservation ? $paiement->reservation->prenom : null,
                 $paiement->moyen ? $paiement->moyen->nom : null,
-                $paiement->montant,
+                $paiement->type ? $paiement->type->nom : null,
+                (float) $paiement->montant,
             ];
-            $row = WriterEntityFactory::createRowFromArray($data);
+            $row = Row::fromValues($data);
             $writer->addRow($row);
+
         }
+
+        $row = new Row([Cell::fromValue('')]);
+        $writer->addRow($row);
+        $row = new Row([Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue('Total'), Cell::fromValue('=SUM(K2:K'.(count($paiements) + 1).')')]);
+        $writer->addRow($row);
         $writer->close();
 
         return null;

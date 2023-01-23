@@ -7,9 +7,11 @@ use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\UpdateClient;
 use Ipsum\Reservation\app\Models\Client;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\CSV\Options;
+use OpenSpout\Writer\CSV\Writer;
 use Prologue\Alerts\Facades\Alert;
 use Illuminate\Support\Facades\Hash;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 
 class ClientController extends AdminController
 {
@@ -67,11 +69,12 @@ class ClientController extends AdminController
 
         $fileName = "export-client-" . date('d-m-Y_H-i-s') . ".csv";
 
-        $writer = WriterEntityFactory::createCSVWriter();
-        $writer->setFieldDelimiter(';');
-        $writer->setFieldEnclosure('"');
+        $options = new Options();
+        $options->FIELD_DELIMITER = '|';
+        $options->FIELD_ENCLOSURE = '@';
+        $writer = new Writer($options);
         $writer->openToBrowser($fileName);
-        $row = WriterEntityFactory::createRowFromArray($entete);
+        $row = Row::fromValues($entete);
         $writer->addRow($row);
 
         foreach ($clients as $client) {
@@ -94,7 +97,7 @@ class ClientController extends AdminController
                 }
             }
 
-            $row = WriterEntityFactory::createRowFromArray($data);
+            $row = Row::fromValues($data);
             $writer->addRow($row);
         }
         $writer->close();

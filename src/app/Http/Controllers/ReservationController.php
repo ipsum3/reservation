@@ -4,7 +4,6 @@ namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Artisan;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -27,6 +26,9 @@ use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Reservation\Type;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\CSV\Options;
+use OpenSpout\Writer\CSV\Writer;
 use Prologue\Alerts\Facades\Alert;
 
 class ReservationController extends AdminController
@@ -142,11 +144,12 @@ class ReservationController extends AdminController
 
         $fileName = "export-reservation-" . date('d-m-Y_H-i-s') . ".csv";
 
-        $writer = WriterEntityFactory::createCSVWriter();
-        $writer->setFieldDelimiter(';');
-        $writer->setFieldEnclosure('"');
+        $options = new Options();
+        $options->FIELD_DELIMITER = '|';
+        $options->FIELD_ENCLOSURE = '@';
+        $writer = new Writer($options);
         $writer->openToBrowser($fileName);
-        $row = WriterEntityFactory::createRowFromArray($entete);
+        $row = Row::fromValues($entete);
         $writer->addRow($row);
 
         foreach ($reservations as $reservation) {
@@ -182,7 +185,7 @@ class ReservationController extends AdminController
                 $reservation->etat ? $reservation->etat->nom : null,
                 $reservation->condition ? $reservation->condition->nom : null,
             ];
-            $row = WriterEntityFactory::createRowFromArray($data);
+            $row = Row::fromValues($data);
             $writer->addRow($row);
         }
         $writer->close();

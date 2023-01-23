@@ -19,7 +19,7 @@
                 {{ Aire::date('created_at', 'Date')->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Moyens -----'])->union($moyens->pluck('nom', 'id')), 'paiement_moyen_id', 'Moyen')->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Types -----'])->union($types->pluck('nom', 'id')), 'paiement_type_id', 'Moyen')->groupAddClass('col-md-6') }}
-                {{ Aire::number('montant', 'Montant')->groupAddClass('col-md-6') }}
+                {{ Aire::number('montant', 'Montant')->setAttribute('step', 0.01)->groupAddClass('col-md-6') }}
                 {{ Aire::textArea('note', 'Note')->groupAddClass('col-md-6') }}
             </div>
         </div>

@@ -10,8 +10,8 @@
     "minimum-stability": "stable",
     "require": {
         "php": "^8.0.2",
-        "box/spout": "^3.3",
-        "barryvdh/laravel-dompdf": "^2.0"
+        "barryvdh/laravel-dompdf": "^2.0",
+        "openspout/openspout": "^4.12"
     },
     "autoload": {
         "psr-4": {

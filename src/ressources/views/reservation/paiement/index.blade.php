@@ -25,6 +25,8 @@
             {{ Aire::select(collect(['' => '---- Types -----'])->union($types), 'paiement_type_id')->value(request()->get('paiement_type_id'))->id('paiement_type_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="date_creation">Date de création</label>
             {{ Aire::input('date_creation')->value(request()->get('date_creation'))->id('date_creation')->placeholder('Date de création')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
+            <label class="sr-only" for="date_creation">Date de début</label>
+            {{ Aire::input('date_debut')->value(request()->get('date_debut'))->id('date_debut')->placeholder('Date de début')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
 
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
