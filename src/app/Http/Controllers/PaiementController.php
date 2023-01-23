@@ -71,8 +71,10 @@ class PaiementController extends AdminController
         $entete = [
             'Réfèrence',
             'Date',
+            'Date de départ',
             'Réservation',
             'Contrat',
+            'Code client',
             'Nom',
             'Prénom',
             'Moyen',
@@ -94,8 +96,10 @@ class PaiementController extends AdminController
             $data = [
                 $paiement->id,
                 $paiement->created_at->format('Y-m-d H:i:s'),
+                $paiement->reservation ? ($paiement->reservation->debut_at ? $paiement->reservation->debut_at->format('Y-m-d') : null) : null,
                 $paiement->reservation ? $paiement->reservation->reference : null,
                 $paiement->reservation ? $paiement->reservation->contrat : null,
+                $paiement->reservation ? $paiement->reservation->client_id : null,
                 $paiement->reservation ? $paiement->reservation->nom : null,
                 $paiement->reservation ? $paiement->reservation->prenom : null,
                 $paiement->moyen ? $paiement->moyen->nom : null,
