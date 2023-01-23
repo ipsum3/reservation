@@ -21,6 +21,10 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
         });
+
+        if (\Ipsum\Reservation\app\Models\Reservation\Moyen::count()) {
+            Artisan::call('db:seed', ['class' => "\Ipsum\Reservation\database\seeds\PaiementTypeSeeder"]);
+        }
     }
 
     /**

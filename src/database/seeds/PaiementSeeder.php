@@ -16,14 +16,8 @@ class PaiementSeeder extends Seeder
      */
     public function run()
     {
-        if (!Moyen::count()) {
-            foreach ($this->getMoyens() as $data) {
-                Moyen::create($data);
-            }
-        }
-
-        foreach ($this->getTypes() as $data) {
-            Type::create($data);
+        foreach ($this->getMoyens() as $data) {
+            Moyen::create($data);
         }
     }
 
@@ -57,20 +51,6 @@ class PaiementSeeder extends Seeder
             array(
                 'id' => 7,
                 'nom' => 'Chèque tourisme',
-            ),
-        );
-    }
-
-    private function getTypes()
-    {
-        return array(
-            array(
-                'id' => 1,
-                'nom' => 'Paiement',
-            ),
-            array(
-                'id' => 2,
-                'nom' => 'Acompte',
             ),
         );
     }
