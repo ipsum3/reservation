@@ -13,7 +13,7 @@ class PlanningOptimiser extends Command
      *
      * @var string
      */
-    protected $signature = 'planning:optimiser';
+    protected $signature = 'planning:optimiser {--categorie=}';
 
     /**
      * The console command description.
@@ -29,7 +29,6 @@ class PlanningOptimiser extends Command
      */
     public function handle()
     {
-
         $query = Reservation::query()
             ->confirmed()
             ->where(function ($query) {
@@ -37,6 +36,10 @@ class PlanningOptimiser extends Command
             })
             ->where('debut_at', '>=', Carbon::now()->addHours(config('settings.reservation.battement_entre_reservations')))
             ->orderByRaw('DATEDIFF(fin_at, debut_at) desc');
+
+        if( $this->option('categorie') ) {
+            $query->where('categorie_id', $this->option('categorie'));
+        }
 
         $query->update(['vehicule_id' => null]);
 

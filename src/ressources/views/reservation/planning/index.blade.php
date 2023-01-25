@@ -112,9 +112,12 @@
                 <label class="sr-only" for="type_id">Catégorie</label>
                 {{ Aire::select(collect(['' => '---- Catégorie -----'])->union($categories_all), 'categorie_id')->value(request()->get('categorie_id'))->id('categorie_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
                 <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
-                <a class="btn btn-outline-secondary mb-2 ml-5" href="{{ route('admin.reservation.planningOptimiser') }}">
+                <a class="btn btn-outline-secondary mb-2 ml-5" href="{{ route('admin.reservation.planningOptimiser', [request()->get('categorie_id')]) }}">
                     <i class="fas fa-random"></i>
                     Optimiser le planning
+                    @if( request()->get('categorie_id') and $categories->count() )
+                        de la categorie {{ $categories->first()->nom }}
+                    @endif
                 </a>&nbsp;
                 {{ Aire::close() }}
             </div>

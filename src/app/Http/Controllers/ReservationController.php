@@ -412,9 +412,9 @@ class ReservationController extends AdminController
         return view('IpsumReservation::reservation.planning.index', compact('categories', 'date_debut', 'date_fin', 'categories_all'));
     }
 
-    public function planningOptimiser()
+    public function planningOptimiser( Categorie $categorie = null )
     {
-        Artisan::call('planning:optimiser');
+        Artisan::call('planning:optimiser' . ($categorie ? ' --categorie=' . $categorie->id : ''));
         return back();
     }
 
