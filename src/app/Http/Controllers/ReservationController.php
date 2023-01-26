@@ -364,17 +364,22 @@ class ReservationController extends AdminController
         return $pdf->stream();
     }
 
-    public function contratDepart(ShowDepartRetour $request, $date = null)
+    public function contratDepart(ShowDepartRetour $request, $date = null, $lieu_id = null)
     {
         $date = $date !== null ? Carbon::createFromFormat('Y-m-d', $date) : Carbon::now();
 
         $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
 
-        $reservations = Reservation::confirmed()
+        $query = Reservation::confirmed()
             ->where(function ($query) use ($date) {
                 $query->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
-            })
-            ->get();
+            });
+
+        if ( $lieu_id ) {
+            $query->where( 'debut_lieu_id', $lieu_id );
+        }
+
+        $reservations = $query->get();
 
         $html = '';
         foreach ($reservations as $reservation) {
@@ -422,24 +427,57 @@ class ReservationController extends AdminController
     {
         $date = $request->filled('date') ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now();
 
-        $heures_depart = Reservation::confirmed()
-            ->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'")
-            ->get()
-            ->groupBy(function (Reservation $reservation, $key) use ($date) {
-                $reservation->is_debut = true;
-                return  $reservation->debut_at->format('H:i');
-            })
-            ->sortKeys();
+        $query = Reservation::confirmed()
+            ->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
 
-        $heures_retour = Reservation::confirmed()
-            ->whereRaw("DATE_FORMAT(fin_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'")
-            ->get()
-            ->groupBy(function (Reservation $reservation, $key) use ($date) {
+        if ($request->filled('lieu_id')) {
+            $query->where( 'debut_lieu_id', $request->lieu_id );
+        }
+
+        $heures_depart = $query->get()->groupBy(function (Reservation $reservation, $key) use ($date) {
+            $reservation->is_debut = true;
+            return  $reservation->debut_at->format('H:i');
+        })->sortKeys();
+
+        $query = Reservation::confirmed()
+            ->whereRaw("DATE_FORMAT(fin_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
+
+        if ($request->filled('lieu_id')) {
+            $query->where( 'fin_lieu_id', $request->lieu_id );
+        }
+
+        $heures_retour = $query->get()->groupBy(function (Reservation $reservation, $key) use ($date) {
                 $reservation->is_debut = false;
                 return  $reservation->fin_at->format('H:i');
-            })
-            ->sortKeys();
+            })->sortKeys();
 
-        return view('IpsumReservation::reservation.depart-retour', compact('heures_depart', 'heures_retour', 'date'));
+        $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
+
+        return view('IpsumReservation::reservation.depart-retour', compact('heures_depart', 'heures_retour', 'date', 'lieux'));
+    }
+
+    public function imprimerContratDepart( ShowDepartRetour $request, $date = null, $lieu_id = null )
+    {
+        $date = $request->filled('date') ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now();
+
+        $query = Reservation::confirmed()->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
+
+        if( $lieu_id ) {
+            $query->where( 'debut_lieu_id', $lieu_id );
+        }
+
+        $departs = $query->orderBy( 'debut_at' )->get();
+
+        $query = Reservation::confirmed()->whereRaw("DATE_FORMAT(fin_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
+
+        if( $lieu_id ) {
+            $query->where( 'fin_lieu_id', $lieu_id );
+        }
+
+        $retours = $query->orderBy( 'fin_at' )->get();
+
+        $pdf = Pdf::loadView('IpsumReservation::reservation.imprime-depart-retour', compact('departs', 'retours', 'date'));
+
+        return $pdf->stream();
     }
 }
