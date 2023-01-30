@@ -70,8 +70,8 @@ class ClientController extends AdminController
         $fileName = "export-client-" . date('d-m-Y_H-i-s') . ".csv";
 
         $options = new Options();
-        $options->FIELD_DELIMITER = '|';
-        $options->FIELD_ENCLOSURE = '@';
+        $options->FIELD_DELIMITER = ';';
+        $options->FIELD_ENCLOSURE = '"';
         $writer = new Writer($options);
         $writer->openToBrowser($fileName);
         $row = Row::fromValues($entete);
@@ -80,8 +80,8 @@ class ClientController extends AdminController
         foreach ($clients as $client) {
 
             $data = [
-                $client->created_at,
-                $client->updated_at,
+                $client->created_at->format('Y-m-d H:i:s'),
+                $client->updated_at->format('Y-m-d H:i:s'),
                 $client->email,
                 $client->nom,
                 $client->prenom,

@@ -145,8 +145,8 @@ class ReservationController extends AdminController
         $fileName = "export-reservation-" . date('d-m-Y_H-i-s') . ".csv";
 
         $options = new Options();
-        $options->FIELD_DELIMITER = '|';
-        $options->FIELD_ENCLOSURE = '@';
+        $options->FIELD_DELIMITER = ';';
+        $options->FIELD_ENCLOSURE = '"';
         $writer = new Writer($options);
         $writer->openToBrowser($fileName);
         $row = Row::fromValues($entete);
@@ -155,8 +155,8 @@ class ReservationController extends AdminController
         foreach ($reservations as $reservation) {
 
             $data = [
-                $reservation->created_at,
-                $reservation->updated_at,
+                $reservation->created_at->format('Y-m-d H:i:s'),
+                $reservation->updated_at->format('Y-m-d H:i:s'),
                 $reservation->reference,
                 $reservation->contrat,
                 $reservation->email,
