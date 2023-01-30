@@ -72,18 +72,19 @@
 
         <table>
             <tr style="font-weight: bold;text-align: center">
-                <td>Heure</td>
+                <td style="width: 30px">Heure</td>
                 <td>Véhicule</td>
                 <td>Lieu</td>
                 <td>Client</td>
-                <td>Balance</td>
-                <td>Condition</td>
+                <td>Contrat</td>
                 <td>Vol</td>
                 <td>Prestation</td>
             </tr>
             @foreach($departs as $reservation)
                 <tr>
-                    <td>{{ $reservation->debut_at->format('H:i') }}</td>
+                    <td>
+                        {{ $reservation->debut_at->format('H:i') }}
+                    </td>
                     <td>
                         @if ($reservation->vehicule)
                             {{ $reservation->vehicule->marque_modele }}<br>
@@ -96,15 +97,21 @@
                     </td>
                     <td>
                         @if ($reservation->client)
-                            {{ $reservation->prenom }} {{ $reservation->nom }}
+                            {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
                         @else
-                            {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}
+                            {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
+                        @endif
+                        @if( $reservation->telephone )
+                            Tél : {{ $reservation->telephone }}
                         @endif
                     </td>
                     <td>
-                        <x-reservation::reste_a_payer total="{{ $reservation->total }}"  montant_paye="{{ $reservation->montant_paye }}" />
+                        @if( $reservation->contrat )
+                            Réf : {{ $reservation->contrat }}<br/>
+                        @endif
+                        <x-reservation::reste_a_payer total="{{ $reservation->total }}"  montant_paye="{{ $reservation->montant_paye }}" /><br>
+                        {{ $reservation->condition ? $reservation->condition->nom : '' }}
                     </td>
-                    <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
                     <td>
                         @if ($reservation->custom_fields->vol)
                             {{ $reservation->custom_fields->vol }}
@@ -143,12 +150,11 @@
 
         <table>
             <tr style="font-weight: bold;text-align: center">
-                <td>Heure</td>
+                <td style="width: 30px">Heure</td>
                 <td>Véhicule</td>
                 <td>Lieu</td>
                 <td>Client</td>
-                <td>Balance</td>
-                <td>Condition</td>
+                <td>Contrat</td>
                 <td>Vol</td>
                 <td>Prestation</td>
             </tr>
@@ -168,15 +174,21 @@
                     </td>
                     <td>
                         @if ($reservation->client)
-                            {{ $reservation->prenom }} {{ $reservation->nom }}
+                            {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
                         @else
-                            {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}
+                            {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
+                        @endif
+                        @if( $reservation->telephone )
+                            Tél : {{ $reservation->telephone }}
                         @endif
                     </td>
                     <td>
-                        <x-reservation::reste_a_payer total="{{ $reservation->total }}"  montant_paye="{{ $reservation->montant_paye }}" />
+                        @if( $reservation->contrat )
+                            Réf : {{ $reservation->contrat }}<br/>
+                        @endif
+                        <x-reservation::reste_a_payer total="{{ $reservation->total }}"  montant_paye="{{ $reservation->montant_paye }}" /><br>
+                        {{ $reservation->condition ? $reservation->condition->nom : '' }}
                     </td>
-                    <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
                     <td>
                         @if ($reservation->custom_fields->vol)
                             {{ $reservation->custom_fields->vol }}
