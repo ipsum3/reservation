@@ -63,7 +63,7 @@ class VehiculeController extends AdminController
     public function edit(Vehicule $vehicule)
     {
         $vehicule->load(['reservations' => function ($query) {
-            $query->confirmed()->orderBy('debut_at', 'asc')->limit('20');
+            $query->confirmed()->where('fin_at', '>', Carbon::now())->orderBy('debut_at', 'asc')->limit('20');
         },
         'interventions' => function ($query) {
             $query->where('fin_at', '>=', Carbon::now())->orderBy('debut_at', 'asc')->limit('20');
