@@ -25,10 +25,10 @@ class UpdatePaiement extends FormRequest
     public function rules()
     {
         return [
-            "created_at" => "nullable|date_format:Y-m-d",
-            "paiement_moyen_id" => "nullable|integer|exists:paiement_moyens,id",
-            "paiement_type_id" => "nullable|integer|exists:paiement_types,id",
-            "montant" => "nullable|numeric",
+            "created_at" => "required|date_format:Y-m-d",
+            "paiement_moyen_id" => "required|integer|exists:paiement_moyens,id",
+            "paiement_type_id" => "required|integer|exists:paiement_types,id",
+            "montant" => "required|numeric",
             "note" => "nullable",
         ];
     }
