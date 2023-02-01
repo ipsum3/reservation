@@ -3,6 +3,8 @@
 namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Reservation\Condition;
@@ -61,5 +63,24 @@ class TarifController extends AdminController
             }
         Alert::success("La grille a bien été modifiée")->flash();
         return back();
+    }
+
+    public function impression(Saison $saison)
+    {
+        $tarifs = [];
+
+        foreach($saison->tarifs as $tarif) {
+            $tarifs[$tarif->condition_paiement_id]
+            [$tarif->categorie_id]
+            [$tarif->duree_id] = $tarif->montant;
+        }
+
+        $durees = Duree::orderBy('min')->get();
+
+        $categories = Categorie::orderBy('nom')->get();
+
+        $pdf = Pdf::loadView('IpsumReservation::tarif._pdf', compact('saison', 'tarifs', 'durees', 'categories'));
+
+        return $pdf->stream();
     }
 }

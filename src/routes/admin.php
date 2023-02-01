@@ -151,6 +151,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\TarifController::class
     function () {
         Route::put('{saison}', 'update')->name('update');
         Route::get('{saison}/edit', 'edit')->name('edit');
+        Route::get('{saison}/impression', 'impression')->name('impression');
     }
 );
 

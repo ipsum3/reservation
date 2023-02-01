@@ -4,6 +4,7 @@
         @if (!isset($loop) or $loop->first)
             <div class="btn-toolbar">
                 <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Enregistrer</button>&nbsp;
+                <a href="{{ route('admin.tarif.impression', [$saison->id]) }}" class="btn btn-outline-secondary" data-toggle="tooltip" title="Imprimer la grille de tarif"><i class="fas fa-print"></i></a>&nbsp;
                 <button class="btn btn-outline-secondary" type="reset" data-toggle="tooltip" title="Annuler les modifications en cours"><i class="fas fa-undo"></i></button>&nbsp;
             </div>
         @endif
