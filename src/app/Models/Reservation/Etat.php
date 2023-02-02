@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Reservation;
 
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Core\Concerns\Translatable;
 
 /**
  * Ipsum\Reservation\app\Models\Reservation\Etat
@@ -18,8 +19,11 @@ use Ipsum\Core\app\Models\BaseModel;
  */
 class Etat extends BaseModel
 {
+    use Translatable;
 
     protected $table = 'reservation_etats';
+
+    protected $translatable_attributes = ['nom'];
 
     public $timestamps = false;
 

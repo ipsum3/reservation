@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
@@ -59,6 +60,10 @@ class ReservationServiceProvider extends ServiceProvider
 
         //$this->addPolicies();
 
+        Relation::morphMap([
+            \Ipsum\Reservation\app\Models\Prestation\Prestation::class => \Ipsum\Reservation\app\Location\Prestation::class,
+            \Ipsum\Reservation\app\Models\Promotion\Promotion::class => \Ipsum\Reservation\app\Location\Promotion::class,
+        ]);
     }
 
 
