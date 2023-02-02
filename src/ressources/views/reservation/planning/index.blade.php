@@ -134,7 +134,7 @@
                     <thead>
                         <tr>
                             <td></td>
-                            @for($date = $date_debut->copy(); $date->lte($date_fin); $date->addMonth()->firstOfMonth())
+                            @for($date = $date_debut->copy(); $date->lte($date_fin); $date->addMonthsNoOverflow()->firstOfMonth())
                                 <th class="planning-mois" colspan="{{ $date->diffInDays($date->copy()->lastOfMonth()->endOfDay()) + 1 }}">
                                     @if($date->diffInDays($date->copy()->lastOfMonth()->endOfDay()) > 4)
                                         {{ $date->format('F Y') }}
