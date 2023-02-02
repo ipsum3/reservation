@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Categorie;
 
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Core\Concerns\Translatable;
 
 /**
  * Ipsum\Reservation\app\Models\Categorie\Transmission
@@ -19,10 +20,11 @@ use Ipsum\Core\app\Models\BaseModel;
  */
 class Transmission extends BaseModel
 {
-
+    use Translatable;
 
     public $timestamps = false;
 
+    protected $translatable_attributes = ['nom'];
 
 
     /*
