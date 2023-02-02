@@ -90,7 +90,7 @@
                             {{ $reservation->vehicule->marque_modele }}<br>
                             {{ $reservation->vehicule->immatriculation }}<br>
                         @endif
-                        (Catégorie {{ $reservation->categorie_nom }})
+                        Catégorie {{ $reservation->categorie_nom }}
                     </td>
                     <td>
                         {{ $reservation->debut_lieu_nom }}
@@ -164,10 +164,9 @@
                     <td>
                         @if ($reservation->vehicule)
                             {{ $reservation->vehicule->marque_modele }}<br>
-                            {{ $reservation->vehicule->immatriculation }}
-                        @else
-                            (Pas de véhicule)
+                            {{ $reservation->vehicule->immatriculation }}<br>
                         @endif
+                        Catégorie {{ $reservation->categorie_nom }}
                     </td>
                     <td>
                         {{ $reservation->fin_lieu_nom }}
