@@ -39,7 +39,7 @@ class UpdateClient extends FormRequest
 
         return [
             //Rule::excludeIf($this->password === null),
-            'password' => ['nullable', 'max:255', Password::min(8)->letters()->numbers()],
+            'password' => ['nullable', 'max:255', Password::default()],
             'nom' => 'required|max:255',
             'prenom' => 'required|max:255',
             'email' => ['nullable', 'email', Rule::unique(Client::class)->ignore($current_params['client']->id)],
