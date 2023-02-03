@@ -226,7 +226,7 @@
 
                         @if($reservation->is_confirmed)
                             <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir la confirmation</a>&nbsp;
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmationSend', [$reservation]) }}" ><i class="fas fa-envelope"></i> Renvoyer le mail de confirmation</a>&nbsp;
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmationInformations', [$reservation]) }}" ><i class="fas fa-envelope"></i> Envoyer le mail de confirmation</a>&nbsp;
                         @endif
 
                         @if($reservation->contrat)

@@ -15,7 +15,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::any('tarifs/{reservation?}', 'updateTarifs')->name('updateTarifs');
         Route::get('{reservation}/edit', 'edit')->name('edit');
         Route::get('{reservation}/confirmation', 'confirmation')->name('confirmation')->middleware('adminReservationConfirmed');
-        Route::get('{reservation}/confirmation-send', 'confirmationSend')->name('confirmationSend')->middleware('adminReservationConfirmed');
+        Route::get('{reservation}/confirmation/informations', 'confirmationInformations')->name('confirmationInformations')->middleware('adminReservationConfirmed');
+        Route::post('confirmation-send', 'confirmationSend')->name('send');
         Route::get('{reservation}/contrat', 'contrat')->name('contrat')->middleware('adminReservationConfirmed');
         Route::get('planning', 'planning')->name('planning');
         Route::get('planning/optimiser/{categorie?}', 'planningOptimiser')->name('planningOptimiser');

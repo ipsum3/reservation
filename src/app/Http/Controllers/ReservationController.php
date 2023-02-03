@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Http\Requests\GetReservationVehiculeSelect;
+use Ipsum\Reservation\app\Http\Requests\SendConfirmationEmail;
 use Ipsum\Reservation\app\Http\Requests\ShowDepartRetour;
 use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
@@ -342,18 +343,24 @@ class ReservationController extends AdminController
         return view(config('ipsum.reservation.confirmation.view'), compact('reservation'));
     }
 
-    public function confirmationSend(Reservation $reservation)
+    public function confirmationSend(SendConfirmationEmail $request)
     {
         try {
-
-            Mail::send(new Confirmation($reservation));
+            $reservation = Reservation::findOrFail( $request->reservation_id );
+            Mail::send(new Confirmation($reservation, $request->email ));
             Alert::success("L'email de confirmation a bien été envoyé")->flash();
 
+            return redirect()->route('admin.reservation.edit', $reservation);
         } catch (\Exception $exception) {
             Alert::error("Impossible d'envoyer l'email")->flash();
         }
 
         return back();
+    }
+
+    public function confirmationInformations(Reservation $reservation)
+    {
+        return view('IpsumReservation::reservation.envoi-confirmation', compact('reservation'));
     }
 
     public function contrat(Reservation $reservation)

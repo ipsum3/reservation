@@ -14,15 +14,17 @@ class Confirmation extends Mailable
 
 
     public $reservation;
+    public $email;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Reservation $reservation)
+    public function __construct(Reservation $reservation, $email = null)
     {
         $this->reservation = $reservation;
+        $this->email = $email ? $email : $this->reservation->email;
         App::setLocale($reservation->locale);
     }
 
@@ -35,7 +37,7 @@ class Confirmation extends Mailable
     {
         return $this->view(config('ipsum.reservation.confirmation.view'))
             ->from($this->reservation->lieuDebut->email_first, config('settings.nom_site'))
-            ->to($this->reservation->email, $this->reservation->prenom.' '.$this->reservation->nom)
+            ->to($this->email, $this->reservation->prenom.' '.$this->reservation->nom)
             ->cc($this->reservation->lieuDebut->email_reservation_first, config('settings.nom_site'))
             ->subject('Confirmation réservation '.$this->reservation->reference);
     }
