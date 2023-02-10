@@ -57,6 +57,11 @@ return [
         'cgl_nom' => null,
         'view' => 'IpsumReservation::reservation.contrat',
     ],
+    'devis' => [
+        'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
+        'couleur' => '#bbb',
+        'view' => 'IpsumReservation::devis.devis',
+    ],
     'jours-feries' => [
         // https://www.data.gouv.fr/fr/datasets/5b3cc551c751df4822526c1c/
         //'url' => 'https://etalab.github.io/jours-feries-france-data/json/martinique.json'

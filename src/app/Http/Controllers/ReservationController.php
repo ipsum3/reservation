@@ -338,6 +338,12 @@ class ReservationController extends AdminController
 
     }
 
+    public function devis(Reservation $reservation)
+    {
+        $pdf = Pdf::loadView(config('ipsum.reservation.devis.view'), compact('reservation'));
+        return $pdf->stream();
+    }
+
     public function confirmation(Reservation $reservation)
     {
         return view(config('ipsum.reservation.confirmation.view'), compact('reservation'));
