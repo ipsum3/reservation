@@ -216,27 +216,28 @@
 
         </div>
         <div class="col-md-6">
+            @if( $reservation->is_confirmed or $reservation->etat_id == 1 )
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="box-title">Documents</h2>
+                    </div>
+                    <div class="box-body">
+                        @if($reservation->etat_id == 1)
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}"><i class="fa fa-eye"></i> Voir le devis</a>&nbsp;
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'devis']) }}" ><i class="fas fa-envelope"></i> Envoyer le devis par mail</a>&nbsp;
+                        @endif
+                        @if($reservation->is_confirmed)
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir la confirmation</a>&nbsp;
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation']) }}" ><i class="fas fa-envelope"></i> Envoyer le mail de confirmation</a>&nbsp;
+                        @endif
 
-            <div class="box">
-                <div class="box-header">
-                    <h2 class="box-title">Documents</h2>
+                        @if($reservation->contrat)
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i> Voir le contrat</a>&nbsp;
+                        @endif
+
+                    </div>
                 </div>
-                <div class="box-body">
-                    @if(!$reservation->is_confirmed)
-                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}"><i class="fa fa-eye"></i> Voir le devis</a>&nbsp;
-                    @endif
-                    @if($reservation->is_confirmed)
-                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir la confirmation</a>&nbsp;
-                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmationInformations', [$reservation]) }}" ><i class="fas fa-envelope"></i> Envoyer le mail de confirmation</a>&nbsp;
-                    @endif
-
-                    @if($reservation->contrat)
-                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i> Voir le contrat</a>&nbsp;
-                    @endif
-
-                </div>
-            </div>
-
+            @endif
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Locataire / Conducteur</h2>

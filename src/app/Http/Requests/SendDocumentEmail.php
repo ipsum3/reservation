@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
 
-class SendConfirmationEmail extends FormRequest
+class SendDocumentEmail extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,6 +30,7 @@ class SendConfirmationEmail extends FormRequest
 
         return [
             'reservation_id' => 'required',
+            'document' => 'required',
             'email' => 'required|email',
         ];
     }

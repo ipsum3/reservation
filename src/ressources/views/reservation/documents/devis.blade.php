@@ -71,8 +71,8 @@
                     <h2>Devis</h2>
                     <p>
                         {{ _('Date de création') }} : {{ \Carbon\Carbon::now()->format('d/m/Y') }}<br/>
-                        @if( config('settings.devis.date_expiration') )
-                            {{ _('Date d\'expiration') }} : {{ \Carbon\Carbon::now()->addDays(config('settings.devis.date_expiration'))->format('d/m/Y') }}
+                        @if( config('settings.reservation.date_expiration') )
+                            {{ _('Date d\'expiration') }} : {{ \Carbon\Carbon::now()->addDays(config('settings.reservation.date_expiration'))->format('d/m/Y') }}
                         @endif
                     </p>
                     <div style="border: 1px solid #acacac; padding: 10px 20px;font-size: 14px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">
@@ -95,20 +95,17 @@
             <td style="width:50%; padding: 0; border: none;">
                 <table>
                     <tr>
-                        <th style="width: 100%; text-align: left;">{{ _('Dates et lieux') }}</th>
+                        <th style="width: 100%; text-align: left;">{{ _('Client') }}</th>
                     </tr>
                     <tr>
                         <td>
-                            <strong>{{ _('Départ') }} :</strong><br/>
-                            {{ _('Le') }} {{ $reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->debut_at->format('H\hi') }}<br />
-                            {{ _('à') }} {{ $reservation->debut_lieu_nom }}<br />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>{{ _('Retour') }} :</strong><br/>
-                            {{ _('Le') }} {{ $reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->fin_at->format('H\hi') }}<br />
-                            {{ _('à') }} {{ $reservation->fin_lieu_nom }}<br />
+                            {{ $reservation->nom }} {{ $reservation->prenom }}<br/>
+                            @if( $reservation->adresse )
+                                {{ $reservation->adresse }}<br/>
+                            @endif
+                            @if( $reservation->cp ){{ $reservation->cp }}@endif
+                            @if( $reservation->ville ){{ $reservation->ville }}@endif<br/>
+                            {{ $reservation->email }}
                         </td>
                     </tr>
                 </table>
@@ -128,7 +125,10 @@
         <tbody>
         <tr>
             <td>{{ $reservation->reference }}</td>
-            <td>{{ _('Location véhicule de catégorie') }} {{ $reservation->categorie_nom }}</td>
+            <td>
+                {{ _('Location du ') }} {{ $reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->debut_at->format('H\hi') }} {{ _('au') }} {{ $reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->fin_at->format('H\hi') }}<br />
+                Catégorie de véhicule : {{ $reservation->categorie_nom }}
+            </td>
             <td style="text-align: right;">@prix($reservation->total)€</td>
         </tr>
         </tbody>
@@ -159,6 +159,16 @@
                     </tr>
                     </tbody>
                 </table>
+            </td>
+        </tr>
+    </table>
+
+    <table style="padding-top: 5mm;">
+        <tr>
+            <td style="width:50%; padding: 0 5mm 0 0; border: none;">
+                <p style="text-align: center">
+                    {{ _('Devis valable ') }} {{ config('settings.reservation.date_expiration') }}@if( config('settings.reservation.date_expiration') > 1 ) {{ _('jours') }}@else {{ _('jour') }}@endif {{ _('sous réserve de disponibilité d\'un véhicule') }}
+                </p>
             </td>
         </tr>
     </table>

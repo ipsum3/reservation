@@ -11,12 +11,14 @@ use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Http\Requests\GetReservationVehiculeSelect;
 use Ipsum\Reservation\app\Http\Requests\SendConfirmationEmail;
+use Ipsum\Reservation\app\Http\Requests\SendDocumentEmail;
 use Ipsum\Reservation\app\Http\Requests\ShowDepartRetour;
 use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
 use Ipsum\Reservation\app\Location\Location;
 use Ipsum\Reservation\app\Location\Prestation;
 use Ipsum\Reservation\app\Mail\Confirmation;
+use Ipsum\Reservation\app\Mail\Devis;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Client;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
@@ -349,24 +351,29 @@ class ReservationController extends AdminController
         return view(config('ipsum.reservation.confirmation.view'), compact('reservation'));
     }
 
-    public function confirmationSend(SendConfirmationEmail $request)
+    public function documentSend(SendDocumentEmail $request)
     {
         try {
             $reservation = Reservation::findOrFail( $request->reservation_id );
-            Mail::send(new Confirmation($reservation, $request->email ));
-            Alert::success("L'email de confirmation a bien été envoyé")->flash();
-
+            if( $request->document == 'confirmation' ) {
+                Mail::send(new Confirmation($reservation, $request->email ));
+                Alert::success("L'email de confirmation a bien été envoyé")->flash();
+            } else if ( $request->document == 'devis' ) {
+                Mail::send(new Devis($reservation, $request->email ));
+                Alert::success("L'email de devis a bien été envoyé")->flash();
+            }
             return redirect()->route('admin.reservation.edit', $reservation);
         } catch (\Exception $exception) {
+            dd(($exception));
             Alert::error("Impossible d'envoyer l'email")->flash();
         }
 
         return back();
     }
 
-    public function confirmationInformations(Reservation $reservation)
+    public function reservationDocumentSend(Reservation $reservation, $document)
     {
-        return view('IpsumReservation::reservation.envoi-confirmation', compact('reservation'));
+        return view('IpsumReservation::reservation.envoi-document-informations', compact('reservation', 'document'));
     }
 
     public function contrat(Reservation $reservation)
