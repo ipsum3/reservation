@@ -6,6 +6,44 @@
     <h1 class="main-title">Véhicule</h1>
 
     <div class="row">
+        @if ($vehicule->exists)
+            <div class="col-md-4">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="stat-number">
+                            <h1>{{ $stats['reservation'] }}</h1>
+                        </div>
+                        <div class="stat-description">
+                            <h2>Location{{ $stats['reservation'] > 1 ? 's' : '' }} terminée{{ $stats['reservation'] > 1 ? 's' : '' }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="stat-number">
+                            <h1>@prix($stats['montants']) &nbsp;€</h1>
+                        </div>
+                        <div class="stat-description">
+                            <h2>CA réalisé</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="stat-number">
+                            <h1>{{ $stats['tauxRotation'] }}%</h1>
+                        </div>
+                        <div class="stat-description">
+                            <h2>Taux de rotation</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
         <div class="col-md-6">
             {{ Aire::open()->route($vehicule->exists ? 'admin.vehicule.update' : 'admin.vehicule.store', $vehicule->exists ? [$vehicule] : '')->bind($vehicule)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreVehicule::class) }}
             <div class="box">

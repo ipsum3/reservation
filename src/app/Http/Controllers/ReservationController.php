@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Http\Requests\GetReservationVehiculeSelect;
-use Ipsum\Reservation\app\Http\Requests\SendConfirmationEmail;
 use Ipsum\Reservation\app\Http\Requests\SendDocumentEmail;
 use Ipsum\Reservation\app\Http\Requests\ShowDepartRetour;
 use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
@@ -97,14 +96,21 @@ class ReservationController extends AdminController
 
     public function index(Request $request)
     {
-
         $reservations = $this->query($request)->paginate();
 
         $etats = Etat::all()->pluck('nom', 'id');
         $conditions = Condition::all()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions', 'categories'));
+        $reservationsJourQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) = CURDATE()");
+        $reservationsHierQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
+        $reservationsMoisQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) BETWEEN '" . Carbon::now()->startOfMonth()->format('Y-m-d') . "' AND '" . Carbon::now()->endOfMonth()->format('Y-m-d') . "'")->get();
+        $stats['hier'] = $reservationsHierQuery->count();
+        $stats['jour'] = $reservationsJourQuery->count();
+        $stats['mois'] = $reservationsMoisQuery->count();
+        $stats['montant'] = $reservationsMoisQuery->sum('total');
+
+        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions', 'categories', 'stats'));
     }
 
     public function export(Request $request)

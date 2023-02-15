@@ -10,6 +10,7 @@ use Ipsum\Reservation\app\Http\Requests\StoreVehicule;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Categorie\Type;
+use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Prologue\Alerts\Facades\Alert;
 
 class VehiculeController extends AdminController
@@ -72,7 +73,22 @@ class VehiculeController extends AdminController
         $types = Type::get()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories'));
+        //Taux de rotation annuel
+        $reservations = Reservation::where('vehicule_id', $vehicule->id)->confirmed()->get();
+        $nbJourLocation = 0;
+        foreach ( $reservations as $reservation ) {
+            $nbJourLocation = $nbJourLocation + $reservation->nbJours;
+        }
+        $date = Carbon::parse($vehicule->entree_at);
+        $now = Carbon::now();
+        $nbJourVehicule = $date->diffInDays($now);
+
+        $stats['tauxRotation'] = round( ($nbJourLocation * 100) / $nbJourVehicule, 2);
+        $reservations = Reservation::where('vehicule_id', $vehicule->id)->where('fin_at', '<', \Ipsum\Reservation\app\Classes\Carbon::now())->confirmed();
+        $stats['reservation'] = $reservations->count();
+        $stats['montants'] = $reservations->sum('total');
+
+        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories', 'stats'));
     }
 
     public function update(StoreVehicule $request, Vehicule $vehicule)
@@ -84,6 +100,7 @@ class VehiculeController extends AdminController
     }
 
     public function destroy(Vehicule $vehicule)
+
     {
         $vehicule->delete();
 

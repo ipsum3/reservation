@@ -3,7 +3,57 @@
 
 @section('content')
 
-    <h1 class="main-title">Réservation</h1>
+    <h1 class="main-title">Réservations</h1>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="stat-description">
+                        <h2>Réservations hier</h2>
+                    </div>
+                    <div class="stat-number">
+                        <h1>{{ $stats['hier'] }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="stat-description">
+                        <h2>Réservations aujourd'hui</h2>
+                    </div>
+                    <div class="stat-number">
+                        <h1>{{ $stats['jour'] }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="stat-description">
+                        <h2>Reservations du mois</h2>
+                    </div>
+                    <div class="stat-number">
+                        <h1>{{ $stats['mois'] }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="stat-description">
+                        <h2>CA réservations du mois</h2>
+                    </div>
+                    <div class="stat-number">
+                        <h1>@prix($stats['montant']) &nbsp;€</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="box">
         <div class="box-header">
             <h2 class="box-title">Liste ({{ $reservations->total() }})</h2>
