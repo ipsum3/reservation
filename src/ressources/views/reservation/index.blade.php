@@ -9,22 +9,10 @@
             <div class="box">
                 <div class="box-body">
                     <div class="stat-description">
-                        <h2>Réservations hier</h2>
+                        Réservations hier
                     </div>
-                    <div class="stat-number">
-                        <h1>{{ $stats['hier'] }}</h1>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="box">
-                <div class="box-body">
-                    <div class="stat-description">
-                        <h2>Réservations aujourd'hui</h2>
-                    </div>
-                    <div class="stat-number">
-                        <h1>{{ $stats['jour'] }}</h1>
+                    <div class="stat-number lead">
+                        <strong>{{ $stats['hier'] }}</strong>
                     </div>
                 </div>
             </div>
@@ -33,10 +21,10 @@
             <div class="box">
                 <div class="box-body">
                     <div class="stat-description">
-                        <h2>Reservations du mois</h2>
+                        Réservations aujourd'hui
                     </div>
-                    <div class="stat-number">
-                        <h1>{{ $stats['mois'] }}</h1>
+                    <div class="stat-number lead">
+                        <strong>{{ $stats['jour'] }}</strong>
                     </div>
                 </div>
             </div>
@@ -45,10 +33,22 @@
             <div class="box">
                 <div class="box-body">
                     <div class="stat-description">
-                        <h2>CA réservations du mois</h2>
+                        Reservations du mois
                     </div>
-                    <div class="stat-number">
-                        <h1>@prix($stats['montant']) &nbsp;€</h1>
+                    <div class="stat-number lead">
+                        <strong>{{ $stats['mois'] }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box">
+                <div class="box-body">
+                    <div class="stat-description">
+                        CA réservations du mois
+                    </div>
+                    <div class="stat-number lead">
+                        <strong>@prix($stats['montant']) &nbsp;€</strong>
                     </div>
                 </div>
             </div>

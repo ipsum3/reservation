@@ -52,7 +52,8 @@
                         >
                             @if ($resa->has_conflit)
                                 <i class="fa fa-exclamation-triangle"></i>
-                            @elseif( $resa->vehicule_blocage )
+                            @endif
+                            @if( $resa->vehicule_blocage )
                                 <i class="fa fa-lock"></i>
                             @endif
                             {{ $resa->prenom.' '.$resa->nom }}

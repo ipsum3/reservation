@@ -74,17 +74,17 @@ class VehiculeController extends AdminController
         $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
 
         //Taux de rotation annuel
-        $reservations = Reservation::where('vehicule_id', $vehicule->id)->confirmed()->get();
+        $reservations = Reservation::where('vehicule_id', $vehicule->id)->where('debut_at', '<', Carbon::now())->confirmed()->get();
         $nbJourLocation = 0;
         foreach ( $reservations as $reservation ) {
-            $nbJourLocation = $nbJourLocation + $reservation->nbJours;
+            $fin = $reservation->fin_at > Carbon::now() ? Carbon::now() : $reservation->fin_at;
+            $nbJourLocation += $fin->diffInHours($reservation->debut_at) / 24;
         }
         $date = Carbon::parse($vehicule->entree_at);
         $now = Carbon::now();
-        $nbJourVehicule = $date->diffInDays($now);
-
+        $nbJourVehicule = $date->diffInHours($now) / 24;
         $stats['tauxRotation'] = round( ($nbJourLocation * 100) / $nbJourVehicule, 2);
-        $reservations = Reservation::where('vehicule_id', $vehicule->id)->where('fin_at', '<', \Ipsum\Reservation\app\Classes\Carbon::now())->confirmed();
+        $reservations = Reservation::where('vehicule_id', $vehicule->id)->where('fin_at', '<', Carbon::now())->confirmed();
         $stats['reservation'] = $reservations->count();
         $stats['montants'] = $reservations->sum('total');
 

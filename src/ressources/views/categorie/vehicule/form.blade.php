@@ -10,11 +10,11 @@
             <div class="col-md-4">
                 <div class="box">
                     <div class="box-body">
-                        <div class="stat-number">
-                            <h1>{{ $stats['reservation'] }}</h1>
-                        </div>
                         <div class="stat-description">
-                            <h2>Location{{ $stats['reservation'] > 1 ? 's' : '' }} terminée{{ $stats['reservation'] > 1 ? 's' : '' }}</h2>
+                            Location{{ $stats['reservation'] > 1 ? 's' : '' }} terminée{{ $stats['reservation'] > 1 ? 's' : '' }}
+                        </div>
+                        <div class="stat-number lead">
+                            <strong>{{ $stats['reservation'] }}</strong>
                         </div>
                     </div>
                 </div>
@@ -22,11 +22,11 @@
             <div class="col-md-4">
                 <div class="box">
                     <div class="box-body">
-                        <div class="stat-number">
-                            <h1>@prix($stats['montants']) &nbsp;€</h1>
-                        </div>
                         <div class="stat-description">
-                            <h2>CA réalisé</h2>
+                            CA réalisé
+                        </div>
+                        <div class="stat-number lead">
+                            <strong>@prix($stats['montants'])&nbsp;€</strong>
                         </div>
                     </div>
                 </div>
@@ -34,11 +34,11 @@
             <div class="col-md-4">
                 <div class="box">
                     <div class="box-body">
-                        <div class="stat-number">
-                            <h1>{{ $stats['tauxRotation'] }}%</h1>
-                        </div>
                         <div class="stat-description">
-                            <h2>Taux de rotation</h2>
+                            Taux de rotation
+                        </div>
+                        <div class="stat-number lead">
+                            <strong>{{ $stats['tauxRotation'] }}&nbsp;%</strong>
                         </div>
                     </div>
                 </div>
