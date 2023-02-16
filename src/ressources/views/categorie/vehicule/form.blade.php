@@ -6,7 +6,7 @@
     <h1 class="main-title">Véhicule</h1>
 
     <div class="row">
-        @if ($vehicule->exists)
+        @if (auth()->user()->can('admin-acces', 'statistique') and $vehicule->exists)
             <div class="col-6 col-md-4">
                 <div class="box">
                     <div class="box-body">

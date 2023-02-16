@@ -94,4 +94,15 @@ return [
 
     'numero_longueur' => 6,
 
+    'acces' => array(
+        'reservation' => 'Réservation',
+        'client' => 'Client',
+        'categorie' => 'Catégorie',
+        'lieu' => 'Lieu',
+        'comptabilite' => 'Comptabilite',
+        'promotion' => 'Promotion',
+        'tarifs' => 'Tarifs',
+        'vehicule' => 'Véhicule',
+        'statistique' => 'Statistique',
+    ),
 ];

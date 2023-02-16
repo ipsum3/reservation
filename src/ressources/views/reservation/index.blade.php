@@ -4,56 +4,58 @@
 @section('content')
 
     <h1 class="main-title">Réservations</h1>
-    <div class="row">
-        <div class="col-6 col-md-3">
-            <div class="box">
-                <div class="box-body">
-                    <div class="stat-description">
-                        Réservation{{ $stats['hier'] > 1 ? 's' : '' }} hier
+    @if(auth()->user()->can('admin-acces', 'statistique'))
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="stat-description">
+                            Réservation{{ $stats['hier'] > 1 ? 's' : '' }} hier
+                        </div>
+                        <div class="stat-number lead">
+                            <strong>{{ $stats['hier'] }}</strong>
+                        </div>
                     </div>
-                    <div class="stat-number lead">
-                        <strong>{{ $stats['hier'] }}</strong>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="stat-description">
+                            Réservation{{ $stats['jour'] > 1 ? 's' : '' }} aujourd'hui
+                        </div>
+                        <div class="stat-number lead">
+                            <strong>{{ $stats['jour'] }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="stat-description">
+                            Reservation{{ $stats['mois'] > 1 ? 's' : '' }} du mois
+                        </div>
+                        <div class="stat-number lead">
+                            <strong>{{ $stats['mois'] }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="stat-description">
+                            CA réservations du mois
+                        </div>
+                        <div class="stat-number lead">
+                            <strong>@prix($stats['montant']) &nbsp;€</strong>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="box">
-                <div class="box-body">
-                    <div class="stat-description">
-                        Réservation{{ $stats['jour'] > 1 ? 's' : '' }} aujourd'hui
-                    </div>
-                    <div class="stat-number lead">
-                        <strong>{{ $stats['jour'] }}</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="box">
-                <div class="box-body">
-                    <div class="stat-description">
-                        Reservation{{ $stats['mois'] > 1 ? 's' : '' }} du mois
-                    </div>
-                    <div class="stat-number lead">
-                        <strong>{{ $stats['mois'] }}</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="box">
-                <div class="box-body">
-                    <div class="stat-description">
-                        CA réservations du mois
-                    </div>
-                    <div class="stat-number lead">
-                        <strong>@prix($stats['montant']) &nbsp;€</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @endif
     <div class="box">
         <div class="box-header">
             <h2 class="box-title">Liste ({{ $reservations->total() }})</h2>

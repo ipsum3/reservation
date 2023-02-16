@@ -10,7 +10,7 @@ use Prologue\Alerts\Facades\Alert;
 class DureeController extends AdminController
 {
 
-    protected $acces = 'tarif';
+    protected $acces = 'tarifs';
 
     public function index()
     {

@@ -64,6 +64,9 @@ class ReservationServiceProvider extends ServiceProvider
             \Ipsum\Reservation\app\Models\Prestation\Prestation::class => \Ipsum\Reservation\app\Location\Prestation::class,
             \Ipsum\Reservation\app\Models\Promotion\Promotion::class => \Ipsum\Reservation\app\Location\Promotion::class,
         ]);
+
+        // Merge conf acces pour l'admin
+        \Config::set('ipsum.admin.acces', array_merge( config('ipsum.admin.acces'), config('ipsum.reservation.acces') ));
     }
 
 

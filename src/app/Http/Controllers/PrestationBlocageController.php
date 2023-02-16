@@ -11,7 +11,7 @@ use Prologue\Alerts\Facades\Alert;
 
 class PrestationBlocageController extends AdminController
 {
-    protected $acces = 'tarif';
+    protected $acces = 'tarifs';
 
     public function index(Request $request)
     {
