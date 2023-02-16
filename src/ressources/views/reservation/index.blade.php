@@ -5,11 +5,11 @@
 
     <h1 class="main-title">Réservations</h1>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="box">
                 <div class="box-body">
                     <div class="stat-description">
-                        Réservations hier
+                        Réservation{{ $stats['hier'] > 1 ? 's' : '' }} hier
                     </div>
                     <div class="stat-number lead">
                         <strong>{{ $stats['hier'] }}</strong>
@@ -17,11 +17,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="box">
                 <div class="box-body">
                     <div class="stat-description">
-                        Réservations aujourd'hui
+                        Réservation{{ $stats['jour'] > 1 ? 's' : '' }} aujourd'hui
                     </div>
                     <div class="stat-number lead">
                         <strong>{{ $stats['jour'] }}</strong>
@@ -29,11 +29,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="box">
                 <div class="box-body">
                     <div class="stat-description">
-                        Reservations du mois
+                        Reservation{{ $stats['mois'] > 1 ? 's' : '' }} du mois
                     </div>
                     <div class="stat-number lead">
                         <strong>{{ $stats['mois'] }}</strong>
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="box">
                 <div class="box-body">
                     <div class="stat-description">
