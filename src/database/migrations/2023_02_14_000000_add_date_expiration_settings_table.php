@@ -15,7 +15,7 @@ return new class extends Migration
     {
 
         if (\Ipsum\Core\app\Models\Setting::count()) {
-            Artisan::call('db:seed', ['class' => "\Ipsum\Reservation\database\seeds\SettingsTableSeeder", 'force']);
+            Artisan::call('db:seed', ['class' => "\Ipsum\Reservation\database\seeds\SettingsTableSeeder", '--force' => true]);
         }
     }
 

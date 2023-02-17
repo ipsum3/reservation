@@ -33,6 +33,10 @@ return new class extends Migration
         Schema::table('reservations', function (Blueprint $table) {
             $table->integer('source_id')->nullable()->change();
         });
+
+        if (\Ipsum\Core\app\Models\Setting::count()) {
+            Artisan::call('db:seed', ['class' => "\Ipsum\Reservation\database\seeds\SourcesTableSeeder", '--force' => true]);
+        }
     }
 
     /**
