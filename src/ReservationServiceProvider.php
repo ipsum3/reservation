@@ -11,6 +11,7 @@ use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
+use Ipsum\Reservation\app\Http\Middleware\ReservationTracking;
 use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Policies\PaiementPolicy;
@@ -117,5 +118,8 @@ class ReservationServiceProvider extends ServiceProvider
     public function registerMiddlewareGroup(Router $router)
     {
         $router->aliasMiddleware('adminReservationConfirmed', ReservationConfirmed::class);
+        $this->app->booted(function () use($router) {
+            $router->pushMiddlewareToGroup('web', ReservationTracking::class);
+        });
     }
 }

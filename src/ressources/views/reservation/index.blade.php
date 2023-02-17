@@ -81,6 +81,8 @@
             {{ Aire::select(collect(['' => '---- Etats -----'])->union($etats), 'etat_id')->value(request()->get('etat_id'))->id('etat_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="condition_paiement_id">Condition</label>
             {{ Aire::select(collect(['' => '---- Conditions -----'])->union($conditions), 'condition_paiement_id')->value(request()->get('condition_paiement_id'))->id('condition_paiement_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+            <label class="sr-only" for="source_id">Origine</label>
+            {{ Aire::select(collect(['' => '---- Origines -----'])->union($origines), 'source_id')->value(request()->get('source_id'))->id('source_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="date_creation">Date de création</label>
             {{ Aire::input('date_creation')->value(request()->get('date_creation'))->id('date_creation')->placeholder('Date de création')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
             <label class="sr-only" for="date_debut">Date de début</label>
@@ -95,6 +97,7 @@
                 <thead>
                 <tr>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'reference'])</th>
+                    <th width="70px" >@include('IpsumAdmin::partials.tri', ['label' => 'Origine', 'champ' => 'source_id'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Création', 'champ' => 'created_at'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Départ', 'champ' => 'debut_at'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'debut_lieu_nom'])</th>
@@ -109,6 +112,13 @@
                 @foreach ($reservations as $reservation)
                     <tr class="{{ $reservation->fin_at->lt(\Carbon\Carbon::now()) ? 'text-muted' : '' }}">
                         <td>{{ $reservation->reference }}</td>
+                        <td class="text-center">
+                            @if( $reservation->source )
+                                <button type="button" class="btn" data-toggle="tooltip" data-placement="auto" title="{{ $reservation->source->nom }}">
+                                    <i class="fa fa-{{ $reservation->source->type->icon }}"></i>
+                                </button>
+                            @endif
+                        </td>
                         <td>{{ $reservation->created_at->format('d/m/Y') }}</td>
                         <td>{{ $reservation->debut_at->format('d/m/Y') }}</td>
                         <td>{{ $reservation->debut_lieu_nom }}</td>

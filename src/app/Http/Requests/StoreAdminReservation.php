@@ -39,7 +39,7 @@ class StoreAdminReservation extends FormRequest
             "client_id" => "nullable|integer|exists:clients,id",
             "etat_id" => "required|integer|exists:reservation_etats,id",
             "condition_paiement_id" => "required|integer|exists:condition_paiements,id",
-
+            "source_id" => "nullable|exists:sources,id",
             "civilite" => "nullable|in:M.,Mme",
             "nom" => "required|max:255",
             "prenom" => "nullable|max:255",

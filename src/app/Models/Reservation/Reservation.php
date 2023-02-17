@@ -15,6 +15,7 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Casts\EcheancierCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\PrestationCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\PromotionCollection;
+use Ipsum\Reservation\app\Models\Source\Source;
 use Ipsum\Reservation\database\factories\ReservationFactory;
 
 
@@ -212,6 +213,11 @@ class Reservation extends BaseModel
     public function admin()
     {
         return $this->belongsTo(Admin::class);
+    }
+
+    public function source()
+    {
+        return $this->belongsTo(Source::class);
     }
 
 

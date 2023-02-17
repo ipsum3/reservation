@@ -32,6 +32,10 @@
 
                 {{ Aire::textArea('note', 'Notes')->groupAddClass('col-md-6') }}
 
+                @if ($reservation->source_id )
+                    {{ Aire::select(collect(['' => '---- Origine -----'])->union($sources), 'source_id', 'Origine*')->required()->groupAddClass('col-md-6') }}<br>
+                @endif
+
                 @if ($reservation->exists)
                     <div class="col-md-6">
                         <label>Informations</label>
@@ -40,9 +44,6 @@
                             Modification : {{ $reservation->updated_at->format('d/m/Y H:i:s') }}<br>
                             @if ($reservation->admin)
                                 Agent : {{ $reservation->admin->firstname }} {{ $reservation->admin->name }}<br>
-                            @endif
-                            @if ($reservation->source )
-                                Source : {{ $reservation->source }}<br>
                             @endif
                         </div>
                     </div>

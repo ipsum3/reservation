@@ -203,3 +203,14 @@ Route::controller(ClientController::class)->prefix('client')->name('admin.client
         Route::get('{client}/edit', 'edit')->name('edit');
     }
 );
+
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\SourceController::class)->prefix('source')->name('admin.source.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::post('', 'store')->name('store');
+        Route::get('create', 'create')->name('create');
+        Route::any('{source}/destroy', 'destroy')->name('destroy');
+        Route::put('{source}', 'update')->name('update');
+        Route::get('{source}/edit', 'edit')->name('edit');
+    }
+);

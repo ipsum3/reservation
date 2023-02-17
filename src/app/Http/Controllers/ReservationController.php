@@ -28,6 +28,7 @@ use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Reservation\Type;
+use Ipsum\Reservation\app\Models\Source\Source;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\CSV\Options;
 use OpenSpout\Writer\CSV\Writer;
@@ -55,6 +56,9 @@ class ReservationController extends AdminController
         }
         if ($request->filled('condition_paiement_id')) {
             $query->where('condition_paiement_id', $request->get('condition_paiement_id'));
+        }
+        if ($request->filled('source_id')) {
+            $query->where('source_id', $request->get('source_id'));
         }
         if ($request->filled('date_creation')) {
             try {
@@ -110,7 +114,9 @@ class ReservationController extends AdminController
         $stats['mois'] = $reservationsMoisQuery->count();
         $stats['montant'] = $reservationsMoisQuery->sum('total');
 
-        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions', 'categories', 'stats'));
+        $origines = Source::all()->pluck('nom', 'id');
+
+        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions', 'categories', 'stats', 'origines'));
     }
 
     public function export(Request $request)
@@ -123,6 +129,7 @@ class ReservationController extends AdminController
             'Date modification',
             'Réfèrence',
             'Contrat',
+            'Origine',
             'Email',
             'Nom',
             'Prénom',
@@ -168,6 +175,7 @@ class ReservationController extends AdminController
                 $reservation->updated_at->format('Y-m-d H:i:s'),
                 $reservation->reference,
                 $reservation->contrat,
+                $reservation->source ? $reservation->source->nom : null,
                 $reservation->email,
                 $reservation->nom,
                 $reservation->prenom,
@@ -221,7 +229,9 @@ class ReservationController extends AdminController
         $moyens = Moyen::all();
         $types = Type::all();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'prestations', 'moyens', 'types'));
+        $sources = Source::all()->pluck('nom', 'id');
+
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'prestations', 'moyens', 'types', 'sources'));
     }
 
     public function store(StoreAdminReservation $request)
@@ -264,7 +274,9 @@ class ReservationController extends AdminController
         $moyens = Moyen::all();
         $types = Type::all();
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens', 'types'));
+        $sources = Source::all()->pluck('nom', 'id');
+
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens', 'types', 'sources'));
     }
 
     public function update(StoreAdminReservation $request, Reservation $reservation)

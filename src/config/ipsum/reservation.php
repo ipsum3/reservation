@@ -104,5 +104,6 @@ return [
         'tarifs' => 'Tarifs',
         'vehicule' => 'Véhicule',
         'statistique' => 'Statistique',
+        'source' => 'Source',
     ),
 ];
