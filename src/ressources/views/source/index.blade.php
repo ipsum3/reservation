@@ -39,7 +39,7 @@
                         <td>{{ $source->nom }}</td>
                         <td>{{ $source->type->nom }}</td>
                         <td>
-                            <a href="{{ env('APP_URL') }}?origin={{ $source->ref_tracking }}" target="_blank">{{ $source->ref_tracking }}</a>
+                            <a href="{{ url('/') }}?origin={{ $source->ref_tracking }}" target="_blank">{{ $source->ref_tracking }}</a>
                         </td>
                         <td class="text-right">
                             <form action="{{ route('admin.source.destroy', $source) }}" method="POST">
