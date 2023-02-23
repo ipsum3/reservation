@@ -178,7 +178,7 @@ class Devis
             'id' => $this->getLocation()->getReservationId(),
             'etat_id' => Etat::NON_VALIDEE_ID,
             'condition_paiement_id' => $this->getLocation()->getCondition()->id,
-            'source_id' => session('source_id') ? session('source_id') : null,
+            'source_id' => session('source_id') ? session('source_id') : 1,
             'client_id' => auth()->check() ? auth()->id() : null,
             'civilite' => $this->getLocation()->getCivilite(),
             'nom' => $this->getLocation()->getNom(),
