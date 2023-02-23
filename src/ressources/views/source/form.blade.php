@@ -16,7 +16,7 @@
                     <a class="btn btn-outline-secondary" href="{{ route('admin.source.create') }}" data-toggle="tooltip" title="Ajouter">
                         <i class="fas fa-plus"></i>
                     </a>&nbsp;
-                    @if( $source->id != 1 )
+                    @if( $source->id != $source::SOURCE_SITE_INTERNET )
                         <a class="btn btn-outline-danger" href="{{ route('admin.source.destroy', $source) }}" data-toggle="tooltip" title="Supprimer">
                             <i class="fas fa-trash-alt"></i>
                         </a>

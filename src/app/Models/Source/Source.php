@@ -19,6 +19,8 @@ class Source extends BaseModel
     
     public $timestamps = false;
 
+    const SOURCE_SITE_INTERNET = 1;
+
     /*
      * Relations
      */

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Reservation\app\Location\Exceptions\PrixInvalide;
 use Ipsum\Reservation\app\Models\Reservation\Etat;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\app\Models\Source\Source;
 use Ipsum\Reservation\app\Models\Tarif\Saison;
 
 class Devis
@@ -20,8 +21,6 @@ class Devis
 
     protected ?PrestationCollection $prestations = null;
     protected ?PromotionCollection $promotions = null;
-
-
 
     public function __construct(Location $location, bool $without_prestations_optionnelles = false)
     {
@@ -178,7 +177,7 @@ class Devis
             'id' => $this->getLocation()->getReservationId(),
             'etat_id' => Etat::NON_VALIDEE_ID,
             'condition_paiement_id' => $this->getLocation()->getCondition()->id,
-            'source_id' => session('source_id') ? session('source_id') : 1,
+            'source_id' => session('source_id') ? session('source_id') : Source::SOURCE_SITE_INTERNET,
             'client_id' => auth()->check() ? auth()->id() : null,
             'civilite' => $this->getLocation()->getCivilite(),
             'nom' => $this->getLocation()->getNom(),

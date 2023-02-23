@@ -46,7 +46,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <a class="btn btn-primary" href="{{ route('admin.source.edit', [$source]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                @if( $source->id != 1 )
+                                @if( $source->id != $source::SOURCE_SITE_INTERNET )
                                     <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
                                 @endif
                             </form>
