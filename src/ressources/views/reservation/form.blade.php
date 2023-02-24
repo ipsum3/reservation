@@ -32,22 +32,7 @@
 
                 {{ Aire::textArea('note', 'Notes')->groupAddClass('col-md-6') }}
 
-                @if ($reservation->source_id )
-                    {{ Aire::select(collect(['' => '---- Origine -----'])->union($sources), 'source_id', 'Origine*')->required()->groupAddClass('col-md-6') }}<br>
-                @endif
-
-                @if ($reservation->exists)
-                    <div class="col-md-6">
-                        <label>Informations</label>
-                        <div>
-                            Création : {{ $reservation->created_at->format('d/m/Y H:i:s') }}<br>
-                            Modification : {{ $reservation->updated_at->format('d/m/Y H:i:s') }}<br>
-                            @if ($reservation->admin)
-                                Agent : {{ $reservation->admin->firstname }} {{ $reservation->admin->name }}<br>
-                            @endif
-                        </div>
-                    </div>
-                @endif
+                {{ Aire::select(collect(['' => '---- Origine -----'])->union($sources), 'source_id', 'Origine')->defaultValue(\Ipsum\Reservation\app\Models\Source\Source::SOURCE_AGENCE)->groupAddClass('col-md-6') }}<br>
             </div>
         </div>
     </div>
@@ -192,23 +177,23 @@
                                     <select class="form-control" name="paiements[@{{ indice }}][paiement_moyen_id]" required>
                                         <option value="">-- Moyens --</option>
                                         @foreach($moyens as $moyen)
-                                            <option value="{{ $moyen->id }}">{{ $moyen->nom }}</option>
+                                <option value="{{ $moyen->id }}">{{ $moyen->nom }}</option>
                                         @endforeach
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control" name="paiements[@{{ indice }}][paiement_type_id]" required>
-                                        <option value="">-- Types --</option>
-                                        @foreach($types as $type)
-                                            <option value="{{ $type->id }}">{{ $type->nom }}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control" name="paiements[@{{ indice }}][paiement_type_id]" required>
+                                <option value="">-- Types --</option>
+@foreach($types as $type)
+                                <option value="{{ $type->id }}">{{ $type->nom }}</option>
                                         @endforeach
-                                    </select>
-                                </td>
-                                <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
-                                <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
-                                <td><button type="button" class="paiement-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button></td>
-                            </tr>
-                        </script>
+                            </select>
+                        </td>
+                        <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
+                        <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
+                        <td><button type="button" class="paiement-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button></td>
+                    </tr>
+</script>
                         </tbody>
                     </table>
 
@@ -284,9 +269,31 @@
                     </div>
                 </div>
             @endif
+
+            @if ($reservation->exists)
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="box-title">
+                            Informations d'édition
+                        </h2>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="col-md-6">
+                            <div>
+                                Création : {{ $reservation->created_at->format('d/m/Y H:i:s') }}<br>
+                                Modification : {{ $reservation->updated_at->format('d/m/Y H:i:s') }}<br>
+                                @if ($reservation->admin)
+                                    Agent : {{ $reservation->admin->firstname }} {{ $reservation->admin->name }}<br>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
-    
+
     {{ Aire::close() }}
 
 
