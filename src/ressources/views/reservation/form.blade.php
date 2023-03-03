@@ -32,7 +32,7 @@
 
                 {{ Aire::textArea('note', 'Notes')->groupAddClass('col-md-6') }}
 
-                {{ Aire::select(collect(['' => '---- Origine -----'])->union($sources), 'source_id', 'Origine')->defaultValue(\Ipsum\Reservation\app\Models\Source\Source::SOURCE_AGENCE)->groupAddClass('col-md-6') }}<br>
+                {{ Aire::select(collect(['' => '---- Origine -----'])->union($sources), 'source_id', 'Origine')->defaultValue($reservation->exists ? $reservation->source_id : \Ipsum\Reservation\app\Models\Source\Source::SOURCE_AGENCE)->groupAddClass('col-md-6') }}<br>
             </div>
         </div>
     </div>
