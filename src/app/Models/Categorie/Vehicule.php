@@ -6,6 +6,7 @@ use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\database\factories\VehiculeFactory;
 
@@ -122,7 +123,10 @@ class Vehicule extends BaseModel
         });
     }
 
-
+    public function scopeSortie(Builder $query)
+    {
+        $query->where('sortie_at', '<=', Carbon::now()->format( 'Y-m-d' ));
+    }
 
     /*
      * Accessors & Mutators

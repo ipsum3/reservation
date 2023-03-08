@@ -89,9 +89,20 @@ class CategorieController extends AdminController
 
     public function destroy(Categorie $categorie)
     {
-        $categorie->delete();
+        // Vérification des véhicules de la catégorie en service
+        $vehicules = $categorie->vehicules()->sortie()->count();
 
+        if( $vehicules ) {
+            Alert::error("Impossible de supprimer cette catégorie car il existe des véhicules associés en service.")->flash();
+            return back();
+        }
+
+        // Supression des blocages associés à la categorie
+        $categorie->blocages()->delete();
+
+        $categorie->delete();
         Alert::warning("L'enregistrement a bien été supprimé")->flash();
+
         return redirect()->route('admin.categorie.index');
 
     }
