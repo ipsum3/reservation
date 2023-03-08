@@ -79,7 +79,7 @@ class InterventionController extends AdminController
     {
         $types = InterventionType::orderBy('order')->get()->pluck('nom', 'id');
         $vehicules = Vehicule::orderBy('immatriculation')->get()->mapWithKeys(function ($vehicule) {
-            return [$vehicule->id => $vehicule->categorie->nom.' : '.$vehicule->immatriculation.' '.$vehicule->marque_modele];
+            return [$vehicule->id => $vehicule->categorie ? $vehicule->categorie->nom.' : '.$vehicule->immatriculation.' '.$vehicule->marque_modele : $vehicule->immatriculation.' '.$vehicule->marque_modele ];
         });
 
         return view('IpsumReservation::categorie.intervention.form', compact('intervention', 'types', 'vehicules'));
