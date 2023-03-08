@@ -73,7 +73,14 @@ class Promotion extends BaseModel
         'desactivation_at' => 'date:Y-m-d'
     ];
 
-    
+    protected static function booted()
+    {
+        static::deleting(function (self $promotion) {
+            $promotion->categories()->detach();
+            $promotion->prestations()->detach();
+            $promotion->lieux()->detach();
+        });
+    }
 
     /*
      * Relations

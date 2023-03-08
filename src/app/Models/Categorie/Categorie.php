@@ -11,6 +11,7 @@ use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Core\Concerns\Translatable;
 use Ipsum\Media\Concerns\Mediable;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
+use Ipsum\Reservation\app\Models\Promotion\Promotion;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Tarif\Tarif;
 use Ipsum\Reservation\database\factories\CategorieFactory;
@@ -104,6 +105,9 @@ class Categorie extends BaseModel
     {
         static::deleting(function (self $categorie) {
             $categorie->blocages()->delete();
+            $categorie->tarifs()->delete();
+            $categorie->prestations()->detach();
+            $categorie->promotions()->detach();
         });
     }
 
@@ -160,6 +164,11 @@ class Categorie extends BaseModel
     public function prestations()
     {
         return $this->morphToMany(Prestation::class, 'prestable')->withPivot('montant');
+    }
+
+    public function promotions()
+    {
+        return $this->morphToMany(Promotion::class, 'prestable')->withPivot('reduction');
     }
 
 

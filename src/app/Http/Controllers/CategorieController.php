@@ -12,6 +12,7 @@ use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Motorisation;
 use Ipsum\Reservation\app\Models\Categorie\Transmission;
 use Ipsum\Reservation\app\Models\Categorie\Type;
+use Ipsum\Reservation\app\Models\Tarif\Tarif;
 use Prologue\Alerts\Facades\Alert;
 
 class CategorieController extends AdminController
@@ -22,7 +23,7 @@ class CategorieController extends AdminController
     {
         $query = Categorie::with('illustration')->withCount(['blocages' => function (Builder $query) {
             $query->where('fin_at', '>', Carbon::now());
-        }]);
+        }])->withCount(['vehicules' => function (Builder $query) {}]);
 
         if ($request->filled('type_id')) {
             $query->where('type_id', $request->get('type_id'));
@@ -96,9 +97,6 @@ class CategorieController extends AdminController
             Alert::error("Impossible de supprimer cette catégorie car il existe des véhicules associés en service.")->flash();
             return back();
         }
-
-        // Supression des blocages associés à la categorie
-        $categorie->blocages()->delete();
 
         $categorie->delete();
         Alert::warning("L'enregistrement a bien été supprimé")->flash();

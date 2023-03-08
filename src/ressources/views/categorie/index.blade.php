@@ -35,6 +35,7 @@
                     <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Modéle', 'champ' => 'modeles'])</th>
+                    <th>Véhicules</th>
                     <th>Blocages</th>
                     <th>Illustration</th>
                     <th width="160px">Actions</th>
@@ -46,6 +47,11 @@
                         <td>{{ $categorie->id }}</td>
                         <td>{{ $categorie->nom }}</td>
                         <td>{{ $categorie->modeles }}</td>
+                        <td>
+                            <a href="{{ route('admin.vehicule.index') }}?categorie_id={{ $categorie->id }}" class="badge badge-info">
+                                {{ $categorie->vehicules_count }} véhicule{{ $categorie->vehicules_count > 1 ? 's' : '' }}
+                            </a>
+                        </td>
                         <td>
                             <a href="{{ route('admin.categorieBlocage.index') }}?categorie_id={{ $categorie->id }}" class="badge {{ $categorie->blocages_count ? 'badge-danger' : 'badge-light' }}">
                                 {{ $categorie->blocages_count }} blocage{{ $categorie->blocages_count > 1 ? 's' : '' }}
