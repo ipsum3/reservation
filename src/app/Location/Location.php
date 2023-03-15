@@ -105,7 +105,7 @@ class Location
         $this->setNaissanceAt($inputs['naissance_at']);
         $this->setNaissanceLieu($inputs['naissance_lieu'] ?? null);
         $this->setPermisNumero($inputs['permis_numero'] ?? null);
-        $this->setPermisAt($inputs['permis_at']);
+        $this->setPermisAt($inputs['permis_at']  ?? null);
         $this->setPermisDelivre($inputs['permis_delivre'] ?? null);
         $this->setObservation($inputs['observation'] ?? null);
         $this->setCustomFields($inputs['custom_fields'] ?? null);
