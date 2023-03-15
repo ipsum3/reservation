@@ -459,9 +459,9 @@ class Location
         return $this->permis_at;
     }
 
-    public function setPermisAt(string $permis_at): void
+    public function setPermisAt(?string $permis_at): void
     {
-        $this->permis_at = Carbon::createFromFormat(config('ipsum.reservation.recherche.jour_format'), $permis_at);
+        $this->permis_at = $permis_at ? Carbon::createFromFormat(config('ipsum.reservation.recherche.jour_format'), $permis_at): null;
     }
 
     public function getDatePermisMinimum()
