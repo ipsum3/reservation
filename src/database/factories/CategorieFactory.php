@@ -32,7 +32,6 @@ class CategorieFactory extends Factory
 			'climatisation' => rand(0, 1),
 			'transmission_id' => rand(1, 2),
 			'motorisation_id' => rand(1, 2),
-			'carrosserie_id' => rand(1, 5),
 			'franchise' => $this->faker->randomNumber(1),
 			'age_minimum' => 21,
 			'annee_permis_minimum' => 1,

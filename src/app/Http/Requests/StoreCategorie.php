@@ -53,7 +53,8 @@ class StoreCategorie extends FormRequest
             "climatisation" => 'required|boolean',
             "transmission_id" => "required|exists:transmissions,id",
             "motorisation_id" => "required|exists:motorisations,id",
-            "carrosserie_id" => "required|exists:carrosseries,id",
+            "carrosseries.*" => "exists:carrosseries,id",
+            "carrosseries" => "required",
 
             "caution" => 'nullable|numeric',
             "franchise" => 'nullable|numeric',

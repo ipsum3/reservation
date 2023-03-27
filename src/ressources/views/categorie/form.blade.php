@@ -69,9 +69,9 @@
                         {{ Aire::number('hauteur', 'Hauteur (m)')->groupAddClass('col-md-4') }}
                     </div>
                     <div class="form-row">
-                        {{ Aire::select(collect(['' => '---- Transmissions -----'])->union($transmissions), 'transmission_id', 'Transmission*')->groupAddClass('col-md-4') }}
-                        {{ Aire::select(collect(['' => '---- Motorisations -----'])->union($motorisations), 'motorisation_id', 'Motorisation*')->groupAddClass('col-md-4') }}
-                        {{ Aire::select(collect(['' => '---- Carrosseries -----'])->union($carrosseries), 'carrosserie_id', 'Carrosserie*')->groupAddClass('col-md-4') }}
+                        {{ Aire::select(collect(['' => '---- Transmissions -----'])->union($transmissions), 'transmission_id', 'Transmission*')->required()->groupAddClass('col-md-4') }}
+                        {{ Aire::select(collect(['' => '---- Motorisations -----'])->union($motorisations), 'motorisation_id', 'Motorisation*')->required()->groupAddClass('col-md-4') }}
+                        {{ Aire::select($carrosseries, 'carrosseries', 'Carrosserie*')->multiple()->required()->groupAddClass('col-md-4')->class('js-example-basic-single form-control') }}
                     </div>
                     <div class="form-row">
                         {{ Aire::radioGroup([0 => 'non', 1 => 'oui'], 'climatisation', 'Climatisation')->defaultValue(1)->groupAddClass('col-md-4') }}</div>

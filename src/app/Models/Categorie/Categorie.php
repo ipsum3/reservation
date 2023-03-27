@@ -42,14 +42,16 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property string|null $franchise
  * @property int $age_minimum
  * @property int $annee_permis_minimum
+ * @property AsCustomFieldsObject|null $custom_fields
  * @property string|null $seo_title
  * @property string|null $seo_description
- * @property mixed|null $custom_fields
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Categorie\Blocage[] $blocages
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Blocage> $blocages
  * @property-read int|null $blocages_count
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Carrosserie|null $carrosserie
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Carrosserie> $carrosseries
+ * @property-read int|null $carrosseries_count
  * @property-read bool $has_no_blocage
  * @property-read bool $has_vehicule
  * @property-read bool $is_dispo
@@ -57,20 +59,24 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property-read mixed $tag_title
  * @property-read mixed $tarif_a_partir
  * @property-read \Ipsum\Media\app\Models\Media|null $illustration
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Media\app\Models\Media[] $medias
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Media\app\Models\Media> $medias
  * @property-read int|null $medias_count
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Motorisation|null $motorisation
- * @property-read \Illuminate\Database\Eloquent\Collection|Prestation[] $prestations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Prestation> $prestations
  * @property-read int|null $prestations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Reservation[] $reservations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Promotion> $promotions
+ * @property-read int|null $promotions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Reservation> $reservations
  * @property-read int|null $reservations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Tarif[] $tarifs
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Tarif> $tarifs
  * @property-read int|null $tarifs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates
+ * @property-read int|null $translates_count
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Transmission|null $transmission
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Type|null $type
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Categorie\Vehicule[] $vehicules
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Vehicule> $vehicules
  * @property-read int|null $vehicules_count
- * @method static \Ipsum\Reservation\database\factories\CategorieFactory factory(...$parameters)
+ * @method static \Ipsum\Reservation\database\factories\CategorieFactory factory($count = null, $state = [])
  * @method static Builder|Categorie newModelQuery()
  * @method static Builder|Categorie newQuery()
  * @method static Builder|Categorie query()
@@ -131,11 +137,6 @@ class Categorie extends BaseModel
         return $this->belongsTo(Transmission::class);
     }
 
-    public function carrosserie()
-    {
-        return $this->belongsTo(Carrosserie::class);
-    }
-
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
@@ -169,6 +170,11 @@ class Categorie extends BaseModel
     public function promotions()
     {
         return $this->morphToMany(Promotion::class, 'prestable')->withPivot('reduction');
+    }
+
+    public function carrosseries()
+    {
+        return $this->belongsToMany(Carrosserie::class, 'carrosserie_categories');
     }
 
 

@@ -66,6 +66,7 @@ class CategorieController extends AdminController
     public function store(StoreCategorie $request)
     {
         $categorie = Categorie::create($request->validated());
+        $categorie->carrosseries()->sync($request->carrosseries);
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.categorie.edit', [$categorie->id]);
     }
@@ -83,7 +84,7 @@ class CategorieController extends AdminController
     public function update(StoreCategorie $request, Categorie $categorie)
     {
         $categorie->update($request->validated());
-
+        $categorie->carrosseries()->sync($request->carrosseries);
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
     }

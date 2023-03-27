@@ -17,9 +17,10 @@ class CategorieSeeder extends Seeder
     {
 
         foreach (range('A', 'F') as $nom) {
-            Categorie::factory()->create([
+            $categorie = Categorie::factory()->create([
                 'nom' => $nom,
             ]);
+            $categorie->carrosseries()->attach($this->getCarrosseries()[array_rand($this->getCarrosseries())]['id']);
         }
 
 

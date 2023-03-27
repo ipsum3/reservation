@@ -9,6 +9,12 @@ use Ipsum\Core\app\Models\BaseModel;
  *
  * @property int $id
  * @property string $nom
+ * @property string $icon
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Source\Source> $sources
+ * @property-read int|null $sources_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Type newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Type newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Type query()
  * @mixin \Eloquent
  */
 class Type extends BaseModel
