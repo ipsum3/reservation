@@ -21,7 +21,7 @@ class CategorieController extends AdminController
 
     public function index(Request $request)
     {
-        $query = Categorie::with('illustration')->withCount(['blocages' => function (Builder $query) {
+        $query = Categorie::with('illustration', 'carrosseries')->withCount(['blocages' => function (Builder $query) {
             $query->where('fin_at', '>', Carbon::now());
         }])->withCount(['vehicules' => function (Builder $query) {}]);
 
@@ -30,7 +30,9 @@ class CategorieController extends AdminController
         }
 
         if ($request->filled('carrosserie_id')) {
-            $query->where('carrosserie_id', $request->get('carrosserie_id'));
+            $query->whereHas('carrosseries', function($q) use($request){
+                $q->where('carrosserie_id', $request->get('carrosserie_id'));
+            });
         }
 
         if ($request->filled('search')) {
