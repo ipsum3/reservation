@@ -1,20 +1,47 @@
+@if (request()->undo)
+    {{ Aire::bind($reservation) }}
+@endif
+
 @php
     $promotions = isset($devis) ? $devis->getPromotions() : $reservation->promotions ?? [];
 @endphp
+
+@if (isset($promotions_diff) and $promotions_diff->count())
+    <div class="alert alert-warning">
+        <p>
+            @if($promotions_diff->count() > 1)
+                Les promotions ci-dessous ne sont plus applicables :
+            @else
+                La promotion ci-dessous n'est plus applicable :
+            @endif
+        </p>
+        <ul class="mb-0">
+            @foreach($promotions_diff as $promotion)
+                <li>{{ _('Offre') }} {{ strtolower($promotion->nom) }} : -@prix($promotion->reduction)&nbsp;€</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 @if ($promotions->count())
     @error('promotions.*')
     <div class="alert alert-warning">{{ $message }}</div>
     @enderror
     <div class="alert alert-info">
-        @foreach ($promotions as $promotion)
-            {{ _('Offre') }} {{ strtolower($promotion->nom) }} : -@prix($promotion->reduction)&nbsp;€<br>
-            <input type="hidden" name="promotions[{{ $promotion->id }}][id]" value="{{ $promotion->id }}">
-            <input type="hidden" name="promotions[{{ $promotion->id }}][nom]" value="{{ $promotion->nom }}">
-            <input type="hidden" name="promotions[{{ $promotion->id }}][reference]" value="{{ $promotion->reference }}">
-            <input type="hidden" name="promotions[{{ $promotion->id }}][reduction]" value="{{ $promotion->reduction }}">
-        @endforeach
+        <ul class="mb-0">
+            @foreach ($promotions as $promotion)
+                <li>
+                    {{ _('Offre') }} {{ strtolower($promotion->nom) }} : -@prix($promotion->reduction)&nbsp;€
+                    <input type="hidden" name="promotions[{{ $promotion->id }}][id]" value="{{ $promotion->id }}">
+                    <input type="hidden" name="promotions[{{ $promotion->id }}][nom]" value="{{ $promotion->nom }}">
+                    <input type="hidden" name="promotions[{{ $promotion->id }}][reference]" value="{{ $promotion->reference }}">
+                    <input type="hidden" name="promotions[{{ $promotion->id }}][reduction]" value="{{ $promotion->reduction }}">
+                </li>
+            @endforeach
+        </ul>
     </div>
+@else
+    <input type="hidden" name="promotions" value="">
 @endif
 @if ($prestations)
     <div class="form-row">
@@ -68,6 +95,8 @@
     {{ Aire::number('caution', 'Caution (€)')->setAttribute('step', 0.01)->value(isset($devis) ? $reservation->categorie->caution : null)->groupAddClass('col-md-6') }}
     {{ Aire::number('franchise', 'Franchise (€)')->setAttribute('step', 0.01)->value(isset($devis) ? $reservation->categorie->franchise : null)->groupAddClass('col-md-6') }}
 
+    {{ Aire::input('code_promo', 'Code promotion')->value(isset($devis) ? $reservation->code_promo : null)->groupAddClass('col-md-6') }}
+    {{ Aire::number('remise', 'Remise (€)')->setAttribute('step', 0.01)->value(isset($devis) ? $devis->getRemiseAdmin() : null)->groupAddClass('col-md-6') }}
     {{ Aire::number('montant_base', 'Montant de base (€)')->setAttribute('step', 0.01)->value(isset($devis) ? $devis->getMontantBase() : null)->groupAddClass('col-md-6') }}
     {{ Aire::number('total', 'Total (€)')->setAttribute('step', 0.01)->value(isset($devis) ? $devis->getTotal() : null)->groupAddClass('col-md-6') }}
 

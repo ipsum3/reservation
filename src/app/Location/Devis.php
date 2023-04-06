@@ -22,6 +22,8 @@ class Devis
     protected ?PrestationCollection $prestations = null;
     protected ?PromotionCollection $promotions = null;
 
+    protected ?float $remise_admin = null;
+
     public function __construct(Location $location, bool $without_prestations_optionnelles = false)
     {
         $this->location = $location;
@@ -42,7 +44,7 @@ class Devis
         $this->_loadPromotions();
 
         // Calcul total
-        $this->total = $this->montant_base + (float) $total_prestations - (float) $this->promotions->totalReductions();
+        $this->total = $this->montant_base + (float) $total_prestations - (float) $this->promotions->totalReductions() - (float) $this->remise_admin;
 
         if (!$this->total) {
             throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
@@ -140,6 +142,16 @@ class Devis
         return $this->promotions->count() != 0;
     }
 
+    public function setRemisenAdmin($remise): self
+    {
+        $this->remise_admin = $remise;
+        return $this;
+    }
+
+    public function getRemiseAdmin(): ?float
+    {
+        return $this->remise_admin;
+    }
 
 
     /**
@@ -203,8 +215,10 @@ class Devis
             'debut_lieu_id' => $this->getLocation()->getLieuDebut()->id,
             'fin_lieu_id' => $this->getLocation()->getLieuFin()->id,
             'montant_base' => $this->montant_base,
-            'prestations' => $this->getPrestations()->toArray(), // Ne pas prendre dans Location sinon il n'y aura pas les obligatoire
+            'prestations' => $this->getPrestations()->toArray(), // Ne pas prendre dans Location sinon il n'y aura pas les obligatoires
             'promotions' => $this->getPromotions()->toArray(),
+            'remise' => $this->getRemiseAdmin(),
+            'code_promo' => $this->getLocation()->getCodePromo(),
             'echeancier' => $this->getLocation()->getCondition()->echeancier($this->total),
             'total' => $this->total,
             'montant_paye' => null,

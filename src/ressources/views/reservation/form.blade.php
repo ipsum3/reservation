@@ -101,6 +101,7 @@
                     </h2>
                     <div class="btn-toolbar">
                         <button id="tarification-load" class="btn btn-outline-secondary" type="button" data-ajax-url="{{ route('admin.reservation.updateTarifs', $reservation) }}" data-toggle="tooltip" title="Mettre à jour les tarifs"><i class="fas fa-sync"></i></button>&nbsp;
+                        <button id="tarification-undo" class="btn btn-outline-secondary" type="button" data-ajax-url="{{ route('admin.reservation.updateTarifs', [$reservation, 'undo' => true]) }}" data-toggle="tooltip" title="Annuler la mise à jour des tarifs" style="display: none"><i class="fas fa-undo"></i></button>&nbsp;
                     </div>
                 </div>
                 <div class="box-body">

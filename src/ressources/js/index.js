@@ -18,7 +18,7 @@ $('#reservation-categorie').on('change', function () {
     })
 })
 
-$('#tarification-load').click(function () {
+$('#tarification-load, #tarification-undo').click(function () {
     $.ajax({
         method: 'POST',
         url: $(this).data('ajax-url'),
@@ -31,6 +31,12 @@ $('#tarification-load').click(function () {
             $('#tarification-alert').show().html(xhr.responseJSON.message)
         }
     })
+
+    if ($(this).attr('id') === 'tarification-undo') {
+        $('#tarification-undo').hide()
+    } else {
+        $('#tarification-undo').show()
+    }
 })
 
 $('#paiement-add').on('click', function () {

@@ -300,6 +300,13 @@ class ReservationController extends AdminController
     {
 
         try {
+            $prestations = Prestation::orderBy('order', 'asc')->get();
+
+            if ($request->undo) {
+                return response()->json([
+                    'tarification' => view('IpsumReservation::reservation._tarification', compact('reservation', 'prestations'))->render(),
+                ]);
+            }
 
             $reservation->fill(collect($request->validated())->except('promotions')->all());
 
@@ -315,7 +322,11 @@ class ReservationController extends AdminController
                 }
                 return $prestation;
             })->all());
-            $devis = $location->devis()->calculer();
+            $devis = $location->devis()->setRemisenAdmin($request->remise)->calculer();
+
+
+            // Diff des promotions
+            $promotions_diff = $reservation->promotions->keyBy('id')->diffKeys($devis->getPromotions()->keyBy('id'));
 
         } catch (\Exception $e) {
             return response()->json([
@@ -323,10 +334,8 @@ class ReservationController extends AdminController
             ])->setStatusCode(422);
         }
 
-        $prestations = Prestation::orderBy('order', 'asc')->get();
-
         return response()->json([
-            'tarification' => view('IpsumReservation::reservation._tarification', compact('reservation', 'devis', 'prestations'))->render(),
+            'tarification' => view('IpsumReservation::reservation._tarification', compact('reservation', 'devis', 'prestations', 'promotions_diff'))->render(),
         ]);
     }
 
@@ -382,7 +391,6 @@ class ReservationController extends AdminController
             }
             return redirect()->route('admin.reservation.edit', $reservation);
         } catch (\Exception $exception) {
-            dd(($exception));
             Alert::error("Impossible d'envoyer l'email")->flash();
         }
 

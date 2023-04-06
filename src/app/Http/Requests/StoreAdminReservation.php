@@ -35,6 +35,16 @@ class StoreAdminReservation extends FormRequest
             }
         }
 
+        if (!$this->routeIs('admin.reservation.updateTarifs')) {
+            $rules = [
+                "promotions" => "nullable",
+                "promotions.*.id" => "required|integer", // exists:promotions,id pas de vérification car problèmatique en cas de suppression de la promotion
+                "promotions.*.nom" => "required|max:255",
+                "promotions.*.reference" => "nullable|max:255",
+                "promotions.*.reduction" => "required|numeric",
+            ] + $rules;
+        }
+
         return [
             "client_id" => "nullable|integer|exists:clients,id",
             "etat_id" => "required|integer|exists:reservation_etats,id",
@@ -73,11 +83,6 @@ class StoreAdminReservation extends FormRequest
             "debut_lieu_id" => "required|integer|exists:lieux,id",
             "fin_lieu_id" => "required|integer|exists:lieux,id",
 
-            "promotions.*.id" => "required|integer|exists:promotions,id",
-            "promotions.*.nom" => "required|max:255",
-            "promotions.*.reference" => "nullable|max:255",
-            "promotions.*.reduction" => "required|numeric",
-
             "prestations.*.id" => "nullable|integer|exists:prestations,id",
             "prestations.*.quantite" => "nullable|integer",
             "prestations.*.tarif" => "nullable|numeric",
@@ -85,6 +90,8 @@ class StoreAdminReservation extends FormRequest
             "prestations.*.tarification" => ["nullable", Rule::in(Prestation::$LISTE_TARIFICATION)],
 
             "montant_base" => "nullable|numeric",
+            "code_promo" => "nullable",
+            "remise" => "nullable|numeric",
             "total" => "nullable|numeric",
             "montant_paye" => "nullable|numeric",
 

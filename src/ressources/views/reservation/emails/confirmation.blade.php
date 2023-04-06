@@ -374,6 +374,12 @@
                                                     <td align="right"><b>-@prix($promotion->reduction)&nbsp;€</b></td>
                                                 </tr>
                                             @endforeach
+                                            @if ($reservation->remise)
+                                                <tr>
+                                                    <th valign="top">{{ _('Remise') }}</th>
+                                                    <td align="right"><b>-@prix($reservation->remise)&nbsp;€</b></td>
+                                                </tr>
+                                            @endif
                                             <tr>
                                                 <th valign="top">{{ _('Total (TTC)') }}</th>
                                                 <td align="right"><strong {{ $reservation->is_payed ?  'style="padding: 5px 5px; line-height: 22px;  background-color: #333; color: white;"' : '' }}>@prix($reservation->total)&nbsp;€</strong></td>
