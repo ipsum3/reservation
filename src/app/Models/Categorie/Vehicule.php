@@ -107,16 +107,28 @@ class Vehicule extends BaseModel
     {
         $query->withCount(['reservations' => function (Builder $query) use ($date_debut, $date_fin) {
             $query->confirmedBetweenDates($date_debut, $date_fin);
-        }])->enService($date_debut, $date_fin);
+        }]);
     }
 
-    public function scopeEnService(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    public function scopeWithCountIntervention(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    {
+        $query->withCount(['interventions' => function (Builder $query) use ($date_debut, $date_fin) {
+            $query->betweenDates($date_debut, $date_fin);
+        }]);
+    }
+
+    public function scopeDuParc(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
         $query->where(function (Builder $query) use ($date_fin) {
             $query->where('sortie_at', '>', $date_fin)->orWhereNull('sortie_at');
         })->where(function (Builder $query) use ($date_debut) {
             $query->where('entree_at', '<', $date_debut->copy()->startOfDay())->orWhereNull('entree_at');
         });
+    }
+
+    public function scopeEnService(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    {
+        $query->duParc($date_debut, $date_fin);
 
         $query->whereDoesntHave('interventions', function (Builder $query) use ($date_debut, $date_fin) {
             $query->betweenDates($date_debut, $date_fin);

@@ -263,6 +263,8 @@ class ReservationController extends AdminController
         if ($reservation->categorie) {
             $vehicules = $reservation->categorie->vehicules()->with('categorie')
                 ->withCountReservationConfirmed($reservation->debut_at, $reservation->fin_at)
+                ->withCountIntervention($reservation->debut_at, $reservation->fin_at)
+                ->duParc($reservation->debut_at, $reservation->fin_at)
                 ->orderBy('mise_en_circualtion_at', 'desc')
                 ->get();
         } else {
@@ -339,6 +341,8 @@ class ReservationController extends AdminController
 
         $vehicules = $categorie->vehicules()->with('categorie')
             ->withCountReservationConfirmed($debut_at, $fin_at)
+            ->withCountIntervention($debut_at, $fin_at)
+            ->duParc($debut_at, $fin_at)
             ->orderBy('mise_en_circualtion_at', 'desc')
             ->get();
 
