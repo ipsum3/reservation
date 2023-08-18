@@ -272,6 +272,7 @@ class ReservationController extends AdminController
         }
 
         // Comparaison pour les conflits
+        $conflicts = collect();
         if($reservation->vehicule != null){
             $conflicts = $reservation->vehicule->getConflicts($reservation);
         }

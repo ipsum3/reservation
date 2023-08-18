@@ -192,6 +192,7 @@ class Vehicule extends BaseModel
         $reservations = $this->reservations()
             ->confirmedBetweenDates($reservation->debut_at, $reservation->fin_at)
             ->where('id', '<>', $reservation->id)
+            ->where('fin_at', '>', Carbon::now()->startOfDay())
             ->get();
 
         $interventions = $this->interventions()
