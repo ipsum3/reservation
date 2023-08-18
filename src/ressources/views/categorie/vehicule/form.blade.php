@@ -128,6 +128,31 @@
                     </div>
                 </div>
                 <div class="box-body">
+
+                    @if($conflicts->count())
+                        <div class="alert alert-danger">
+                            <p><strong><i class="fas fa-exclamation-triangle"></i> Conflits potentiels :</strong></p>
+                            <ul>
+                                @foreach($conflicts as $reservation)
+                                    <li>
+                                        La réservation {{ "#".$reservation['reservation']->reference }} du {{ $reservation['reservation']->debut_at->format('d/m/Y H:i') }} au {{ $reservation['reservation']->fin_at->format('d/m/Y H:i') }} est en conflit avec :
+                                        <ul>
+                                            @foreach($reservation['conflits'] as $conflict)
+                                                <li>
+                                                    @if(get_class($conflict) == \Ipsum\Reservation\app\Models\Reservation\Reservation::class)
+                                                        la réservation {{ "#".$conflict->reference }} du {{ $conflict->debut_at->format('d/m/Y H:i') }} au {{ $conflict->fin_at->format('d/m/Y H:i') }}
+                                                    @else
+                                                        l'intervention {{ "#".$conflict->id }} "{{ $conflict->type->nom }}" du {{ $conflict->debut_at->format('d/m/Y H:i') }} au {{ $conflict->fin_at->format('d/m/Y H:i') }}
+                                                    @endif
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    
                     <table class="table table-hover table-striped">
                         <thead>
                         <tr>

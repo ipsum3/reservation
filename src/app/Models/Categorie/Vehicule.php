@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Models\Categorie;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
@@ -107,16 +108,28 @@ class Vehicule extends BaseModel
     {
         $query->withCount(['reservations' => function (Builder $query) use ($date_debut, $date_fin) {
             $query->confirmedBetweenDates($date_debut, $date_fin);
-        }])->enService($date_debut, $date_fin);
+        }]);
     }
 
-    public function scopeEnService(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    public function scopeWithCountIntervention(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    {
+        $query->withCount(['interventions' => function (Builder $query) use ($date_debut, $date_fin) {
+            $query->betweenDates($date_debut, $date_fin);
+        }]);
+    }
+
+    public function scopeDuParc(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
         $query->where(function (Builder $query) use ($date_fin) {
             $query->where('sortie_at', '>', $date_fin)->orWhereNull('sortie_at');
         })->where(function (Builder $query) use ($date_debut) {
             $query->where('entree_at', '<', $date_debut->copy()->startOfDay())->orWhereNull('entree_at');
         });
+    }
+
+    public function scopeEnService(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    {
+        $query->duParc($date_debut, $date_fin);
 
         $query->whereDoesntHave('interventions', function (Builder $query) use ($date_debut, $date_fin) {
             $query->betweenDates($date_debut, $date_fin);
@@ -159,6 +172,34 @@ class Vehicule extends BaseModel
     public function getTarifAPartirAttribute()
     {
         return $this->tarifsEnCoursOuFutur->count() ? $this->tarifsEnCoursOuFutur->first()->montant : null;
+    }
+
+    public function getConflicts(Reservation $reservation = null) :Collection
+    {
+         if(!$reservation) {
+            $reservations = $this->reservations()->confirmedBetweenDates(Carbon::now(), Carbon::now()->addYear())->get();
+
+            $conflits = collect();
+            foreach ($reservations as $resa) {
+                $conflit = $this->getConflicts($resa);
+                if ($conflit->count()) {
+                    $conflits[] = ['reservation' => $resa, 'conflits' => $conflit];
+                }
+            }
+            return $conflits;
+        }
+
+        $reservations = $this->reservations()
+            ->confirmedBetweenDates($reservation->debut_at, $reservation->fin_at)
+            ->where('id', '<>', $reservation->id)
+            ->get();
+
+        $interventions = $this->interventions()
+            ->betweenDates($reservation->debut_at, $reservation->fin_at)
+            ->where('fin_at', '>', Carbon::now()->startOfDay())
+            ->get();
+
+        return $reservations->merge($interventions);
     }
 
 }

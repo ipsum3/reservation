@@ -263,10 +263,17 @@ class ReservationController extends AdminController
         if ($reservation->categorie) {
             $vehicules = $reservation->categorie->vehicules()->with('categorie')
                 ->withCountReservationConfirmed($reservation->debut_at, $reservation->fin_at)
+                ->withCountIntervention($reservation->debut_at, $reservation->fin_at)
+                ->duParc($reservation->debut_at, $reservation->fin_at)
                 ->orderBy('mise_en_circualtion_at', 'desc')
                 ->get();
         } else {
             $vehicules = collect();
+        }
+
+        // Comparaison pour les conflits
+        if($reservation->vehicule != null){
+            $conflicts = $reservation->vehicule->getConflicts($reservation);
         }
 
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
@@ -276,7 +283,7 @@ class ReservationController extends AdminController
 
         $sources = Source::all()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens', 'types', 'sources'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens', 'types', 'sources', 'conflicts'));
     }
 
     public function update(StoreAdminReservation $request, Reservation $reservation)
@@ -348,6 +355,8 @@ class ReservationController extends AdminController
 
         $vehicules = $categorie->vehicules()->with('categorie')
             ->withCountReservationConfirmed($debut_at, $fin_at)
+            ->withCountIntervention($debut_at, $fin_at)
+            ->duParc($debut_at, $fin_at)
             ->orderBy('mise_en_circualtion_at', 'desc')
             ->get();
 

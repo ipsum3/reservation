@@ -30,7 +30,7 @@ class VehiculeController extends AdminController
 
         if ($request->filled('search')) {
             $query->where(function($query) use ($request) {
-                foreach (['marque_modele', 'immatriculation'] as $colonne) {
+                foreach (['id', 'marque_modele', 'immatriculation'] as $colonne) {
                     $query->orWhere($colonne, 'like', '%'.$request->get('search').'%');
                 }
             });
@@ -88,7 +88,9 @@ class VehiculeController extends AdminController
         $stats['reservation'] = $reservations->count();
         $stats['montants'] = $reservations->sum('total');
 
-        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories', 'stats'));
+        $conflicts = $vehicule->getConflicts();
+
+        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories', 'stats', 'conflicts'));
     }
 
     public function update(StoreVehicule $request, Vehicule $vehicule)
