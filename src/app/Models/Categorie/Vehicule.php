@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Models\Categorie;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
@@ -171,6 +172,34 @@ class Vehicule extends BaseModel
     public function getTarifAPartirAttribute()
     {
         return $this->tarifsEnCoursOuFutur->count() ? $this->tarifsEnCoursOuFutur->first()->montant : null;
+    }
+
+    public function getConflicts(Reservation $reservation = null) :Collection
+    {
+         if(!$reservation) {
+            $reservations = $this->reservations()->confirmedBetweenDates(Carbon::now(), Carbon::now()->addYear())->get();
+
+            $conflits = collect();
+            foreach ($reservations as $resa) {
+                $conflit = $this->getConflicts($resa);
+                if ($conflit->count()) {
+                    $conflits[] = ['reservation' => $resa, 'conflits' => $conflit];
+                }
+            }
+            return $conflits;
+        }
+
+        $reservations = $this->reservations()
+            ->confirmedBetweenDates($reservation->debut_at, $reservation->fin_at)
+            ->where('id', '<>', $reservation->id)
+            ->get();
+
+        $interventions = $this->interventions()
+            ->betweenDates($reservation->debut_at, $reservation->fin_at)
+            ->where('fin_at', '>', Carbon::now()->startOfDay())
+            ->get();
+
+        return $reservations->merge($interventions);
     }
 
 }

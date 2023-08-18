@@ -271,6 +271,11 @@ class ReservationController extends AdminController
             $vehicules = collect();
         }
 
+        // Comparaison pour les conflits
+        if($reservation->vehicule != null){
+            $conflicts = $reservation->vehicule->getConflicts($reservation);
+        }
+
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
         $moyens = Moyen::all();
@@ -278,7 +283,7 @@ class ReservationController extends AdminController
 
         $sources = Source::all()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens', 'types', 'sources'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens', 'types', 'sources', 'conflicts'));
     }
 
     public function update(StoreAdminReservation $request, Reservation $reservation)
