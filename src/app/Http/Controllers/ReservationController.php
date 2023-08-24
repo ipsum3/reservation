@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Http\Controllers;
 use Artisan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
@@ -19,6 +20,7 @@ use Ipsum\Reservation\app\Location\Prestation;
 use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Mail\Devis;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
+use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Client;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Etat;
@@ -218,6 +220,7 @@ class ReservationController extends AdminController
         if ($request->filled('client_id')) {
             $client = Client::findOrFail($request->client_id);
             $reservation->fill($client->toArray()); // TODO pas terrible... Trouver autre chose pour peupler les données
+            $reservation->client_id = $client->id;
         }
 
         $etats = Etat::all()->pluck('nom', 'id');
@@ -238,6 +241,13 @@ class ReservationController extends AdminController
     {
         $reservation = new Reservation($request->validated());
         $reservation->admin_id = auth()->user()->id;
+        if($request->get('create_user') == 1 && $reservation->client_id == NULL){
+            // Créer un nouveau client en base de données
+            $newClient = Client::create($request->validated());
+
+            // Associer le client nouvellement créé à la réservation
+            $reservation->client_id = $newClient->id;
+        }
         $reservation->save();
 
         if ($request->validated('paiements')) {
@@ -272,6 +282,7 @@ class ReservationController extends AdminController
         }
 
         // Comparaison pour les conflits
+        $conflicts = collect();
         if($reservation->vehicule != null){
             $conflicts = $reservation->vehicule->getConflicts($reservation);
         }
@@ -288,7 +299,16 @@ class ReservationController extends AdminController
 
     public function update(StoreAdminReservation $request, Reservation $reservation)
     {
-        $reservation->update($request->validated());
+        $data = $request->validated();
+        if($request->get('create_user') == 1 && $reservation->client_id == NULL){
+            // Créer un nouveau client en base de données
+            $newClient = Client::create($data);
+
+            // Associer le client nouvellement créé à la réservation
+            $data['client_id'] = $newClient->id;
+        }
+
+        $reservation->update($data);
 
         if ($request->validated('paiements')) {
             // Pas de mass assignment pour déclencher les événements
@@ -526,5 +546,55 @@ class ReservationController extends AdminController
         $pdf = Pdf::loadView('IpsumReservation::reservation.imprime-depart-retour', compact('departs', 'retours', 'date'));
 
         return $pdf->stream();
+    }
+
+
+
+    public function searchClients(Request $request) {
+        $search = $request->input('client_search');
+        $infos = [
+            'id',
+            'client_id',
+            'civilite',
+            'nom',
+            'prenom',
+            'email',
+            'telephone',
+            'adresse',
+            'cp',
+            'ville',
+            'pays_id',
+            'naissance_at',
+            'naissance_lieu',
+            'permis_numero',
+            'permis_at',
+            'permis_delivre'
+        ];
+
+        $clients = Client::where('email', 'like', '%' . $search . '%')
+            ->orWhere('prenom', 'like', '%' . $search . '%')
+            ->orWhere('nom', 'like', '%' . $search . '%')
+            ->orWhere('permis_numero', 'like', '%' . $search . '%')
+            ->limit(25)
+            ->get();
+
+        if(!$clients->count()){
+            $clients = Reservation::whereNull('client_id')
+                ->where('email', 'like', '%' . $search . '%')
+                ->orWhere('prenom', 'like', '%' . $search . '%')
+                ->orWhere('nom', 'like', '%' . $search . '%')
+                ->orWhere('permis_numero', 'like', '%' . $search . '%')
+                ->limit(25)
+                ->get($infos);
+        }
+
+        foreach ($clients as $client) {
+            $client->text = $client->prenom . ' ' . $client->nom. ' - ' . $client->email;
+            $client->is_client = get_class($client) == Client::class;
+
+
+        }
+
+        return json_encode($clients);
     }
 }

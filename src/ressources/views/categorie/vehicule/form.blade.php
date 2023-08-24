@@ -96,7 +96,7 @@
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Type.</th>
+                            <th scope="col">Type</th>
                             <th scope="col">Début</th>
                             <th scope="col">Fin</th>
                             <th scope="col">Intervenant</th>

@@ -243,6 +243,12 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Locataire / Conducteur</h2>
+                    <div class="btn-toolbar" style="width: 400px">
+                        <select id="client-search" class="form-group" style="width: 100%">
+                            <option value="">Rechercher un client</option>
+                        </select>
+                    </div>
+
                 </div>
                 <div class="box-body">
                     <div class="form-row">
@@ -261,6 +267,9 @@
                         {{ Aire::input('permis_numero', 'Numéro de permis')->groupAddClass('col-md-6') }}
                         {{ Aire::date('permis_at', 'Permis délivré le')->groupAddClass('col-md-6') }}
                         {{ Aire::input('permis_delivre', 'Permis délivré par')->groupAddClass('col-md-6') }}
+                        <div id="create-user-field" class="{{ ($reservation->client_id == NULL) ? 'col-md-12': 'col-md-12 d-none' }}">
+                        {{ Aire::checkbox("create_user", "Créer le compte client")->value(1)->helpText((string) "Ce client n'a pas de compte") }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -311,6 +320,7 @@
     </div>
 
     {{ Aire::close() }}
+
 
 
 @endsection

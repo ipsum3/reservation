@@ -33,7 +33,7 @@
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Marque modéle', 'champ' => 'marque_modele'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Catégorie', 'champ' => 'categorie_id'])</th>
                     <th>Réservations</th>
-                    <th width="160px">Actions</th>
+                    <th width="200px">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
