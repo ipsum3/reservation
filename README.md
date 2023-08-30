@@ -19,6 +19,14 @@ php artisan vendor:publish --provider="Ipsum\Reservation\ReservationServiceProvi
 `$schedule->command('ipsum:reservation:joursferies')->quarterly(); // Trimestre`
 
 
+## Test Unitaire
+
+``` bash
+php artisan test ../ipsum3-reservation
+
+```
+
+
 ## Lexique
 
 Réservation / Location

@@ -3,9 +3,12 @@
 namespace Ipsum\Reservation\app\Models\Tarif;
 
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\database\factories\SaisonFactory;
 
 /**
  * Ipsum\Reservation\app\Models\Tarif\Saison
@@ -25,18 +28,22 @@ use Ipsum\Core\app\Models\BaseModel;
  */
 class Saison extends BaseModel
 {
+    use HasFactory;
 
     protected $guarded = ['id'];
     
     public $timestamps = false;
 
-    protected $dates = [
-        'debut_at',
-        'fin_at',
-    ];
+    protected static function newFactory()
+    {
+        return SaisonFactory::new();
+    }
+
 
     protected $casts = [
         'custom_fields' => AsCustomFieldsObject::class,
+        'debut_at' => 'datetime:Y-m-d',
+        'fin_at' => 'datetime:Y-m-d',
     ];
 
 
@@ -113,6 +120,7 @@ class Saison extends BaseModel
      */
     public static function getByDates(CarbonInterface $date_arrivee, CarbonInterface $date_depart): Collection
     {
+        $date_arrivee = $date_arrivee->copy()->startOfDay();
         $date_depart = $date_depart->copy()->startOfDay();
 
         $saisons = self::betweenDates($date_arrivee, $date_depart)->orderBy('fin_at', 'asc')->get();
@@ -138,35 +146,43 @@ class Saison extends BaseModel
      * @param CarbonInterface $date_fin
      * @return int
      * @desc
+     * @throws \Exception
      */
     public function getDuree(CarbonInterface $date_debut, CarbonInterface $date_fin): int
     {
         // La saison ne correspond pas
-        if ($date_fin->lt($this->debut_at) or $date_debut->gt($this->fin_at)) {
+        if ($date_fin->lt($this->debut_at) or $date_debut->gt($this->fin_at->endOfDay())) {
             return 0;
         }
 
         // Si c'est sur une seule saison
-        if ($date_debut->gt($this->debut_at) and $date_fin->lt($this->fin_at)) {
-            return $date_debut->diffInDays($date_fin->copy()->subMinutes(61)) + 1;
+        if ($date_debut->gte($this->debut_at) and $date_fin->lte($this->fin_at->endOfDay())) {
+            return Reservation::calculDuree($date_debut, $date_fin);
         }
 
-        $date1 = $date_debut->gt($this->debut_at) ? $date_debut : $this->debut_at->copy()->subDay();
-        $date2 = $date_fin->lt($this->fin_at) ? $date_fin : $this->fin_at;
+        // Saison intermédiaire
+        if ($date_fin->gt($this->fin_at) and $date_debut->lt($this->debut_at)) {
+            return $this->debut_at->diffInDays($this->fin_at->addDay());
+        }
 
-        $duree = $date1->diffInDays($date2);
+        // Première saison
+        if (!$date_fin->lt($this->fin_at)) {
+            return $date_debut->diffInDays($this->fin_at->endOfDay()) + 1;
+        }
 
-        // Si c'est la dernière saison
-        if ($date2 == $date_fin) {
-            // Comparaison des heures
-            $hd = date('H', strtotime($date_debut)) * 60 + date('i', strtotime($date_debut));
-            $hf = date('H', strtotime($date_fin)) * 60 + date('i', strtotime($date_fin));
-            if ($hf - $hd > 60) {
-                // Ajout d'un jour si plus de 60 minutes de difference
-                $duree++;
+        // Dernière saison
+        if (!$date_debut->gt($this->debut_at)) {
+
+            $date1 = $this->debut_at->addHours($date_debut->hour)->addMinutes($date_debut->minute);
+
+            if ($date1->copy()->addMinutes(60)->gte($date_fin)) {
+                return 0;
             }
+
+            return Reservation::calculDuree($date1, $date_fin);
         }
-        return $duree;
+
+        throw new \Exception('Saison::getDuree : aucune durée prise en compte');
     }
 
    /* public static function check()
