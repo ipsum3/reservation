@@ -256,7 +256,7 @@
                         {{ Aire::select(collect(['' => '---- Civilité -----', 'M.' => 'Monsieur', 'Mme' => 'Madame']), 'civilite', 'Civilité')->groupAddClass('col-md-2') }}
                         {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-5') }}
                         {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-5') }}
-                        {{ Aire::input('email', 'Email')->groupAddClass('col-md-6') }}
+                        {{ Aire::input('email', 'Email*')->groupAddClass('col-md-6') }}
                         {{ Aire::input('telephone', 'Téléphone')->groupAddClass('col-md-6') }}
                         {{ Aire::input('adresse', 'Adresse')->groupAddClass('col-md-6') }}
                         {{ Aire::input('cp', 'Code postal')->groupAddClass('col-md-6') }}

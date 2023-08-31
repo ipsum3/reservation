@@ -242,8 +242,9 @@ class ReservationController extends AdminController
         $reservation = new Reservation($request->validated());
         $reservation->admin_id = auth()->user()->id;
         if($request->get('create_user') == 1 && $reservation->client_id == NULL){
+            $clientData = array_merge($request->validated(), ['has_login' => 0]);
             // Créer un nouveau client en base de données
-            $newClient = Client::create($request->validated());
+            $newClient = Client::create($clientData);
 
             // Associer le client nouvellement créé à la réservation
             $reservation->client_id = $newClient->id;
@@ -301,8 +302,9 @@ class ReservationController extends AdminController
     {
         $data = $request->validated();
         if($request->get('create_user') == 1 && $reservation->client_id == NULL){
+            $clientData = array_merge($request->validated(), ['has_login' => 0]);
             // Créer un nouveau client en base de données
-            $newClient = Client::create($data);
+            $newClient = Client::create($clientData);
 
             // Associer le client nouvellement créé à la réservation
             $data['client_id'] = $newClient->id;
@@ -572,11 +574,21 @@ class ReservationController extends AdminController
         ];
 
         $clients = Client::where('email', 'like', '%' . $search . '%')
+            ->where('has_login', 1)
             ->orWhere('prenom', 'like', '%' . $search . '%')
             ->orWhere('nom', 'like', '%' . $search . '%')
             ->orWhere('permis_numero', 'like', '%' . $search . '%')
             ->limit(25)
             ->get();
+
+        if(!$clients->count()){
+            $clients = Client::where('email', 'like', '%' . $search . '%')
+                ->orWhere('prenom', 'like', '%' . $search . '%')
+                ->orWhere('nom', 'like', '%' . $search . '%')
+                ->orWhere('permis_numero', 'like', '%' . $search . '%')
+                ->limit(25)
+                ->get();
+        }
 
         if(!$clients->count()){
             $clients = Reservation::whereNull('client_id')
@@ -591,8 +603,6 @@ class ReservationController extends AdminController
         foreach ($clients as $client) {
             $client->text = $client->prenom . ' ' . $client->nom. ' - ' . $client->email;
             $client->is_client = get_class($client) == Client::class;
-
-
         }
 
         return json_encode($clients);
