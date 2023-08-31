@@ -42,7 +42,7 @@ class UpdateClient extends FormRequest
             'password' => ['nullable', 'max:255', Password::default()],
             'nom' => 'required|max:255',
             'prenom' => 'required|max:255',
-            'email' => ['nullable', 'email', Rule::unique(Client::class)->ignore($current_params['client']->id)],
+            'email' => ['required', 'email', Rule::unique(Client::class)->ignore($current_params['client']->id)->where('has_login', $current_params['client']->has_login )],
             'telephone' => 'nullable|min:10',
             'adresse' => 'nullable',
             'cp' => 'nullable|max:255',
