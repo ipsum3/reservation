@@ -38,7 +38,7 @@ class ClientController extends AdminController
     public function index(Request $request)
     {
 
-        $clients = $this->query($request)->paginate();
+        $clients = $this->query($request)->paginate(25);
 
         return view('IpsumReservation::client.index', compact('clients'));
     }
