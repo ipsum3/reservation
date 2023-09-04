@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Http\Requests;
 
 
+use Illuminate\Support\Fluent;
 use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
@@ -58,10 +59,12 @@ class StoreAdminReservation extends FormRequest
                 "required",
                 "email",
                 "max:255",
-                Rule::unique(Client::class)->where(function ($query) {
+                Rule::when(function(Fluent $data) {
+                    return $data->create_user;
+                }, Rule::unique(Client::class)->where(function ($query) {
                     return $query->where('has_login',  0);
-                    })
-                ],
+                })
+                )],
             "has_login" => "boolean",
             "telephone" => "nullable|max:255",
             "adresse" => "nullable|max:255",
