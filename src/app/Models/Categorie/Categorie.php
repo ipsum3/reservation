@@ -31,9 +31,6 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property int $porte
  * @property int $bagage
  * @property int|null $volume
- * @property int|null $longeur
- * @property int|null $largeur
- * @property int|null $hauteur
  * @property int $climatisation
  * @property int $transmission_id
  * @property int $motorisation_id

@@ -58,15 +58,10 @@
                     <div class="form-row">
                         {{ Aire::number('place', 'Place*')->groupAddClass('col-md-4') }}
                         {{ Aire::number('porte', 'Porte*')->groupAddClass('col-md-4') }}
-                        {{ Aire::number('bagage', 'Nbr bagages*')->groupAddClass('col-md-4') }}
+                        {{ Aire::number('bagage', 'Nbr bagages')->groupAddClass('col-md-4') }}
                     </div>
                     <div class="form-row">
                         {{ Aire::number('volume', 'Volume (m³)')->groupAddClass('col-md-4') }}
-                        {{ Aire::number('longeur', 'Longeur (m)')->groupAddClass('col-md-4') }}
-                        {{ Aire::number('largeur', 'Largeur (m)')->groupAddClass('col-md-4') }}
-                    </div>
-                    <div class="form-row">
-                        {{ Aire::number('hauteur', 'Hauteur (m)')->groupAddClass('col-md-4') }}
                     </div>
                     <div class="form-row">
                         {{ Aire::select(collect(['' => '---- Transmissions -----'])->union($transmissions), 'transmission_id', 'Transmission*')->required()->groupAddClass('col-md-4') }}

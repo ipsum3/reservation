@@ -45,11 +45,8 @@ class StoreCategorie extends FormRequest
 
             "place" => 'required|integer|min:1|max:50',
             "porte" => 'required|integer|min:1|max:10',
-            "bagage" => 'required|integer|min:1|max:20',
+            "bagage" => 'nullable|integer|min:1|max:20',
             "volume" => 'nullable|integer',
-            "longeur" => 'nullable|integer',
-            "largeur" => 'nullable|integer',
-            "hauteur" => 'nullable|integer',
             "climatisation" => 'required|boolean',
             "transmission_id" => "required|exists:transmissions,id",
             "motorisation_id" => "required|exists:motorisations,id",
