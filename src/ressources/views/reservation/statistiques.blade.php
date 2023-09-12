@@ -5,99 +5,82 @@
 
     <h1 class="main-title">Statistiques</h1>
         <div class="row">
-            {{--<div class="col-6 col-md-3">
-                <div class="box">
-                    <div class="box-body">
-                        <div class="stat-description">
-                            Locations en cours
-                        </div>
-                        <div class="stat-number lead">
-                            <strong>{{ $stats['en_cours'] }}</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="box">
-                    <div class="box-body">
-                        <div class="stat-description">
-                            Réservation{{ $stats['jour'] > 1 ? 's' : '' }} aujourd'hui
-                        </div>
-                        <div class="stat-number lead">
-                            <strong>{{ $stats['jour'] }}</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="box">
-                    <div class="box-body">
-                        <div class="stat-description">
-                            Locations à venir
-                        </div>
-                        <div class="stat-number lead">
-                            <strong>{{ $stats['a_venir'] }}</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="box">
-                    <div class="box-body">
-                        <div class="stat-description">
-                            CA réservations du mois
-                        </div>
-                        <div class="stat-number lead">
-                            <strong>@prix($stats['montant']) &nbsp;€</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>--}}
 
         <div id="stats-chart">
             <div class="row">
-
-                    <div class="col-md-12">
-                        <div class="btn-toolbar ml-sm-2" style="">
-
-                            {{ Aire::open()->class('form-inline')->route('admin.reservation.statistiques') }}
-
-                            <label class="sr-only" for="type_id">Type de date </label>
-                            <select id="type_date" name="type_date" class="form-control mb-2 mr-sm-2" style="max-width: 300px;">
-                                <option value="debut_at" {{ request()->get('type_date') === "debut_at"  ? 'selected' : '' }}>Date de départ</option>
-                                <option value="created_at" {{ request()->get('type_date') === "created_at"  ? 'selected' : '' }}>Date de création</option>
-                            </select>
-
-                            <input type="text" name="periode" id="date_debut" value="{{ request()->get('periode') }}" class="form-control mb-2 mr-sm-2 datepicker-range" placeholder="Date"/>
-
-                            <button type="submit" class="btn btn-secondary mb-2">Rechercher</button>
-
-                            {{ Aire::close() }}
-
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="stat-description">
+                                Réservation{{ $stats['hier'] > 1 ? 's' : '' }} hier
+                            </div>
+                            <div class="stat-number lead">
+                                <strong>{{ $stats['hier'] }}</strong>
+                            </div>
                         </div>
                     </div>
-                <div class="col-md-7">
+                </div>
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="stat-description">
+                                Réservation{{ $stats['jour'] > 1 ? 's' : '' }} aujourd'hui
+                            </div>
+                            <div class="stat-number lead">
+                                <strong>{{ $stats['jour'] }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="stat-description">
+                                Locations en cours
+                            </div>
+                            <div class="stat-number lead">
+                                <strong>{{ $stats['en_cours'] }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="stat-description">
+                                Locations à venir
+                            </div>
+                            <div class="stat-number lead">
+                                <strong>{{ $stats['a_venir'] }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="col-md-12">
+                        <div class="box">
+                            <div class="btn-toolbar ml-sm-2" style="">
+
+                                {{ Aire::open()->class('form-inline')->route('admin.reservation.statistiques') }}
+
+                                <label class="sr-only" for="type_id">Type de date </label>
+                                <select id="type_date" name="type_date" class="form-control mb-2 mr-sm-2" style="max-width: 300px;">
+                                    <option value="created_at" {{ request()->get('type_date') === "created_at"  ? 'selected' : '' }}>Date de création</option>
+                                    <option value="debut_at" {{ request()->get('type_date') === "debut_at"  ? 'selected' : '' }}>Date de départ</option>
+                                </select>
+
+                                <input type="text" name="periode" id="date_debut" value="{{ request()->get('periode') }}" class="form-control mb-2 mr-sm-2 datepicker-range" placeholder="Date"/>
+
+                                <button type="submit" class="btn btn-secondary mb-2">Rechercher</button>
+
+                                {{ Aire::close() }}
+
+                            </div>
+                        </div>
+                    </div>
+                <div class="col-md-9">
                     <div class="box">
                         <div class="box-header">
                             <h2 class="box-title">Volume de transactions par mois</h2>
-                            <div class="btn-toolbar ml-sm-2" style="">
-
-                                    {{ Aire::open()->class('form-inline')->route('admin.reservation.statistiques') }}
-
-                                        <label class="sr-only" for="type_id">Type de date </label>
-                                        <select id="type_date" name="type_date" class="form-control mb-2 mr-sm-2" style="max-width: 300px;">
-                                            <option value="debut_at" {{ request()->get('type_date') === "debut_at"  ? 'selected' : '' }}>Date de départ</option>
-                                            <option value="created_at" {{ request()->get('type_date') === "created_at"  ? 'selected' : '' }}>Date de création</option>
-                                        </select>
-
-                                        <input type="text" name="periode" id="date_debut" value="{{ request()->get('periode') }}" class="form-control mb-2 mr-sm-2 datepicker-range" placeholder="Date"/>
-
-                                        <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
-
-                                    {{ Aire::close() }}
-
-                            </div>
                         </div>
                         <div class="box-body">
                             <div style="width: 80%;height: 542px;  margin: auto;">
@@ -106,51 +89,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-3">
                     <div class="row">
-                        <div class="col-6 col-md-6">
-                            <div class="box">
-                                <div class="box-body">
-                                    <div class="stat-description">
-                                        Locations en cours
-                                    </div>
-                                    <div class="stat-number lead">
-                                        <strong>{{ $stats['en_cours'] }}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-6">
-                            <div class="box">
-                                <div class="box-body">
-                                    <div class="stat-description">
-                                        Réservation{{ $stats['jour'] > 1 ? 's' : '' }} aujourd'hui
-                                    </div>
-                                    <div class="stat-number lead">
-                                        <strong>{{ $stats['jour'] }}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-6">
-                            <div class="box">
-                                <div class="box-body">
-                                    <div class="stat-description">
-                                        Locations à venir
-                                    </div>
-                                    <div class="stat-number lead">
-                                        <strong>{{ $stats['a_venir'] }}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-6">
+                        <div class="col-md-12">
                             <div class="box">
                                 <div class="box-body">
                                     <div class="stat-description">
                                         CA réservations
                                     </div>
-                                    <div class="stat-number lead">
+                                    <div class="stat-number lead" style="width: 100%;">
                                         <strong>@prix($stats['montant']) &nbsp;€</strong>
                                     </div>
                                 </div>
@@ -162,8 +109,8 @@
                                     <h2 class="box-title">Taux de rotation du parc</h2>
                                 </div>
                                 <div class="box-body">
-                                    <div style="height: 300px;">
-                                        <canvas id="tauxRotationChart" class="mt-4"  style="width: 100%;"></canvas>
+                                    <div style="height: 150px;">
+                                        <canvas id="tauxRotationChart" class="mt-4"  style="width: 222px;height: 108px;display: block;margin: 0 auto;"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -174,8 +121,8 @@
                                     <h2 class="box-title">Taux d'annulation</h2>
                                 </div>
                                 <div class="box-body">
-                                    <div style="height: 300px;">
-                                        <canvas id="tauxRotationChart2" class="mt-4"  style="width: 100%;"></canvas>
+                                    <div style="height: 150px;">
+                                        <canvas id="tauxRotationChart2" class="mt-4"  style="width: 222px;height: 108px;display: block;margin: 0 auto;"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -221,7 +168,7 @@
                 <div class="col-md-12">
                     <div class="box">
                         <div class="box-body">
-                            <div style="width: 80%; margin: auto; height: 1200px;">
+                            <div style="width: 80%; margin: auto; height: 800px;">
                                 <canvas id="myBarChart"></canvas>
                             </div>
                         </div>
@@ -458,7 +405,7 @@
 
             var opts = {
                 staticLabels: {
-                    font: "10px sans-serif",  // Specifies font
+                    font: "22px sans-serif",  // Specifies font
                     labels: [100, 130, 150, 220.1, 260, 300],  // Print labels at these values
                     color: "#000000",  // Optional: Label text color
                     fractionDigits: 0  // Optional: Numerical precision. 0=round off.
@@ -502,6 +449,11 @@
             var percentageLabel = document.createElement('div');
             percentageLabel.innerHTML = {{ (int)$stats['taux_rotation'] }} + '%';
             percentageLabel.style.textAlign = 'center';
+            percentageLabel.style.fontSize = "x-large";
+            percentageLabel.style.position = "absolute";
+            percentageLabel.style.top = "50%";
+            percentageLabel.style.left = "50%";
+            percentageLabel.style.transform = "translate(-50%, -50%)";
             target.parentElement.appendChild(percentageLabel);
 
             // taux annulation
@@ -516,6 +468,11 @@
             var percentageLabel2 = document.createElement('div');
             percentageLabel2.innerHTML = {{ (int)$stats['annulationRate'] }} + '%';
             percentageLabel2.style.textAlign = 'center';
+            percentageLabel2.style.fontSize = "x-large";
+            percentageLabel2.style.position = "absolute";
+            percentageLabel2.style.top = "50%";
+            percentageLabel2.style.left = "50%";
+            percentageLabel2.style.transform = "translate(-50%, -50%)";
             target2.parentElement.appendChild(percentageLabel2);
 
         </script>

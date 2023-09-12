@@ -7,6 +7,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
@@ -557,7 +558,7 @@ class ReservationController extends AdminController
         $conditions = Condition::all()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
 
-        $type_date = "debut_at";
+        $type_date = "created_at";
         if($request->filled('type_date')){
             $type_date = $request->get('type_date');
         }
@@ -584,7 +585,7 @@ class ReservationController extends AdminController
         $stats['hier'] = $reservationsHierQuery->count();
         $stats['jour'] = $reservationsJourQuery->count();
         //$stats['mois'] = $reservationsMoisQuery->count();
-        $stats['montant'] = $reservationsTransactionQuery->sum('montant_paye');
+        $stats['montant'] = $reservationsTransactionQuery->sum('total');
 
         $stats['en_cours'] = $reservationsEnCoursQuery->count();
         $stats['a_venir'] = $reservationsIncomingQuery->count();
@@ -606,7 +607,7 @@ class ReservationController extends AdminController
                 $data_month = $reservation->debut_at->format('F');
             }
             $stats2['reservation_count'][$data_month] += 1;
-            $stats2['montant_total'][$data_month] += $reservation->montant_paye; // Remplacez 'montant' par le nom de votre colonne de montant
+            $stats2['montant_total'][$data_month] += $reservation->total; // Remplacez 'montant' par le nom de votre colonne de montant
         }
 
         $stats['transaction_mois'] = [];
@@ -665,15 +666,17 @@ class ReservationController extends AdminController
 
         // cout moyen d'une par jour par catégorie
         $stats['reservationsParCategorie'] = $reservationsTransactionQuery->groupBy('categorie_nom')
-            ->map(function ($reservations, $categorie) {
+            ->map(function (Collection $reservations, $categorie) {
                 $count = count($reservations);
-                $totalCost = $reservations->sum('montant_paye');
+
+                // On prend le montant de base pour le calcul pour ne pas prendre en compte les prestations
+                // Par contre s'il y a une promotion sur le montant de base, cela ne sera pas pris en compte
+                // TODO déduire le montant total des prestations à total ?
+                $totalCost = $reservations->sum('montant_base');
 
                 // Calculer le nombre total de jours pour toutes les réservations de cette catégorie
                 $totalDays = $reservations->reduce(function ($totalDays, $reservation) {
-                    $debut = Carbon::parse($reservation->debut_at);
-                    $fin = Carbon::parse($reservation->fin_at);
-                    return $totalDays + $debut->diffInDays($fin);
+                    return $totalDays + $reservation->nb_jours;
                 }, 0);
 
                 $averageCost = $count > 0 ? $totalCost / $count : 0;
@@ -696,7 +699,11 @@ class ReservationController extends AdminController
         $totalCancelledReservations = Reservation::where('etat_id', '5')->whereBetween($type_date, [$dateDebut, $dateFin])->count();
         // Calculer le taux d'annulation de réservation
         //dd($totalCancelledReservations,$totalConfirmedReservations);
-        $annulationRate = ($totalCancelledReservations / $totalConfirmedReservations) * 100;
+        if($totalConfirmedReservations <=0){
+            $annulationRate = 0;
+        }else{
+            $annulationRate = ($totalCancelledReservations / $totalConfirmedReservations) * 100;
+        }
         // Arrondir le taux d'annulation à deux décimales
         $stats['annulationRate'] = round($annulationRate, 2);
 
