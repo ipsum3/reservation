@@ -645,7 +645,11 @@ class ReservationController extends AdminController
         //$stats['taux_rotation_jour']  = ($totalJoursLocation / $nombreVoituresActivees) * 100;
         //dd($stats['taux_rotation_jour']);
         // Calcul du taux de rotation mensuel
-        $stats['taux_rotation'] = ($totalJoursLocation / ($nombreVoituresActivees * $nombreJoursDuree)) * 100;
+        if(($nombreVoituresActivees * $nombreJoursDuree) <=0){
+            $stats['taux_rotation'] = 0;
+        }else{
+            $stats['taux_rotation'] = ($totalJoursLocation / ($nombreVoituresActivees * $nombreJoursDuree)) * 100;
+        }
 
         //réservation par source
         $sources = Source::orderBy('nom')->get();
