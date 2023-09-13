@@ -59,7 +59,7 @@
                 <div class="col-md-12">
                         <div class="btn-toolbar" style="">
 
-                            {{ Aire::open()->class('form-inline')->route('admin.reservation.statistiques') }}
+                            {{ Aire::open()->class('form-inline')->route('admin.statistique.index') }}
 
                             <label class="sr-only" for="type_id">Type de date </label>
                             <select id="type_date" name="type_date" class="form-control mb-2 mr-sm-2" style="max-width: 300px;">

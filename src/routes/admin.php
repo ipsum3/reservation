@@ -24,8 +24,13 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('depart-retour', 'departEtRetour')->name('departEtRetour');
         Route::get('contrat-depart/{date?}/{lieu_id?}', 'contratDepart')->name('contratDepart');
         Route::get('imprimer/contrat-depart/{date?}/{lieu_id?}', 'imprimerContratDepart')->name('imprimerContratDepart');
-        Route::get('statistiques', 'statistiques')->name('statistiques');
         Route::get('search-clients', 'searchClients')->name('searchClients');
+    }
+);
+
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\StatistiqueController::class)->prefix('statistique')->name('admin.statistique.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
     }
 );
 
