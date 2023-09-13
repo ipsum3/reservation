@@ -56,40 +56,46 @@
                         </div>
                     </div>
                 </div>
-                    <div class="col-md-12">
-                        <div class="box">
-                            <div class="btn-toolbar ml-sm-2" style="">
+                <div class="col-md-12">
+                        <div class="btn-toolbar" style="">
 
-                                {{ Aire::open()->class('form-inline')->route('admin.reservation.statistiques') }}
+                            {{ Aire::open()->class('form-inline')->route('admin.reservation.statistiques') }}
 
-                                <label class="sr-only" for="type_id">Type de date </label>
-                                <select id="type_date" name="type_date" class="form-control mb-2 mr-sm-2" style="max-width: 300px;">
-                                    <option value="created_at" {{ request()->get('type_date') === "created_at"  ? 'selected' : '' }}>Date de création</option>
-                                    <option value="debut_at" {{ request()->get('type_date') === "debut_at"  ? 'selected' : '' }}>Date de départ</option>
-                                </select>
+                            <label class="sr-only" for="type_id">Type de date </label>
+                            <select id="type_date" name="type_date" class="form-control mb-2 mr-sm-2" style="max-width: 300px;">
+                                <option value="created_at" {{ request()->get('type_date') === "created_at"  ? 'selected' : '' }}>Date de création</option>
+                                <option value="debut_at" {{ request()->get('type_date') === "debut_at"  ? 'selected' : '' }}>Date de départ</option>
+                            </select>
 
-                                <input type="text" name="periode" id="date_debut" value="{{ request()->get('periode') }}" class="form-control mb-2 mr-sm-2 datepicker-range" placeholder="Date"/>
+                            <input type="text" name="periode" id="date_debut" value="{{ request()->get('periode') }}" class="form-control mb-2 mr-sm-2 datepicker-range" placeholder="Date"/>
 
-                                <button type="submit" class="btn btn-secondary mb-2">Rechercher</button>
+                            <button type="submit" class="btn btn-secondary mb-2">Rechercher</button>
 
-                                {{ Aire::close() }}
+                            {{ Aire::close() }}
 
-                            </div>
                         </div>
-                    </div>
-                <div class="col-md-9">
+                </div>
+                <div class=" col-xl-8 col-lg-12 ">
+
                     <div class="box">
                         <div class="box-header">
                             <h2 class="box-title">Volume de transactions par mois</h2>
                         </div>
                         <div class="box-body">
-                            <div style="width: 80%;height: 542px;  margin: auto;">
+                            <div style="width: 100%;height: auto;  margin: auto;">
                                 <canvas id="myLineChart"></canvas>
                             </div>
                         </div>
                     </div>
+                    <div class="box">
+                        <div class="box-body">
+                            <div style="width: 80%; margin: auto; height: 762px;">
+                                <canvas id="myBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-xl-4 col-lg-12 ">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="box">
@@ -103,75 +109,68 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-xl-6 col-lg-6 col-md-6">
                             <div class="box">
                                 <div class="box-header">
-                                    <h2 class="box-title">Taux de rotation du parc</h2>
+                                    <h2 class="box-title">Taux de rotation</h2>
                                 </div>
                                 <div class="box-body">
-                                    <div style="height: 150px;">
-                                        <canvas id="tauxRotationChart" class="mt-4"  style="width: 222px;height: 108px;display: block;margin: 0 auto;"></canvas>
+                                    <div style="height: auto">
+                                        <canvas id="tauxRotationChart" style="width: 100%!important;height: auto;display: block;margin: 0 auto;"></canvas>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-xl-6 col-lg-6 col-md-6">
                             <div class="box">
                                 <div class="box-header">
                                     <h2 class="box-title">Taux d'annulation</h2>
                                 </div>
                                 <div class="box-body">
-                                    <div style="height: 150px;">
-                                        <canvas id="tauxRotationChart2" class="mt-4"  style="width: 222px;height: 108px;display: block;margin: 0 auto;"></canvas>
+                                    <div style="height: auto">
+                                        <canvas id="tauxRotationChart2" style="width: 100%!important;height: auto;display: block;margin: 0 auto;"></canvas>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="box">
-                        <div class="box-header">
-                            <h2 class="box-title">Nombre de réservation par état </h2>
-                        </div>
-                        <div class="box-body">
-                            <div style="width: 80%; margin: auto;">
-                                <canvas id="myDoughnutChart"></canvas>
+
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h2 class="box-title">Nombre de réservation par état </h2>
+                                </div>
+                                <div class="box-body">
+                                    <div style="width: 80%; margin: auto;">
+                                        <canvas id="myDoughnutChart"></canvas>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="box">
-                        <div class="box-header">
-                            <h2 class="box-title">Top 5 des lieux de réservation </h2>
-                        </div>
-                        <div class="box-body">
-                            <div style="width: 80%; margin: auto;">
-                                <canvas id="myDoughnutChart3"></canvas>
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h2 class="box-title">Top 5 des lieux de réservation </h2>
+                                </div>
+                                <div class="box-body">
+                                    <div style="width: 80%; margin: auto;">
+                                        <canvas id="myDoughnutChart3"></canvas>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="box">
-                        <div class="box-header">
-                            <h2 class="box-title">Nombre de réservation par source </h2>
-                        </div>
-                        <div class="box-body">
-                            <div style="width: 80%; margin: auto;">
-                                <canvas id="myDoughnutChart2"></canvas>
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h2 class="box-title">Nombre de réservation par source </h2>
+                                </div>
+                                <div class="box-body">
+                                    <div style="width: 80%; margin: auto;">
+                                        <canvas id="myDoughnutChart2"></canvas>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="box">
-                        <div class="box-body">
-                            <div style="width: 80%; margin: auto; height: 800px;">
-                                <canvas id="myBarChart"></canvas>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -406,12 +405,11 @@
             var opts = {
                 staticLabels: {
                     font: "22px sans-serif",  // Specifies font
-                    labels: [100, 130, 150, 220.1, 260, 300],  // Print labels at these values
                     color: "#000000",  // Optional: Label text color
                     fractionDigits: 0  // Optional: Numerical precision. 0=round off.
                 },
 
-                angle: 0.35, // The span of the gauge arc
+                angle: 0.15, // The span of the gauge arc
                 lineWidth: 0.1, // The line thickness
                 radiusScale: 1, // Relative radius
                 pointer: {
@@ -449,12 +447,14 @@
             var percentageLabel = document.createElement('div');
             percentageLabel.innerHTML = {{ (int)$stats['taux_rotation'] }} + '%';
             percentageLabel.style.textAlign = 'center';
-            percentageLabel.style.fontSize = "x-large";
+            percentageLabel.style.fontSize = "larger";
             percentageLabel.style.position = "absolute";
-            percentageLabel.style.top = "50%";
+            percentageLabel.style.top = "65%";
             percentageLabel.style.left = "50%";
             percentageLabel.style.transform = "translate(-50%, -50%)";
             target.parentElement.appendChild(percentageLabel);
+            target.style.width = "100%";
+            target.style.height = "auto";
 
             // taux annulation
 
@@ -468,12 +468,14 @@
             var percentageLabel2 = document.createElement('div');
             percentageLabel2.innerHTML = {{ (int)$stats['annulationRate'] }} + '%';
             percentageLabel2.style.textAlign = 'center';
-            percentageLabel2.style.fontSize = "x-large";
+            percentageLabel2.style.fontSize = "larger";
             percentageLabel2.style.position = "absolute";
-            percentageLabel2.style.top = "50%";
+            percentageLabel2.style.top = "65%";
             percentageLabel2.style.left = "50%";
             percentageLabel2.style.transform = "translate(-50%, -50%)";
             target2.parentElement.appendChild(percentageLabel2);
+            target2.style.width = "100%";
+            target2.style.height = "auto";
 
         </script>
 
