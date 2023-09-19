@@ -46,7 +46,7 @@
                     <tr>
                         <td>{{ $intervention->id }}</td>
                         <td>
-                            <a href="{{ $intervention->vehicule ? route('admin.vehicule.edit', $intervention->vehicule) : '#' }}">
+                            <a class="badge badge-secondary" href="{{ $intervention->vehicule ? route('admin.vehicule.edit', $intervention->vehicule) : '#' }}">
                                 {{ $intervention->vehicule ? $intervention->vehicule->immatriculation : '' }}
                             </a>
                         </td>

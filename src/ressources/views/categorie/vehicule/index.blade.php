@@ -44,7 +44,7 @@
                         <td>{{ $vehicule->marque_modele }}</td>
                         <td>{{ $vehicule->categorie ? $vehicule->categorie->nom : '' }}</td>
                         <td>
-                            <a href="{{ route('admin.reservation.index') }}?etat_id=2&vehicule_id={{ $vehicule->id }}">{{ $vehicule->reservations_count }} reservation{{ $vehicule->reservations_count > 1 ? 's' : '' }}</a>
+                            <a class="badge badge-info" href="{{ route('admin.reservation.index') }}?etat_id=2&vehicule_id={{ $vehicule->id }}">{{ $vehicule->reservations_count }} reservation{{ $vehicule->reservations_count > 1 ? 's' : '' }}</a>
                         </td>
                         <td class="text-right">
                             <form action="{{ route('admin.vehicule.destroy', $vehicule) }}" method="POST">

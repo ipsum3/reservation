@@ -52,7 +52,7 @@
                         <td>{{ $paiement->created_at->format('d/m/Y H:i') }}</td>
                         <td>
                             @if ($paiement->reservation)
-                                <a href="{{ route('admin.reservation.edit', $paiement->reservation) }}">{{ $paiement->reservation->reference }}</a>
+                                <a class="badge badge-info" href="{{ route('admin.reservation.edit', $paiement->reservation) }}">{{ $paiement->reservation->reference }}</a>
                             @endif
                         </td>
                         <td>
