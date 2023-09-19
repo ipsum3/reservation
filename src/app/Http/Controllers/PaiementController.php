@@ -110,7 +110,7 @@ class PaiementController extends AdminController
                 $paiement->reservation ? ($paiement->reservation->debut_at ? $paiement->reservation->debut_at->format('Y-m-d') : null) : null,
                 $paiement->reservation ? $paiement->reservation->reference : null,
                 $paiement->reservation ? $paiement->reservation->contrat : null,
-                $paiement->reservation ? $paiement->reservation->client_id : null,
+                $paiement->reservation ? ($paiement->reservation->client ? $paiement->reservation->client->code : null) : null,
                 $paiement->reservation ? $paiement->reservation->nom : null,
                 $paiement->reservation ? $paiement->reservation->prenom : null,
                 $paiement->moyen ? $paiement->moyen->nom : null,

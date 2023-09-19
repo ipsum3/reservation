@@ -23,7 +23,7 @@ class ClientController extends AdminController
 
         if ($request->filled('search')) {
             $query->where(function($query) use ($request) {
-                foreach (['nom', 'prenom', 'email'] as $colonne) {
+                foreach (['code', 'nom', 'prenom', 'email'] as $colonne) {
                     $query->orWhere($colonne, 'like', '%'.$request->get('search').'%');
                 }
             });
@@ -49,6 +49,7 @@ class ClientController extends AdminController
         $clients = $this->query($request)->get();
 
         $entete = [
+            'Code',
             'Date',
             'Date modification',
             'Email',
@@ -80,6 +81,7 @@ class ClientController extends AdminController
         foreach ($clients as $client) {
 
             $data = [
+                $client->code,
                 $client->created_at->format('Y-m-d H:i:s'),
                 $client->updated_at->format('Y-m-d H:i:s'),
                 $client->email,

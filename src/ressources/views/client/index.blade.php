@@ -26,7 +26,7 @@
             <table class="table table-hover table-striped">
                 <thead>
                     <tr>
-                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'code'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'prenom'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Email', 'champ' => 'email'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Réservations', 'champ' => 'reservations_count'])</th>
@@ -36,7 +36,7 @@
                 <tbody>
                 @foreach ($clients as $client)
                     <tr>
-                        <td>{{ $client->id }}</td>
+                        <td>{{ $client->code }}</td>
                         <td>{{ $client->prenom }} {{ $client->nom }}</td>
                         <td>{{ $client->email }}</td>
                         <th><a class="badge badge-info" href="{{ route('admin.reservation.index', ['client_id' => $client->id]) }}">{{ $client->reservations_count }} réservation{{ $client->reservations_count > 1 ? 's' : '' }}</a></th>

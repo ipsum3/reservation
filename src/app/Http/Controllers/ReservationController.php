@@ -289,6 +289,13 @@ class ReservationController extends AdminController
             $conflicts = $reservation->vehicule->getConflicts($reservation);
         }
 
+        if($reservation->client_id == null) {
+            $client = Client::where('email', $reservation->email)->where('has_login', '0')->get();
+            if (count($client)) {
+                $reservation->client_id = $client->first()->id;
+            }
+        }
+
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
         $prestations = Prestation::orderBy('order', 'asc')->get();
         $moyens = Moyen::all();
@@ -582,15 +589,19 @@ class ReservationController extends AdminController
 
         $clients = Client::where('email', 'like', '%' . $search . '%')
             ->where('has_login', 1)
-            ->orWhere('prenom', 'like', '%' . $search . '%')
-            ->orWhere('nom', 'like', '%' . $search . '%')
-            ->orWhere('permis_numero', 'like', '%' . $search . '%')
+            ->where(function($query) use ($search) {
+                $query->orWhere('code', 'like', '%' . $search . '%')
+                ->orWhere('prenom', 'like', '%' . $search . '%')
+                ->orWhere('nom', 'like', '%' . $search . '%')
+                ->orWhere('permis_numero', 'like', '%' . $search . '%');
+            })
             ->limit(25)
             ->get();
 
         if(!$clients->count()){
             $clients = Client::where('email', 'like', '%' . $search . '%')
                 ->orWhere('prenom', 'like', '%' . $search . '%')
+                ->orWhere('code', 'like', '%' . $search . '%')
                 ->orWhere('nom', 'like', '%' . $search . '%')
                 ->orWhere('permis_numero', 'like', '%' . $search . '%')
                 ->limit(25)
@@ -600,6 +611,7 @@ class ReservationController extends AdminController
         if(!$clients->count()){
             $clients = Reservation::whereNull('client_id')
                 ->where('email', 'like', '%' . $search . '%')
+                ->orWhere('client_id', 'like', '%' . $search . '%')
                 ->orWhere('prenom', 'like', '%' . $search . '%')
                 ->orWhere('nom', 'like', '%' . $search . '%')
                 ->orWhere('permis_numero', 'like', '%' . $search . '%')

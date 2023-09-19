@@ -16,10 +16,12 @@ use Laravel\Sanctum\HasApiTokens;
  * App\Models\Client
  *
  * @property int $id
+ * @property string|null $code
  * @property string|null $civilite
  * @property string $nom
  * @property string $prenom
- * @property string|null $email
+ * @property string $email
+ * @property int $has_login
  * @property string|null $telephone
  * @property string|null $adresse
  * @property string|null $cp
@@ -30,19 +32,19 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $permis_numero
  * @property \Illuminate\Support\Carbon|null $permis_at
  * @property string|null $permis_delivre
- * @property mixed|null $custom_fields
+ * @property AsCustomFieldsObject|null $custom_fields
  * @property string|null $password
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Pays|null $pays
- * @property-read \Illuminate\Database\Eloquent\Collection|Reservation[] $reservations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Reservation> $reservations
  * @property-read int|null $reservations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[] $tokens
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
- * @method static \Ipsum\Reservation\database\factories\ClientFactory factory(...$parameters)
+ * @method static \Ipsum\Reservation\database\factories\ClientFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Client newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Client newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Client query()
@@ -90,6 +92,14 @@ class Client extends Authenticatable
         return ClientFactory::new();
     }
 
+    protected static function booted()
+    {
+        self::created(function (self $client) {
+            // Génération du code client
+            $client->code = $client->generateClientCode($client->id);
+            $client->save();
+        });
+    }
 
 
 
@@ -119,4 +129,9 @@ class Client extends Authenticatable
     /*
      * Accessors & Mutators
      */
+
+    public function generateClientCode($id)
+    {
+        return str_pad($id, config('ipsum.reservation.numero_longueur'), "0", STR_PAD_LEFT);
+    }
 }
