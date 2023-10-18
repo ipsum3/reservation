@@ -129,7 +129,7 @@
                 </div>
                 <div class="box-body">
 
-                    @if($conflicts->count())
+                    @if($vehicule->exists && $conflicts->count())
                         <div class="alert alert-danger">
                             <p><strong><i class="fas fa-exclamation-triangle"></i> Conflits potentiels :</strong></p>
                             <ul>
