@@ -17,7 +17,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property string|null $intervenant
  * @property string|null $information
  * @property string|null $cout
- * @property mixed|null $custom_fields
+ * @property AsCustomFieldsObject|null $custom_fields
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Ipsum\Reservation\app\Models\Categorie\InterventionType|null $type

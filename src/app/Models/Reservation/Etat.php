@@ -10,8 +10,10 @@ use Ipsum\Core\Concerns\Translatable;
  *
  * @property int $id
  * @property string $nom
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Reservation[] $reservations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Reservation> $reservations
  * @property-read int|null $reservations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates
+ * @property-read int|null $translates_count
  * @method static \Illuminate\Database\Eloquent\Builder|Etat newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Etat newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Etat query()

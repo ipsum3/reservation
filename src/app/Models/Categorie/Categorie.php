@@ -29,24 +29,22 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property string|null $texte
  * @property int $place
  * @property int $porte
- * @property int $bagage
+ * @property int|null $bagage
  * @property int|null $volume
  * @property int $climatisation
  * @property int $transmission_id
  * @property int $motorisation_id
- * @property int $carrosserie_id
  * @property string|null $caution
  * @property string|null $franchise
  * @property int $age_minimum
  * @property int $annee_permis_minimum
- * @property AsCustomFieldsObject|null $custom_fields
  * @property string|null $seo_title
  * @property string|null $seo_description
+ * @property AsCustomFieldsObject|null $custom_fields
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Blocage> $blocages
  * @property-read int|null $blocages_count
- * @property-read \Ipsum\Reservation\app\Models\Categorie\Carrosserie|null $carrosserie
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Carrosserie> $carrosseries
  * @property-read int|null $carrosseries_count
  * @property-read bool $has_no_blocage

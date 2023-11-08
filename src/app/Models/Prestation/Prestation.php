@@ -31,18 +31,22 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property string|null $heure_min
  * @property int|null $jour
  * @property string|null $condition
+ * @property int|null $duree_min
+ * @property int|null $duree_max
  * @property int|null $categorie_type_id
- * @property mixed|null $custom_fields
+ * @property AsCustomFieldsObject|null $custom_fields
  * @property int $order
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Prestation\Blocage[] $blocages
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Prestation\Blocage> $blocages
  * @property-read int|null $blocages_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Categorie[] $categories
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Categorie> $categories
  * @property-read int|null $categories_count
  * @property-read bool $is_obligatoire
  * @property-read bool $is_optionnelle
  * @property-read bool $is_tarification_agence
- * @property-read \Illuminate\Database\Eloquent\Collection|Lieu[] $lieux
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Lieu> $lieux
  * @property-read int|null $lieux_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates
+ * @property-read int|null $translates_count
  * @property-read \Ipsum\Reservation\app\Models\Prestation\Type|null $type
  * @method static Builder|Prestation condition(\Ipsum\Reservation\app\Models\Categorie\Categorie $categorie, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_debut, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_fin, \Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at, ?int $age = null)
  * @method static Builder|Prestation filtreSortable($objet)

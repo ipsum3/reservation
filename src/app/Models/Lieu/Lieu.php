@@ -27,13 +27,13 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property string $gps
  * @property array $emails
  * @property array $emails_reservation
- * @property mixed|null $custom_fields
+ * @property AsCustomFieldsObject|null $custom_fields
  * @property int $order
  * @property string|null $seo_title
  * @property string|null $seo_description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Lieu\Fermeture[] $fermetures
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Lieu\Fermeture> $fermetures
  * @property-read int|null $fermetures_count
  * @property-read mixed $email_first
  * @property-read mixed $email_reservation_first
@@ -42,14 +42,16 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property-read mixed $lng
  * @property-read mixed $tag_meta_description
  * @property-read mixed $tag_title
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Lieu\Horaire[] $horaires
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Lieu\Horaire> $horaires
  * @property-read int|null $horaires_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Prestation[] $prestations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Prestation> $prestations
  * @property-read int|null $prestations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Reservation[] $reservationsDebut
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Reservation> $reservationsDebut
  * @property-read int|null $reservations_debut_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Reservation[] $reservationsFin
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Reservation> $reservationsFin
  * @property-read int|null $reservations_fin_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates
+ * @property-read int|null $translates_count
  * @property-read \Ipsum\Reservation\app\Models\Lieu\Type|null $type
  * @method static \Illuminate\Database\Eloquent\Builder|Lieu agences()
  * @method static \Illuminate\Database\Eloquent\Builder|Lieu filtreSortable($objet)

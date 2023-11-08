@@ -35,17 +35,19 @@ use Ipsum\Reservation\app\Models\Reservation\Condition;
  * @property string|null $reduction_valeur
  * @property string|null $seo_title
  * @property string|null $seo_description
- * @property string|null $created_at
- * @property string|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|Categorie[] $categories
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Categorie> $categories
  * @property-read int|null $categories_count
  * @property-read Condition|null $condition
  * @property-read bool $is_active
  * @property-read bool $is_en_cours
- * @property-read \Illuminate\Database\Eloquent\Collection|Lieu[] $lieux
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Lieu> $lieux
  * @property-read int|null $lieux_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Prestation[] $prestations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Prestation> $prestations
  * @property-read int|null $prestations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates
+ * @property-read int|null $translates_count
  * @method static Builder|Promotion active()
  * @method static Builder|Promotion enCours()
  * @method static Builder|Promotion newModelQuery()

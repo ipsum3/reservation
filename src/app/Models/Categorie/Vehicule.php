@@ -20,7 +20,7 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @property \Illuminate\Support\Carbon $mise_en_circualtion_at
  * @property int|null $categorie_id
  * @property string $marque_modele
- * @property \Illuminate\Support\Carbon $entree_at
+ * @property \Illuminate\Support\Carbon|null $entree_at
  * @property \Illuminate\Support\Carbon|null $sortie_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -29,16 +29,19 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @property-read mixed $tag_meta_description
  * @property-read mixed $tag_title
  * @property-read mixed $tarif_a_partir
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Categorie\Intervention[] $interventions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Intervention> $interventions
  * @property-read int|null $interventions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Reservation[] $reservations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Reservation> $reservations
  * @property-read int|null $reservations_count
+ * @method static Builder|Vehicule duParc(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @method static Builder|Vehicule enService(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
- * @method static \Ipsum\Reservation\database\factories\VehiculeFactory factory(...$parameters)
+ * @method static \Ipsum\Reservation\database\factories\VehiculeFactory factory($count = null, $state = [])
  * @method static Builder|Vehicule newModelQuery()
  * @method static Builder|Vehicule newQuery()
  * @method static Builder|Vehicule query()
+ * @method static Builder|Vehicule sortie()
  * @method static Builder|Vehicule whereDoesntHaveReservationConfirmed(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
+ * @method static Builder|Vehicule withCountIntervention(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @method static Builder|Vehicule withCountReservationConfirmed(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @mixin \Eloquent
  */

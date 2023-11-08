@@ -10,6 +10,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property int $id
  * @property int|null $reservation_id
  * @property int $paiement_moyen_id
+ * @property int|null $paiement_type_id
  * @property string $montant
  * @property string|null $note
  * @property string|null $transaction_ref
@@ -20,6 +21,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property-read mixed $is_o_k
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Moyen|null $moyen
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Reservation|null $reservation
+ * @property-read \Ipsum\Reservation\app\Models\Reservation\Type|null $type
  * @method static \Illuminate\Database\Eloquent\Builder|Paiement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Paiement newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Paiement ok()

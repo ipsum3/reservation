@@ -11,16 +11,16 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property int $id
  * @property int $is_special
  * @property string|null $type
- * @property string|null $nom
+ * @property string $nom
  * @property string $tarification
  * @property int $min
  * @property int|null $max
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $is_forfait
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Tarif\Jour[] $jours
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Tarif\Jour> $jours
  * @property-read int|null $jours_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Tarif\Tarif[] $tarifs
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Tarif\Tarif> $tarifs
  * @property-read int|null $tarifs_count
  * @method static \Illuminate\Database\Eloquent\Builder|Duree conditions(int $nb_jours, \Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @method static \Illuminate\Database\Eloquent\Builder|Duree duree(int $nb_jours)

@@ -25,10 +25,11 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property int $id
  * @property string|null $reference
  * @property string|null $contrat
+ * @property string $locale
  * @property int $etat_id
  * @property int $condition_paiement_id
  * @property int|null $admin_id
- * @property string|null $source
+ * @property int|null $source_id
  * @property int|null $client_id
  * @property string|null $civilite
  * @property string $nom
@@ -46,7 +47,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property \Illuminate\Support\Carbon|null $permis_at
  * @property string|null $permis_delivre
  * @property string|null $observation
- * @property mixed|null $custom_fields
+ * @property AsCustomFieldsObject|null $custom_fields
  * @property int $categorie_id
  * @property int|null $vehicule_id
  * @property int $vehicule_blocage
@@ -60,9 +61,11 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property string|null $debut_lieu_nom
  * @property string|null $fin_lieu_nom
  * @property string|null $montant_base
- * @property mixed|null $prestations
- * @property mixed|null $promotions
- * @property mixed|null $echeancier
+ * @property PrestationCollection|null $prestations
+ * @property PromotionCollection|null $promotions
+ * @property string|null $code_promo
+ * @property string|null $remise
+ * @property EcheancierCollection|null $echeancier
  * @property string|null $total
  * @property string|null $montant_paye
  * @property string|null $note
@@ -82,13 +85,14 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property-read mixed $tarif_journalier
  * @property-read Lieu|null $lieuDebut
  * @property-read Lieu|null $lieuFin
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Paiement[] $paiements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Paiement> $paiements
  * @property-read int|null $paiements_count
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Pays|null $pays
+ * @property-read Source|null $source
  * @property-read Vehicule|null $vehicule
  * @method static Builder|Reservation confirmed()
  * @method static Builder|Reservation confirmedBetweenDates(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
- * @method static \Ipsum\Reservation\database\factories\ReservationFactory factory(...$parameters)
+ * @method static \Ipsum\Reservation\database\factories\ReservationFactory factory($count = null, $state = [])
  * @method static Builder|Reservation newModelQuery()
  * @method static Builder|Reservation newQuery()
  * @method static Builder|Reservation notConfirmed()

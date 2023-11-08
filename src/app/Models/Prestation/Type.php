@@ -9,7 +9,7 @@ use Ipsum\Core\app\Models\BaseModel;
  *
  * @property int $id
  * @property string $nom
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Prestation\Prestation[] $prestations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Prestation\Prestation> $prestations
  * @property-read int|null $prestations_count
  * @method static \Illuminate\Database\Eloquent\Builder|Type newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Type newQuery()

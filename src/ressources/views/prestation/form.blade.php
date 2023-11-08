@@ -54,13 +54,11 @@
             </div>
             <div class="box-body">
                 @foreach(config('ipsum.reservation.prestation.custom_fields') as $field)
-                    <x-admin::custom
-                            name="{{ 'custom_fields['.$field['name'].']' }}"
-                            label="{{ $field['label'] }}"
-                            description="{{ $field['description'] }}"
-                            value="{!! old('custom_fields.'.$field['name'], $prestation->custom_fields->{$field['name']}) !!}"
-                            type="{{ $field['type'] }}"
-                    />
+                    @php
+                        $field_name = 'custom_fields['.$field['name'].']';
+                        $field_value = old('custom_fields.'.$field['name'], $prestation->custom_fields->{$field['name']} ?  : ($field['type'] == "repeater" ? [] : '') );
+                    @endphp
+                    <x-admin::custom :field="$field" :name="$field_name" :value="$field_value"/>
                 @endforeach
             </div>
         </div>

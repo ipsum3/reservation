@@ -10,7 +10,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property int $id
  * @property string $nom
  * @property-read mixed $is_site_cb
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Paiement[] $paiements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Paiement> $paiements
  * @property-read int|null $paiements_count
  * @method static \Illuminate\Database\Eloquent\Builder|Moyen newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Moyen newQuery()

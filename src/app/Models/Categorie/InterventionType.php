@@ -11,7 +11,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property int $id
  * @property string $nom
  * @property int $order
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Categorie\Intervention[] $interventions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Intervention> $interventions
  * @property-read int|null $interventions_count
  * @method static \Illuminate\Database\Eloquent\Builder|InterventionType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InterventionType newQuery()

@@ -17,10 +17,11 @@ use Ipsum\Reservation\database\factories\SaisonFactory;
  * @property string $nom
  * @property \Illuminate\Support\Carbon $debut_at
  * @property \Illuminate\Support\Carbon $fin_at
- * @property mixed|null $custom_fields
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Tarif\Tarif[] $tarifs
+ * @property AsCustomFieldsObject|null $custom_fields
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Tarif\Tarif> $tarifs
  * @property-read int|null $tarifs_count
  * @method static \Illuminate\Database\Eloquent\Builder|Saison betweenDates(\Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at)
+ * @method static \Ipsum\Reservation\database\factories\SaisonFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Saison newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Saison newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Saison query()

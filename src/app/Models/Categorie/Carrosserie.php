@@ -10,7 +10,6 @@ use Ipsum\Core\Concerns\Translatable;
  * Ipsum\Reservation\app\Models\Categorie\Carrosserie
  *
  * @property int $id
- * @property string|null $slug
  * @property string|null $class
  * @property string $nom
  * @property int $order

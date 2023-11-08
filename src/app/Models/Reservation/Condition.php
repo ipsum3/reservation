@@ -22,10 +22,12 @@ use Ipsum\Reservation\app\Models\Promotion\Promotion;
  * @property string|null $acompte_type
  * @property int|null $acompte_value
  * @property int|null $echeance_nombre
+ * @property string $surplus_type
+ * @property string|null $surplus_valeur
  * @property int $order
- * @property-read \Illuminate\Database\Eloquent\Collection|Promotion[] $promotions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Promotion> $promotions
  * @property-read int|null $promotions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Ipsum\Reservation\app\Models\Reservation\Reservation[] $reservations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Reservation> $reservations
  * @property-read int|null $reservations_count
  * @method static Builder|Condition byDuree(int $duree)
  * @method static Builder|Condition delaiValide(\Carbon\CarbonInterface $debut)
