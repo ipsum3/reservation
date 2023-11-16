@@ -41,7 +41,7 @@ class StoreLieu extends FormRequest
             "adresse" => "required",
             "horaires_txt" => "required",
             "instruction" => "",
-            "gps" => "required|max:255",
+            "gps" => "max:255",
             "emails" => "required|array",
             "emails.*" => "email",
             "emails_reservation" => "required|array",
