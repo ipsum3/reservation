@@ -241,6 +241,11 @@ class Reservation extends BaseModel
         return $query->where('etat_id', '!=', Etat::VALIDEE_ID);
     }
 
+    public function scopeNotValidatedByClient(Builder $query)
+    {
+        return $query->whereIn('etat_id', [ Etat::NON_VALIDEE_ID, Etat::ANNULEE_ID]);
+    }
+
     public function scopeConfirmedBetweenDates(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
         $debut_at = $date_debut->copy()->subHours(config('settings.reservation.battement_entre_reservations'));

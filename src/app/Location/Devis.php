@@ -182,7 +182,7 @@ class Devis
     public function updateOrCreateReservation(): Reservation
     {
 
-        $reservation = Reservation::notConfirmed()->updateOrCreate([
+        $reservation = Reservation::notValidatedByClient()->updateOrCreate([
             'id' => $this->getLocation()->getReservationId()
         ],
         [
