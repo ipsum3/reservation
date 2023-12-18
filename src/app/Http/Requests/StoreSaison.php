@@ -26,8 +26,8 @@ class StoreSaison extends FormRequest
     {
         $rules = [];
 
-        if (config('ipsum.reservation.lieu.custom_fields')) {
-            foreach (config('ipsum.reservation.lieu.custom_fields') as $field) {
+        if (config('ipsum.reservation.saison.custom_fields')) {
+            foreach (config('ipsum.reservation.saison.custom_fields') as $field) {
                 $rules['custom_fields.'.$field['name']] = $field['rules'];
             }
         }
