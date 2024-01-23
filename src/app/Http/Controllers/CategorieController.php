@@ -12,6 +12,7 @@ use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Motorisation;
 use Ipsum\Reservation\app\Models\Categorie\Transmission;
 use Ipsum\Reservation\app\Models\Categorie\Type;
+use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Tarif\Tarif;
 use Prologue\Alerts\Facades\Alert;
 
@@ -60,15 +61,17 @@ class CategorieController extends AdminController
         $types = Type::get()->pluck('nom', 'id');
         $motorisations = Motorisation::get()->pluck('nom', 'id');
         $transmissions = Transmission::get()->pluck('nom', 'id');
+        $lieux = Lieu::get()->pluck('nom', 'id');
         $carrosseries = Carrosserie::orderBy('order')->get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries'));
+        return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries', 'lieux'));
     }
 
     public function store(StoreCategorie $request)
     {
         $categorie = Categorie::create($request->validated());
         $categorie->carrosseries()->sync($request->carrosseries);
+        $categorie->lieuxExclus()->sync($request->lieux_exclus);
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.categorie.edit', [$categorie->id]);
     }
@@ -78,15 +81,17 @@ class CategorieController extends AdminController
         $types = Type::get()->pluck('nom', 'id');
         $motorisations = Motorisation::get()->pluck('nom', 'id');
         $transmissions = Transmission::get()->pluck('nom', 'id');
+        $lieux = Lieu::get()->pluck('nom', 'id');
         $carrosseries = Carrosserie::orderBy('order')->get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries'));
+        return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries', 'lieux'));
     }
 
     public function update(StoreCategorie $request, Categorie $categorie)
     {
         $categorie->update($request->validated());
         $categorie->carrosseries()->sync($request->carrosseries);
+        $categorie->lieuxExclus()->sync($request->lieux_exclus);
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
     }

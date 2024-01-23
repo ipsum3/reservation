@@ -43,6 +43,10 @@
             @endif
 
             {{ Aire::textArea('description', 'Description')->class('tinymce-simple') }}
+
+            @if (config('ipsum.reservation.categorie.lieux_exclus'))
+                {{ Aire::select($lieux, 'lieux_exclus', 'Lieux exclus')->multiple()->class('js-example-basic-single form-control')->value(old('lieux_exclus', $categorie->lieuxExclus->pluck('id'))) }}
+            @endif
         </div>
     </div>
     <div class="row">

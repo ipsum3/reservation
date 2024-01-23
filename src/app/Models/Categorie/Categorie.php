@@ -10,6 +10,7 @@ use Ipsum\Admin\Concerns\Htmlable;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Core\Concerns\Translatable;
 use Ipsum\Media\Concerns\Mediable;
+use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Promotion\Promotion;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
@@ -140,6 +141,11 @@ class Categorie extends BaseModel
     public function blocages()
     {
         return $this->hasMany(Blocage::class);
+    }
+
+    public function lieuxExclus()
+    {
+        return $this->belongsToMany(Lieu::class, 'categorie_lieux_exclus');
     }
 
     /*public function choixModeles()

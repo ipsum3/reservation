@@ -52,6 +52,7 @@ class StoreCategorie extends FormRequest
             "motorisation_id" => "required|exists:motorisations,id",
             "carrosseries.*" => "exists:carrosseries,id",
             "carrosseries" => "required",
+            "lieux_exclus.*" => "exists:lieux,id",
 
             "caution" => 'nullable|numeric',
             "franchise" => 'nullable|numeric',

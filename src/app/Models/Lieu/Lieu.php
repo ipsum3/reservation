@@ -9,6 +9,7 @@ use Ipsum\Admin\Concerns\Sortable;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Core\Concerns\Slug;
 use Ipsum\Core\Concerns\Translatable;
+use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
@@ -127,6 +128,11 @@ class Lieu extends BaseModel
     public function prestations()
     {
         return $this->morphToMany(Prestation::class, 'prestable')->withPivot('montant');
+    }
+
+    public function categoriesExclus()
+    {
+        return $this->belongsToMany(Categorie::class, 'categorie_lieux_exclus');
     }
 
 

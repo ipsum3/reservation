@@ -13,7 +13,8 @@ return [
                 'rules' => 'nullable|numeric'
             ]*/
         ],
-        'translatable_attributes_adds' => []
+        'translatable_attributes_adds' => [],
+        'lieux_exclus' => true,
     ],
     'lieu' => [
         'custom_fields' => [
