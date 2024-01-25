@@ -66,6 +66,7 @@
                     </div>
                     <div class="form-row">
                         {{ Aire::number('volume', 'Volume (m³)')->groupAddClass('col-md-4') }}
+                        {{ Aire::number('reservoir_capacite', 'Capacité du réservoir')->groupAddClass('col-md-4') }}
                     </div>
                     <div class="form-row">
                         {{ Aire::select(collect(['' => '---- Transmissions -----'])->union($transmissions), 'transmission_id', 'Transmission*')->required()->groupAddClass('col-md-4') }}

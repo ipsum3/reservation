@@ -30,6 +30,8 @@ class Motorisation extends BaseModel
 
     protected $translatable_attributes = ['nom'];
 
+    protected $fillable = ['montant'];
+
 
     /*
      * Relations

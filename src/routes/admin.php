@@ -221,3 +221,14 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\SourceController::clas
         Route::get('{source}/edit', 'edit')->name('edit');
     }
 );
+
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\MotorisationController::class)->prefix('motorisation')->name('admin.motorisation.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::post('', 'store')->name('store');
+        Route::get('create', 'create')->name('create');
+        Route::any('{motorisation}/destroy', 'destroy')->name('destroy');
+        Route::put('{motorisation}/{locale?}', 'update')->name('update');
+        Route::get('{motorisation}/edit/{locale?}', 'edit')->name('edit');
+    }
+);
