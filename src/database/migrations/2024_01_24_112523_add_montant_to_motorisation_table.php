@@ -18,7 +18,7 @@ return new class extends Migration
         });
 
         Schema::table('categories', function (Blueprint $table) {
-            $table->decimal('reservoir_capacite', 10, 2)->nullable();
+            $table->decimal('reservoir_capacite', 10, 1)->nullable();
         });
     }
 

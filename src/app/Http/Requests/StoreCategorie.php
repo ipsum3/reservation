@@ -47,7 +47,7 @@ class StoreCategorie extends FormRequest
             "porte" => 'required|integer|min:1|max:10',
             "bagage" => 'nullable|integer|min:1|max:20',
             "volume" => 'nullable|integer',
-            "reservoir_capacite" => 'nullable|integer',
+            "reservoir_capacite" => 'nullable|numeric',
             "climatisation" => 'required|boolean',
             "transmission_id" => "required|exists:transmissions,id",
             "motorisation_id" => "required|exists:motorisations,id",

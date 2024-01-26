@@ -62,7 +62,7 @@ class StorePrestation extends FormRequest
 
         return [
             "type_id" => "required|exists:prestation_types,id",
-            "tarification" => ["required", Rule::in(Prestation::$LISTE_TARIFICATION)],
+            "tarification_id" => "required|exists:prestation_tarifications,id",
             "nom" => "required|max:255",
             "description" => "nullable",
             "montant" => "nullable|numeric",

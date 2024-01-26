@@ -48,7 +48,6 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates
  * @property-read int|null $translates_count
  * @property-read \Ipsum\Reservation\app\Models\Prestation\Type|null $type
- * @method static Builder|Prestation condition(\Ipsum\Reservation\app\Models\Categorie\Categorie $categorie, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_debut, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_fin, \Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at, ?int $age = null)
  * @method static Builder|Prestation filtreSortable($objet)
  * @method static Builder|Prestation newModelQuery()
  * @method static Builder|Prestation newQuery()
@@ -64,11 +63,7 @@ class Prestation extends BaseModel
 
     public $timestamps = false;
 
-    public static $LISTE_TARIFICATION = array('jour', 'forfait', 'agence');
     public static $LISTE_CONDITION = array('depart' => 'Uniquement sur le départ', 'retour' => 'Uniquement sur le retour');
-
-    const TARIFICATION_AGENCE = 'agence';
-
 
     protected $guarded = ['id'];
 
@@ -94,6 +89,10 @@ class Prestation extends BaseModel
     /*
      * Relations
      */
+    public function tarification()
+    {
+        return $this->belongsTo(Tarification::class);
+    }
 
     public function blocages()
     {
@@ -214,7 +213,7 @@ class Prestation extends BaseModel
 
     public function getIsTarificationAgenceAttribute(): bool
     {
-        return $this->tarification === self::TARIFICATION_AGENCE;
+        return $this->tarification_id === Tarification::AGENCE_ID;
     }
 
     public function getIsOptionnelleAttribute(): bool

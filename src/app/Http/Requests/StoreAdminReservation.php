@@ -99,7 +99,7 @@ class StoreAdminReservation extends FormRequest
             "prestations.*.quantite" => "nullable|integer",
             "prestations.*.tarif" => "nullable|numeric",
             "prestations.*.nom" => "nullable|max:255",
-            "prestations.*.tarification" => ["nullable", Rule::in(Prestation::$LISTE_TARIFICATION)],
+            "prestations.*.tarification_id" => ["nullable|exists:prestation_tarifications,id"],
 
             "montant_base" => "nullable|numeric",
             "code_promo" => "nullable",

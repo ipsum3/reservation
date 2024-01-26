@@ -35,7 +35,7 @@
             <div class="form-row">
                 {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Types -----'])->union($types), 'type_id', 'Type*')->groupAddClass('col-md-6') }}
-                {{ Aire::select(collect(['' => '---- Tarifications -----'])->union(array_combine(\Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_TARIFICATION, \Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_TARIFICATION)), 'tarification', 'Tarification*')->groupAddClass('col-md-6') }}
+                {{ Aire::select(collect(['' => '---- Tarifications -----'])->union($tarifications), 'tarification_id', 'Tarification*')->groupAddClass('col-md-6') }}
                 {{ Aire::textArea('description', 'Description')->groupAddClass('col-md-6') }}
                 {{ Aire::number('montant', 'Montant')->step(.01)->groupAddClass('col-md-6') }}
                 {{ Aire::number('quantite_max', 'Quantité max*')->required()->defaultValue(1)->groupAddClass('col-md-6') }}

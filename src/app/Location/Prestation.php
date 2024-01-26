@@ -7,6 +7,8 @@ namespace Ipsum\Reservation\app\Location;
 use Carbon\CarbonInterface;
 use Exception;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
+use Ipsum\Reservation\app\Models\Prestation\Condition;
+use Ipsum\Reservation\app\Models\Prestation\Tarification;
 
 class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
 {
@@ -105,18 +107,24 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
         }
 
 
-
-        switch ($this->tarification) {
-            case 'forfait':
+        switch ($this->tarification->id) {
+            case Tarification::FORFAIT_ID:
                 $tarif = $montant * $this->quantite;
                 break;
 
-            case 'jour':
+            case Tarification::JOUR_ID:
                 $tarif = $montant * $this->quantite * $duree_pour_calcul;
                 break;
 
-            case 'agence':
+            case Tarification::AGENCE_ID:
                 $tarif = null;
+                break;
+
+            case Tarification::CARBURANT_ID:
+                if ($categorie->motorisation->montant) {
+                    $montant = ($categorie->reservoir_capacite * $categorie->motorisation->montant) + $montant;
+                }
+                $tarif = $montant * $this->quantite;
                 break;
 
             default:
@@ -148,9 +156,9 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
         return $this->tarif;
     }
 
-    public static function tarifLibelle($tarif, $tarification): string
+    public static function tarifLibelle($tarif, int $tarification_id): string
     {
-        if ($tarification == self::TARIFICATION_AGENCE) {
+        if ($tarification_id == Tarification::AGENCE_ID) {
             $libelle = 'en agence';
         } elseif (empty($tarif)) {
             $libelle = 'gratuit';
@@ -163,6 +171,6 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
 
     public function getTarifLibelle(): string
     {
-        return self::tarifLibelle($this->tarif, $this->tarification);
+        return self::tarifLibelle($this->tarif, $this->tarification->id);
     }
 }
