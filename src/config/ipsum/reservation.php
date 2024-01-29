@@ -84,6 +84,8 @@ return [
     'recherche' => [
         'date_format' => 'd/m/Y H:i',
         'jour_format' => 'd/m/Y',
+        'heure_debut' => '16:00',
+        'heure_fin' => '16:00',
         'pays_defaut_id' => 75
     ],
     'tarif' => [

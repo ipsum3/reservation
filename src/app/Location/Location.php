@@ -71,8 +71,8 @@ class Location
     public function __construct()
     {
         $this->prestations = new PrestationCollection();
-        $this->debut_at = Carbon::now()->addDays(7)->hour('16')->minute(0)->second(0)->micro(0);
-        $this->fin_at = Carbon::now()->addDays(14)->hour('16')->minute(0)->second(0)->micro(0);
+        $this->debut_at = Carbon::now()->addDays(7)->hour(config('ipsum.reservation.recherche.heure_debut') ?? 16)->minute(0)->second(0)->micro(0);
+        $this->fin_at = Carbon::now()->addDays(14)->hour(config('ipsum.reservation.recherche.heure_fin') ?? 16)->minute(0)->second(0)->micro(0);
 
     }
 
