@@ -156,7 +156,7 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
         return $this->tarif;
     }
 
-    public static function tarifLibelle($tarif, int $tarification_id): string
+    public static function tarifLibelle($tarif, ?int $tarification_id): string
     {
         if ($tarification_id == Tarification::AGENCE_ID) {
             $libelle = 'en agence';

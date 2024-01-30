@@ -9,6 +9,8 @@ trait Objectable
 
     public function __construct( ?array $attributes = [] ) {
 
+        $this->attributes = $attributes;
+
         foreach ($attributes as $attribute => $value) {
             $this->{$attribute} = $value;
         }

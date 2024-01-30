@@ -81,7 +81,8 @@
                 </div>
                 <input type="hidden" name="prestations[{{ $prestation->id }}][id]" value="{{ $prestation->id }}">
                 <input type="hidden" name="prestations[{{ $prestation->id }}][nom]" value="{{ $prestation->nom }}">
-                <input type="hidden" name="prestations[{{ $prestation->id }}][tarification]" value="{{ $presta->tarification ?? $prestation->tarification }}">
+                <input type="hidden" name="prestations[{{ $prestation->id }}][tarification][id]" value="{{ $presta->tarification->id ?? $prestation->tarification->id }}">
+                <input type="hidden" name="prestations[{{ $prestation->id }}][tarification][nom]" value="{{ $presta->tarification->nom ?? $prestation->tarification->nom }}">
                 @error('prestations.'.$prestation->id)
                 <div class="alert alert-warning">{{ $message }}</div>
                 @enderror
