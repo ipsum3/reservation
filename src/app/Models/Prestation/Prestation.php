@@ -63,7 +63,7 @@ class Prestation extends BaseModel
 
     public $timestamps = false;
 
-    public static $LISTE_CONDITION = array('depart' => 'Uniquement sur le départ', 'retour' => 'Uniquement sur le retour');
+    public static $LISTE_CONDITION = array('depart' => 'Uniquement sur le départ', 'retour' => 'Uniquement sur le retour', 'lieu_different' => 'Uniquement si le départ et le retour sont différent');
 
     protected $guarded = ['id'];
 
@@ -194,6 +194,11 @@ class Prestation extends BaseModel
             });
         } else {
             $query->whereNull('age_max');
+        }
+
+        //Lieu différent
+        if($lieu_debut->id === $lieu_fin->id){
+            $query->where('condition', '!=','lieu_different')->orWhereNull('condition');
         }
     }
 

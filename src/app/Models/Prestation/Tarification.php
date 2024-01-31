@@ -20,4 +20,5 @@ class Tarification extends BaseModel
     {
         return $this->hasMany(Prestation::class, 'tarification_id');
     }
+
 }

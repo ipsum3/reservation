@@ -4,6 +4,7 @@
 namespace Ipsum\Reservation\app\Location;
 
 
+use Ipsum\Reservation\app\Interfaces\TarificationInterface;
 use Carbon\CarbonInterface;
 use Exception;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
@@ -37,6 +38,18 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
      */
     public function calculer(int $nb_jours, Categorie $categorie, Lieu $lieu_debut, Lieu $lieu_fin, CarbonInterface $debut_at, CarbonInterface $fin_at): self
     {
+        if($this->tarification->class){
+            if (class_exists($this->tarification->class)) {
+                $prestation = call_user_func([$this->tarification->class, 'calculer'], $this, $nb_jours, $categorie, $lieu_debut, $lieu_fin, $debut_at, $fin_at);
+                if (property_exists($prestation, 'tarif')) {
+                    $prestation->tarif = $prestation->attributes['tarif'];
+                }
+                return $prestation;
+            } else {
+                throw new Exception("Classe introuvable pour la tarification: ".$this->tarification->nom);
+            }
+        }
+
         if ($this->quantite > $this->quantite_max) {
             throw new Exception("La quantité est supérieur à la quantité max de la prestation.");
         }
