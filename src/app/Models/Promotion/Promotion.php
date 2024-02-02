@@ -80,7 +80,8 @@ class Promotion extends BaseModel
         static::deleting(function (self $promotion) {
             $promotion->categories()->detach();
             $promotion->prestations()->detach();
-            $promotion->lieux()->detach();
+            $promotion->lieuxDebut()->detach();
+            $promotion->lieuxFin()->detach();
         });
     }
 
@@ -98,9 +99,14 @@ class Promotion extends BaseModel
         return $this->morphedByMany(Prestation::class, 'promotionable')->withPivot(['reduction']);
     }
 
-    public function lieux()
+    public function lieuxDebut()
     {
-        return $this->morphedByMany(Lieu::class, 'promotionable')->withPivot(['reduction']);
+        return $this->morphedByMany(Lieu::class, 'promotionable');
+    }
+
+    public function lieuxFin()
+    {
+        return $this->morphedByMany(LieuFin::class, 'promotionable');
     }
 
     public function condition()

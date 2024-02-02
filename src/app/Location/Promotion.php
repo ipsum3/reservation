@@ -44,9 +44,14 @@ class Promotion extends \Ipsum\Reservation\app\Models\Promotion\Promotion
 
             // Lieux
             ->where(function (Builder $query) use ($devis) {
-                $query->whereHas('lieux', function (Builder $query) use ($devis) {
+                $query->whereHas('lieuxDebut', function (Builder $query) use ($devis) {
                     $query->where('id', $devis->getLocation()->getLieuDebut()->id);
-                })->orWhereDoesntHave('lieux');
+                })->orWhereDoesntHave('lieuxDebut');
+            })
+            ->where(function (Builder $query) use ($devis) {
+                $query->whereHas('lieuxFin', function (Builder $query) use ($devis) {
+                    $query->where('id', $devis->getLocation()->getLieuFin()->id);
+                })->orWhereDoesntHave('lieuxFin');
             })
 
             // Prestations
@@ -98,10 +103,10 @@ class Promotion extends \Ipsum\Reservation\app\Models\Promotion\Promotion
             }
         }
 
-        $promotion_lieu = $this->lieux()->find($devis->getLocation()->getLieuDebut()->id);
+        /*$promotion_lieu = $this->lieux()->find($devis->getLocation()->getLieuDebut()->id);
         if ($promotion_lieu) {
             $reduction += $promotion_lieu->pivot->reduction;
-        }
+        }*/
 
         if ($this->reduction_type == 'pourcentage') {
             $this->reduction = ($reduction * $devis->getMontantBase()) / 100;

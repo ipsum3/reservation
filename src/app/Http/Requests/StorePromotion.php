@@ -40,8 +40,16 @@ class StorePromotion extends FormRequest
         });
 
 
-        $lieux = collect($this->lieux);
-        $lieux = $lieux->filter(function ($value, $key) {
+        $lieux = collect($this->lieux_debut);
+        $lieux_debut = $lieux->filter(function ($value, $key) {
+            return isset($value['has']);
+        })->map(function ($value, $key) {
+            unset($value['has']);
+            return $value;
+        });
+
+        $lieux = collect($this->lieux_fin);
+        $lieux_fin = $lieux->filter(function ($value, $key) {
             return isset($value['has']);
         })->map(function ($value, $key) {
             unset($value['has']);
@@ -50,7 +58,8 @@ class StorePromotion extends FormRequest
 
         $this->merge([
             'categories' => $categories,
-            'lieux' => $lieux,
+            'lieux_debut' => $lieux_debut,
+            'lieux_fin' => $lieux_fin,
             'prestations' => $prestations,
         ]);
     }

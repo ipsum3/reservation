@@ -58,7 +58,8 @@ class PromotionController extends AdminController
         $promotion = Promotion::create($request->validated());
 
         $promotion->categories()->sync($request->categories);
-        $promotion->lieux()->sync($request->lieux);
+        $promotion->lieuxDebut()->sync($request->lieux_debut);
+        $promotion->lieuxFin()->sync($request->lieux_fin);
         $promotion->prestations()->sync($request->prestations);
 
         Alert::success("L'enregistrement a bien été ajouté")->flash();
@@ -81,7 +82,8 @@ class PromotionController extends AdminController
         $promotion->update($request->validated());
 
         $promotion->categories()->sync($request->categories);
-        $promotion->lieux()->sync($request->lieux);
+        $promotion->lieuxDebut()->sync($request->lieux_debut);
+        $promotion->lieuxFin()->sync($request->lieux_fin);
         $promotion->prestations()->sync($request->prestations);
 
         Alert::success("L'enregistrement a bien été modifié")->flash();

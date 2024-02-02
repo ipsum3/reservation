@@ -46,7 +46,7 @@ class Devis
         // Calcul total
         $this->total = $this->montant_base + (float) $total_prestations - (float) $this->promotions->totalReductions() - (float) $this->remise_admin;
 
-        if (!$this->total) {
+        if (!$this->total || $this->total < 0) {
             throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
         }
 

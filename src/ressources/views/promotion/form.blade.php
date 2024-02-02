@@ -77,7 +77,7 @@
 
 
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-6">
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Conditions par catégories</h2>
@@ -100,7 +100,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-6">
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Conditions par prestations</h2>
@@ -126,7 +126,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-6">
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Conditions par lieux de départ</h2>
@@ -134,11 +134,34 @@
                 <div class="box-body">
                     @foreach($lieux as $lieu)
                         <div class="form-group row">
-                            <label class="col-sm-11 col-form-label" for="lieu-{{ $lieu->id }}">
+                            <label class="col-sm-11 col-form-label" for="lieu_debut-{{ $lieu->id }}">
                                 {{ $lieu->nom }}
                             </label>
                             <div class="col-sm-1">
-                                <input class="form-check-input" type="checkbox" name="lieux[{{ $lieu->id }}][has]" value="{{ $lieu->id }}" id="lieu-{{ $lieu->id }}" {{ old('lieux.'.$lieu->id.'.has', $promotion->lieux->contains($lieu)) ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" name="lieux_debut[{{ $lieu->id }}][has]" value="{{ $lieu->id }}" id="lieu_debut-{{ $lieu->id }}" {{ old('lieux_debut.'.$lieu->id.'.has', $promotion->lieuxDebut->contains($lieu)) ? 'checked' : '' }}>
+                            </div>
+                            {{--<div class="col-sm-8">
+                                <input type="number" class="form-control" name="lieux[{{ $lieu->id }}][reduction]" step=".001" value="{{ old('lieux.'.$lieu->id.'.montant', $promotion->lieux->contains($lieu) ? $promotion->lieux->find($lieu)->pivot->reduction : null) }}">
+                                <span id="emailHelp" class="form-text text-muted">Montant à ajouter en &nbsp;&euro;</span>
+                            </div>--}}
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">Conditions par lieux de retour</h2>
+                </div>
+                <div class="box-body">
+                    @foreach($lieux as $lieu)
+                        <div class="form-group row">
+                            <label class="col-sm-11 col-form-label" for="lieu_fin-{{ $lieu->id }}">
+                                {{ $lieu->nom }}
+                            </label>
+                            <div class="col-sm-1">
+                                <input class="form-check-input" type="checkbox" name="lieux_fin[{{ $lieu->id }}][has]" value="{{ $lieu->id }}" id="lieu_fin-{{ $lieu->id }}" {{ old('lieux_fin.'.$lieu->id.'.has', $promotion->lieuxFin->contains($lieu)) ? 'checked' : '' }}>
                             </div>
                             {{--<div class="col-sm-8">
                                 <input type="number" class="form-control" name="lieux[{{ $lieu->id }}][reduction]" step=".001" value="{{ old('lieux.'.$lieu->id.'.montant', $promotion->lieux->contains($lieu) ? $promotion->lieux->find($lieu)->pivot->reduction : null) }}">
