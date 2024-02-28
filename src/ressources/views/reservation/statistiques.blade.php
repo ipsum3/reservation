@@ -71,6 +71,11 @@
 
                             <button type="submit" class="btn btn-secondary mb-2">Rechercher</button>
 
+                            <input class="form-check-input ml-2" type="checkbox" value="1" name="prev_periode" id="prev_periode" {{ request()->get('prev_periode') === "1"  ? 'checked' : '' }}>
+                            <label class="form-check-label" for="prev_periode">
+                                Comparer les stats de l'année précédente
+                            </label>
+
                             {{ Aire::close() }}
 
                         </div>
@@ -352,8 +357,29 @@
             var reservationCountData = @json($stats['reservationCountData']);
             var montantTotalData = @json($stats['montantTotalData']);
 
-            var reservationCountMax = Math.max(...reservationCountData);
-            var montantTotalMax = Math.max(...montantTotalData);
+            @if(isset($stats['previous']))
+                // Stats pour la deuxième période
+                var moisLabels2 = @json($stats['previous']['moisLabels']);
+                var reservationCountData2 = @json($stats['previous']['reservationCountData']);
+                var montantTotalData2 = @json($stats['previous']['montantTotalData']);
+                var reservationCountMax = Math.max(...reservationCountData, ...reservationCountData2);
+                var montantTotalMax = Math.max(...montantTotalData, ...montantTotalData2);
+                let label1 = [];
+                //moisLabels = [];
+                moisLabels2.forEach((item, index) => {
+                    label1 = moisLabels2[index].split(" ");
+                    //moisLabels.push(label1[0]);
+                    if(label1[1] != undefined && moisLabels[index] != undefined){
+                        moisLabels[index] =  item + ' - ' + moisLabels[index]
+                    }
+                })
+
+            @else
+                var reservationCountMax = Math.max(...reservationCountData);
+                var montantTotalMax = Math.max(...montantTotalData);
+            @endif
+
+
 
             // Créer le graphique en courbes avec Chart.js
             var ctx = document.getElementById('myLineChart').getContext('2d');
@@ -361,7 +387,17 @@
                 type: 'bar',
                 data: {
                     labels: moisLabels,
-                    datasets: [{
+                    datasets: [
+                        @if(isset($stats['previous']))
+                        {
+                        label: 'Nombre de réservations (année précédente)',
+                        data: reservationCountData2,
+                        backgroundColor: 'rgba(255, 206, 86, 0.5)',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1
+                        },
+                        @endif
+                        {
                         label: 'Nombre de réservations',
                         data: reservationCountData,
                         backgroundColor: 'rgba(54, 162, 235, 0.5)',
@@ -385,6 +421,18 @@
                 }
             });
 
+            @if(isset($stats['previous']))
+            myLineChart.data.datasets.push({
+                type: 'line',
+                label: 'Montant total (année précédente)',
+                data: montantTotalData2,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true,
+                yAxisID: 'y1'
+            });
+            @endif
+
             myLineChart.data.datasets.push({
                 type: 'line',
                 label: 'Montant total',
@@ -394,6 +442,8 @@
                 fill: true,
                 yAxisID: 'y1'
             });
+
+
 
             myLineChart.update();
 

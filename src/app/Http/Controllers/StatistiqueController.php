@@ -42,50 +42,29 @@ class StatistiqueController extends ReservationController
         }
 
         $reservationsTransactionQuery = Reservation::confirmed()->whereBetween($type_date, [$dateDebut, $dateFin])->get();
-        //$reservationsTransactionQueryNotConfirmed = Reservation::whereBetween($type_date, [$dateDebut, $dateFin])->get();
 
         $reservationsJourQuery = Reservation::confirmed()->whereRaw("DATE(`debut_at`) = CURDATE()");
         $reservationsHierQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
-        //$reservationsMoisQuery = Reservation::confirmed()->whereRaw("DATE(`debut_at`) BETWEEN '" . Carbon::now()->startOfMonth()->format('Y-m-d') . "' AND '" . Carbon::now()->endOfMonth()->format('Y-m-d') . "'")->get();
-        //$reservationsMoisQuery = Reservation::confirmed()->whereRaw("DATE(`".$type_date."`) BETWEEN '" . $dateDebut. "' AND '" . $dateFin . "'")->get();
         $reservationsEnCoursQuery = Reservation::confirmed()->whereDate('debut_at', '<=', Carbon::now())->whereDate('fin_at', '>=', Carbon::now())->get();
         $reservationsIncomingQuery = Reservation::confirmed()->whereDate('debut_at', '>=', Carbon::now())->get();
         $stats['hier'] = $reservationsHierQuery->count();
         $stats['jour'] = $reservationsJourQuery->count();
-        //$stats['mois'] = $reservationsMoisQuery->count();
         $stats['montant'] = $reservationsTransactionQuery->sum('total');
 
         $stats['en_cours'] = $reservationsEnCoursQuery->count();
         $stats['a_venir'] = $reservationsIncomingQuery->count();
 
         //volume par transaction
-        $months = $this->getListeMois($dateDebut, $dateFin);
-        $stats2['reservation_count'] = [];
-        $stats2['montant_total'] = [];
 
-        foreach ($months as $month) {
-            $stats2['reservation_count'][$month] = 0;
-            $stats2['montant_total'][$month] = 0;
+
+        $stats = array_merge($stats, $this->getStats($reservationsTransactionQuery, $type_date, $dateDebut, $dateFin));
+
+        if ($request->filled('prev_periode')) {
+            $dateDebutPrev = $dateDebut->copy()->subYear();
+            $dateFinPrev = $dateFin->copy()->subYear();
+            $reservationsTransactionQueryPrev = Reservation::confirmed()->whereBetween($type_date, [$dateDebutPrev, $dateFinPrev])->get();
+            $stats['previous'] = $this->getStats($reservationsTransactionQueryPrev, $type_date, $dateDebutPrev, $dateFinPrev);
         }
-
-        foreach ($reservationsTransactionQuery as $reservation) {
-            if($type_date == 'created_at'){
-                $data_month = $reservation->created_at->format('F');
-            }else{
-                $data_month = $reservation->debut_at->format('F');
-            }
-            $stats2['reservation_count'][$data_month] += 1;
-            $stats2['montant_total'][$data_month] += $reservation->total; // Remplacez 'montant' par le nom de votre colonne de montant
-        }
-
-        $stats['transaction_mois'] = [];
-        foreach ($stats2['reservation_count'] as $mois => $count) {
-            $stats['transaction_mois'][] = ['mois' => $mois, 'count' => $count, 'montant' => $stats2['montant_total'][$mois]];
-        }
-
-        $stats['moisLabels'] = array_column($stats['transaction_mois'], 'mois');
-        $stats['reservationCountData'] = array_column($stats['transaction_mois'], 'count');
-        $stats['montantTotalData'] = array_column($stats['transaction_mois'], 'montant');
 
         $stats['maxReservationCount'] = max($stats['reservationCountData']);
         $stats['maxMontantTotal'] = max($stats['montantTotalData']);
@@ -101,9 +80,6 @@ class StatistiqueController extends ReservationController
             $totalJoursLocation += $reservation->nb_jours;
         }
 
-        // Calcul du taux de rotation journalier mais il n'est pas bon
-        //$stats['taux_rotation_jour']  = ($totalJoursLocation / $nombreVoituresActivees) * 100;
-        //dd($stats['taux_rotation_jour']);
         // Calcul du taux de rotation mensuel
         if(($nombreVoituresActivees * $nombreJoursDuree) <=0){
             $stats['taux_rotation'] = 0;
@@ -227,7 +203,7 @@ class StatistiqueController extends ReservationController
         $dateFin = Carbon::parse($dateFin);
 
         while ($dateCourante->lte($dateFin)) {
-            $listeMois[] = $dateCourante->format('F');
+            $listeMois[] = $dateCourante->format('F Y');
             $dateCourante->firstOfMonth()->addMonth();
         }
 
@@ -288,5 +264,56 @@ class StatistiqueController extends ReservationController
         }
 
         return json_encode($clients);
+    }
+
+    public function getStats($reservationsTransactionQuery, $type_date, $dateDebut, $dateFin)
+    {
+        $months = $this->getListeMois($dateDebut, $dateFin);
+        $stats2['reservation_count'] = [];
+        $stats2['montant_total'] = [];
+
+
+        if ($dateDebut->diffInDays($dateFin) <= 31) {
+
+        }else{
+            foreach ($months as $month) {
+                $stats2['reservation_count'][$month] = 0;
+                $stats2['montant_total'][$month] = 0;
+            }
+        }
+
+        foreach ($reservationsTransactionQuery as $reservation) {
+            if($type_date == 'created_at'){
+                $data_month = $reservation->created_at->format('F Y');
+                if($dateDebut->diffInDays($dateFin) <= 31){
+                    $data_month = $reservation->created_at->format('d/m/Y');
+                    if (!isset($stats2['reservation_count'][$data_month])) {
+                        $stats2['reservation_count'][$data_month] = 0;
+                        $stats2['montant_total'][$data_month] = 0;
+                    }
+                }
+            }else{
+                $data_month = $reservation->debut_at->format('F Y');
+                if($dateDebut->diffInDays($dateFin) <= 31){
+                    $data_month = $reservation->debut_at->format('d/m/Y');
+                    if (!isset($stats2['reservation_count'][$data_month])) {
+                        $stats2['reservation_count'][$data_month] = 0;
+                        $stats2['montant_total'][$data_month] = 0;
+                    }
+                }
+            }
+            $stats2['reservation_count'][$data_month] += 1;
+            $stats2['montant_total'][$data_month] += $reservation->total;
+        }
+
+        $stats['transaction_mois'] = [];
+        foreach ($stats2['reservation_count'] as $mois => $count) {
+            $stats['transaction_mois'][] = ['mois' => $mois, 'count' => $count, 'montant' => $stats2['montant_total'][$mois]];
+        }
+
+        $stats['moisLabels'] = array_column($stats['transaction_mois'], 'mois');
+        $stats['reservationCountData'] = array_column($stats['transaction_mois'], 'count');
+        $stats['montantTotalData'] = array_column($stats['transaction_mois'], 'montant');
+        return $stats;
     }
 }
