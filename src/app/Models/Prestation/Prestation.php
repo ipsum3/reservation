@@ -63,7 +63,7 @@ class Prestation extends BaseModel
 
     public $timestamps = false;
 
-    public static $LISTE_CONDITION = array('depart' => 'Uniquement sur le départ', 'retour' => 'Uniquement sur le retour', 'lieu_different' => 'Uniquement si le départ et le retour sont différent');
+    public static $LISTE_CONDITION = array('depart' => 'Uniquement sur le départ', 'retour' => 'Uniquement sur le retour', 'lieu_different' => 'Uniquement si le départ et le retour sont différent', 'non_cumulable' => 'Valable sur le départ et/ou retour non cumulable');
 
     protected $guarded = ['id'];
 

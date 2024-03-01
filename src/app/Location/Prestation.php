@@ -68,12 +68,13 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
 
 
         if ($this->is_obligatoire) {
-
             // Si une prestation de type frais à une condition sur jour, heure_max, heure_min, lieux,
             // vérifier la validité des conditions sur le début et sur la fin
             // pour voir s'il ne faut pas le facturer 2 fois la prestation
 
             $value = 0;
+            $non_cumulable = 0;
+
             if (
                 $this->condition != 'retour' and
                 ($this->jour === null or $this->jour == $debut_at->dayOfWeekWithFerie($lieu_debut)) and
@@ -89,10 +90,15 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
                     $value += $montant;
                 }
 
+                if($this->condition == 'non_cumulable') {
+                    $non_cumulable = 1;
+                }
+
             }
 
             if (
                 $this->condition != 'depart' and
+                !$non_cumulable and
                 ($this->jour === null or $this->jour == $fin_at->dayOfWeekWithFerie($lieu_fin)) and
                 ($this->heure_min === null or $this->heure_min < $fin_at->toTimeString()) and
                 ($this->heure_max === null or $this->heure_max > $fin_at->toTimeString()) and
