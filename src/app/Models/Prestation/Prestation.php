@@ -198,7 +198,9 @@ class Prestation extends BaseModel
 
         //Lieu différent
         if ($lieu_debut->id === $lieu_fin->id) {
-            $query->where('condition', '!=','lieu_different');
+            $query->where(function (Builder $query) {
+                $query->where('condition', '!=','lieu_different')->orWhereNull('condition');
+            });
         }
     }
 
