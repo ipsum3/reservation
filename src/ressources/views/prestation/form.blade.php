@@ -56,7 +56,7 @@
                 @foreach(config('ipsum.reservation.prestation.custom_fields') as $field)
                     @php
                         $field_name = 'custom_fields['.$field['name'].']';
-                        $field_value = old('custom_fields.'.$field['name'], $prestation->custom_fields->{$field['name']} ?  : ($field['type'] == "repeater" ? [] : '') );
+                        $field_value = old('custom_fields.'.$field['name'], $prestation->custom_fields->{$field['name']} ?? ($field['type'] == "repeater" ? [] : '') );
                     @endphp
                     <x-admin::custom :field="$field" :name="$field_name" :value="$field_value"/>
                 @endforeach
