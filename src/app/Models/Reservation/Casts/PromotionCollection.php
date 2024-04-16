@@ -24,6 +24,11 @@ class PromotionCollection  extends Collection implements Castable
         });
     }
 
+    public function toArray(): ?array
+    {
+        return $this->map(fn ($value) => $value->toArray())->all();
+    }
+
 
     /**
      * Get the caster class to use when casting from / to this cast target.
@@ -51,9 +56,8 @@ class PromotionCollection  extends Collection implements Castable
 
             public function set($model, $key, $value, $attributes)
             {
-                if (is_object($value)) {
-                    // Pour contourner un problème lié à la méthode get de la collection
-                    return null;
+                if ($value instanceof PromotionCollection) {
+                    $value = $value->toArray();
                 }
                 return [$key => json_encode($value)];
             }

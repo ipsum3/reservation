@@ -9,6 +9,11 @@ use Illuminate\Support\Collection;
 class EcheancierCollection  extends Collection implements Castable
 {
 
+    public function toArray(): ?array
+    {
+        return $this->map(fn ($value) => $value->toArray())->all();
+    }
+
 
 
     /**
@@ -37,9 +42,8 @@ class EcheancierCollection  extends Collection implements Castable
 
             public function set($model, $key, $value, $attributes)
             {
-                if (is_object($value)) {
-                    // Pour contourner un problème lié à la méthode get de la collection
-                    return null;
+                if ($value instanceof EcheancierCollection) {
+                    $value = $value->toArray();
                 }
                 return [$key => json_encode($value)];
             }

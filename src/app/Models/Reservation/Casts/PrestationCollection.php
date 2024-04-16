@@ -24,6 +24,11 @@ class PrestationCollection  extends Collection implements Castable
         });
     }
 
+    public function toArray(): ?array
+    {
+        return $this->map(fn ($value) => $value->toArray())->all();
+    }
+
 
 
 
@@ -53,11 +58,9 @@ class PrestationCollection  extends Collection implements Castable
 
             public function set($model, $key, $value, $attributes)
             {
-                if (is_object($value)) {
-                    // Pour contourner un problème lié à la méthode get de la collection
-                    return null;
+                if ($value instanceof PrestationCollection) {
+                    $value = $value->toArray();
                 }
-
 
                 $value = collect($value)->whereNotIn('quantite', [0])->all();
 
