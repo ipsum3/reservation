@@ -115,6 +115,13 @@ class StoreAdminReservation extends FormRequest
             "paiements.*.paiement_type_id" => "required|integer|exists:paiement_types,id",
             "paiements.*.montant" => "required|numeric",
             "paiements.*.note" => "nullable",
+
+            //"conducteurs.*" => "nullable",
+            "conducteurs.*.naissance_at" => "nullable|date_format:Y-m-d",
+            'conducteurs.*.naissance_lieu' => 'nullable|max:255',
+            "conducteurs.*.permis_numero" => "nullable|max:255",
+            "conducteurs.*.permis_at" => "nullable|date_format:Y-m-d",
+            "conducteurs.*.permis_delivre" => "nullable|max:255",
         ] + $rules;
     }
 

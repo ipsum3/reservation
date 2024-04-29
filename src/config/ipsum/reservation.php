@@ -97,6 +97,8 @@ return [
 
     'numero_longueur' => 6,
 
+    'conducteurs_additionnels' => false,
+
     'acces' => [
         'reservation' => 'Réservation',
         'client' => 'Client',

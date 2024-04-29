@@ -309,6 +309,7 @@ class ReservationController extends AdminController
     public function update(StoreAdminReservation $request, Reservation $reservation)
     {
         $data = $request->validated();
+        //dd($data);
         if($request->get('create_user') == 1 && $reservation->client_id == NULL){
             $clientData = array_merge($request->validated(), ['has_login' => 0]);
             // Créer un nouveau client en base de données

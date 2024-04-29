@@ -269,11 +269,68 @@
                         {{ Aire::date('permis_at', 'Permis délivré le')->groupAddClass('col-md-6') }}
                         {{ Aire::input('permis_delivre', 'Permis délivré par')->groupAddClass('col-md-6') }}
                         <div id="create-user-field" class="{{ ($reservation->client_id == NULL) ? 'col-md-12': 'col-md-12 d-none' }}">
-                        {{ Aire::checkbox("create_user", "Créer le compte client")->value(1)->helpText((string) "Ce client n'a pas de compte") }}
+                            {{ Aire::checkbox("create_user", "Créer le compte client")->value(1)->helpText((string) "Ce client n'a pas de compte") }}
                         </div>
                     </div>
                 </div>
             </div>
+
+            @if (config('ipsum.reservation.conducteurs_additionnels'))
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">
+                            Conducteurs additionnels
+                    </h2>
+
+                    <div class="btn-toolbar">
+                        <button class="btn btn-outline-secondary" id="conducteurs-add" type="button" data-toggle="tooltip" title="Ajouter">
+                            <i class="fas fa-plus"></i>
+                        </button>&nbsp;
+                    </div>
+                </div>
+                <div class="box-body">
+
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col"> Date de naissance </th>
+                            <th scope="col"> Lieu de naissance </th>
+                            <th scope="col"> Numéro de permis </th>
+                            <th scope="col"> Permis délivré le </th>
+                            <th scope="col"> Permis délivré par </th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="conducteurs-lignes">
+                        @if($reservation->conducteurs)
+                            @foreach($reservation->conducteurs as $i => $conducteur)
+                                <tr>
+                                    <td><input class="form-control" type="date" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][naissance_at]" value="{{ old('naissance_at', $conducteur->naissance_at) }}" /></td>
+                                    <td><input class="form-control" type="text" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][naissance_lieu]" value="{{ old('naissance_lieu', $conducteur->naissance_lieu) }}" /></td>
+                                    <td><input class="form-control" type="text" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][permis_numero]" value="{{ old('permis_numero', $conducteur->permis_numero) }}" /></td>
+                                    <td><input class="form-control" type="date" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][permis_at]" value="{{ old('permis_at', $conducteur->permis_at) }}" /></td>
+                                    <td><input class="form-control" type="text" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][permis_delivre]" value="{{ old('permis_delivre', $conducteur->permis_delivre) }}" /></td>
+                                    <td><button type="button" class="conducteurs-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button></td>
+                                </tr>
+                            @endforeach
+                        @endif
+
+                        <script id="conducteurs-add-template" type="x-tmpl-mustache">
+                        <tr>
+                            <td><input class="form-control" type="date" name="conducteurs[@{{ indice }}][naissance_at]" /></td>
+                            <td><input class="form-control" type="text" name="conducteurs[@{{ indice }}][naissance_lieu]" /></td>
+                            <td><input class="form-control" type="text" name="conducteurs[@{{ indice }}][permis_numero]" /></td>
+                            <td><input class="form-control" type="date" name="conducteurs[@{{ indice }}][permis_at]" /></td>
+                            <td><input class="form-control" type="text" name="conducteurs[@{{ indice }}][permis_delivre]" /></td>
+                            <td><button type="button" class="conducteurs-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button></td>
+                        </tr>
+                        </script>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            @endif
 
             @if (config('ipsum.reservation.custom_fields'))
                 <div class="box">

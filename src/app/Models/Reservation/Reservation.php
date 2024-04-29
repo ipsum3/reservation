@@ -12,6 +12,7 @@ use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Client;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
+use Ipsum\Reservation\app\Models\Reservation\Casts\ConducteurCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\EcheancierCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\PrestationCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\PromotionCollection;
@@ -115,7 +116,8 @@ class Reservation extends BaseModel
         'debut_at' => 'datetime:Y-m-d\TH:i',
         'fin_at' => 'datetime:Y-m-d\TH:i',
         'naissance_at' => 'date:Y-m-d',
-        'permis_at' => 'date:Y-m-d'
+        'permis_at' => 'date:Y-m-d',
+        'conducteurs' => ConducteurCollection::class,
     ];
 
 

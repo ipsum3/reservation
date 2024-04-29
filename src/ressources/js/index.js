@@ -51,6 +51,18 @@ $('#paiement-add').on('click', function () {
     })
 })
 
+$('#conducteurs-add').on('click', function () {
+    let template = $('#conducteurs-add-template').html()
+    Mustache.parse(template)
+    let rendered = Mustache.render(template, {
+        indice: $('#conducteurs-lignes tr').length
+    })
+    $('#conducteurs-lignes').prepend(rendered)
+    $('.conducteurs-delete').on('click', function () {
+        $(this).parent().parent().remove()
+    })
+})
+
 $(document).ready(function () {
     $('#client-search').select2({
         minimumInputLength: 3, // Nombre minimal de caractères pour déclencher la recherche
