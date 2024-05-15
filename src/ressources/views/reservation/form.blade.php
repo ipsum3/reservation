@@ -293,6 +293,8 @@
                     <table class="table table-hover table-striped">
                         <thead>
                         <tr>
+                            <th scope="col"> Nom </th>
+                            <th scope="col"> Prénom </th>
                             <th scope="col"> Date de naissance </th>
                             <th scope="col"> Lieu de naissance </th>
                             <th scope="col"> Numéro de permis </th>
@@ -305,6 +307,8 @@
                         @if($reservation->conducteurs)
                             @foreach($reservation->conducteurs as $i => $conducteur)
                                 <tr>
+                                    <td><input class="form-control" type="text" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][nom]" value="{{ old('nom', $conducteur->nom) }}" /></td>
+                                    <td><input class="form-control" type="text" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][prenom]" value="{{ old('prenom', $conducteur->prenom) }}" /></td>
                                     <td><input class="form-control" type="date" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][naissance_at]" value="{{ old('naissance_at', $conducteur->naissance_at) }}" /></td>
                                     <td><input class="form-control" type="text" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][naissance_lieu]" value="{{ old('naissance_lieu', $conducteur->naissance_lieu) }}" /></td>
                                     <td><input class="form-control" type="text" name="conducteurs[{{ $conducteur->permis_numero ?? $i }}][permis_numero]" value="{{ old('permis_numero', $conducteur->permis_numero) }}" /></td>
@@ -317,6 +321,8 @@
 
                         <script id="conducteurs-add-template" type="x-tmpl-mustache">
                         <tr>
+                            <td><input class="form-control" type="text" name="conducteurs[@{{ indice }}][nom]" /></td>
+                            <td><input class="form-control" type="text" name="conducteurs[@{{ indice }}][prenom]" /></td>
                             <td><input class="form-control" type="date" name="conducteurs[@{{ indice }}][naissance_at]" /></td>
                             <td><input class="form-control" type="text" name="conducteurs[@{{ indice }}][naissance_lieu]" /></td>
                             <td><input class="form-control" type="text" name="conducteurs[@{{ indice }}][permis_numero]" /></td>

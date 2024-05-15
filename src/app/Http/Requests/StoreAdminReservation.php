@@ -117,6 +117,8 @@ class StoreAdminReservation extends FormRequest
             "paiements.*.note" => "nullable",
 
             //"conducteurs.*" => "nullable",
+            "conducteurs.*.nom" => "nullable|max:255",
+            "conducteurs.*.prenom" => "nullable|max:255",
             "conducteurs.*.naissance_at" => "nullable|date_format:Y-m-d",
             'conducteurs.*.naissance_lieu' => 'nullable|max:255',
             "conducteurs.*.permis_numero" => "nullable|max:255",
