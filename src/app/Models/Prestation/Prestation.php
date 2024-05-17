@@ -18,7 +18,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  *
  * @property int $id
  * @property int $type_id
- * @property string $tarification
+ * @property int $tarification_id
  * @property string|null $class
  * @property string $nom
  * @property string|null $description
@@ -45,9 +45,11 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property-read bool $is_tarification_agence
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Lieu> $lieux
  * @property-read int|null $lieux_count
+ * @property-read \Ipsum\Reservation\app\Models\Prestation\Tarification|null $tarification
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates
  * @property-read int|null $translates_count
  * @property-read \Ipsum\Reservation\app\Models\Prestation\Type|null $type
+ * @method static Builder|Prestation condition(\Ipsum\Reservation\app\Models\Categorie\Categorie $categorie, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_debut, \Ipsum\Reservation\app\Models\Lieu\Lieu $lieu_fin, \Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at, ?int $age = null)
  * @method static Builder|Prestation filtreSortable($objet)
  * @method static Builder|Prestation newModelQuery()
  * @method static Builder|Prestation newQuery()

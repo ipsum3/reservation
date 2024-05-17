@@ -12,6 +12,7 @@ use Ipsum\Core\Concerns\Translatable;
  * @property int $id
  * @property string|null $class
  * @property string $nom
+ * @property string|null $montant
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Categorie> $categories
  * @property-read int|null $categories_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates

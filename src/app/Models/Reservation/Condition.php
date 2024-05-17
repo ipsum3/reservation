@@ -15,21 +15,27 @@ use Ipsum\Reservation\app\Models\Promotion\Promotion;
  *
  * @property int $id
  * @property string $nom
- * @property string|null $site_nom
+ * @property string $site_nom
  * @property int $site_actif
  * @property string|null $description
  * @property int|null $duree_min
+ * @property string|null $montant_min
  * @property string|null $acompte_type
  * @property int|null $acompte_value
  * @property int|null $echeance_nombre
  * @property string $surplus_type
  * @property string|null $surplus_valeur
  * @property int $order
+ * @property-read bool $has_acompte
+ * @property-read bool $has_echeance
+ * @property-read bool $is_agence
+ * @property-read bool $is_ligne
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Promotion> $promotions
  * @property-read int|null $promotions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Reservation> $reservations
  * @property-read int|null $reservations_count
  * @method static Builder|Condition byDuree(int $duree)
+ * @method static Builder|Condition byMontant(int $montant)
  * @method static Builder|Condition delaiValide(\Carbon\CarbonInterface $debut)
  * @method static Builder|Condition filtreSortable($objet)
  * @method static Builder|Condition newModelQuery()
@@ -81,6 +87,13 @@ class Condition extends BaseModel
     {
         $query->where(function (Builder $query) use ($duree) {
             $query->where('duree_min', '<=', $duree)->orWhereNull('duree_min');
+        });
+    }
+
+    public function scopeByMontant(Builder $query, int $montant)
+    {
+        $query->where(function (Builder $query) use ($montant) {
+            $query->where('montant_min', '<=', $montant)->orWhereNull('montant_min');
         });
     }
 

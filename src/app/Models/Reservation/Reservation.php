@@ -48,6 +48,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @property \Illuminate\Support\Carbon|null $permis_at
  * @property string|null $permis_delivre
  * @property string|null $observation
+ * @property ConducteurCollection|null $conducteurs
  * @property AsCustomFieldsObject|null $custom_fields
  * @property int $categorie_id
  * @property int|null $vehicule_id
@@ -97,6 +98,7 @@ use Ipsum\Reservation\database\factories\ReservationFactory;
  * @method static Builder|Reservation newModelQuery()
  * @method static Builder|Reservation newQuery()
  * @method static Builder|Reservation notConfirmed()
+ * @method static Builder|Reservation notValidatedByClient()
  * @method static Builder|Reservation query()
  * @mixin \Eloquent
  */

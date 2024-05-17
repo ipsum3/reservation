@@ -25,7 +25,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property string $adresse
  * @property string|null $instruction
  * @property string $horaires_txt
- * @property string $gps
+ * @property string|null $gps
  * @property array $emails
  * @property array $emails_reservation
  * @property AsCustomFieldsObject|null $custom_fields
@@ -34,6 +34,8 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property string|null $seo_description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Categorie> $categoriesExclus
+ * @property-read int|null $categories_exclus_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Lieu\Fermeture> $fermetures
  * @property-read int|null $fermetures_count
  * @property-read mixed $email_first

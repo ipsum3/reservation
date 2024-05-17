@@ -42,8 +42,10 @@ use Ipsum\Reservation\app\Models\Reservation\Condition;
  * @property-read Condition|null $condition
  * @property-read bool $is_active
  * @property-read bool $is_en_cours
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Lieu> $lieux
- * @property-read int|null $lieux_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Lieu> $lieuxDebut
+ * @property-read int|null $lieux_debut_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Promotion\LieuFin> $lieuxFin
+ * @property-read int|null $lieux_fin_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Prestation> $prestations
  * @property-read int|null $prestations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates

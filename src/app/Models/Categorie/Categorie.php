@@ -44,6 +44,7 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property AsCustomFieldsObject|null $custom_fields
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $reservoir_capacite
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Blocage> $blocages
  * @property-read int|null $blocages_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Carrosserie> $carrosseries
@@ -55,6 +56,8 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property-read mixed $tag_title
  * @property-read mixed $tarif_a_partir
  * @property-read \Ipsum\Media\app\Models\Media|null $illustration
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Lieu> $lieuxExclus
+ * @property-read int|null $lieux_exclus_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Media\app\Models\Media> $medias
  * @property-read int|null $medias_count
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Motorisation|null $motorisation
