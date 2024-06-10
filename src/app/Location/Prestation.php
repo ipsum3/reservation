@@ -126,6 +126,11 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
         }
 
 
+        if($this->quantite_gratuite !== null && $this->quantite >= $this->quantite_gratuite){
+            $this->quantite = $this->quantite - $this->quantite_gratuite;
+        }
+
+
         switch ($this->tarification->id) {
             case Tarification::FORFAIT_ID:
                 $tarif = $montant * $this->quantite;

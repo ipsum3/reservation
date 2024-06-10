@@ -68,6 +68,7 @@ class StorePrestation extends FormRequest
             "montant" => "nullable|numeric",
             "quantite_max" => "required|numeric",
             "gratuit_apres" => "nullable|numeric",
+            "quantite_gratuite" => "nullable|numeric",
             "jour_fact_max" => "nullable|numeric",
             "age_max" => "nullable|numeric|min:16|max:120",
             "jour" => ["nullable", Rule::in(array_keys(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS))],
