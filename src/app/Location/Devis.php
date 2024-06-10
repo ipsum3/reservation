@@ -178,12 +178,11 @@ class Devis
     }
 
 
-
-    public function updateOrCreateReservation(): Reservation
+    public function updateOrCreateReservation($force_create = false): Reservation
     {
 
         $reservation = Reservation::notValidatedByClient()->updateOrCreate([
-            'id' => $this->getLocation()->getReservationId()
+            'id' => !$force_create ? $this->getLocation()->getReservationId() : null
         ],
         [
             'id' => $this->getLocation()->getReservationId(),
