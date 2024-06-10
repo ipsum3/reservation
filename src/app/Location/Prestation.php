@@ -125,19 +125,23 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
 
         }
 
-
-        if($this->quantite_gratuite !== null && $this->quantite >= $this->quantite_gratuite){
-            $this->quantite = $this->quantite - $this->quantite_gratuite;
+        $quantite_calcul = $this->quantite;
+        if($this->quantite_gratuite !== null ){
+            if($quantite_calcul >= $this->quantite_gratuite){
+                $quantite_calcul = $quantite_calcul - $this->quantite_gratuite;
+            }else{
+                $quantite_calcul = 0;
+            }
         }
 
 
         switch ($this->tarification->id) {
             case Tarification::FORFAIT_ID:
-                $tarif = $montant * $this->quantite;
+                $tarif = $montant * $quantite_calcul;
                 break;
 
             case Tarification::JOUR_ID:
-                $tarif = $montant * $this->quantite * $duree_pour_calcul;
+                $tarif = $montant * $quantite_calcul * $duree_pour_calcul;
                 break;
 
             case Tarification::AGENCE_ID:
@@ -148,7 +152,7 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
                 if ($categorie->motorisation->montant) {
                     $montant = ($categorie->reservoir_capacite * $categorie->motorisation->montant) + $montant;
                 }
-                $tarif = $montant * $this->quantite;
+                $tarif = $montant * $quantite_calcul;
                 break;
 
             default:
