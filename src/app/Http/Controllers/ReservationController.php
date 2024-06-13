@@ -480,7 +480,7 @@ class ReservationController extends AdminController
     public function planning(ShowPlanning $request)
     {
         $date_debut = $request->filled('date_debut') ? Carbon::createFromFormat('Y-m-d', $request->date_debut) : Carbon::now()->subDays(4)->startOfDay();
-        $date_fin = $request->filled('date_fin') ? Carbon::createFromFormat('Y-m-d', $request->date_fin) : $date_debut->copy()->addMonths(3);
+        $date_fin = $request->filled('date_fin') ? Carbon::createFromFormat('Y-m-d', $request->date_fin) : $date_debut->copy()->addMonths(config('ipsum.reservation.planning_duree'));
 
         $categories = Categorie::when($request->categorie_id, function ($query, $categorie_id) {
             $query->where('id', $categorie_id);

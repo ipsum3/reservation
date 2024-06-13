@@ -111,4 +111,6 @@ return [
         'statistique' => 'Statistique',
         'source' => 'Source',
     ],
+
+    'planning_duree' => 3,
 ];
