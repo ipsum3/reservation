@@ -11,6 +11,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
+use Ipsum\Reservation\app\Events\ReservationConfirmedEvent;
+use Ipsum\Reservation\app\Events\ReservationCreateEvent;
 use Ipsum\Reservation\app\Http\Requests\GetReservationVehiculeSelect;
 use Ipsum\Reservation\app\Http\Requests\SendDocumentEmail;
 use Ipsum\Reservation\app\Http\Requests\ShowDepartRetour;
@@ -261,6 +263,13 @@ class ReservationController extends AdminController
             $reservation->paiements()->saveMany($datas);
         }
 
+
+        ReservationCreateEvent::dispatch($reservation);
+
+        if ($reservation->is_confirmed) {
+            ReservationConfirmedEvent::dispatch($reservation);
+        }
+
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.reservation.edit', $reservation);
     }
@@ -309,7 +318,7 @@ class ReservationController extends AdminController
     public function update(StoreAdminReservation $request, Reservation $reservation)
     {
         $data = $request->validated();
-        //dd($data);
+        $is_confirmed_old = $reservation->is_confirmed;
         if($request->get('create_user') == 1 && $reservation->client_id == NULL){
             $clientData = array_merge($request->validated(), ['has_login' => 0]);
             // Créer un nouveau client en base de données
@@ -328,6 +337,10 @@ class ReservationController extends AdminController
                 $datas[] = new Paiement($paiement);
             }
             $reservation->paiements()->saveMany($datas);
+        }
+
+        if ($reservation->is_confirmed and !$is_confirmed_old) {
+            ReservationConfirmedEvent::dispatch($reservation);
         }
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
