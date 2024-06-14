@@ -219,13 +219,13 @@
 
         </div>
         <div class="col-md-6">
-            @if( $reservation->is_confirmed or $reservation->etat_id == 1 )
+            @if( $reservation->is_confirmed or $reservation->etat_id == \Ipsum\Reservation\app\Models\Reservation\Etat::NON_VALIDEE_ID )
                 <div class="box">
                     <div class="box-header">
                         <h2 class="box-title">Documents</h2>
                     </div>
                     <div class="box-body">
-                        @if($reservation->etat_id == 1)
+                        @if($reservation->etat_id == \Ipsum\Reservation\app\Models\Reservation\Etat::NON_VALIDEE_ID)
                             <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}"><i class="fa fa-eye"></i> Voir le devis</a>&nbsp;
                             <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'devis']) }}" ><i class="fas fa-envelope"></i> Envoyer le devis par mail</a>&nbsp;
                         @endif
@@ -241,6 +241,7 @@
                     </div>
                 </div>
             @endif
+            @include('IpsumReservation::reservation._actions')
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Locataire / Conducteur</h2>
@@ -279,7 +280,7 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
-                            Conducteurs additionnels
+                        Conducteurs additionnels
                     </h2>
 
                     <div class="btn-toolbar">

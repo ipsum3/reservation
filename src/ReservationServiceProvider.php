@@ -90,7 +90,7 @@ class ReservationServiceProvider extends ServiceProvider
     public function publishFiles()
     {
         $this->publishes([
-            __DIR__.'/ressources/views' => resource_path('views/ipsum/reservation'),
+            __DIR__.'/ressources/views' => resource_path('views/vendor/IpsumReservation'),
         ], 'views');
     
         $this->publishes([
