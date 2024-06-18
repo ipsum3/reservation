@@ -198,7 +198,7 @@ class Devis
             'adresse' => $this->getLocation()->getAdresse(),
             'cp' => $this->getLocation()->getCp(),
             'ville' => $this->getLocation()->getVille(),
-            'pays_id' => $this->getLocation()->getPays()->id,
+            'pays_id' => $this->getLocation()->getPays()?->id,
             'naissance_at' => $this->getLocation()->getNaissanceAt(),
             'naissance_lieu' => $this->getLocation()->getNaissanceLieu(),
             'permis_numero' => $this->getLocation()->getPermisNumero(),

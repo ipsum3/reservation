@@ -101,8 +101,8 @@ class Location
         $this->setAdresse($inputs['adresse'] ?? null);
         $this->setCp($inputs['cp'] ?? null);
         $this->setVille($inputs['ville'] ?? null);
-        $this->setPays($inputs['pays_id']);
-        $this->setNaissanceAt($inputs['naissance_at']);
+        $this->setPays($inputs['pays_id'] ?? null);
+        $this->setNaissanceAt($inputs['naissance_at'] ?? null);
         $this->setNaissanceLieu($inputs['naissance_lieu'] ?? null);
         $this->setPermisNumero($inputs['permis_numero'] ?? null);
         $this->setPermisAt($inputs['permis_at']  ?? null);
@@ -409,9 +409,9 @@ class Location
         return $this->pays;
     }
 
-    public function setPays(int $pays_id): void
+    public function setPays(?int $pays_id): void
     {
-        $this->pays = Pays::findOrFail($pays_id);
+        $this->pays = Pays::find($pays_id);
     }
 
     public function getNaissanceAt(): ?CarbonInterface
@@ -419,9 +419,9 @@ class Location
         return $this->naissance_at;
     }
 
-    public function setNaissanceAt(string $naissance_at): void
+    public function setNaissanceAt(?string $naissance_at): void
     {
-        $this->naissance_at = Carbon::createFromFormat(config('ipsum.reservation.recherche.jour_format'), $naissance_at);
+        $this->naissance_at = $naissance_at ? Carbon::createFromFormat(config('ipsum.reservation.recherche.jour_format'), $naissance_at) : null;
     }
 
     public function getDateNaissanceMinimum()
