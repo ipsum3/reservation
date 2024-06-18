@@ -184,12 +184,20 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
         return $this->tarif;
     }
 
-    public static function tarifLibelle($tarif, ?int $tarification_id): string
+    public static function tarifLibelle($tarif, ?int $tarification_id, ?Prestation $prestation = null): string
     {
         if ($tarification_id == Tarification::AGENCE_ID) {
             $libelle = 'en agence';
         } elseif (empty($tarif)) {
-            $libelle = 'gratuit';
+            if ($prestation && $prestation->quantite_gratuite) {
+                if ($prestation->quantite_gratuite == 1) {
+                    $libelle = '1er gratuit';
+                } else {
+                    $libelle = $prestation->quantite_gratuite.' gratuits';
+                }
+            }else{
+                $libelle = 'gratuit';
+            }
         } else {
             $libelle = number_format($tarif, ((int) $tarif == $tarif ? 0 : 2), ',', ' ').' €';
         }
@@ -199,6 +207,6 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
 
     public function getTarifLibelle(): string
     {
-        return self::tarifLibelle($this->tarif, $this->tarification->id);
+        return self::tarifLibelle($this->tarif, $this->tarification->id, $this);
     }
 }
