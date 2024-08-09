@@ -163,6 +163,26 @@
                     </tr>
                 </table>
 
+                @if($reservation->conducteurs)
+                    @foreach($reservation->conducteurs as $i => $conducteur)
+                        <table class="tableau2">
+                            <tr>
+                                <th>Conducteur {{ $i }}</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{ $conducteur->prenom }} {{ $conducteur->nom }}<br />
+                                    {{ _('Né le') }} {!! $conducteur->naissance_at ? $conducteur->naissance_at->format('d/m/Y') : '<span class="tiret">__________________</span>' !!}
+                                    à {!! $conducteur->naissance_lieu ? e($conducteur->naissance_lieu) : '<span class="tiret">__________________</span>' !!}<br>
+                                    {{ _('Permis') }} {{ _('n°') }} {!! $conducteur->permis_numero ? e($conducteur->permis_numero) : '<span class="tiret">______________</span>' !!}
+                                    {{ _('délivré le') }} {!! $conducteur->permis_at ? $conducteur->permis_at->format('d/m/Y') : '<span class="tiret">____________</span>' !!}<br>
+                                    {{ _('par') }} {!! $conducteur->permis_delivre ? e($conducteur->permis_delivre) : '<span class="tiret">__________________</span>' !!}<br>
+                                </td>
+                            </tr>
+                        </table>
+                    @endforeach
+                @endif
+
                 <table class="tableau2" style="margin-top: 10px">
                     <tr>
                         <th>Conducteur 2</th>
