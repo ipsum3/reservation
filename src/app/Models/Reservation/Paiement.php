@@ -49,7 +49,7 @@ class Paiement extends BaseModel
     protected static function eventUpdateMontantPaye(self $paiement)
     {
         $reservation = $paiement->reservation;
-        $reservation->montant_paye = $reservation->paiements()->sum('montant');
+        $reservation->montant_paye = $reservation->paiements()->ok()->sum('montant');
         $reservation->save();
     }
 
