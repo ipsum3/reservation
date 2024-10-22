@@ -18,6 +18,7 @@ use Ipsum\Reservation\app\Models\Reservation\Casts\PrestationCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\PromotionCollection;
 use Ipsum\Reservation\app\Models\Source\Source;
 use Ipsum\Reservation\database\factories\ReservationFactory;
+use Carbon\Carbon;
 
 
 /**
@@ -371,5 +372,19 @@ class Reservation extends BaseModel
     {
         $this->attributes['fin_lieu_id'] = $value;
         $this->attributes['fin_lieu_nom'] = $this->lieuFin ? $this->lieuFin->nom : '';
+    }
+
+    // Mutator pour naissance_at
+    public function setNaissanceAtAttribute($value)
+    {
+        $this->attributes['naissance_at'] = Carbon::createFromFormat(config('ipsum.reservation.recherche.jour_format'), $value)->format('Y-m-d');
+    }
+
+    // Mutator pour permis_at
+    public function setPermisAtAttribute($value)
+    {
+        if (!empty($value)) {
+            $this->attributes['permis_at'] = Carbon::createFromFormat(config('ipsum.reservation.recherche.jour_format'), $value)->format('Y-m-d');
+        }
     }
 }
