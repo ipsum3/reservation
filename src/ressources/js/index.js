@@ -117,4 +117,8 @@ $(document).ready(function () {
         var formattedDate = new Date(dateString).toISOString().slice(0, 10)
         return formattedDate
     }
+
+    $('.conducteurs-delete').on('click', function () {
+        $(this).parent().parent().remove()
+    })
 })

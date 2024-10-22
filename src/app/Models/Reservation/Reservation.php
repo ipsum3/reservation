@@ -377,14 +377,26 @@ class Reservation extends BaseModel
     // Mutator pour naissance_at
     public function setNaissanceAtAttribute($value)
     {
-        $this->attributes['naissance_at'] = Carbon::createFromFormat(config('ipsum.reservation.recherche.jour_format'), $value)->format('Y-m-d');
+        try {
+            // Utilisation du format configuré dans 'ipsum.reservation.recherche.jour_format'
+            $dateFormat = config('ipsum.reservation.recherche.jour_format');
+            $this->attributes['naissance_at'] = Carbon::createFromFormat($dateFormat, $value)->format('Y-m-d');
+        } catch (\Exception $e) {
+            $this->attributes['naissance_at'] = $value; // Stocker brut ou définir à `null`
+        }
     }
 
     // Mutator pour permis_at
     public function setPermisAtAttribute($value)
     {
         if (!empty($value)) {
-            $this->attributes['permis_at'] = Carbon::createFromFormat(config('ipsum.reservation.recherche.jour_format'), $value)->format('Y-m-d');
+            try {
+                // Utilisation du format configuré dans 'ipsum.reservation.recherche.jour_format'
+                $dateFormat = config('ipsum.reservation.recherche.jour_format');
+                $this->attributes['permis_at'] = Carbon::createFromFormat($dateFormat, $value)->format('Y-m-d');
+            } catch (\Exception $e) {
+                $this->attributes['permis_at'] = $value; // Stocker brut ou définir à `null`
+            }
         }
     }
 }

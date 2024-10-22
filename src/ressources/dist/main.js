@@ -268,6 +268,10 @@ jquery__WEBPACK_IMPORTED_MODULE_0__(document).ready(function () {
     var formattedDate = new Date(dateString).toISOString().slice(0, 10);
     return formattedDate;
   }
+
+    jquery__WEBPACK_IMPORTED_MODULE_0__('.conducteurs-delete').on('click', function () {
+        jquery__WEBPACK_IMPORTED_MODULE_0__(this).parent().parent().remove();
+    });
 });
 
 /***/ }),
