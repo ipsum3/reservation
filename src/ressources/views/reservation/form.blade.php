@@ -234,7 +234,7 @@
                             <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation']) }}" ><i class="fas fa-envelope"></i> Envoyer le mail de confirmation</a>&nbsp;
                         @endif
 
-                        @if($reservation->contrat)
+                        @if($reservation->contrat && !config('ipsum.reservation.contrat.disable'))
                             <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i> Voir le contrat</a>&nbsp;
                         @endif
 
