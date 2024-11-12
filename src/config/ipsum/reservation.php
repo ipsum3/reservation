@@ -57,6 +57,7 @@ return [
         'couleur' => '#bbb',
         'cgl_nom' => null,
         'view' => 'IpsumReservation::reservation.documents.contrat',
+        'disable' => false,
     ],
     'devis' => [
         'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
