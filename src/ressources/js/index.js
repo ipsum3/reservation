@@ -55,7 +55,7 @@ $('#conducteurs-add').on('click', function () {
     let template = $('#conducteurs-add-template').html()
     Mustache.parse(template)
     let rendered = Mustache.render(template, {
-        indice: $('#conducteurs-lignes tr').length
+        indice: $('#conducteurs-lignes tr').length + 1
     })
     $('#conducteurs-lignes').prepend(rendered)
     $('.conducteurs-delete').on('click', function () {
@@ -117,8 +117,4 @@ $(document).ready(function () {
         var formattedDate = new Date(dateString).toISOString().slice(0, 10)
         return formattedDate
     }
-
-    $('.conducteurs-delete').on('click', function () {
-        $(this).parent().parent().remove()
-    })
 })
