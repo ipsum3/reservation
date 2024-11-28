@@ -31,6 +31,7 @@
                     <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Catégorie', 'champ' => 'categorie_id'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
+                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'lieu_id'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Début', 'champ' => 'debut_at'])</th>
                     <th>@include('IpsumAdmin::partials.tri', ['label' => 'Fin', 'champ' => 'fin_at'])</th>
                     <th width="160px">Actions</th>
@@ -40,8 +41,9 @@
                 @foreach ($blocages as $blocage)
                     <tr>
                         <td>{{ $blocage->id }}</td>
-                        <td>{{ $blocage->categorie ? $blocage->categorie->nom : '' }}</td>
+                        <td>{{ $blocage->categorie?->nom }}</td>
                         <td>{{ $blocage->nom }}</td>
+                        <td>{{ $blocage->lieu?->nom }}</td>
                         <td>{{ $blocage->debut_at->format('d/m/Y') }}</td>
                         <td>{{ $blocage->fin_at->format('d/m/Y') }}</td>
                         <td class="text-right">

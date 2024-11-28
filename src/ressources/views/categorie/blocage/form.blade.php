@@ -28,6 +28,7 @@
                 {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id', 'Catégorie*')->groupAddClass('col-md-6') }}
                 {{ Aire::date('debut_at', 'Début*')->groupAddClass('col-md-6')->helpText('Date incluse') }}
                 {{ Aire::date('fin_at', 'Fin*')->groupAddClass('col-md-6')->helpText('Date incluse') }}
+                {{ Aire::select(collect(['' => '---- Lieux -----'])->union($lieux), 'lieu_id', 'Lieu')->groupAddClass('col-md-6') }}
             </div>
         </div>
     </div>

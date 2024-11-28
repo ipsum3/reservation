@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Models\Categorie;
 
 use Carbon\CarbonInterface;
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Reservation\app\Models\Lieu\Lieu;
 
 /**
  * Ipsum\Reservation\app\Models\Categorie\Blocage
@@ -40,6 +41,11 @@ class Blocage extends BaseModel
     public function categorie()
     {
         return $this->belongsTo(Categorie::class);
+    }
+
+    public function lieu()
+    {
+        return $this->belongsTo(Lieu::class);
     }
 
 

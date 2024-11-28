@@ -28,7 +28,8 @@ class StoreCategorieBlocage extends FormRequest
             "categorie_id" => "required|exists:categories,id",
             "nom" => "nullable|max:255",
             "debut_at" => "required|date_format:Y-m-d|before-or-equal:fin_at",
-            "fin_at" => "required|date_format:Y-m-d"
+            "fin_at" => "required|date_format:Y-m-d",
+            "lieu_id" => "nullable|exists:lieux,id",
         ];
     }
 
