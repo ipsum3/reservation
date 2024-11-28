@@ -7,6 +7,7 @@ use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\StoreCategorieBlocage;
 use Ipsum\Reservation\app\Models\Categorie\Blocage;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
+use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Prologue\Alerts\Facades\Alert;
 
 class CategorieBlocageController extends AdminController
@@ -43,8 +44,9 @@ class CategorieBlocageController extends AdminController
         $blocage = new Blocage;
 
         $categories = Categorie::get()->pluck('nom', 'id');
+        $lieux = Lieu::get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::categorie.blocage.form', compact('blocage', 'categories'));
+        return view('IpsumReservation::categorie.blocage.form', compact('blocage', 'categories', 'lieux'));
     }
 
     public function store(StoreCategorieBlocage $request)
@@ -57,8 +59,9 @@ class CategorieBlocageController extends AdminController
     public function edit(Blocage $blocage)
     {
         $categories = Categorie::get()->pluck('nom', 'id');
+        $lieux = Lieu::get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::categorie.blocage.form', compact('blocage', 'categories'));
+        return view('IpsumReservation::categorie.blocage.form', compact('blocage', 'categories', 'lieux'));
     }
 
     public function update(StoreCategorieBlocage $request, Blocage $blocage)
