@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
+use Ipsum\Reservation\app\Rules\InterventionUnique;
 use Ipsum\Reservation\app\Models\Categorie\InterventionType;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 
@@ -28,7 +29,7 @@ class StoreIntervention extends FormRequest
     {
         return [
             "type_id" => ["required", Rule::exists(InterventionType::class, 'id')],
-            "vehicule_id" => ["required", Rule::exists(Vehicule::class, 'id')],
+            "vehicule_id" => ["required", Rule::exists(Vehicule::class, 'id'),new InterventionUnique($this->vehicule_id, $this->debut_at, $this->fin_at)],
             "intervenant" => "nullable|max:255",
             "information" => "nullable|max:255",
             "debut_at" => "required|date_format:Y-m-d\TH:i|before-or-equal:fin_at",

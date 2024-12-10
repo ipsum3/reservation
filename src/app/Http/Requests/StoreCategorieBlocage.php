@@ -4,7 +4,6 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 
 use Ipsum\Admin\app\Http\Requests\FormRequest;
-use Illuminate\Validation\Validator;
 use Ipsum\Reservation\app\Models\Categorie\Blocage;
 
 class StoreCategorieBlocage extends FormRequest
@@ -33,37 +32,6 @@ class StoreCategorieBlocage extends FormRequest
             "fin_at" => "required|date_format:Y-m-d",
             "lieu_id" => "nullable|exists:lieux,id",
         ];
-    }
-
-    /**
-     * Configure the validator instance.
-     *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
-     */
-    public function withValidator(Validator $validator)
-    {
-        $validator->after(function ($validator) {
-            $categorieId = $this->categorie_id;
-            $debutAt = $this->debut_at;
-            $finAt = $this->fin_at;
-
-            // Vérification d’un chevauchement de période pour le même véhicule
-            $existeBlocage = Blocage::where('categorie_id', $categorieId)
-                ->where(function ($query) use ($debutAt, $finAt) {
-                    $query->whereBetween('debut_at', [$debutAt, $finAt])
-                        ->orWhereBetween('fin_at', [$debutAt, $finAt])
-                        ->orWhere(function ($query) use ($debutAt, $finAt) {
-                            $query->where('debut_at', '<=', $debutAt)
-                                ->where('fin_at', '>=', $finAt);
-                        });
-                })
-                ->exists();
-
-            if ($existeBlocage) {
-                $validator->errors()->add('categorie_id', 'Une intervention existe déjà pour cette catégorie sur la période indiquée.');
-            }
-        });
     }
 
 }
