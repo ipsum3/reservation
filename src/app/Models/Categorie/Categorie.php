@@ -194,10 +194,10 @@ class Categorie extends BaseModel
         });
     }*/
 
-    public function scopeWithCountBlocage(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    public function scopeWithCountBlocage(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin, Lieu $lieu = null)
     {
-        $query->withCount(['blocages' => function (Builder $query) use ($date_debut, $date_fin) {
-            $query->betweenDates($date_debut, $date_fin);
+        $query->withCount(['blocages' => function (Builder $query) use ($date_debut, $date_fin, $lieu) {
+            $query->betweenDatesAndLieu($date_debut, $date_fin, $lieu);
         }]);
     }
 
@@ -226,14 +226,14 @@ class Categorie extends BaseModel
         return $this->attributes['seo_description'] == '' ? strip_tags($this->description) : $this->attributes['seo_description'];
     }
 
-    public function hasNoBlocage(?CarbonInterface $date_debut = null, ?CarbonInterface $date_fin = null): bool
+    public function hasNoBlocage(?CarbonInterface $date_debut = null, ?CarbonInterface $date_fin = null, Lieu $lieu = null): bool
     {
         if ($date_debut !== null) {
-            $this->loadCount(['blocages' => function (Builder $query) use ($date_debut, $date_fin) {
-                $query->betweenDates($date_debut, $date_fin);
+            $this->loadCount(['blocages' => function (Builder $query) use ($date_debut, $date_fin, $lieu) {
+                $query->betweenDatesAndLieu($date_debut, $date_fin, $lieu);
             }]);
         } elseif ($this->blocages_count === null) {
-            throw new \Exception('A utiliser avec scopeWithCountBlocage');
+            throw new \Exception('A utiliser avec scopeBetweenDatesAndLieu');
         }
 
         return $this->blocages_count === 0;
