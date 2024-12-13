@@ -67,6 +67,16 @@ class Blocage extends BaseModel
         });
     }
 
+    public function scopeBetweenDatesAndLieu($query, CarbonInterface $debut_at, CarbonInterface $fin_at, Lieu $lieu = null)
+    {
+        return  $query->betweenDates($debut_at, $fin_at)
+                    ->where(function ($query) use ($lieu) {
+                        if ($lieu) {
+                            $query->where('lieu_id', $lieu->id)->orWhereNull('lieu_id');
+                        }
+                    });
+    }
+
 
 
     /*
