@@ -23,8 +23,12 @@ class InterventionUnique implements Rule
     public function __construct($vehicule_id, $debut_at, $fin_at)
     {
         $this->vehicule_id = $vehicule_id;
-        $this->debut_at = Carbon::parse($debut_at);
-        $this->fin_at = Carbon::parse($fin_at);
+        try {
+            $this->debut_at = Carbon::parse($debut_at);
+            $this->fin_at = Carbon::parse($fin_at);
+        } catch (\InvalidArgumentException $e) {
+            return;
+        }
     }
 
     /**
