@@ -12,6 +12,7 @@ class InterventionUnique implements Rule
     protected $vehicule_id;
     protected $debut_at;
     protected $fin_at;
+    protected $intervention_id;
 
     /**
      * Create a new rule instance.
@@ -20,9 +21,10 @@ class InterventionUnique implements Rule
      * @param string $debutAt
      * @param string $finAt
      */
-    public function __construct($vehicule_id, $debut_at, $fin_at)
+    public function __construct($vehicule_id, $debut_at, $fin_at, $intervention_id = null)
     {
         $this->vehicule_id = $vehicule_id;
+        $this->intervention_id = $intervention_id;
         try {
             $this->debut_at = Carbon::parse($debut_at);
             $this->fin_at = Carbon::parse($fin_at);
@@ -41,6 +43,7 @@ class InterventionUnique implements Rule
     public function passes($attribute, $value)
     {
         return !Intervention::where('vehicule_id', $this->vehicule_id)
+            ->where('id', '!=', $this->intervention_id)
             ->betweenDates($this->debut_at, $this->fin_at)
             ->exists();
     }

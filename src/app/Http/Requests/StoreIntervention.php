@@ -29,7 +29,7 @@ class StoreIntervention extends FormRequest
     {
         return [
             "type_id" => ["required", Rule::exists(InterventionType::class, 'id')],
-            "vehicule_id" => ["required", Rule::exists(Vehicule::class, 'id'),new InterventionUnique($this->vehicule_id, $this->debut_at, $this->fin_at)],
+            "vehicule_id" => ["required", Rule::exists(Vehicule::class, 'id'), new InterventionUnique($this->vehicule_id, $this->debut_at, $this->fin_at, $this->intervention?->id)],
             "intervenant" => "nullable|max:255",
             "information" => "nullable|max:255",
             "debut_at" => "required|date_format:Y-m-d\TH:i|before-or-equal:fin_at",
