@@ -2,10 +2,12 @@
 
 namespace Ipsum\Reservation\app\Http\Controllers;
 
+use Illuminate\Support\Facades\Artisan;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\StoreDuree;
 use Ipsum\Reservation\app\Models\Tarif\Duree;
 use Prologue\Alerts\Facades\Alert;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class DureeController extends AdminController
 {
@@ -17,6 +19,19 @@ class DureeController extends AdminController
         $durees = Duree::orderBy('min')->whereNull('type')->where('is_special', 0)->get();
 
         $tarifs_speciaux = Duree::orderBy('min')->whereNull('type')->where('is_special', 1)->get();
+
+        try {
+            $output = new BufferedOutput();
+            Artisan::call('reservation:check --type=tranche', [], $output);
+            $result = $output->fetch();
+            $lines = explode("\n", trim($result));
+
+            foreach ($lines as $line) {
+                if (!empty(trim($line))) { // Éviter les alertes vides
+                    Alert::warning($line);
+                }
+            }
+        } catch (\Exception $e) { }
 
         return view('IpsumReservation::tarif.duree.index', compact('durees', 'tarifs_speciaux'));
     }

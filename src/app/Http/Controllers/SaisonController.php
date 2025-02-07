@@ -3,10 +3,12 @@
 namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\StoreSaison;
 use Ipsum\Reservation\app\Models\Tarif\Saison;
 use Prologue\Alerts\Facades\Alert;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class SaisonController extends AdminController
 {
@@ -27,6 +29,19 @@ class SaisonController extends AdminController
             $query->orderBy($request->tri, $request->order);
         }
         $saisons = $query->orderBy('debut_at', 'desc')->paginate();
+
+        try {
+            $output = new BufferedOutput();
+            Artisan::call('reservation:check --type=saison', [], $output);
+            $result = $output->fetch();
+            $lines = explode("\n", trim($result));
+
+            foreach ($lines as $line) {
+                if (!empty(trim($line))) { // Éviter les alertes vides
+                    Alert::warning($line);
+                }
+            }
+        } catch (\Exception $e) { }
 
         return view('IpsumReservation::tarif.saison.index', compact('saisons'));
     }

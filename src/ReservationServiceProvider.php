@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
+use Ipsum\Reservation\app\Console\Commands\ReservationCheck;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
 use Ipsum\Reservation\app\Http\Middleware\ReservationTracking;
 use Ipsum\Reservation\app\Models\Reservation\Paiement;
@@ -24,6 +25,7 @@ class ReservationServiceProvider extends ServiceProvider
         Install::class,
         JoursFeries::class,
         PlanningOptimiser::class,
+        ReservationCheck::class,
     ];
 
     /**
