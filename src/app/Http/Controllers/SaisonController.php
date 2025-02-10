@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\StoreSaison;
+use Ipsum\Reservation\app\Models\Categorie\Categorie;
+use Ipsum\Reservation\app\Models\Reservation\Condition;
+use Ipsum\Reservation\app\Models\Tarif\Duree;
 use Ipsum\Reservation\app\Models\Tarif\Saison;
 use Prologue\Alerts\Facades\Alert;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -62,7 +65,19 @@ class SaisonController extends AdminController
 
     public function edit(Saison $saison)
     {
-        return view('IpsumReservation::tarif.saison.form', compact('saison'));
+        $tarifs = [];
+
+        foreach($saison->tarifs as $tarif) {
+            $tarifs[$tarif->condition_paiement_id]
+            [$tarif->categorie_id]
+            [$tarif->duree_id] = $tarif->montant;
+        }
+
+        $durees = Duree::orderBy('min')->get();
+        $categories = Categorie::orderBy('nom')->get();
+        $conditions = config('ipsum.reservation.tarif.has_multiple_grille_by_condition') ? Condition::where('site_actif', 1)->get() : null;
+
+        return view('IpsumReservation::tarif.saison.form', compact('saison', 'tarifs', 'durees', 'categories', 'conditions'));
     }
 
     public function update(StoreSaison $request, Saison $saison)

@@ -55,5 +55,16 @@
 
     {{ Aire::close() }}
 
+    {{ Aire::open()->route('admin.tarif.update', $saison) }}
+
+        @if ($conditions)
+            @foreach($conditions as $condition)
+                @include('IpsumReservation::tarif._grille')
+            @endforeach
+        @else
+            @include('IpsumReservation::tarif._grille')
+        @endif
+
+    {{ Aire::close() }}
 
 @endsection
