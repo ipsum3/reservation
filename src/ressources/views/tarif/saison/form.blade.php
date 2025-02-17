@@ -55,6 +55,7 @@
 
     {{ Aire::close() }}
 
+    @if($saison->exists)
     {{ Aire::open()->route('admin.tarif.update', $saison) }}
 
         @if ($conditions)
@@ -66,5 +67,6 @@
         @endif
 
     {{ Aire::close() }}
+    @endif
 
 @endsection
