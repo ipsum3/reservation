@@ -17,23 +17,6 @@ class TarifController extends AdminController
 {
     protected $acces = 'tarifs';
 
-    public function edit(Saison $saison)
-    {
-        $tarifs = [];
-
-        foreach($saison->tarifs as $tarif) {
-            $tarifs[$tarif->condition_paiement_id]
-            [$tarif->categorie_id]
-            [$tarif->duree_id] = $tarif->montant;
-        }
-
-        $durees = Duree::orderBy('min')->get();
-        $categories = Categorie::orderBy('nom')->get();
-        $conditions = config('ipsum.reservation.tarif.has_multiple_grille_by_condition') ? Condition::where('site_actif', 1)->get() : null;
-
-        return view('IpsumReservation::tarif.grille', compact('saison', 'tarifs', 'durees', 'categories', 'conditions'));
-    }
-
     public function update(Request $request, Saison $saison)
     {
         $tarifs = array();

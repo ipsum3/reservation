@@ -159,7 +159,6 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\DureeController::class
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\TarifController::class)->prefix('tarif')->name('admin.tarif.')->group(
     function () {
         Route::put('{saison}', 'update')->name('update');
-        Route::get('{saison}/edit', 'edit')->name('edit');
         Route::get('{saison}/impression', 'impression')->name('impression');
     }
 );
