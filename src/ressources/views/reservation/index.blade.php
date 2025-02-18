@@ -93,70 +93,72 @@
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'reference'])</th>
-                    <th width="70px" >@include('IpsumAdmin::partials.tri', ['label' => 'Origine', 'champ' => 'source_id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Création', 'champ' => 'created_at'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Départ', 'champ' => 'debut_at'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'debut_lieu_nom'])</th>
-                    <th>Client</th>
-                    <th>Total</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Etat', 'champ' => 'etat_id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Condition', 'champ' => 'condition_paiement_id'])</th>
-                    <th width="180px">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($reservations as $reservation)
-                    <tr class="{{ $reservation->fin_at->lt(\Carbon\Carbon::now()) ? 'text-muted' : '' }}">
-                        <td>{{ $reservation->reference }}</td>
-                        <td class="text-center">
-                            @if( $reservation->source )
-                                <button type="button" class="btn" data-toggle="tooltip" data-placement="auto" title="{{ $reservation->source->nom }}">
-                                    <i class="fa fa-{{ $reservation->source->type->icon }}"></i>
-                                </button>
-                            @endif
-                        </td>
-                        <td>{{ $reservation->created_at->format('d/m/Y') }}</td>
-                        <td>{{ $reservation->debut_at->format('d/m/Y') }}</td>
-                        <td>{{ $reservation->debut_lieu_nom }}</td>
-                        <td>
-                            @if ($reservation->client)
-                                <a href="{{ route('admin.client.edit', $reservation->client) }}">{{ $reservation->prenom }} {{ $reservation->nom }}</a>
-                            @else
-                                {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}
-                            @endif
-                        </td>
-                        <td class="text-right">
-                            @if ($reservation->total)
-                                @prix($reservation->total) &nbsp;€
-                            @endif
-                        </td>
-                        <td>
-                            @if ($reservation->etat)
-                                <span class="badge badge-{{ $reservation->is_confirmed ? 'success' : 'light' }}">{{ $reservation->etat->nom }}</span>
-                            @endif
-                        </td>
-                        <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
-                                @if($reservation->is_confirmed)
-                                    <a class="btn btn-primary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir</a>
-                                @endif
-                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$reservation]) }}"><i class="fa fa-edit"></i></a>
-                                @can('delete', $reservation)
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                                @endcan
-                            </form>
-                        </td>
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'reference'])</th>
+                        <th width="70px" >@include('IpsumAdmin::partials.tri', ['label' => 'Origine', 'champ' => 'source_id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Création', 'champ' => 'created_at'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Départ', 'champ' => 'debut_at'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'debut_lieu_nom'])</th>
+                        <th>Client</th>
+                        <th>Total</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Etat', 'champ' => 'etat_id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Condition', 'champ' => 'condition_paiement_id'])</th>
+                        <th width="180px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach ($reservations as $reservation)
+                        <tr class="{{ $reservation->fin_at->lt(\Carbon\Carbon::now()) ? 'text-muted' : '' }}">
+                            <td>{{ $reservation->reference }}</td>
+                            <td class="text-center">
+                                @if( $reservation->source )
+                                    <button type="button" class="btn" data-toggle="tooltip" data-placement="auto" title="{{ $reservation->source->nom }}">
+                                        <i class="fa fa-{{ $reservation->source->type->icon }}"></i>
+                                    </button>
+                                @endif
+                            </td>
+                            <td>{{ $reservation->created_at->format('d/m/Y') }}</td>
+                            <td>{{ $reservation->debut_at->format('d/m/Y') }}</td>
+                            <td>{{ $reservation->debut_lieu_nom }}</td>
+                            <td>
+                                @if ($reservation->client)
+                                    <a href="{{ route('admin.client.edit', $reservation->client) }}">{{ $reservation->prenom }} {{ $reservation->nom }}</a>
+                                @else
+                                    {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}
+                                @endif
+                            </td>
+                            <td class="text-right">
+                                @if ($reservation->total)
+                                    @prix($reservation->total) &nbsp;€
+                                @endif
+                            </td>
+                            <td>
+                                @if ($reservation->etat)
+                                    <span class="badge badge-{{ $reservation->is_confirmed ? 'success' : 'light' }}">{{ $reservation->etat->nom }}</span>
+                                @endif
+                            </td>
+                            <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
+                                    @if($reservation->is_confirmed)
+                                        <a class="btn btn-primary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir</a>
+                                    @endif
+                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$reservation]) }}"><i class="fa fa-edit"></i></a>
+                                    @can('delete', $reservation)
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                    @endcan
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $reservations->appends(request()->all())->links() !!}
 

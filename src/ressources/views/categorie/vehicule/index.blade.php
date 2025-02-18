@@ -25,39 +25,41 @@
                 <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Immatriculation', 'champ' => 'immatriculation'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Marque modéle', 'champ' => 'marque_modele'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Catégorie', 'champ' => 'categorie_id'])</th>
-                    <th>Réservations</th>
-                    <th width="200px">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($vehicules as $vehicule)
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
                     <tr>
-                        <td>{{ $vehicule->id }}</td>
-                        <td>{{ $vehicule->immatriculation }}</td>
-                        <td>{{ $vehicule->marque_modele }}</td>
-                        <td>{{ $vehicule->categorie ? $vehicule->categorie->nom : '' }}</td>
-                        <td>
-                            <a class="badge badge-info" href="{{ route('admin.reservation.index') }}?etat_id=2&vehicule_id={{ $vehicule->id }}">{{ $vehicule->reservations_count }} reservation{{ $vehicule->reservations_count > 1 ? 's' : '' }}</a>
-                        </td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.vehicule.destroy', $vehicule) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <a class="btn btn-primary" href="{{ route('admin.vehicule.edit', [$vehicule]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Immatriculation', 'champ' => 'immatriculation'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Marque modéle', 'champ' => 'marque_modele'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Catégorie', 'champ' => 'categorie_id'])</th>
+                        <th>Réservations</th>
+                        <th width="200px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach ($vehicules as $vehicule)
+                        <tr>
+                            <td>{{ $vehicule->id }}</td>
+                            <td>{{ $vehicule->immatriculation }}</td>
+                            <td>{{ $vehicule->marque_modele }}</td>
+                            <td>{{ $vehicule->categorie ? $vehicule->categorie->nom : '' }}</td>
+                            <td>
+                                <a class="badge badge-info" href="{{ route('admin.reservation.index') }}?etat_id=2&vehicule_id={{ $vehicule->id }}">{{ $vehicule->reservations_count }} reservation{{ $vehicule->reservations_count > 1 ? 's' : '' }}</a>
+                            </td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.vehicule.destroy', $vehicule) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <a class="btn btn-primary" href="{{ route('admin.vehicule.edit', [$vehicule]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $vehicules->appends(request()->all())->links() !!}
 

@@ -25,37 +25,39 @@
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'lieu_id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Début', 'champ' => 'debut_at'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Fin', 'champ' => 'fin_at'])</th>
-                    <th width="160px">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($fermetures as $fermeture)
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
                     <tr>
-                        <td>{{ $fermeture->id }}</td>
-                        <td>{{ $fermeture->lieu ? $fermeture->lieu->nom : '' }}</td>
-                        <td>{{ $fermeture->nom }}</td>
-                        <td>{{ $fermeture->debut_at->format('d/m/Y') }}</td>
-                        <td>{{ $fermeture->fin_at ? $fermeture->fin_at->format('d/m/Y') : '' }}</td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.lieuFermeture.destroy', $fermeture) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <a class="btn btn-primary" href="{{ route('admin.lieuFermeture.edit', [$fermeture]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'lieu_id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Début', 'champ' => 'debut_at'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Fin', 'champ' => 'fin_at'])</th>
+                        <th width="160px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach ($fermetures as $fermeture)
+                        <tr>
+                            <td>{{ $fermeture->id }}</td>
+                            <td>{{ $fermeture->lieu ? $fermeture->lieu->nom : '' }}</td>
+                            <td>{{ $fermeture->nom }}</td>
+                            <td>{{ $fermeture->debut_at->format('d/m/Y') }}</td>
+                            <td>{{ $fermeture->fin_at ? $fermeture->fin_at->format('d/m/Y') : '' }}</td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.lieuFermeture.destroy', $fermeture) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <a class="btn btn-primary" href="{{ route('admin.lieuFermeture.edit', [$fermeture]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $fermetures->appends(request()->all())->links() !!}
 

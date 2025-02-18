@@ -29,51 +29,53 @@
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Modéle', 'champ' => 'modeles'])</th>
-                    <th>Véhicules</th>
-                    <th>Blocages</th>
-                    <th>Illustration</th>
-                    <th width="160px">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($categories as $categorie)
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
                     <tr>
-                        <td>{{ $categorie->id }}</td>
-                        <td>{{ $categorie->nom }}</td>
-                        <td>{{ $categorie->modeles }}</td>
-                        <td>
-                            <a href="{{ route('admin.vehicule.index') }}?categorie_id={{ $categorie->id }}" class="badge badge-info">
-                                {{ $categorie->vehicules_count }} véhicule{{ $categorie->vehicules_count > 1 ? 's' : '' }}
-                            </a>
-                        </td>
-                        <td>
-                            <a href="{{ route('admin.categorieBlocage.index') }}?categorie_id={{ $categorie->id }}" class="badge {{ $categorie->blocages_count ? 'badge-danger' : 'badge-light' }}">
-                                {{ $categorie->blocages_count }} blocage{{ $categorie->blocages_count > 1 ? 's' : '' }}
-                            </a>
-                        </td>
-                        <td>
-                            @if ($categorie->illustration)
-                                <img src="{{ Croppa::url($categorie->illustration->cropPath, 130, 130) }}" alt="{{ $categorie->illustration->tagAlt }}" />
-                            @endif
-                        </td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.categorie.destroy', $categorie) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <a class="btn btn-primary" href="{{ route('admin.categorie.edit', [$categorie]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Modéle', 'champ' => 'modeles'])</th>
+                        <th>Véhicules</th>
+                        <th>Blocages</th>
+                        <th>Illustration</th>
+                        <th width="160px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach ($categories as $categorie)
+                        <tr>
+                            <td>{{ $categorie->id }}</td>
+                            <td>{{ $categorie->nom }}</td>
+                            <td>{{ $categorie->modeles }}</td>
+                            <td>
+                                <a href="{{ route('admin.vehicule.index') }}?categorie_id={{ $categorie->id }}" class="badge badge-info">
+                                    {{ $categorie->vehicules_count }} véhicule{{ $categorie->vehicules_count > 1 ? 's' : '' }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.categorieBlocage.index') }}?categorie_id={{ $categorie->id }}" class="badge {{ $categorie->blocages_count ? 'badge-danger' : 'badge-light' }}">
+                                    {{ $categorie->blocages_count }} blocage{{ $categorie->blocages_count > 1 ? 's' : '' }}
+                                </a>
+                            </td>
+                            <td>
+                                @if ($categorie->illustration)
+                                    <img src="{{ Croppa::url($categorie->illustration->cropPath, 130, 130) }}" alt="{{ $categorie->illustration->tagAlt }}" />
+                                @endif
+                            </td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.categorie.destroy', $categorie) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <a class="btn btn-primary" href="{{ route('admin.categorie.edit', [$categorie]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $categories->appends(request()->all())->links() !!}
 

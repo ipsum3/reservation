@@ -29,35 +29,37 @@
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'lieu_id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Jour', 'champ' => 'jour_at'])</th>
-                    <th width="160px">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($feries as $ferie)
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
                     <tr>
-                        <td>{{ $ferie->id }}</td>
-                        <td>{{ $ferie->lieu ? $ferie->lieu->nom : '' }}</td>
-                        <td>{{ $ferie->nom }}</td>
-                        <td>{{ $ferie->jour_at->format('d/m/Y') }}</td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.lieuFerie.destroy', $ferie) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <a class="btn btn-primary" href="{{ route('admin.lieuFerie.edit', [$ferie]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'lieu_id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Jour', 'champ' => 'jour_at'])</th>
+                        <th width="160px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach ($feries as $ferie)
+                        <tr>
+                            <td>{{ $ferie->id }}</td>
+                            <td>{{ $ferie->lieu ? $ferie->lieu->nom : '' }}</td>
+                            <td>{{ $ferie->nom }}</td>
+                            <td>{{ $ferie->jour_at->format('d/m/Y') }}</td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.lieuFerie.destroy', $ferie) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <a class="btn btn-primary" href="{{ route('admin.lieuFerie.edit', [$ferie]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $feries->appends(request()->all())->links() !!}
 

@@ -25,39 +25,41 @@
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Catégorie', 'champ' => 'categorie_id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'lieu_id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Début', 'champ' => 'debut_at'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Fin', 'champ' => 'fin_at'])</th>
-                    <th width="160px">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($blocages as $blocage)
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
                     <tr>
-                        <td>{{ $blocage->id }}</td>
-                        <td>{{ $blocage->categorie?->nom }}</td>
-                        <td>{{ $blocage->nom }}</td>
-                        <td>{{ $blocage->lieu?->nom }}</td>
-                        <td>{{ $blocage->debut_at->format('d/m/Y') }}</td>
-                        <td>{{ $blocage->fin_at->format('d/m/Y') }}</td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.categorieBlocage.destroy', $blocage) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <a class="btn btn-primary" href="{{ route('admin.categorieBlocage.edit', [$blocage]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Catégorie', 'champ' => 'categorie_id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'lieu_id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Début', 'champ' => 'debut_at'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Fin', 'champ' => 'fin_at'])</th>
+                        <th width="160px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach ($blocages as $blocage)
+                        <tr>
+                            <td>{{ $blocage->id }}</td>
+                            <td>{{ $blocage->categorie?->nom }}</td>
+                            <td>{{ $blocage->nom }}</td>
+                            <td>{{ $blocage->lieu?->nom }}</td>
+                            <td>{{ $blocage->debut_at->format('d/m/Y') }}</td>
+                            <td>{{ $blocage->fin_at->format('d/m/Y') }}</td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.categorieBlocage.destroy', $blocage) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <a class="btn btn-primary" href="{{ route('admin.categorieBlocage.edit', [$blocage]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $blocages->appends(request()->all())->links() !!}
 

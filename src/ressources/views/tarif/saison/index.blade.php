@@ -23,35 +23,37 @@
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Début', 'champ' => 'debut_at'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Fin', 'champ' => 'fin_at'])</th>
-                    <th width="160px">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($saisons as $saison)
-                    <tr class="{{ $saison->fin_at->lt(\Carbon\Carbon::now()) ? 'text-muted' : '' }}">
-                        <td>{{ $saison->id }}</td>
-                        <td>{{ $saison->nom }}</td>
-                        <td>{{ $saison->debut_at->format('d/m/Y') }}</td>
-                        <td>{{ $saison->fin_at->format('d/m/Y') }}</td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.saison.destroy', $saison) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <a class="btn btn-primary" href="{{ route('admin.saison.edit', [$saison]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Début', 'champ' => 'debut_at'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Fin', 'champ' => 'fin_at'])</th>
+                        <th width="160px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach ($saisons as $saison)
+                        <tr class="{{ $saison->fin_at->lt(\Carbon\Carbon::now()) ? 'text-muted' : '' }}">
+                            <td>{{ $saison->id }}</td>
+                            <td>{{ $saison->nom }}</td>
+                            <td>{{ $saison->debut_at->format('d/m/Y') }}</td>
+                            <td>{{ $saison->fin_at->format('d/m/Y') }}</td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.saison.destroy', $saison) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <a class="btn btn-primary" href="{{ route('admin.saison.edit', [$saison]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $saisons->appends(request()->all())->links() !!}
 

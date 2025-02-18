@@ -24,40 +24,42 @@
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Type', 'champ' => 'type_id'])</th>
-                    <th>Blocages</th>
-                    <th width="240px">Actions</th>
-                </tr>
-                </thead>
-                <tbody class="sortable" data-sortableurl="{{ route('admin.prestation.changeOrder') }}" data-sortablecsrftoken="{{ csrf_token() }}">
-                @foreach ($prestations as $prestation)
-                    <tr class="sortable-item" data-sortable="{{ $prestation->id }}">
-                        <td>{{ $prestation->id }}</td>
-                        <td>{{ $prestation->nom }}</td>
-                        <td>{{ $prestation->type ? $prestation->type->nom : '' }}</td>
-                        <td>
-                            <a href="{{ route('admin.prestationBlocage.index') }}?prestation_id={{ $prestation->id }}" class="badge {{ $prestation->blocages_count ? 'badge-danger' : 'badge-light' }}">
-                                {{ $prestation->blocages_count }} blocage{{ $prestation->blocages_count > 1 ? 's' : '' }}
-                            </a>
-                        </td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.prestation.destroy', $prestation) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <div class="btn sortable-move" data-toggle="tooltip" title="Trier"><span class="fa fa-arrows-alt"></span></div>
-                                <a class="btn btn-primary" href="{{ route('admin.prestation.edit', [$prestation]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Type', 'champ' => 'type_id'])</th>
+                        <th>Blocages</th>
+                        <th width="240px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="sortable" data-sortableurl="{{ route('admin.prestation.changeOrder') }}" data-sortablecsrftoken="{{ csrf_token() }}">
+                    @foreach ($prestations as $prestation)
+                        <tr class="sortable-item" data-sortable="{{ $prestation->id }}">
+                            <td>{{ $prestation->id }}</td>
+                            <td>{{ $prestation->nom }}</td>
+                            <td>{{ $prestation->type ? $prestation->type->nom : '' }}</td>
+                            <td>
+                                <a href="{{ route('admin.prestationBlocage.index') }}?prestation_id={{ $prestation->id }}" class="badge {{ $prestation->blocages_count ? 'badge-danger' : 'badge-light' }}">
+                                    {{ $prestation->blocages_count }} blocage{{ $prestation->blocages_count > 1 ? 's' : '' }}
+                                </a>
+                            </td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.prestation.destroy', $prestation) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <div class="btn sortable-move" data-toggle="tooltip" title="Trier"><span class="fa fa-arrows-alt"></span></div>
+                                    <a class="btn btn-primary" href="{{ route('admin.prestation.edit', [$prestation]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $prestations->appends(request()->all())->links() !!}
 

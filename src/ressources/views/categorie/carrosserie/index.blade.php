@@ -23,32 +23,34 @@
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
-                    <th width="200px">Actions</th>
-                </tr>
-                </thead>
-                <tbody class="sortable" data-sortableurl="{{ route('admin.carrosserie.changeOrder') }}" data-sortablecsrftoken="{{ csrf_token() }}">
-                @foreach ($carrosseries as $carrosserie)
-                    <tr class="sortable-item" data-sortable="{{ $carrosserie->id }}">
-                        <td>{{ $carrosserie->id }}</td>
-                        <td>{{ $carrosserie->nom }}</td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.carrosserie.destroy', $carrosserie) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <div class="btn sortable-move" data-toggle="tooltip" title="Trier"><span class="fa fa-arrows-alt"></span></div>
-                                <a class="btn btn-primary" href="{{ route('admin.carrosserie.edit', [$carrosserie]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
+                        <th width="200px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="sortable" data-sortableurl="{{ route('admin.carrosserie.changeOrder') }}" data-sortablecsrftoken="{{ csrf_token() }}">
+                    @foreach ($carrosseries as $carrosserie)
+                        <tr class="sortable-item" data-sortable="{{ $carrosserie->id }}">
+                            <td>{{ $carrosserie->id }}</td>
+                            <td>{{ $carrosserie->nom }}</td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.carrosserie.destroy', $carrosserie) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <div class="btn sortable-move" data-toggle="tooltip" title="Trier"><span class="fa fa-arrows-alt"></span></div>
+                                    <a class="btn btn-primary" href="{{ route('admin.carrosserie.edit', [$carrosserie]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $carrosseries->appends(request()->all())->links() !!}
 

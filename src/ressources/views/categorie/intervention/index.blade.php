@@ -29,43 +29,45 @@
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
-            <table class="table table-hover table-striped">
-                <thead>
-                <tr>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Véhicule', 'champ' => 'vehicule_id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Type', 'champ' => 'type_id'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Début', 'champ' => 'debut_at'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Fin', 'champ' => 'fin_at'])</th>
-                    <th>@include('IpsumAdmin::partials.tri', ['label' => 'Intervenant', 'champ' => 'intervenant'])</th>
-                    <th width="160px">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($interventions as $intervention)
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
                     <tr>
-                        <td>{{ $intervention->id }}</td>
-                        <td>
-                            <a class="badge badge-secondary" href="{{ $intervention->vehicule ? route('admin.vehicule.edit', $intervention->vehicule) : '#' }}">
-                                {{ $intervention->vehicule ? $intervention->vehicule->immatriculation : '' }}
-                            </a>
-                        </td>
-                        <td>{{ $intervention->type ? $intervention->type->nom : '' }}</td>
-                        <td>{{ $intervention->debut_at->format('d/m/Y H:i') }}</td>
-                        <td>{{ $intervention->fin_at->format('d/m/Y H:i') }}</td>
-                        <td>{{ $intervention->intervenant }}</td>
-                        <td class="text-right">
-                            <form action="{{ route('admin.intervention.destroy', $intervention) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <a class="btn btn-primary" href="{{ route('admin.intervention.edit', [$intervention]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Véhicule', 'champ' => 'vehicule_id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Type', 'champ' => 'type_id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Début', 'champ' => 'debut_at'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Fin', 'champ' => 'fin_at'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Intervenant', 'champ' => 'intervenant'])</th>
+                        <th width="160px">Actions</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach ($interventions as $intervention)
+                        <tr>
+                            <td>{{ $intervention->id }}</td>
+                            <td>
+                                <a class="badge badge-secondary" href="{{ $intervention->vehicule ? route('admin.vehicule.edit', $intervention->vehicule) : '#' }}">
+                                    {{ $intervention->vehicule ? $intervention->vehicule->immatriculation : '' }}
+                                </a>
+                            </td>
+                            <td>{{ $intervention->type ? $intervention->type->nom : '' }}</td>
+                            <td>{{ $intervention->debut_at->format('d/m/Y H:i') }}</td>
+                            <td>{{ $intervention->fin_at->format('d/m/Y H:i') }}</td>
+                            <td>{{ $intervention->intervenant }}</td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.intervention.destroy', $intervention) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <a class="btn btn-primary" href="{{ route('admin.intervention.edit', [$intervention]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             {!! $interventions->appends(request()->all())->links() !!}
 

@@ -10,7 +10,7 @@
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {
-    "ipsum3-admin-assets": "ipsum3/admin-assets#master",
-    "daterangepicker": "^3.1.0"
+    "daterangepicker": "^3.1.0",
+    "ipsum3-admin-assets": "github:ipsum3/admin-assets#master"
   }
 }
