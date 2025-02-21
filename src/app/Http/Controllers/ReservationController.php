@@ -113,7 +113,31 @@ class ReservationController extends AdminController
 
         $reservationsJourQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) = CURDATE()");
         $reservationsHierQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
-        $reservationsMoisQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) BETWEEN '" . Carbon::now()->startOfMonth()->format('Y-m-d') . "' AND '" . Carbon::now()->endOfMonth()->format('Y-m-d') . "'")->get();
+
+        $dateStart = Carbon::now()->startOfMonth();
+        $dateEnd = Carbon::now()->endOfMonth();
+
+        if ($request->filled('date_creation')) {
+            $dates = explode(" - ", $request->get('date_creation'));
+            $dateStart = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay();
+            $dateEnd = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay();
+        }
+
+        if ($request->filled('date_debut')) {
+            $dates = explode(" - ", $request->get('date_debut'));
+            $dateStart = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay();
+            $dateEnd = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay();
+        }
+
+        if ($request->filled('date_fin')) {
+            $dates = explode(" - ", $request->get('date_fin'));
+            $dateStart = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay();
+            $dateEnd = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay();
+        }
+
+        $reservationsMoisQuery = Reservation::confirmed()->whereRaw("DATE(`".($request->filled('date_fin') ? 'fin_at' : ($request->filled('date_debut') ? 'debut_at' : 'created_at'))."`) BETWEEN '" . $dateStart->format('Y-m-d') . "' AND '" . $dateEnd->format('Y-m-d') . "'")->get();
+
+        //$reservationsMoisQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) BETWEEN '" . Carbon::now()->startOfMonth()->format('Y-m-d') . "' AND '" . Carbon::now()->endOfMonth()->format('Y-m-d') . "'")->get();
         $stats['hier'] = $reservationsHierQuery->count();
         $stats['jour'] = $reservationsJourQuery->count();
         $stats['mois'] = $reservationsMoisQuery->count();
@@ -121,7 +145,7 @@ class ReservationController extends AdminController
 
         $origines = Source::all()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions', 'categories', 'stats', 'origines'));
+        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions', 'categories', 'stats', 'origines', 'request'));
     }
 
     public function export(Request $request)

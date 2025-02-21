@@ -34,7 +34,7 @@
                 <div class="box">
                     <div class="box-body">
                         <div class="stat-description">
-                            Reservation{{ $stats['mois'] > 1 ? 's' : '' }} du mois
+                            Reservation{{ $stats['mois'] > 1 ? 's' : '' }} <small>{{ $request->filled('date_debut') ? $request->get('date_debut') : ($request->filled('date_fin') ? $request->get('date_fin') : ($request->filled('date_creation') ? $request->get('date_creation') : 'du mois')) }}</small>
                         </div>
                         <div class="stat-number lead">
                             <strong>{{ $stats['mois'] }}</strong>
@@ -46,7 +46,7 @@
                 <div class="box">
                     <div class="box-body">
                         <div class="stat-description">
-                            CA réservations du mois
+                            CA réservations  <small>{{ $request->filled('date_debut') ? $request->get('date_debut') : ($request->filled('date_fin') ? $request->get('date_fin') : ($request->filled('date_creation') ? $request->get('date_creation') : 'du mois')) }}</small>
                         </div>
                         <div class="stat-number lead">
                             <strong>@prix($stats['montant']) &nbsp;€</strong>
