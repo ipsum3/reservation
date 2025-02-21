@@ -116,6 +116,7 @@ class ReservationController extends AdminController
 
         $dateStart = Carbon::now()->startOfMonth();
         $dateEnd = Carbon::now()->endOfMonth();
+        $champPeriodeQuery = 'created_at';
 
         if ($request->filled('date_creation')) {
             $dates = explode(" - ", $request->get('date_creation'));
@@ -124,24 +125,25 @@ class ReservationController extends AdminController
         }
 
         if ($request->filled('date_debut')) {
+            $champPeriodeQuery = 'fin_at';
             $dates = explode(" - ", $request->get('date_debut'));
             $dateStart = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay();
             $dateEnd = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay();
         }
 
         if ($request->filled('date_fin')) {
+            $champPeriodeQuery = 'debut_at';
             $dates = explode(" - ", $request->get('date_fin'));
             $dateStart = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay();
             $dateEnd = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay();
         }
 
-        $reservationsMoisQuery = Reservation::confirmed()->whereRaw("DATE(`".($request->filled('date_fin') ? 'fin_at' : ($request->filled('date_debut') ? 'debut_at' : 'created_at'))."`) BETWEEN '" . $dateStart->format('Y-m-d') . "' AND '" . $dateEnd->format('Y-m-d') . "'")->get();
+        $reservationsPeriodeQuery = Reservation::confirmed()->whereRaw("DATE(`".$champPeriodeQuery."`) BETWEEN '" . $dateStart->format('Y-m-d') . "' AND '" . $dateEnd->format('Y-m-d') . "'")->get();
 
-        //$reservationsMoisQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) BETWEEN '" . Carbon::now()->startOfMonth()->format('Y-m-d') . "' AND '" . Carbon::now()->endOfMonth()->format('Y-m-d') . "'")->get();
         $stats['hier'] = $reservationsHierQuery->count();
         $stats['jour'] = $reservationsJourQuery->count();
-        $stats['mois'] = $reservationsMoisQuery->count();
-        $stats['montant'] = $reservationsMoisQuery->sum('total');
+        $stats['mois'] = $reservationsPeriodeQuery->count();
+        $stats['montant'] = $reservationsPeriodeQuery->sum('total');
 
         $origines = Source::all()->pluck('nom', 'id');
 
