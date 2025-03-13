@@ -13,6 +13,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property string $alpha2
  * @property string $alpha3
  * @property string $nom
+ * @property string|null $callingCodes
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Reservation> $reservations
  * @property-read int|null $reservations_count
  * @method static \Illuminate\Database\Eloquent\Builder|Pays newModelQuery()

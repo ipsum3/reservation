@@ -11,11 +11,14 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
  *
  * @property int $id
  * @property int $categorie_id
+ * @property int|null $lieu_id
  * @property string|null $nom
  * @property \Illuminate\Support\Carbon $debut_at
  * @property \Illuminate\Support\Carbon $fin_at
  * @property-read \Ipsum\Reservation\app\Models\Categorie\Categorie|null $categorie
+ * @property-read Lieu|null $lieu
  * @method static \Illuminate\Database\Eloquent\Builder|Blocage betweenDates(\Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at)
+ * @method static \Illuminate\Database\Eloquent\Builder|Blocage betweenDatesAndLieu(\Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at, ?\Ipsum\Reservation\app\Models\Lieu\Lieu $lieu = null)
  * @method static \Illuminate\Database\Eloquent\Builder|Blocage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Blocage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Blocage query()

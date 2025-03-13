@@ -16,7 +16,7 @@
         </div>
         <div class="box-body">
             <div class="form-row">
-                {{ Aire::date('created_at', 'Date')->required()->groupAddClass('col-md-6') }}
+                {{ Aire::dateTimeLocal('created_at', 'Date')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Moyens -----'])->union($moyens->pluck('nom', 'id')), 'paiement_moyen_id', 'Moyen')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::select(collect(['' => '---- Types -----'])->union($types->pluck('nom', 'id')), 'paiement_type_id', 'Moyen')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::number('montant', 'Montant')->setAttribute('step', 0.01)->required()->groupAddClass('col-md-6') }}

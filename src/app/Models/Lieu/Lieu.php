@@ -35,6 +35,8 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property string|null $seo_description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Blocage> $blocages
+ * @property-read int|null $blocages_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Categorie> $categoriesExclus
  * @property-read int|null $categories_exclus_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Lieu\Fermeture> $fermetures

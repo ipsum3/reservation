@@ -136,7 +136,7 @@
                     </h2>
 
                     <div class="btn-toolbar">
-                        <button class="btn btn-outline-secondary" id="paiement-add" type="button" data-toggle="tooltip" title="Ajouter">
+                        <button class="btn btn-outline-secondary table-editable-add" data-target="paiement" id="paiement-add" type="button" data-toggle="tooltip" title="Ajouter">
                             <i class="fas fa-plus"></i>
                         </button>&nbsp;
                     </div>
@@ -153,64 +153,71 @@
                             <th scope="col">Date</th>
                             <th scope="col">Moyen</th>
                             <th scope="col">Type</th>
-                            <th scope="col">Montant</th>
+                            <th scope="col">Montant (€)</th>
                             <th scope="col">Note</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody id="paiement-lignes">
+                        @php
+                            $i = 1;
+                        @endphp
                         @foreach($reservation->paiements()->ok()->with('moyen')->orderBy('created_at', 'desc')->get() as $paiement)
                             <tr>
-                                <td>{{ $paiement->id }}</td>
-                                <td>{{ $paiement->created_at->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ $paiement->id }}<input type="hidden" name="paiements[{{ $i }}][id]" value="{{ $paiement->id }}" /><input type="hidden" name="paiements[{{ $i }}][reservation_id]" value="{{ $reservation->id }}" /></td>
+                                <td><input type="datetime-local" class="form-control" name="paiements[{{ $i }}][created_at]" value="{{ $paiement->created_at->format('Y-m-d\TH:i') }}" required></td>
                                 <td>
-                                    {{ $paiement->moyen ? $paiement->moyen->nom : '' }}
+                                    <select class="form-control col-8 d-inline-block" name="paiements[{{ $i }}][paiement_moyen_id]" required>
+                                        <option value="">-- Moyens --</option>
+                                        @foreach($moyens as $moyen)
+                                            <option value="{{ $moyen->id }}" {{ $paiement->moyen?->id == $moyen->id  ? 'selected' : '' }}>{{ $moyen->nom }}</option>
+                                        @endforeach
+                                    </select>
                                     @if ($paiement->transaction_ref or $paiement->autorisation_ref)
-                                        <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="auto" title="{{ $paiement->transaction_ref ? 'Réf transaction : '.$paiement->transaction_ref : '' }} {{ $paiement->autorisation_ref ? 'Réf autorisation : '.$paiement->autorisation_ref : '' }}"></i>
+                                        <i class="fa fa-info-circle d-inline-block pl-2" data-toggle="tooltip" data-placement="auto" title="{{ $paiement->transaction_ref ? 'Réf transaction : '.$paiement->transaction_ref : '' }} {{ $paiement->autorisation_ref ? 'Réf autorisation : '.$paiement->autorisation_ref : '' }}"></i>
                                     @endif
                                 </td>
                                 <td>
-                                    {{ $paiement->type ? $paiement->type->nom : '' }}
+                                    <select class="form-control" name="paiements[{{ $i }}][paiement_type_id]" required>
+                                        <option value="">-- Types --</option>
+                                        @foreach($types as $type)
+                                            <option value="{{ $type->id }}" {{ $paiement->type?->id == $type->id  ? 'selected' : '' }}>{{ $type->nom }}</option>
+                                        @endforeach
+                                    </select>
                                 </td>
-                                <td>@prix($paiement->montant) €</td>
-                                <td>{!! nl2br(e($paiement->note )) !!}</td>
-                                <td class="text-right">
-                                    <form action="{{ route('admin.paiement.destroy', $paiement) }}" method="POST">
-                                        @can('update', $paiement)
-                                            <a class="btn btn-outline-secondary" href="{{ route('admin.paiement.edit', $paiement) }}"><i class="fa fa-edit"></i></a>
-                                        @endif
-                                        @can('delete', $paiement)
-                                            <a class="btn btn-outline-danger" href="{{ route('admin.paiement.destroy', $paiement) }}"><i class="fa fa-trash-alt"></i></a>
-                                        @endif
-                                    </form>
-                                </td>
+                                <td><input type="number" class="form-control" step=".01" value="{{ $paiement->montant }}" name="paiements[{{ $i }}][montant]" required></td>
+                                <td><textarea cols="30" rows="1" class="form-control" name="paiements[{{ $i }}][note]">{!! nl2br(e($paiement->note )) !!}</textarea></td>
+                                <td><button type="button" class="paiement-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>
                             </tr>
+                            @php
+                                $i++;
+                            @endphp
                         @endforeach
                         <script id="paiement-add-template" type="x-tmpl-mustache">
                             <tr>
-                                <td></td>
-                                <td><input type="date" class="form-control" name="paiements[@{{ indice }}][created_at]" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required></td>
+                                <td><input type="hidden" name="paiements[@{{ indice }}][id]" value="" /><input type="hidden" name="paiements[@{{ indice }}][reservation_id]" value="{{ $reservation->id }}" /></td>
+                                <td><input type="datetime-local" class="form-control" name="paiements[@{{ indice }}][created_at]" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required></td>
                                 <td>
                                     <select class="form-control" name="paiements[@{{ indice }}][paiement_moyen_id]" required>
                                         <option value="">-- Moyens --</option>
                                         @foreach($moyens as $moyen)
-                                <option value="{{ $moyen->id }}">{{ $moyen->nom }}</option>
+                                            <option value="{{ $moyen->id }}">{{ $moyen->nom }}</option>
                                         @endforeach
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control" name="paiements[@{{ indice }}][paiement_type_id]" required>
-                                <option value="">-- Types --</option>
-@foreach($types as $type)
-                                <option value="{{ $type->id }}">{{ $type->nom }}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" name="paiements[@{{ indice }}][paiement_type_id]" required>
+                                        <option value="">-- Types --</option>
+                                        @foreach($types as $type)
+                                            <option value="{{ $type->id }}">{{ $type->nom }}</option>
                                         @endforeach
-                            </select>
-                        </td>
-                        <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
-                        <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
-                        <td><button type="button" class="paiement-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button></td>
-                    </tr>
-</script>
+                                    </select>
+                                </td>
+                                <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
+                                <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
+                                <td><button type="button" class="paiement-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>
+                            </tr>
+                        </script>
                         </tbody>
                     </table>
 
@@ -284,7 +291,7 @@
                     </h2>
 
                     <div class="btn-toolbar">
-                        <button class="btn btn-outline-secondary" id="conducteurs-add" type="button" data-toggle="tooltip" title="Ajouter">
+                        <button class="btn btn-outline-secondary table-editable-add" data-target="conducteurs" id="conducteurs-add" type="button" data-toggle="tooltip" title="Ajouter">
                             <i class="fas fa-plus"></i>
                         </button>&nbsp;
                     </div>
@@ -319,7 +326,7 @@
                                     <td><input class="form-control" type="text" name="conducteurs[{{ $i }}][permis_numero]" value="{{ old('permis_numero', $conducteur->permis_numero) }}" /></td>
                                     <td><input class="form-control" type="date" name="conducteurs[{{ $i }}][permis_at]" value="{{ old('permis_at', $conducteur->permis_at) }}" /></td>
                                     <td><input class="form-control" type="text" name="conducteurs[{{ $i }}][permis_delivre]" value="{{ old('permis_delivre', $conducteur->permis_delivre) }}" /></td>
-                                    <td><button type="button" class="conducteurs-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button></td>
+                                    <td><button type="button" class="conducteurs-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>
                                 </tr>
 
                                 @php
@@ -337,7 +344,7 @@
                             <td><input class="form-control" type="text" name="conducteurs[@{{ indice }}][permis_numero]" /></td>
                             <td><input class="form-control" type="date" name="conducteurs[@{{ indice }}][permis_at]" /></td>
                             <td><input class="form-control" type="text" name="conducteurs[@{{ indice }}][permis_delivre]" /></td>
-                            <td><button type="button" class="conducteurs-delete btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button></td>
+                            <td><button type="button" class="conducteurs-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>
                         </tr>
                         </script>
                         </tbody>

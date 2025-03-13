@@ -1,5 +1,4 @@
 import * as $ from 'jquery'
-import Mustache from 'mustache'
 import 'ipsum3-admin-assets/src/js/index'
 import './datepicker'
 
@@ -37,30 +36,6 @@ $('#tarification-load, #tarification-undo').click(function () {
     } else {
         $('#tarification-undo').show()
     }
-})
-
-$('#paiement-add').on('click', function () {
-    let template = $('#paiement-add-template').html()
-    Mustache.parse(template)
-    let rendered = Mustache.render(template, {
-        indice: $('#paiement-lignes tr').length
-    })
-    $('#paiement-lignes').prepend(rendered)
-    $('.paiement-delete').on('click', function () {
-        $(this).parent().parent().remove()
-    })
-})
-
-$('#conducteurs-add').on('click', function () {
-    let template = $('#conducteurs-add-template').html()
-    Mustache.parse(template)
-    let rendered = Mustache.render(template, {
-        indice: $('#conducteurs-lignes tr').length + 1
-    })
-    $('#conducteurs-lignes').prepend(rendered)
-    $('.conducteurs-delete').on('click', function () {
-        $(this).parent().parent().remove()
-    })
 })
 
 $(document).ready(function () {
@@ -117,8 +92,4 @@ $(document).ready(function () {
         var formattedDate = new Date(dateString).toISOString().slice(0, 10)
         return formattedDate
     }
-
-    $('.conducteurs-delete').on('click', function () {
-        $(this).parent().parent().remove()
-    })
 })

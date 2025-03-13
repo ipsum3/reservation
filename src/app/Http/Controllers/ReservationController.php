@@ -357,13 +357,24 @@ class ReservationController extends AdminController
         $reservation->update($data);
 
         if ($request->validated('paiements')) {
-            // Pas de mass assignment pour déclencher les événements
-            $datas = [];
-            foreach ($request->validated('paiements') as $paiement) {
-                $datas[] = new Paiement($paiement);
-            }
-            $reservation->paiements()->saveMany($datas);
+
+            $paiementsIds = collect($request->validated('paiements'))
+                ->pluck('id')
+                ->toArray();
+
+            // Supprimer les paiements qui ne sont pas dans la liste validée
+            $reservation->paiements()->whereNotIn('id', $paiementsIds)->delete();
+
+            $reservation->paiements()->upsert(
+                $request->validated('paiements'),
+                ['id']
+            );
+
+        } else {
+            $reservation->paiements()->delete();
         }
+
+        $reservation->updateMontantPaye()->save();
 
         if ($reservation->is_confirmed and !$is_confirmed_old) {
             ReservationConfirmedEvent::dispatch($reservation);

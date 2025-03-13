@@ -25,6 +25,8 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property string|null $montant
  * @property int $quantite_max
  * @property int|null $gratuit_apres
+ * @property int|null $quantite_gratuit
+ * @property int|null $gratuit_apres_quantite
  * @property int|null $jour_fact_max
  * @property int|null $age_max
  * @property string|null $heure_max

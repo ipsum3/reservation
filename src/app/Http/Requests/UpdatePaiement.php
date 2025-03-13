@@ -25,7 +25,7 @@ class UpdatePaiement extends FormRequest
     public function rules()
     {
         return [
-            "created_at" => "required|date_format:Y-m-d",
+            "created_at" => "required|date_format:Y-m-d\TH:i",
             "paiement_moyen_id" => "required|integer|exists:paiement_moyens,id",
             "paiement_type_id" => "required|integer|exists:paiement_types,id",
             "montant" => "required|numeric",

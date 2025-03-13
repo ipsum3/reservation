@@ -79,7 +79,7 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @method static Builder|Categorie newModelQuery()
  * @method static Builder|Categorie newQuery()
  * @method static Builder|Categorie query()
- * @method static Builder|Categorie withCountBlocage(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
+ * @method static Builder|Categorie withCountBlocage(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin, ?\Ipsum\Reservation\app\Models\Lieu\Lieu $lieu = null)
  * @method static Builder|Categorie withCountVehiculeDispo(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @mixin \Eloquent
  */

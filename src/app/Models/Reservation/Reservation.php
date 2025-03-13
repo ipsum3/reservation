@@ -306,6 +306,12 @@ class Reservation extends BaseModel
         $this->contrat = 'C'.$this->generationReference($id);
     }
 
+    public function updateMontantPaye()
+    {
+        $this->montant_paye = $this->paiements()->ok()->sum('montant');
+        return $this;
+    }
+
 
     /*
      * Accessors & Mutators

@@ -110,9 +110,11 @@ class StoreAdminReservation extends FormRequest
 
             "note" => "nullable",
 
-            "paiements.*.created_at" => "required|date_format:Y-m-d",
+            "paiements.*.id" => "nullable|exists:paiements,id",
+            "paiements.*.created_at" => "required|date_format:Y-m-d\TH:i",
             "paiements.*.paiement_moyen_id" => "required|integer|exists:paiement_moyens,id",
             "paiements.*.paiement_type_id" => "required|integer|exists:paiement_types,id",
+            "paiements.*.reservation_id" => "required|integer|exists:reservations,id",
             "paiements.*.montant" => "required|numeric",
             "paiements.*.note" => "nullable",
 
