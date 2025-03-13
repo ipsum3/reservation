@@ -524,6 +524,10 @@ class ReservationController extends AdminController
         $categories = Categorie::when($request->categorie_id, function ($query, $categorie_id) {
             $query->where('id', $categorie_id);
         })->with(['vehicules' => function ($query) use ($date_debut, $date_fin) {
+            $query->where(function (Builder $query) use ($date_debut) {
+                $query->where('sortie_at', '>=', $date_debut)->orWhereNull('sortie_at');
+            });
+
             $query->with(['reservations' => function ($query) use ($date_debut, $date_fin) {
                 $query->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
             }])->orderBy('mise_en_circualtion_at', 'desc');
@@ -533,8 +537,14 @@ class ReservationController extends AdminController
             }])->orderBy('mise_en_circualtion_at', 'desc');
         }])->with(['reservations' => function ($query) use ($date_debut, $date_fin) {
             $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
-        }])->where(function ($query) {
-            $query->has('vehicules')->orHas('reservations');
+        }])->where(function ($query) use ($date_debut, $date_fin) {
+            $query->whereHas('vehicules', function ($query) use ($date_debut) {
+                $query->where(function (Builder $query) use ($date_debut) {
+                    $query->where('sortie_at', '>=', $date_debut)->orWhereNull('sortie_at');
+                });
+            })->orWhereHas('reservations', function ($query) use ($date_debut, $date_fin) {
+                $query->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
+            });
         })->orderBy('nom')->get();
 
         $categories_all = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
