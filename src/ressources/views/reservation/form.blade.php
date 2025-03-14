@@ -39,7 +39,7 @@
 
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-lg-6 col-12">
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
@@ -128,6 +128,7 @@
                 </div>
             </div>
 
+
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
@@ -141,12 +142,12 @@
                         </button>&nbsp;
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="box-body overflow-auto">
                     @error('paiements.*')
                     <div class="alert alert-warning">{{ $message }}</div>
                     @enderror
 
-                    <table class="table table-hover table-striped">
+                    <table class="table table-hover table-striped"  style="min-width: 1000px">
                         <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -200,23 +201,23 @@
                                 <td>
                                     <select class="form-control" name="paiements[@{{ indice }}][paiement_moyen_id]" required>
                                         <option value="">-- Moyens --</option>
-                                        @foreach($moyens as $moyen)
-                                            <option value="{{ $moyen->id }}">{{ $moyen->nom }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control" name="paiements[@{{ indice }}][paiement_type_id]" required>
-                                        <option value="">-- Types --</option>
-                                        @foreach($types as $type)
-                                            <option value="{{ $type->id }}">{{ $type->nom }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
-                                <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
-                                <td><button type="button" class="paiement-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>
-                            </tr>
+                            @foreach($moyens as $moyen)
+                                <option value="{{ $moyen->id }}">{{ $moyen->nom }}</option>
+                            @endforeach
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control" name="paiements[@{{ indice }}][paiement_type_id]" required>
+                                <option value="">-- Types --</option>
+                            @foreach($types as $type)
+                                <option value="{{ $type->id }}">{{ $type->nom }}</option>
+                            @endforeach
+                            </select>
+                        </td>
+                        <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
+                        <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
+                        <td><button type="button" class="paiement-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>
+                    </tr>
                         </script>
                         </tbody>
                     </table>
@@ -225,7 +226,7 @@
             </div>
 
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-6 col-12">
             @if( $reservation->is_confirmed or $reservation->etat_id == \Ipsum\Reservation\app\Models\Reservation\Etat::NON_VALIDEE_ID )
                 <div class="box">
                     <div class="box-header">
@@ -296,10 +297,10 @@
                         </button>&nbsp;
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="box-body overflow-auto">
                     <input type="hidden" name="conducteurs">
 
-                    <table class="table table-hover table-striped">
+                    <table class="table table-hover table-striped"  style="min-width: 1000px">
                         <thead>
                         <tr>
                             <th scope="col"> Nom </th>
