@@ -24,6 +24,7 @@ return new class extends Migration
         // Relancer le seeder "PaysTableSeeder"
         Artisan::call('db:seed', [
             '--class' => \Ipsum\Reservation\database\seeds\PaysTableSeeder::class,
+            '--force' => true,
         ]);
     }
 
