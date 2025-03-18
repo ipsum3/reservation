@@ -142,20 +142,20 @@
                         </button>&nbsp;
                     </div>
                 </div>
-                <div class="box-body overflow-auto">
+                <div class="box-body">
                     @error('paiements.*')
                     <div class="alert alert-warning">{{ $message }}</div>
                     @enderror
-
-                    <table class="table table-hover table-striped"  style="min-width: 1000px">
+                    <div class="table-wrapper">
+                        <table class="table table-hover table-striped">
                         <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Date</th>
-                            <th scope="col">Moyen</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Montant (€)</th>
-                            <th scope="col">Note</th>
+                            <th scope="col" style="min-width: 120px;">Moyen</th>
+                            <th scope="col" style="min-width: 120px;">Type</th>
+                            <th scope="col" style="min-width: 110px;">Montant (€)</th>
+                            <th scope="col" style="min-width: 100px;">Note</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
@@ -168,15 +168,17 @@
                                 <td>{{ $paiement->id }}<input type="hidden" name="paiements[{{ $i }}][id]" value="{{ $paiement->id }}" /><input type="hidden" name="paiements[{{ $i }}][reservation_id]" value="{{ $reservation->id }}" /></td>
                                 <td><input type="datetime-local" class="form-control" name="paiements[{{ $i }}][created_at]" value="{{ $paiement->created_at->format('Y-m-d\TH:i') }}" required></td>
                                 <td>
-                                    <select class="form-control col-8 d-inline-block" name="paiements[{{ $i }}][paiement_moyen_id]" required>
-                                        <option value="">-- Moyens --</option>
-                                        @foreach($moyens as $moyen)
-                                            <option value="{{ $moyen->id }}" {{ $paiement->moyen?->id == $moyen->id  ? 'selected' : '' }}>{{ $moyen->nom }}</option>
-                                        @endforeach
-                                    </select>
-                                    @if ($paiement->transaction_ref or $paiement->autorisation_ref)
-                                        <i class="fa fa-info-circle d-inline-block pl-2" data-toggle="tooltip" data-placement="auto" title="{{ $paiement->transaction_ref ? 'Réf transaction : '.$paiement->transaction_ref : '' }} {{ $paiement->autorisation_ref ? 'Réf autorisation : '.$paiement->autorisation_ref : '' }}"></i>
-                                    @endif
+                                    <div class="d-flex">
+                                        <select class="form-control" name="paiements[{{ $i }}][paiement_moyen_id]" required>
+                                            <option value="">-- Moyens --</option>
+                                            @foreach($moyens as $moyen)
+                                                <option value="{{ $moyen->id }}" {{ $paiement->moyen?->id == $moyen->id  ? 'selected' : '' }}>{{ $moyen->nom }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($paiement->transaction_ref or $paiement->autorisation_ref)
+                                            <i class="fa fa-info-circle pl-2 pt-2" data-toggle="tooltip" data-placement="auto" title="{{ $paiement->transaction_ref ? 'Réf transaction : '.$paiement->transaction_ref : '' }} {{ $paiement->autorisation_ref ? 'Réf autorisation : '.$paiement->autorisation_ref : '' }}"></i>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td>
                                     <select class="form-control" name="paiements[{{ $i }}][paiement_type_id]" required>
@@ -201,27 +203,27 @@
                                 <td>
                                     <select class="form-control" name="paiements[@{{ indice }}][paiement_moyen_id]" required>
                                         <option value="">-- Moyens --</option>
-                            @foreach($moyens as $moyen)
-                                <option value="{{ $moyen->id }}">{{ $moyen->nom }}</option>
-                            @endforeach
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control" name="paiements[@{{ indice }}][paiement_type_id]" required>
-                                <option value="">-- Types --</option>
-                            @foreach($types as $type)
-                                <option value="{{ $type->id }}">{{ $type->nom }}</option>
-                            @endforeach
-                            </select>
-                        </td>
-                        <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
-                        <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
-                        <td><button type="button" class="paiement-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>
-                    </tr>
+                                        @foreach($moyens as $moyen)
+                                            <option value="{{ $moyen->id }}">{{ $moyen->nom }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" name="paiements[@{{ indice }}][paiement_type_id]" required>
+                                        <option value="">-- Types --</option>
+                                        @foreach($types as $type)
+                                            <option value="{{ $type->id }}">{{ $type->nom }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td><input type="number" class="form-control" step=".01" value="" name="paiements[@{{ indice }}][montant]" required></td>
+                                <td><textarea cols="30" rows="1" class="form-control" name="paiements[@{{ indice }}][note]"></textarea></td>
+                                <td><button type="button" class="paiement-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>
+                            </tr>
                         </script>
                         </tbody>
                     </table>
-
+                    </div>
                 </div>
             </div>
 
