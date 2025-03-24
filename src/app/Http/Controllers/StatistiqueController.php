@@ -66,9 +66,6 @@ class StatistiqueController extends ReservationController
             $stats['previous'] = $this->getStats($reservationsTransactionQueryPrev, $type_date, $dateDebutPrev, $dateFinPrev);
         }
 
-        $stats['maxReservationCount'] = max($stats['reservationCountData']);
-        $stats['maxMontantTotal'] = max($stats['montantTotalData']);
-
         //taux de rotation
         $totalJoursLocation = 0;
         $nombreJoursDuree = $dateDebut->diffInDays($dateFin) + 1;

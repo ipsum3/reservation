@@ -101,9 +101,6 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\CarrosserieController:
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\LieuController::class)->prefix('lieu')->name('admin.lieu.')->group(
     function () {
         Route::get('', 'index')->name('index');
-        Route::post('horaire/{horaire}', 'updateHoraire')->name('updateHoraire');
-        Route::put('{lieu}/horaire', 'storeHoraire')->name('storeHoraire');
-        Route::any('horaire/{horaire}/destroy', 'destroyHoraire')->name('destroyHoraire');
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
         Route::any('{lieu}/destroy', 'destroy')->name('destroy');

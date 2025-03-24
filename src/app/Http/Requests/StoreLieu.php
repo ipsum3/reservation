@@ -45,6 +45,10 @@ class StoreLieu extends FormRequest
             "emails" => "required|array",
             "emails.*" => "email",
             "emails_reservation" => "required|array",
+            'horaires' => 'nullable|array',
+            'horaires.*.jour' => 'required|integer|min:0|max:7',
+            'horaires.*.debut' => 'required|date_format:H:i',
+            'horaires.*.fin' => 'required|date_format:H:i',
 
             "seo_title" => "nullable|max:255",
             "seo_description" => "nullable",

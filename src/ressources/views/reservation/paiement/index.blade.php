@@ -43,7 +43,7 @@
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Type', 'champ' => 'paiement_type_id'])</th>
                         <th>Total</th>
                         <th>Note</th>
-                        <th width="100px">Actions</th>
+                        <th width="150px">Actions</th>
                     </tr>
                     </thead>
                     <tbody>

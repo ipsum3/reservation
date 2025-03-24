@@ -54,7 +54,28 @@ class LieuController extends AdminController
 
     public function store(StoreLieu $request)
     {
-        $lieu = Lieu::create($request->validated());
+        $data = $request->all();
+        $lieu = Lieu::create($data);
+
+        //horaires
+        if (!empty($datas['horaires'])) {
+            $horairesIds = [];
+
+            foreach ($datas['horaires'] as $data) {
+
+                if (empty($data['id'])) {
+                    $horaire = $lieu->horaires()->create($data);
+                } else {
+                    $horaire = $lieu->horaires()->updateOrCreate(
+                        ['id' => $data['id']],
+                        $data
+                    );
+                }
+                $horairesIds[] = $horaire->id;
+            }
+            $lieu->horaires()->whereNotIn('id', $horairesIds)->delete();
+        }
+
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.lieu.edit', [$lieu->id]);
     }
@@ -68,7 +89,27 @@ class LieuController extends AdminController
 
     public function update(StoreLieu $request, Lieu $lieu)
     {
-        $lieu->update($request->validated());
+        $datas = $request->all();
+        $lieu->update($datas);
+
+        //horaires
+        if (!empty($datas['horaires'])) {
+            $horairesIds = [];
+
+            foreach ($datas['horaires'] as $data) {
+
+                if (empty($data['id'])) {
+                    $horaire = $lieu->horaires()->create($data);
+                } else {
+                    $horaire = $lieu->horaires()->updateOrCreate(
+                        ['id' => $data['id']],
+                        $data
+                    );
+                }
+                $horairesIds[] = $horaire->id;
+            }
+            $lieu->horaires()->whereNotIn('id', $horairesIds)->delete();
+        }
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
@@ -104,27 +145,4 @@ class LieuController extends AdminController
         return;
     }
 
-    public function storeHoraire(StoreLieuHoraire $request, Lieu $lieu)
-    {
-        $horaire = $lieu->horaires()->create($request->validated());
-
-        Alert::success("L'enregistrement a bien été ajouté")->flash();
-        return back();
-    }
-
-    public function updateHoraire(StoreLieuHoraire $request, Horaire $horaire)
-    {
-        $horaire->update($request->validated());
-
-        Alert::success("L'enregistrement a bien été modifié")->flash();
-        return back();
-    }
-
-    public function destroyHoraire(Horaire $horaire)
-    {
-        $horaire->delete();
-
-        Alert::warning("L'enregistrement a bien été supprimé")->flash();
-        return back();
-    }
 }

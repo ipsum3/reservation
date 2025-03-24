@@ -29,7 +29,7 @@
                         <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
                         <th>Fermetures</th>
-                        <th width="240px">Actions</th>
+                        <th width="250px">Actions</th>
                     </tr>
                     </thead>
                     <tbody class="sortable" data-sortableurl="{{ route('admin.lieu.changeOrder') }}" data-sortablecsrftoken="{{ csrf_token() }}">
