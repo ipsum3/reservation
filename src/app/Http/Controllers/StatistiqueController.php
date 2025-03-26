@@ -200,7 +200,7 @@ class StatistiqueController extends ReservationController
         $dateFin = Carbon::parse($dateFin);
 
         while ($dateCourante->lte($dateFin)) {
-            $listeMois[] = $dateCourante->format('F Y');
+            $listeMois[] = $dateCourante->locale('fr')->translatedFormat('F Y');
             $dateCourante->firstOfMonth()->addMonth();
         }
 
@@ -281,7 +281,7 @@ class StatistiqueController extends ReservationController
 
         foreach ($reservationsTransactionQuery as $reservation) {
             if($type_date == 'created_at'){
-                $data_month = $reservation->created_at->format('F Y');
+                $data_month = $reservation->created_at->locale('fr')->translatedFormat('F Y');
                 if($dateDebut->diffInDays($dateFin) <= 31){
                     $data_month = $reservation->created_at->format('d/m/Y');
                     if (!isset($stats2['reservation_count'][$data_month])) {
@@ -290,7 +290,7 @@ class StatistiqueController extends ReservationController
                     }
                 }
             }else{
-                $data_month = $reservation->debut_at->format('F Y');
+                $data_month = $reservation->debut_at->locale('fr')->translatedFormat('F Y');
                 if($dateDebut->diffInDays($dateFin) <= 31){
                     $data_month = $reservation->debut_at->format('d/m/Y');
                     if (!isset($stats2['reservation_count'][$data_month])) {

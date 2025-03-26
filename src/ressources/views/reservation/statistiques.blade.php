@@ -390,11 +390,12 @@
                     datasets: [
                         @if(isset($stats['previous']))
                         {
-                        label: 'Nombre de réservations (année précédente)',
+                        label: 'Nombre de réservations (période précédente)',
                         data: reservationCountData2,
-                        backgroundColor: 'rgba(255, 206, 86, 0.5)',
-                        borderColor: 'rgba(255, 206, 86, 1)',
-                        borderWidth: 1
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 0.4)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
                         },
                         @endif
                         {
@@ -424,11 +425,13 @@
             @if(isset($stats['previous']))
             myLineChart.data.datasets.push({
                 type: 'line',
-                label: 'Montant total (année précédente)',
+                label: 'Montant total (période précédente)',
                 data: montantTotalData2,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                fill: true,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                fill: false,
                 yAxisID: 'y1'
             });
             @endif
