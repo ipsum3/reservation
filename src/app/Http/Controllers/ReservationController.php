@@ -113,41 +113,27 @@ class ReservationController extends AdminController
 
         $reservationsJourQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) = CURDATE()");
         $reservationsHierQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
-
-        $dateStart = Carbon::now()->startOfMonth();
-        $dateEnd = Carbon::now()->endOfMonth();
-        $champPeriodeQuery = 'created_at';
-
-        if ($request->filled('date_creation')) {
-            $dates = explode(" - ", $request->get('date_creation'));
-            $dateStart = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay();
-            $dateEnd = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay();
-        }
-
-        if ($request->filled('date_debut')) {
-            $champPeriodeQuery = 'fin_at';
-            $dates = explode(" - ", $request->get('date_debut'));
-            $dateStart = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay();
-            $dateEnd = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay();
-        }
-
-        if ($request->filled('date_fin')) {
-            $champPeriodeQuery = 'debut_at';
-            $dates = explode(" - ", $request->get('date_fin'));
-            $dateStart = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay();
-            $dateEnd = \Carbon\Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay();
-        }
-
-        $reservationsPeriodeQuery = Reservation::confirmed()->whereRaw("DATE(`".$champPeriodeQuery."`) BETWEEN '" . $dateStart->format('Y-m-d') . "' AND '" . $dateEnd->format('Y-m-d') . "'")->get();
-
         $stats['hier'] = $reservationsHierQuery->count();
         $stats['jour'] = $reservationsJourQuery->count();
-        $stats['mois'] = $reservationsPeriodeQuery->count();
-        $stats['montant'] = $reservationsPeriodeQuery->sum('total');
+
+        $isStatsByMonth = false;
+        if (empty($request->all()) || (count($request->all()) == 1 && $request->has('etat_id'))) {
+            $isStatsByMonth = true;
+            $dateStart = Carbon::now()->startOfMonth();
+            $dateEnd = Carbon::now()->endOfMonth();
+            $reservationsPeriodeQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) BETWEEN '" . $dateStart->format('Y-m-d') . "' AND '" . $dateEnd->format('Y-m-d') . "'");
+
+            $stats['mois'] = $reservationsPeriodeQuery->count();
+            $stats['montant'] = $reservationsPeriodeQuery->sum('total');
+        } else {
+            $stats['mois'] = $this->query($request)->count();
+            $stats['montant'] = $this->query($request)->sum('total');
+        }
+
 
         $origines = Source::all()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions', 'categories', 'stats', 'origines', 'request'));
+        return view('IpsumReservation::reservation.index', compact('reservations', 'etats', 'conditions', 'categories', 'stats', 'origines', 'request', 'isStatsByMonth'));
     }
 
     public function export(Request $request)
