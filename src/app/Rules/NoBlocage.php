@@ -1,6 +1,6 @@
 <?php
 
-namespace Ipsum\Article\app\Rules;
+namespace Ipsum\Reservation\app\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Carbon;
