@@ -89,32 +89,34 @@
                     <h2 class="box-title">Réservations</h2>
                 </div>
                 <div class="box-body">
-                    <table class="table table-hover table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Cat.</th>
-                            <th scope="col">Montant</th>
-                            <th scope="col">Etat</th>
-                            <th scope="col">Date</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($client->reservations->sortByDesc('created_at') as $reservation)
+                    <div class="table-wrapper">
+                        <table class="table table-hover table-striped">
+                            <thead>
                             <tr>
-                                <td><a href="{{ route('admin.reservation.edit', [$reservation]) }}">{{ $reservation->reference }}</a></td>
-                                <td>{{ $reservation->categorie_nom }}</td>
-                                <td class="text-right">@prix($reservation->total) &nbsp;€</td>
-                                <td>
-                                    @if ($reservation->etat)
-                                        <span class="badge badge-{{ $reservation->is_confirmed ? 'success' : 'light' }}">{{ $reservation->etat->nom }}</span>
-                                    @endif
-                                </td>
-                                <td>{{ $reservation->created_at->format('d/m/Y H:i') }}</td>
+                                <th scope="col">#</th>
+                                <th scope="col">Cat.</th>
+                                <th scope="col">Montant</th>
+                                <th scope="col">Etat</th>
+                                <th scope="col">Date</th>
                             </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            @foreach($client->reservations->sortByDesc('created_at') as $reservation)
+                                <tr>
+                                    <td><a href="{{ route('admin.reservation.edit', [$reservation]) }}">{{ $reservation->reference }}</a></td>
+                                    <td>{{ $reservation->categorie_nom }}</td>
+                                    <td class="text-right">@prix($reservation->total) &nbsp;€</td>
+                                    <td>
+                                        @if ($reservation->etat)
+                                            <span class="badge badge-{{ $reservation->is_confirmed ? 'success' : 'light' }}">{{ $reservation->etat->nom }}</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $reservation->created_at->format('d/m/Y H:i') }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

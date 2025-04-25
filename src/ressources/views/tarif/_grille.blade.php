@@ -10,6 +10,7 @@
         @endif
     </div>
     <div class="box-body">
+        <div class="table-wrapper">
         <table class="table table-hover table-striped">
             <thead>
             <tr>
@@ -41,5 +42,6 @@
             @endforeach
             </tbody>
         </table>
+        </div>
     </div>
 </div>

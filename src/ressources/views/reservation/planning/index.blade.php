@@ -130,6 +130,7 @@
                 <h2 class="box-title">Catégorie {{ $categorie->nom }} </h2>
             </div>
             <div class="box-body">
+                <div class="table-wrapper">
                 <table class="planning">
                     <thead>
                         <tr>
@@ -158,7 +159,7 @@
                         @endforeach
                     </tbody>
                 </table>
-
+                </div>
             </div>
         </div>
     @endforeach

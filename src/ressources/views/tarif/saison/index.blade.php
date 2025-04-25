@@ -24,6 +24,7 @@
             {{ Aire::close() }}
 
             <div class="table-wrapper">
+                <div class="table-wrapper">
                 <table class="table table-hover table-striped">
                     <thead>
                     <tr>
@@ -53,6 +54,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                </div>
             </div>
 
             {!! $saisons->appends(request()->all())->links() !!}

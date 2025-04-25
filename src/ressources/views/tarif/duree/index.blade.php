@@ -12,6 +12,7 @@
                 <h2 class="box-title">Liste des tranches de durée pour une dégressivitée des tarifs</h2>
             </div>
             <div class="box-body">
+                <div class="table-wrapper">
                 <table class="table table-hover table-striped">
                     <thead>
                     <tr>
@@ -39,6 +40,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
         {{ Aire::open()->route('admin.duree.store')->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreDuree::class)->addClass('col-md-6') }}
@@ -70,6 +72,7 @@
                 </div>
             </div>
             <div class="box-body">
+                <div class="table-wrapper">
                 <table class="table table-hover table-striped">
                     <thead>
                     <tr>
@@ -99,6 +102,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>
