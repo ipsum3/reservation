@@ -2,12 +2,14 @@
 namespace Ipsum\Reservation\database\seeds;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 
 class PaysTableSeeder extends Seeder
 {
     public function run()
     {
+        DB::table('pays')->truncate();
         foreach ($this->getDatas() as $data) {
             Pays::create($data);
         }
