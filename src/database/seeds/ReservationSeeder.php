@@ -12,7 +12,9 @@ class ReservationSeeder extends Seeder
 {
     public function run()
     {
-        Reservation::factory()->count(10)->create();
+        Reservation::factory()->count(10)->create([
+            'etat_id' => 1,
+        ]);
 
 
         foreach ($this->getEtats() as $data) {
