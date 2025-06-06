@@ -99,12 +99,12 @@
                         <div class="table-wrapper">
                             <table class="table table-hover table-striped">
                                 <thead>
-                                    <tr>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
+                                <tr>
+                                    <th scope="col">Jour</th>
+                                    <th scope="col">Début</th>
+                                    <th scope="col">Fin</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
                                 </thead>
                                 <tbody id="horaires-lignes">
                                 @if($lieu->horaires)
@@ -115,22 +115,21 @@
                                                 <select name="horaires[{{ $i }}][jour]" class="form-control" required>
                                                     <option value="">----- Jours -----</option>
                                                     @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
-                                                        <option value="{{ $key }}" {{ $horaire->jour == $key ? 'selected'  : '' }}>{{ $jour }}</option>
+                                                        <option value="{{ $key }}" {{ old("horaires.$i.jour", $horaire->jour) == $key ? 'selected' : '' }}>{{ $jour }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
                                             <td>
-                                                <input type="time" class="form-control" name="horaires[{{ $i }}][debut]" value="{{ $horaire->debut }}" required>
+                                                <input type="time" class="form-control" name="horaires[{{ $i }}][debut]" value="{{ old("horaires.$i.debut", $horaire->debut) }}" required>
                                             </td>
                                             <td>
-                                                <input type="time" class="form-control" name="horaires[{{ $i }}][fin]" value="{{ $horaire->fin }}" required>
+                                                <input type="time" class="form-control" name="horaires[{{ $i }}][fin]" value="{{ old("horaires.$i.fin", $horaire->fin) }}" required>
                                             </td>
-
                                             <td class="text-right">
                                                 <button type="button" class="horaires-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button>
                                             </td>
                                         </tr>
-                                        @php $i++;  @endphp
+                                        @php $i++; @endphp
                                     @endforeach
                                 @endif
 
@@ -138,25 +137,23 @@
                                     <tr>
                                         <td>
                                             <select name="horaires[@{{ indice }}][jour]" class="form-control" required>
-                                            <option value="">----- Jours -----</option>
+                                                <option value="">----- Jours -----</option>
                                             @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
                                                 <option value="{{ $key }}">{{ $jour }}</option>
                                             @endforeach
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="time" class="form-control" name="horaires[@{{ indice }}][debut]" value="{{ $horaire->debut }}" required>
+                                            <input type="time" class="form-control" name="horaires[@{{ indice }}][debut]" required>
                                         </td>
                                         <td>
-                                            <input type="time" class="form-control" name="horaires[@{{ indice }}][fin]" value="{{ $horaire->fin }}" required>
+                                            <input type="time" class="form-control" name="horaires[@{{ indice }}][fin]" required>
                                         </td>
-
                                         <td class="text-right">
                                             <button type="button" class="horaires-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button>
                                         </td>
-                                </tr>
+                                    </tr>
                                 </script>
-
                                 </tbody>
                             </table>
                         </div>
