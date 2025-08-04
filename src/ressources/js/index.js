@@ -93,3 +93,22 @@ $(document).ready(function () {
         return formattedDate
     }
 })
+
+$('.ajust-button').click(function () {
+    let valeur = parseFloat($(this).parents('.box').find('.ajust-valeur').val())
+    let type = $(this).parents('.box').find('.ajust-type').val()
+    if (!isNaN(valeur)) {
+        $(this).parents('.box').find('.montant').each(function () {
+            let montant = parseFloat($(this).val())
+            let val = 0
+
+            if (type === 'pourcentage') {
+                val = ((montant * valeur / 100) + montant).toFixed(2)
+            } else {
+                val = montant + valeur
+            }
+            $(this).val(val)
+        })
+    }
+    return false
+})

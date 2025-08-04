@@ -10,6 +10,14 @@
         @endif
     </div>
     <div class="box-body">
+        <div class="form-inline mt-4 mb-1 adjust">
+            <input type="number" class="form-control mb-2 mr-sm-2 ajust-valeur" placeholder="Valeur" size="2" style="width: 90px">
+            <select class="form-control mb-2 mr-sm-2 ajust-type">
+                <option value="montant">Montant</option>
+                <option value="pourcentage">Pourcentage</option>
+            </select>
+            <button type="button" class="btn btn-outline-secondary mb-2 ajust-button">Ajuster la grille</button>
+        </div>
         <div class="table-wrapper">
         <table class="table table-hover table-striped">
             <thead>
@@ -35,7 +43,7 @@
                     <td>{{ $categorie->nom }}</td>
                     @foreach ($durees as $duree)
                         <td class="center">
-                            <input type="number" name="{{ 'tarifs['.(isset($condition) ? $condition->id : 'x').']['.$categorie->id.']['.$duree->id.']' }}" value="{{ $tarifs[(isset($condition) ? $condition->id : null)][$categorie->id][$duree->id] ?? null }}" step=".01" class="form-control text-right">
+                            <input type="number" name="{{ 'tarifs['.(isset($condition) ? $condition->id : 'x').']['.$categorie->id.']['.$duree->id.']' }}" value="{{ $tarifs[(isset($condition) ? $condition->id : null)][$categorie->id][$duree->id] ?? null }}" step=".01" class="form-control text-right montant">
                         </td>
                     @endforeach
                 </tr>
