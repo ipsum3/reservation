@@ -487,21 +487,15 @@ class ReservationController extends AdminController
         return $pdf->stream();
     }
 
-    public function contratDepart(ShowDepartRetour $request, $date = null, $lieu_id = null)
+    public function contratDepart(ShowDepartRetour $request)
     {
-        $date = $date !== null ? Carbon::createFromFormat('Y-m-d', $date) : Carbon::now();
-
         $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
 
         $query = Reservation::confirmed()
-            ->where(function ($query) use ($date) {
-                $query->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
-            });
-
-        if ( $lieu_id ) {
-            $query->where( 'debut_lieu_id', $lieu_id );
+            ->whereBetween('debut_at', [$request->debut_at, $request->fin_at]);
+        if ($request->filled('lieu_id')) {
+            $query->where( 'debut_lieu_id', $request->lieu_id );
         }
-
         $reservations = $query->get();
 
         $html = '';
@@ -564,15 +558,15 @@ class ReservationController extends AdminController
         if ($request->filled('lieu_id')) {
             $query->where( 'debut_lieu_id', $request->lieu_id );
         }
-        $group_by[] = function (Reservation $reservation) {
+        $depart_group_by[] = function (Reservation $reservation) {
             return  $reservation->debut_at->format('Y-m-d');
         };
         if ($groupe_by_heure) {
-            $group_by[] = function (Reservation $reservation) {
+            $depart_group_by[] = function (Reservation $reservation) {
                 return  $reservation->debut_at->format('H:i');
             };
         }
-        $heures_depart = $query->orderBy('debut_at')->get()->groupBy($group_by);
+        $heures_depart = $query->orderBy('debut_at')->get()->groupBy($depart_group_by);
 
         // Retour
         $query = Reservation::confirmed()
@@ -580,15 +574,15 @@ class ReservationController extends AdminController
         if ($request->filled('lieu_id')) {
             $query->where( 'fin_lieu_id', $request->lieu_id );
         }
-        $group_by[] = function (Reservation $reservation) {
+        $retour_group_by[] = function (Reservation $reservation) {
             return  $reservation->fin_at->format('Y-m-d');
         };
         if ($groupe_by_heure) {
-            $group_by[] = function (Reservation $reservation) {
+            $retour_group_by[] = function (Reservation $reservation) {
                 return  $reservation->fin_at->format('H:i');
             };
         }
-        $heures_retour = $query->orderBy('fin_at')->get()->groupBy($group_by);
+        $heures_retour = $query->orderBy('fin_at')->get()->groupBy($retour_group_by);
 
         // Fusion des dates
         $periode = CarbonPeriod::create($request->debut_at, $request->fin_at);

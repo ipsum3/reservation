@@ -209,7 +209,9 @@
             @endforeach
         </table>
     @endif
-    <div class="page_break"></div>
+    @if(!$loop->last)
+        <div class="page_break"></div>
+    @endif
 @endforeach
 </div>
 </body>

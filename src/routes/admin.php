@@ -23,7 +23,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('planning/optimiser/{categorie?}', 'planningOptimiser')->name('planningOptimiser');
         Route::get('depart-retour', 'departEtRetour')->name('departEtRetour');
         Route::get('depart-retour/imprimer', 'imprimerDepartEtRetour')->name('imprimerDepartEtRetour');
-        Route::get('depart-retour/contrat', 'contratDepart')->name('contratDepart');
+        Route::get('depart-retour/contrat-depart', 'contratDepart')->name('contratDepart');
         Route::get('search-clients', 'searchClients')->name('searchClients');
     }
 );

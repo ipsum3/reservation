@@ -120,7 +120,7 @@ $('.datepicker-range-next').daterangepicker({
     ranges: {
         'Aujourd\'hui': [moment(), moment()],
         'Demain': [moment().add(1, 'days'), moment().add(1, 'days')],
-        '7 prochains jours': [moment(), moment().subtract(6, 'days')]
+        '7 prochains jours': [moment(), moment().add(6, 'days')]
     },
     locale: {
         'format': 'DD/MM/YYYY',
