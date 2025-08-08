@@ -1,6 +1,8 @@
 import * as $ from 'jquery'
 import 'ipsum3-admin-assets/src/js/index'
 import './datepicker'
+import 'daterangepicker'
+import moment from 'moment'
 
 $('#reservation-categorie').on('change', function () {
     $.ajax({
@@ -111,4 +113,50 @@ $('.ajust-button').click(function () {
         })
     }
     return false
+})
+
+$('.datepicker-range-next').daterangepicker({
+    autoUpdateInput: false,
+    ranges: {
+        'Aujourd\'hui': [moment(), moment()],
+        'Demain': [moment().add(1, 'days'), moment().add(1, 'days')],
+        '7 prochains jours': [moment(), moment().subtract(6, 'days')]
+    },
+    locale: {
+        'format': 'DD/MM/YYYY',
+        'applyLabel': 'Valider',
+        'cancelLabel': 'Annuler',
+        'fromLabel': 'Du',
+        'toLabel': 'Au',
+        'customRangeLabel': 'Personnalisée',
+        'weekLabel': 'W',
+        'daysOfWeek': [
+            'di',
+            'Lu',
+            'Ma',
+            'Me',
+            'Je',
+            'Ve',
+            'Sa'
+        ],
+        'monthNames': [
+            'Janvier',
+            'Février',
+            'Mars',
+            'Avril',
+            'Mai',
+            'Juin',
+            'Juillet',
+            'Aout',
+            'Septembre',
+            'Octobre',
+            'Novembre',
+            'Décembre'
+        ],
+        'firstDay': 1
+    }
+}).on('apply.daterangepicker', function (ev, picker) {
+    $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'))
+}).on('cancel.daterangepicker', function (ev, picker) {
+    $(this).val('')
 })

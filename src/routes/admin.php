@@ -22,8 +22,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('planning', 'planning')->name('planning');
         Route::get('planning/optimiser/{categorie?}', 'planningOptimiser')->name('planningOptimiser');
         Route::get('depart-retour', 'departEtRetour')->name('departEtRetour');
-        Route::get('contrat-depart/{date?}/{lieu_id?}', 'contratDepart')->name('contratDepart');
-        Route::get('imprimer/contrat-depart/{date?}/{lieu_id?}', 'imprimerContratDepart')->name('imprimerContratDepart');
+        Route::get('depart-retour/imprimer', 'imprimerDepartEtRetour')->name('imprimerDepartEtRetour');
+        Route::get('depart-retour/contrat', 'contratDepart')->name('contratDepart');
         Route::get('search-clients', 'searchClients')->name('searchClients');
     }
 );

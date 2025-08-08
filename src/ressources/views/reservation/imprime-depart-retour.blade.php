@@ -55,14 +55,15 @@
 </div>
 <div>
 
-    @if( count( $departs ) )
+@foreach($jours as $jour)
+    @if(isset($jour['depart']))
         <table style="padding-bottom: 5mm;">
             <tr>
                 <td style="width:50%; padding: 0 5mm 0 0; border: none;">
 
                     <div style="text-align: center; padding-bottom: 0mm;">
                         <h1>
-                            Départs du {{ $date->format('d/m/Y') }}
+                            Départs du {{ $jour['date']->format('d/m/Y') }}
                         </h1>
                     </div>
 
@@ -80,7 +81,7 @@
                 <td>Vol</td>
                 <td>Prestation</td>
             </tr>
-            @foreach($departs as $reservation)
+            @foreach($jour['depart'] as $reservation)
                 <tr>
                     <td>
                         {{ $reservation->debut_at->format('H:i') }}
@@ -133,14 +134,14 @@
         </table>
     @endif
 
-    @if( count( $retours ) )
-        <table class="{{ count( $departs ) ? 'page_break' : '' }}" style="margin-top: 20px;padding-bottom: 5mm;">
+    @if(isset($jour['retour']))
+        <table class="{{ isset($jour['depart']) ? 'page_break' : '' }}" style="margin-top: 20px;padding-bottom: 5mm;">
             <tr>
                 <td style="width:50%; padding: 0 5mm 0 0; border: none;">
 
                     <div style="text-align: center; padding-bottom: 0mm;">
                         <h1>
-                            Retours du {{ $date->format('d/m/Y') }}
+                            Retours du {{ $jour['date']->format('d/m/Y') }}
                         </h1>
                     </div>
 
@@ -158,7 +159,7 @@
                 <td>Vol</td>
                 <td>Prestation</td>
             </tr>
-            @foreach($retours as $reservation)
+            @foreach($jour['retour'] as $reservation)
                 <tr>
                     <td>{{ $reservation->fin_at->format('H:i') }}</td>
                     <td>
@@ -208,7 +209,8 @@
             @endforeach
         </table>
     @endif
-
+    <div class="page_break"></div>
+@endforeach
 </div>
 </body>
 </html>

@@ -14,13 +14,13 @@
                     <th style="width: 20%">Client</th>
                     <th style="width: 180px">Balance</th>
                     <th style="width: 10%">Condition</th>
-                    <th style="width: 140px">Actions</th>
+                    <th style="width: 150px">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach ($reservations as $reservation)
                     <tr>
-                        <td class="text-white {{ $reservation->is_debut ? 'bg-success' : 'bg-info' }}">{{ $reservation->is_debut ? 'Départ' : 'Retour' }}</td>
+                        <td class="text-white {{ $is_depart ? 'bg-success' : 'bg-info' }}">{{ $is_depart ? 'Départ' : 'Retour' }}</td>
                         <td>
                             <a href="{{ $reservation->categorie ? route('admin.categorie.edit', $reservation->categorie) : '#' }}">
                                 Catégorie {{ $reservation->categorie_nom }}
@@ -41,7 +41,7 @@
                             @endif
                         </td>
                         <td>
-                            {{ $reservation->is_debut ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}
+                            {{ $is_depart ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}
                             @if ($reservation->custom_fields->vol)
                                 <i class="fa fa-plane-arrival" data-toggle="tooltip" data-placement="auto" data-html="true" title="Numéro de vol : {{ $reservation->custom_fields->vol }}"></i>
                             @endif
@@ -63,7 +63,7 @@
                         <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
                         <td class="text-right">
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
-                                @if ($reservation->is_debut)
+                                @if ($is_depart)
                                     <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-signature"></i></a>
                                 @endif
                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$reservation]) }}"><i class="fa fa-edit"></i></a>

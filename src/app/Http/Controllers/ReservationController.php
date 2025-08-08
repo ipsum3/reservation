@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Http\Controllers;
 use Artisan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -555,60 +556,78 @@ class ReservationController extends AdminController
         return back();
     }
 
-    public function departEtRetour(ShowDepartRetour $request)
+    protected function _getDepartRetourResa(ShowDepartRetour $request, $groupe_by_heure = true) :Collection
     {
-        $date = $request->filled('date') ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now();
-
+        // Départ
         $query = Reservation::confirmed()
-            ->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
-
+            ->whereBetween('debut_at', [$request->debut_at, $request->fin_at]);
         if ($request->filled('lieu_id')) {
             $query->where( 'debut_lieu_id', $request->lieu_id );
         }
+        $group_by[] = function (Reservation $reservation) {
+            return  $reservation->debut_at->format('Y-m-d');
+        };
+        if ($groupe_by_heure) {
+            $group_by[] = function (Reservation $reservation) {
+                return  $reservation->debut_at->format('H:i');
+            };
+        }
+        $heures_depart = $query->orderBy('debut_at')->get()->groupBy($group_by);
 
-        $heures_depart = $query->get()->groupBy(function (Reservation $reservation, $key) use ($date) {
-            $reservation->is_debut = true;
-            return  $reservation->debut_at->format('H:i');
-        })->sortKeys();
-
+        // Retour
         $query = Reservation::confirmed()
-            ->whereRaw("DATE_FORMAT(fin_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
-
+            ->whereBetween('fin_at', [$request->debut_at, $request->fin_at]);
         if ($request->filled('lieu_id')) {
             $query->where( 'fin_lieu_id', $request->lieu_id );
         }
-
-        $heures_retour = $query->get()->groupBy(function (Reservation $reservation, $key) use ($date) {
-                $reservation->is_debut = false;
+        $group_by[] = function (Reservation $reservation) {
+            return  $reservation->fin_at->format('Y-m-d');
+        };
+        if ($groupe_by_heure) {
+            $group_by[] = function (Reservation $reservation) {
                 return  $reservation->fin_at->format('H:i');
-            })->sortKeys();
+            };
+        }
+        $heures_retour = $query->orderBy('fin_at')->get()->groupBy($group_by);
+
+        // Fusion des dates
+        $periode = CarbonPeriod::create($request->debut_at, $request->fin_at);
+        $jours = collect();
+        foreach ($periode as $date) {
+            $heures = [];
+            $date_format = $date->format('Y-m-d');
+
+            if (isset($heures_depart[$date_format])) {
+                $heures['depart'] = $heures_depart[$date_format];
+            }
+            if (isset($heures_retour[$date_format])) {
+                $heures['retour'] = $heures_retour[$date_format];;
+            }
+
+            if (isset($heures['depart']) or isset($heures['retour'])) {
+                $heures['date'] = $date;
+                $jours->push($heures);
+            }
+        }
+        return $jours;
+    }
+
+    public function departEtRetour(ShowDepartRetour $request)
+    {
+        $dates = $request->debut_at->format('d/m/Y') . ' - ' . $request->fin_at->format('d/m/Y');
+
+        $jours = $this->_getDepartRetourResa($request);
 
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.depart-retour', compact('heures_depart', 'heures_retour', 'date', 'lieux'));
+        return view('IpsumReservation::reservation.depart-retour', compact('jours', 'lieux', 'dates'));
     }
 
-    public function imprimerContratDepart( ShowDepartRetour $request, $date = null, $lieu_id = null )
+    public function imprimerDepartEtRetour(ShowDepartRetour $request)
     {
-        $date = $request->filled('date') ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now();
+        $jours = $this->_getDepartRetourResa($request, false);
 
-        $query = Reservation::confirmed()->whereRaw("DATE_FORMAT(debut_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
-
-        if( $lieu_id ) {
-            $query->where( 'debut_lieu_id', $lieu_id );
-        }
-
-        $departs = $query->orderBy( 'debut_at' )->get();
-
-        $query = Reservation::confirmed()->whereRaw("DATE_FORMAT(fin_at, '%Y-%m-%d') = '".$date->format('Y-m-d')."'");
-
-        if( $lieu_id ) {
-            $query->where( 'fin_lieu_id', $lieu_id );
-        }
-
-        $retours = $query->orderBy( 'fin_at' )->get();
-
-        $pdf = Pdf::loadView('IpsumReservation::reservation.imprime-depart-retour', compact('departs', 'retours', 'date'));
+        $pdf = Pdf::loadView('IpsumReservation::reservation.imprime-depart-retour', compact('jours'));
 
         return $pdf->stream();
     }
