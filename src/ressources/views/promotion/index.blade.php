@@ -28,6 +28,7 @@
                     <tr>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Nom', 'champ' => 'nom'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Code', 'champ' => 'code'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Du', 'champ' => 'debut_at'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Au', 'champ' => 'fin_at'])</th>
                         <th width="240px">Actions</th>
@@ -38,8 +39,9 @@
                         <tr class="{{ $promotion->is_en_cours ? 'bg-success' : '' }}">
                             <td>{{ $promotion->id }}</td>
                             <td>{{ $promotion->nom }} {{ $promotion->reference ? '('.$promotion->reference.')' : '' }}</td>
-                            <td>{{ $promotion->debut_at->format('d/m/Y') }}</td>
-                            <td>{{ $promotion->fin_at->format('d/m/Y') }}</td>
+                            <td>{{ $promotion->code }}</td>
+                            <td>{{ $promotion->debut_at?->format('d/m/Y') }}</td>
+                            <td>{{ $promotion->fin_at?->format('d/m/Y') }}</td>
                             <td class="text-right">
                                 <form action="{{ route('admin.promotion.destroy', $promotion) }}" method="POST">
                                     @csrf

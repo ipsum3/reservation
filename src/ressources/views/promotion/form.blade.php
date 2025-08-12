@@ -63,10 +63,10 @@
                 {{ Aire::select(collect(['' => '---- Clients -----'])->union($clients), 'client_id', 'Client')->groupAddClass('col-md-6') }}
             </div>
             <div class="form-row">
-                {{ Aire::date('debut_at', 'Valable à partir du*')->required()->groupAddClass('col-md-6') }}
-                {{ Aire::date('fin_at', "Valable jusqu'au*")->required()->groupAddClass('col-md-6') }}
-                {{ Aire::date('activation_at', "Date d'activation")->groupAddClass('col-md-6') }}
-                {{ Aire::date('desactivation_at', "Date de désactivation")->groupAddClass('col-md-6') }}
+                {{ Aire::date('debut_at', 'Valable à partir du')->helpText("Date du début de la réservation (incluse)")->groupAddClass('col-md-6') }}
+                {{ Aire::date('fin_at', "Valable jusqu'au")->helpText("Date de fin de la réservation (incluse)")->groupAddClass('col-md-6') }}
+                {{ Aire::date('activation_at', "Date d'activation")->helpText("Date de création de la réservation (incluse)")->groupAddClass('col-md-6') }}
+                {{ Aire::date('desactivation_at', "Date de désactivation")->helpText("Date de création de la réservation (incluse)")->groupAddClass('col-md-6') }}
             </div>
             <div class="form-row">
                 {{ Aire::number('duree_min', 'Durée de réservation minimum')->groupAddClass('col-md-6') }}

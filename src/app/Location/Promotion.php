@@ -19,21 +19,12 @@ class Promotion extends \Ipsum\Reservation\app\Models\Promotion\Promotion
 
     public function scopeConditionScope(Builder $query, Devis $devis)
     {
-        $debut_at = $devis->getLocation()->getDebutAt()->copy()->startOfDay();
-        $fin_at = $devis->getLocation()->getFinAt()->copy()->startOfDay();
-        $test = $devis->getPrestations()->pluck('id');
 
         $query->active()
 
             // Dates et durée réservation
-            ->where('debut_at', '<=', $debut_at)
-            ->where('fin_at', '>=', $fin_at)
-            ->where(function (Builder $query) use ($debut_at, $fin_at) {
-                $query->where('duree_min', '<=', $debut_at->diffInDays($fin_at))->orWhereNull('duree_min');
-            })
-            ->where(function (Builder $query) use ($debut_at, $fin_at) {
-                $query->where('duree_max', '>=', $debut_at->diffInDays($fin_at))->orWhereNull('duree_max');
-            })
+            ->valable($devis->getLocation()->getDebutAt(), $devis->getLocation()->getFinAt())
+            ->dureeBetween($devis->getLocation()->getNbJours())
 
             // Catégories
             ->where(function (Builder $query) use ($devis) {
@@ -76,6 +67,7 @@ class Promotion extends \Ipsum\Reservation\app\Models\Promotion\Promotion
             ->where(function (Builder $query) {
                 $query->where('client_id', auth()->check() ? auth()->id() : null)->orWhereNull('client_id');
             });
+
     }
 
 

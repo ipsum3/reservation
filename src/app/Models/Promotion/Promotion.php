@@ -122,6 +122,16 @@ class Promotion extends BaseModel
      * Scopes
      */
 
+    public function scopeValable(Builder|self $query, Carbon $debut_at, Carbon $fin_at): void
+    {
+        $query->where(function (Builder $query) use ($debut_at) {
+            $query->where('debut_at', '<=', $debut_at->clone()->startOfDay())->orWhereNull('debut_at');
+        })
+        ->where(function (Builder $query) use ($fin_at) {
+            $query->where('fin_at', '>=', $fin_at->clone()->startOfDay())->orWhereNull('fin_at');
+        });
+    }
+
     public function scopeActive(Builder|self $query): void
     {
         $now = Carbon::now();
@@ -137,9 +147,20 @@ class Promotion extends BaseModel
 
     public function scopeEnCours(Builder|self $query): void
     {
-        $query->active()->where('fin_at', '>=', Carbon::now()->startOfDay());
+        $query->active()->where(function (Builder $query) {
+            $query->where('fin_at', '>=', Carbon::now()->startOfDay())->orWhereNull('fin_at');
+        });
     }
 
+    public function scopeDureeBetween(Builder|self $query, int $duree): void
+    {
+        $query->where(function (Builder $query) use ($duree) {
+            $query->where('duree_min', '<=', $duree)->orWhereNull('duree_min');
+        })
+        ->where(function (Builder $query) use ($duree) {
+            $query->where('duree_max', '>=', $duree)->orWhereNull('duree_max');
+        });
+    }
 
 
 
@@ -155,7 +176,7 @@ class Promotion extends BaseModel
 
     public function getIsEnCoursAttribute(): bool
     {
-        return $this->is_active and $this->fin_at >= Carbon::now()->startOfDay();
+        return $this->is_active and ($this->fin_at >= Carbon::now()->startOfDay() or $this->fin_at === null);
     }
 
 }

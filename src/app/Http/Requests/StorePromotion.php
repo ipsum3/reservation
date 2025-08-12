@@ -86,10 +86,10 @@ class StorePromotion extends FormRequest
             "condition_paiement_id" => "nullable|exists:condition_paiements,id",
             "code" => 'nullable|max:255|unique:promotions,code,'.(isset($current_params['promotion']) ? $current_params['promotion']->id : '').',id',
 
-            'debut_at' => 'required|date|after_or_equal:today',
-            'fin_at' => 'required|date|after_or_equal:debut_at',
-            'activation_at' => 'nullable|date|after_or_equal:debut_at',
-            'desactivation_at' => 'nullable|date|after_or_equal:activation_at',
+            'debut_at' => 'nullable|date',
+            'fin_at' => 'nullable|date|after_or_equal:debut_at',
+            'activation_at' => 'nullable|date',
+            'desactivation_at' => 'nullable|date|after_or_equal:activation_at|required_without:fin_at',
 
             "duree_min" => 'nullable|numeric',
             "duree_max" => 'nullable|numeric',
