@@ -73,6 +73,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\VehiculeController::cl
         Route::any('{vehicule}/destroy', 'destroy')->name('destroy');
         Route::put('{vehicule}', 'update')->name('update');
         Route::get('{vehicule}/edit', 'edit')->name('edit');
+        Route::any('{vehicule}/dommage/{dommage}/destroy', 'dommage_destroy')->name('dommage.destroy');
     }
 );
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\InterventionController::class)->prefix('intervention')->name('admin.intervention.')->group(
@@ -228,3 +229,42 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\MotorisationController
         Route::get('{motorisation}/edit/{locale?}', 'edit')->name('edit');
     }
 );
+
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)->prefix('inspections')->name('admin.inspection.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::get('{inspection}/pdf', 'pdf')->name('pdf');
+        Route::any('{inspection}/destroy', 'destroy')->name('destroy');
+    }
+);
+
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)
+    ->prefix('etat-des-lieux/{reservation}/{type}')
+    ->name('admin.inspection.')
+    ->group(function () {
+
+        Route::get('vehicule', 'vehicule')->name('vehicule');
+        Route::post('vehicule', 'storeVehicule')->name('vehicule.store');
+
+        Route::get('client', 'client')->name('client');
+
+        Route::get('checklist', 'checklist')->name('checklist');
+        Route::post('checklist', 'storeChecklist')->name('checklist.store');
+
+        Route::get('dommage', 'dommage')->name('dommage');
+        Route::post('dommage', 'storeDommage')->name('dommage.store');
+
+        Route::get('photos', 'photos')->name('photos');
+        Route::post('photos', 'storePhotos')->name('photos.store');
+
+        Route::get('signature-locataire', 'signatureLocataire')->name('signature.locataire');
+        Route::post('signature-locataire', 'storeSignatureLocataire')->name('signature.locataire.store');
+
+        Route::get('signature-agent', 'signatureAgent')->name('signature.agent');
+        Route::post('signature-agent', 'storeSignatureAgent')->name('signature.agent.store');
+
+        Route::get('recapitulatif', 'recapitulatif')->name('recapitulatif');
+        Route::get('send', 'send')->name('send');
+        Route::get('show', 'show')->name('show');
+
+    });

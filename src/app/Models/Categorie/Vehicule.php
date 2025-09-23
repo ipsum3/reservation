@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
+use Ipsum\Reservation\app\Models\Dommage\Dommage;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\database\factories\VehiculeFactory;
 
@@ -91,6 +92,11 @@ class Vehicule extends BaseModel
     public function interventions()
     {
         return $this->hasMany(Intervention::class);
+    }
+
+    public function dommages()
+    {
+        return $this->hasMany(Dommage::class);
     }
 
 

@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Models\Reservation\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class ConducteurCollection  extends Collection implements Castable
@@ -35,7 +36,15 @@ class ConducteurCollection  extends Collection implements Castable
 
                 $data = $attributes[$key] !== null ? json_decode($attributes[$key], true) : null;
 
-                $datas = collect($data)->map(function ($item, $key) {
+                $datas = collect($data)->map(function ($item) {
+
+                    if (!empty($item['naissance_at'])) {
+                        $item['naissance_at'] = Carbon::parse($item['naissance_at']);
+                    }
+                    if (!empty($item['permis_at'])) {
+                        $item['permis_at'] = Carbon::parse($item['permis_at']);
+                    }
+
                     return new Conducteur($item);
                 })->all();
                 return new ConducteurCollection($datas);

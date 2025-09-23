@@ -10,6 +10,7 @@ use Ipsum\Reservation\app\Http\Requests\StoreVehicule;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Categorie\Type;
+use Ipsum\Reservation\app\Models\Dommage\Dommage;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Prologue\Alerts\Facades\Alert;
 
@@ -90,7 +91,11 @@ class VehiculeController extends AdminController
 
         $conflicts = $vehicule->getConflicts();
 
-        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories', 'stats', 'conflicts'));
+        $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
+        $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
+        $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
+
+        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories', 'stats', 'conflicts', 'dommage_types', 'dommage_elements', 'dommage_emplacements'));
     }
 
     public function update(StoreVehicule $request, Vehicule $vehicule)
@@ -108,6 +113,16 @@ class VehiculeController extends AdminController
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();
         return redirect()->route('admin.vehicule.index');
+
+    }
+
+    public function dommage_destroy(Vehicule $vehicule, dommage $dommage)
+
+    {
+        $dommage->delete();
+
+        Alert::warning("Le dommage a bien été supprimé")->flash();
+        return back();
 
     }
 }

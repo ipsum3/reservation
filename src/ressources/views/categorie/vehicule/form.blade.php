@@ -185,6 +185,93 @@
                     </div>
                 </div>
             </div>
+
+
+            @if($vehicule->exists && config('ipsum.reservation.etat_des_lieux.enable') === true)
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="box-title">
+                            Dommage(s)
+                        </h2>
+
+                        <div class="btn-toolbar">
+                        </div>
+                    </div>
+
+                    <div class="box-body overflow-auto">
+                        <input type="hidden" name="dommages">
+
+                        <table class="table table-hover table-striped"  style="min-width: 1000px">
+                            <thead>
+                            <tr>
+                                <th scope="col"> Type </th>
+                                <th scope="col"> Emplacement </th>
+                                <th scope="col"> Elément </th>
+                                <th scope="col"> Observations </th>
+                                <th  style="width: 210px">Image</th>
+                                <th style="width: 50px"></th>
+                            </tr>
+                            </thead>
+                            <tbody id="dommages-lignes">
+                            @if($vehicule->dommages->count())
+                                @php
+                                    $i = 1;
+                                @endphp
+                                @foreach($vehicule->dommages as $dommage)
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="dommages[{{ $i }}][id]" value="{{ $dommage->id }}" />
+                                            {{ $dommage->type->nom }}
+                                        </td>
+                                        <td>
+                                            {{ $dommage->emplacement->nom }}
+                                        </td>
+                                        <td>
+                                            {{ $dommage->element->nom }}
+                                        </td>
+                                        <td>
+                                            {!! $dommage->observations !!}
+                                        </td>
+                                        <td>
+                                            @if($dommage->inspection->medias()->groupe($dommage->id)->count())
+                                                @php $media = $dommage->inspection->medias()->groupe($dommage->id)->first(); @endphp
+                                                <div class="media sortable-item" data-sortable="{{ $media->id }}">
+                                                    <div class="media-img">
+                                                        @if ($media->isImage)
+                                                            <img src="{{ Croppa::url($media->cropPath, 200) }}" alt="{{ $media->tagAlt }}" />
+                                                        @else
+                                                            <span class="media-icone {{ $media->icone }}"></span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="media-title">
+                                                        {{ $media->titre }}
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td class="text-right">
+                                            <form action="{{ route('admin.vehicule.dommage.destroy', [$vehicule, $dommage]) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+
+                                    @php
+                                        $i++;
+                                    @endphp
+                                @endforeach
+                            @endif
+
+
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 

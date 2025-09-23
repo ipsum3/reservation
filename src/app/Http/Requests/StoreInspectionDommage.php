@@ -2,12 +2,13 @@
 
 namespace Ipsum\Reservation\app\Http\Requests;
 
-
 use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
-use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\app\Rules\InterventionUnique;
+use Ipsum\Reservation\app\Models\Categorie\InterventionType;
+use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 
-class StoreVehicule extends FormRequest
+class StoreInspectionDommage extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,26 +27,9 @@ class StoreVehicule extends FormRequest
      */
     public function rules()
     {
-        $current_params = \Route::current()->parameters();
-
         return [
-            "immatriculation" => 'required|max:255|unique:vehicules,immatriculation,'.(isset($current_params['vehicule']) ? $current_params['vehicule']->id : '').',id',
-            "mise_en_circualtion_at" => "required|date_format:Y-m-d",
-            "categorie_id" => "required|exists:categories,id",
-            "marque_modele" => 'required|max:255',
-            "entree_at" => [
-                "required",
-                "date_format:Y-m-d",
-            ],
-            "sortie_at" => [
-                "nullable",
-                "date_format:Y-m-d",
-                /* TODO check date de sortie en fonction des résa associé
-                 * Rule::unique(Reservation::class)->where(function ($query) {
-                    return $query->where('account_id', 1);
-                }),*/
-            ],
             // Dommages
+            'ids' => ['nullable', 'array'],
             'dommages' => ['nullable', 'array'],
             'dommages.*.id' => ['nullable', 'integer'],
             'dommages.*.uuid' => ['nullable', 'string'],

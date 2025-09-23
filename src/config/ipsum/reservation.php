@@ -64,6 +64,12 @@ return [
         'couleur' => '#bbb',
         'view' => 'IpsumReservation::reservation.documents.devis',
     ],
+    'etat_des_lieux' => [
+        'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
+        'couleur' => '#bbb',
+        'view' => 'IpsumReservation::reservation.documents.etat_des_lieux',
+        'enable' => false,
+    ],
     'jours-feries' => [
         // https://www.data.gouv.fr/fr/datasets/5b3cc551c751df4822526c1c/
         //'url' => 'https://etalab.github.io/jours-feries-france-data/json/martinique.json'
@@ -114,4 +120,11 @@ return [
     ],
 
     'planning_duree' => 3,
+
+    'zoho' => [
+        'client_id' => env('ZOHO_CLIENT_ID'),
+        'client_secret' => env('ZOHO_CLIENT_SECRET'),
+        'refresh_token' => env('ZOHO_REFRESH_TOKEN'),
+        'api_domain' => env('ZOHO_API_DOMAIN', 'sign.zoho.eu'),
+    ],
 ];

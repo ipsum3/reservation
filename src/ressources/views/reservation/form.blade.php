@@ -242,6 +242,15 @@
                         @if($reservation->is_confirmed)
                             <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir la confirmation</a>&nbsp;
                             <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation']) }}" ><i class="fas fa-envelope"></i> Envoyer le mail de confirmation</a>&nbsp;
+
+                            @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
+                                @if($reservation->inspection_initiale)
+                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_initiale]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir l'état des lieux initial</a>&nbsp;
+                                @endif
+                                @if($reservation->inspection_finale)
+                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_finale]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir l'état des lieux final</a>&nbsp;
+                                @endif
+                            @endif
                         @endif
 
                         @if($reservation->contrat && !config('ipsum.reservation.contrat.disable'))
@@ -397,6 +406,8 @@
                     </div>
                 </div>
             @endif
+
+
         </div>
     </div>
 

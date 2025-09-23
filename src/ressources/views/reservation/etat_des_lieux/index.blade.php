@@ -1,0 +1,67 @@
+@extends('IpsumAdmin::layouts.app')
+@section('title', 'Promotions')
+
+@section('content')
+
+    <h1 class="main-title">Inspections</h1>
+    <div class="box">
+        <div class="box-header">
+            <h2 class="box-title">Liste ({{ $inspections->total() }})</h2>
+            <div class="btn-toolbar">
+            </div>
+        </div>
+        <div class="box-body">
+
+            {{ Aire::open()->class('form-inline mt-4 mb-1')->route('admin.inspection.index') }}
+            <label class="sr-only" for="search">Recherche</label>
+            {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
+            <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
+            {{ Aire::close() }}
+            <div class="table-wrapper">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
+                        <th>Réservation</th>
+                        <th>Locataire</th>
+                        <th>Agent</th>
+                        <th>Type</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Du', 'champ' => 'debut_at'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Au', 'champ' => 'fin_at'])</th>
+                        <th width="240px">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($inspections as $inspection)
+                        <tr class="{{ $inspection->isSigned() ? 'bg-success' : '' }}">
+                            <td>{{ $inspection->id }}</td>
+                            <td><a href="{{ route('admin.reservation.edit', [$inspection->reservation]) }}">{{ $inspection->reservation->reference }}</a></td>
+                            <td>{{ $inspection->reservation->nom }} {{ $inspection->reservation->prenom }}</td>
+                            <td>{{ $inspection->admin->email }} ({{ $inspection->admin->name }} {{ $inspection->admin->firstname }})</td>
+                            <td><span class="badge badge-{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'primary' : 'info' }}">{{ $inspection->type->nom }}</span></td>
+                            <td>{{ $inspection->reservation->debut_at?->format('d/m/Y') }}</td>
+                            <td>{{ $inspection->reservation->fin_at?->format('d/m/Y') }}</td>
+                            <td class="text-right">
+                                <form action="{{ route('admin.inspection.destroy', $inspection) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    @if (!$inspection->isSigned())
+                                        <a class="btn btn-primary" href="{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? route('admin.inspection.vehicule', [$inspection->reservation, $inspection->type]) : route('admin.inspection.checklist', [$inspection->reservation, $inspection->type]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                        <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                    @else
+                                        <a class="btn btn-primary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-pdf"></i> Voir le document</a>
+                                    @endif
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            {!! $inspections->appends(request()->all())->links() !!}
+
+        </div>
+    </div>
+
+@endsection

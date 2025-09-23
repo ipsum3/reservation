@@ -11,6 +11,7 @@ use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Client;
+use Ipsum\Reservation\app\Models\Inspection\Inspection;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Casts\ConducteurCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\EcheancierCollection;
@@ -158,6 +159,7 @@ class Reservation extends BaseModel
             ) {
                 $vehicule = Vehicule::where('categorie_id', $reservation->categorie_id)->whereDoesntHaveReservationConfirmed($reservation->debut_at, $reservation->fin_at)->orderBy('mise_en_circualtion_at', 'desc')->first();
                 $reservation->vehicule_id = !is_null($vehicule) ? $vehicule->id : null;
+                $reservation->immatriculation = !is_null($vehicule) ? $vehicule->immatriculation : null;
             }
 
             if($reservation->is_confirmed and !$reservation->contrat) {
@@ -227,6 +229,11 @@ class Reservation extends BaseModel
     public function source()
     {
         return $this->belongsTo(Source::class);
+    }
+
+    public function inspections()
+    {
+        return $this->hasMany(Inspection::class);
     }
 
 
@@ -378,5 +385,20 @@ class Reservation extends BaseModel
     {
         $this->attributes['fin_lieu_id'] = $value;
         $this->attributes['fin_lieu_nom'] = $this->lieuFin ? $this->lieuFin->nom : '';
+    }
+
+    public function getInspectionInitialeAttribute()
+    {
+        return $this->inspections()
+            ->where('type_id', \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
+            ->latest()
+            ->first();
+    }
+    public function getInspectionFinaleAttribute()
+    {
+        return $this->inspections()
+            ->where('type_id', \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID)
+            ->latest()
+            ->first();
     }
 }
