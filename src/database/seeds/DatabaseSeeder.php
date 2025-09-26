@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\database\seeds;
 
 use Illuminate\Database\Seeder;
+use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\database\seeds\ChecklistSeeder;
 use Ipsum\Reservation\database\seeds\DommageElementSeeder;
 use Ipsum\Reservation\database\seeds\DommageEmplacementSeeder;
@@ -18,7 +19,10 @@ class DatabaseSeeder extends Seeder
 
         Client::factory(10)->create();
 
-        $this->call(CategorieSeeder::class);
+        $categories = Categorie::all();
+        if(!$categories){
+            $this->call(CategorieSeeder::class);
+        }
         $this->call(InterventionSeeder::class);
         $this->call(ReservationSeeder::class);
         $this->call(PaiementSeeder::class);
