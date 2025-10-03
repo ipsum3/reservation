@@ -460,7 +460,7 @@ class ReservationController extends AdminController
         try {
             $reservation = Reservation::findOrFail( $request->reservation_id );
             if( $request->document == 'confirmation' ) {
-                Mail::send(new Confirmation($reservation, $request->email ));
+                Mail::send(new Confirmation($reservation, $request->email, false));
                 Alert::success("L'email de confirmation a bien été envoyé")->flash();
             } else if ( $request->document == 'devis' ) {
                 Mail::send(new Devis($reservation, $request->email ));
