@@ -121,10 +121,4 @@ return [
 
     'planning_duree' => 3,
 
-    'zoho' => [
-        'client_id' => env('ZOHO_CLIENT_ID'),
-        'client_secret' => env('ZOHO_CLIENT_SECRET'),
-        'refresh_token' => env('ZOHO_REFRESH_TOKEN'),
-        'api_domain' => env('ZOHO_API_DOMAIN', 'sign.zoho.eu'),
-    ],
 ];
