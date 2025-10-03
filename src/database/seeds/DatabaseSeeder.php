@@ -19,10 +19,7 @@ class DatabaseSeeder extends Seeder
 
         Client::factory(10)->create();
 
-        $categories = Categorie::all();
-        if(!$categories){
-            $this->call(CategorieSeeder::class);
-        }
+        $this->call(CategorieSeeder::class);
         $this->call(InterventionSeeder::class);
         $this->call(ReservationSeeder::class);
         $this->call(PaiementSeeder::class);

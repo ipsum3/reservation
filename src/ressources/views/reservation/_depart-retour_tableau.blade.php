@@ -64,9 +64,11 @@
                         <td class="text-right">
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
                                 @if ($is_depart)
-                                    <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" title="Etat des lieux initial"><i class="fa fa-car"></i></a>
+                                    @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" title="Etat des lieux initial"><i class="fa fa-car"></i></a>
+                                    @endif
                                     <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" title="contrat"><i class="fa fa-file-signature"></i></a>
-                                @else
+                                @elseif(config('ipsum.reservation.etat_des_lieux.enable') === true)
                                     <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}" title="Etat des lieux final"><i class="fa fa-car"></i></a>
                                 @endif
                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$reservation]) }}"><i class="fa fa-edit"></i></a>
