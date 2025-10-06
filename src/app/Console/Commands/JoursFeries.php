@@ -3,8 +3,8 @@
 namespace Ipsum\Reservation\app\Console\Commands;
 
 use Ipsum\Reservation\app\Classes\Carbon;
-use Ipsum\Core\app\Console\Commands\Command;
 use Ipsum\Reservation\app\Models\Lieu\Ferie;
+use Illuminate\Console\Command;
 
 
 class JoursFeries extends Command
@@ -15,7 +15,7 @@ class JoursFeries extends Command
      *
      * @var string
      */
-    protected $signature = 'ipsum:reservation:joursferies';
+    protected $signature = 'ipsum:reservation:joursferies  {type=import} {--nom=} {--jour=} {--mois=} {--annee-fin=}';
 
     /**
      * The console command description.
@@ -41,6 +41,20 @@ class JoursFeries extends Command
      */
     public function handle()
     {
+        $type = $this->argument('type');
+
+        if ($type === 'generate') {
+            $this->generate();
+        } else {
+            $this->import();
+        }
+
+        return Command::SUCCESS;
+    }
+
+
+    protected function import()
+    {
         $this->info("Import des jours fériés");
 
         $jours_existant = Ferie::all()->map(function ($value) {
@@ -61,7 +75,32 @@ class JoursFeries extends Command
             }
         }
 
-        
+
         $this->info("Import des jours fériés terminé.");
+    }
+
+
+    protected function generate()
+    {
+        $jours_existant = Ferie::all()->map(function ($value) {
+            return $value->jour_at->format('Y-m-d');
+        })->toArray();
+
+        $annee = Carbon::now()->year;
+
+        while ($annee <= $this->option('annee-fin')) {
+
+            $date = Carbon::create($annee, $this->option('mois'), $this->option('jour'));
+
+            if (!in_array($date->format('Y-m-d'), $jours_existant)) {
+                Ferie::create([
+                    'nom' => $this->option('nom'),
+                    'jour_at' => $date,
+                ]);
+            }
+
+            $annee++;
+        }
+
     }
 }
