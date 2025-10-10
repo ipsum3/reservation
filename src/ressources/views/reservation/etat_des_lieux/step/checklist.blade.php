@@ -16,8 +16,8 @@
                     <!-- Progress bar -->
                     <ul class="progressbar mt-2 clearfix overflow-auto">
                         @if($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                            <li>Véhicule</li>
-                            <li>Client / Réservation</li>
+                            <li><a href="{{ route('admin.inspection.vehicule', [$reservation, $type]) }}">Véhicule</a></li>
+                            <li><a href="{{ route('admin.inspection.client', [$reservation, $type]) }}">Client / Réservation</a></li>
                         @endif
                         <li class="active">Kilométrage / Carburant / Checklist</li>
                         <li>Dommages</li>
@@ -35,9 +35,9 @@
                     <div class="step active">
                         <div class="box-body">
                             <div class="row">
-                                {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->helpText(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale) ? 'Kilométrage initial : '.$reservation->inspection_initiale?->kilometrage.' km' : '')->groupAddClass('col-md-12') }}
-                                {{ Aire::range('carburant', 'Niveau de carburant*')->step('1')->min(0)->max(8)->list('markers')->id('carburant')->helpText(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale) ? 'Niveau de carburant initial : '.$reservation->inspection_initiale?->carburant.'/8' : '')->groupAddClass('col-md-11') }}
-                                <p class="d-flex"><output id="carburant_value"></output></p>
+                                {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->value(old('kilometrage', ( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale) ? $reservation->inspection_initiale->kilometrage : ( $inspection->kilometrage ?? '')))->helpText(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale) ? 'Kilométrage initial : '.$reservation->inspection_initiale?->kilometrage.' km' : '')->groupAddClass('col-md-12') }}
+                                {{ Aire::range('carburant', 'Niveau de carburant*')->step('1')->min(0)->max(8)->value(old('carburant', ( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale) ? $reservation->inspection_initiale->carburant : ( $inspection->carburant ?? 8)))->list('markers')->id('carburant')->helpText(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale) ? 'Niveau de carburant initial : '.$reservation->inspection_initiale?->carburant.'/8' : '')->groupAddClass('col-md-11') }}
+                                <p class="d-flex pl-3"><output id="carburant_value"></output></p>
                                 <datalist id="markers">
                                     @for($i=0; $i<=8; $i++)
                                         <option value="{{ $i }}" label="{{ $i }}"></option>
@@ -72,12 +72,12 @@
                                     </div>
                                 @endif
 
-                                <div class="form-group col-md-2 mt-4 alert">
+                                <div class="form-group col-md-2 mt-2 alert">
                                     <label class=" cursor-pointer" data-aire-component="label" for="checklists">
                                         Checklist
                                     </label>
                                     @foreach($checklists as $checklist)
-                                        <div class="form-check">
+                                        <div class="form-check mt-2">
                                             <input
                                                     type="checkbox"
                                                     class="form-check-input"
@@ -94,7 +94,7 @@
                                 </div>
 
                                 @if(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale))
-                                    <div class="form-group col-md-4 mt-4 alert alert-light" data-aire-component="group" data-aire-for="observations">
+                                    <div class="form-group col-md-4 mt-2 alert alert-light" data-aire-component="group" data-aire-for="observations">
                                         <label class=" cursor-pointer" data-aire-component="label" for="__aire-0-observations10">
                                             Observation(s) initiale(s)
                                         </label>
@@ -104,7 +104,7 @@
                                     </div>
                                 @endif
 
-                                {{ Aire::textArea('observations', 'Observation(s)')->groupAddClass('col-md-4 mt-4 alert')->class('tinymce-simple') }}
+                                {{ Aire::textArea('observations', 'Observation(s)')->rows(5)->groupAddClass('col-md-4 mt-2 alert') }}
 
                             </div>
                         </div>

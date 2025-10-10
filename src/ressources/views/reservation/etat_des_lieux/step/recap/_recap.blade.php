@@ -42,22 +42,18 @@
     <div class="card mb-3 shadow-sm col-md-4">
         <div class="card-header bg-primary text-white p-2">Dommages constatés</div>
         <div class="card-body p-2">
-            <div class="table-wrapper">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th> Type</th>
-                        <th> Emplacement</th>
-                        <th> Elément</th>
-                        <th> Observations</th>
-                        <th style="width: 200px">Image</th>
-                        <th style="width: 100px"></th>
-                    </tr>
-                    </thead>
-                    <tbody id="ajax-dommage">
-                    @include('IpsumReservation::reservation.etat_des_lieux.step.recap._dommage')
-                    </tbody>
-                </table>
+            <div class="d-flex flex-row flex-wrap">
+                @include('IpsumReservation::reservation.etat_des_lieux.step.recap._dommage')
+            </div>
+        </div>
+    </div>
+
+    <!-- Photos -->
+    <div class="card mb-3 shadow-sm col-md-4">
+        <div class="card-header bg-primary text-white p-2">Photos</div>
+        <div class="card-body p-2">
+            <div class="row" id="ajax-photos">
+                @include('IpsumReservation::reservation.etat_des_lieux.step.recap._photos')
             </div>
         </div>
     </div>
@@ -70,21 +66,11 @@
         </div>
     </div>
 
-    <!-- Photos -->
+    <!-- Observations -->
     <div class="card mb-3 shadow-sm col-md-4">
         <div class="card-header bg-primary text-white p-2">Observations</div>
         <div class="card-body p-2" id="ajax-observation">
             @include('IpsumReservation::reservation.etat_des_lieux.step.recap._observation')
-        </div>
-    </div>
-
-    <!-- Observations -->
-    <div class="card mb-3 shadow-sm col-md-4">
-        <div class="card-header bg-primary text-white p-2">Photos</div>
-        <div class="card-body p-2">
-            <div class="row" id="ajax-photos">
-                @include('IpsumReservation::reservation.etat_des_lieux.step.recap._photos')
-            </div>
         </div>
     </div>
 

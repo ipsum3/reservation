@@ -2,11 +2,7 @@
 
 namespace Ipsum\Reservation\app\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
-use Ipsum\Reservation\app\Rules\InterventionUnique;
-use Ipsum\Reservation\app\Models\Categorie\InterventionType;
-use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 
 class StoreInspectionDommage extends FormRequest
 {
@@ -29,14 +25,10 @@ class StoreInspectionDommage extends FormRequest
     {
         return [
             // Dommages
-            'ids' => ['nullable', 'array'],
-            'dommages' => ['nullable', 'array'],
-            'dommages.*.id' => ['nullable', 'integer'],
-            'dommages.*.uuid' => ['nullable', 'string'],
-            'dommages.*.type_id' => ['required_with:dommages', 'integer', 'exists:dommage_types,id'],
-            'dommages.*.emplacement_id' => ['required_with:dommages', 'integer', 'exists:dommage_emplacements,id'],
-            'dommages.*.element_id' => ['required_with:dommages', 'integer', 'exists:dommage_elements,id'],
-            'dommages.*.observations' => ['nullable', 'string'],
+            'type_id' => ['required_with:dommages', 'integer', 'exists:dommage_types,id'],
+            'emplacement_id' => ['required_with:dommages', 'integer', 'exists:dommage_emplacements,id'],
+            'element_id' => ['required_with:dommages', 'integer', 'exists:dommage_elements,id'],
+            'observations' => ['nullable', 'string'],
         ];
     }
 

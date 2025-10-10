@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Ipsum\Reservation\app\Models\Dommage\Dommage;
 use Ipsum\Reservation\app\Models\Inspection\Inspection;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -179,6 +180,19 @@ class EtatDesLieuxController extends AdminController
         ));
     }
 
+    public function createDommage(Reservation $reservation, Type $type)
+    {
+        $dommage = new Dommage();
+        $inspection = $this->getInspection($reservation, $type);
+        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
+
+        $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
+        $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
+        $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
+
+        return view('IpsumReservation::reservation.etat_des_lieux.form.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
+    }
+
     public function storeDommage(StoreInspectionDommage $request, Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
@@ -187,47 +201,42 @@ class EtatDesLieuxController extends AdminController
             return back();
         }
 
-        $data = $request->validated();
-        $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
+        $dommageData = $request->validated();
+        $dommageData['inspection_id'] = $inspection->id;
+        $dommageData['vehicule_id']   = $reservation->vehicule_id;
 
-        $dommageIds = $data['ids'] ?? [];
+        $dommage = Dommage::create($dommageData);
 
-        $dommageRelation = $type->id == Type::INITIAL_ID
-            ? $reservation->vehicule->dommages()
-            : $inspection->dommages();
-
-        $dommageRelation->whereNotIn('id', $dommageIds)->delete();
-
-        foreach ($data['dommages'] ?? [] as $dommageData) {
-            $dommageData['inspection_id'] = $inspection->id;
-            $dommageData['vehicule_id']   = $reservation->vehicule_id;
-
-            $dommageRelation = $type->id == Type::INITIAL_ID
-                ? $reservation->vehicule->dommages()
-                : $inspection->dommages();
-
-            $dommage = $dommageRelation->updateOrCreate(
-                ['id' => $dommageData['id'] ?? null],
-                $dommageData
-            );
-
-            if (!empty($dommageData['uuid'])) {
-                $inspection->medias()->groupe($dommageData['uuid'])->first()?->update(['groupe' => $dommage->id]);
-            }
-        }
-
-        return redirect()->route('admin.inspection.photos', [$reservation, $type]);
+        return redirect()->route('admin.inspection.dommage', [$reservation, $type]);
     }
 
-    /** --------- PHOTOS --------- */
-    public function photos(Reservation $reservation, Type $type)
+    public function editDommage(Reservation $reservation, Type $type, Dommage $dommage)
     {
         $inspection = $this->getInspection($reservation, $type);
         if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
-        return view('IpsumReservation::reservation.etat_des_lieux.step.photos', compact(
-            'reservation', 'inspection', 'type'
-        ));
+        $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
+        $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
+        $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
+
+        return view('IpsumReservation::reservation.etat_des_lieux.form.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
+    }
+
+    public function updateDommage(StoreInspectionDommage $request, Reservation $reservation, Type $type, Dommage $dommage)
+    {
+        $inspection = $this->getInspection($reservation, $type);
+        if ($inspection?->isSigned()) {
+            Alert::error('Le document est déjà signé')->flash();
+            return back();
+        }
+
+        $dommageData = $request->validated();
+        $dommageData['inspection_id'] = $inspection->id;
+        $dommageData['vehicule_id']   = $reservation->vehicule_id;
+
+        $dommage->update($dommageData);
+
+        return redirect()->route('admin.inspection.dommage', [$reservation, $type]);
     }
 
     /** --------- RÉCAP --------- */

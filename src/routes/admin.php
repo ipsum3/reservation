@@ -252,10 +252,11 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
         Route::post('checklist', 'storeChecklist')->name('checklist.store');
 
         Route::get('dommage', 'dommage')->name('dommage');
+        Route::get('dommage/create', 'createDommage')->name('dommage.create');
         Route::post('dommage', 'storeDommage')->name('dommage.store');
-
-        Route::get('photos', 'photos')->name('photos');
-        Route::post('photos', 'storePhotos')->name('photos.store');
+        Route::get('dommage/{dommage}/edit', 'editDommage')->name('dommage.edit');
+        Route::put('dommage/{dommage}', 'updateDommage')->name('dommage.update');
+        Route::any('dommage/{dommage}/destroy', 'destroyDommage')->name('dommage.destroy');
 
         Route::get('signature-locataire', 'signatureLocataire')->name('signature.locataire');
         Route::post('signature-locataire', 'storeSignatureLocataire')->name('signature.locataire.store');

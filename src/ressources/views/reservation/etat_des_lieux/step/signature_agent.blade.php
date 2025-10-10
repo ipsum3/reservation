@@ -16,14 +16,13 @@
                     <!-- Progress bar -->
                     <ul class="progressbar mt-2 clearfix overflow-auto">
                         @if($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                            <li>Véhicule</li>
-                            <li>Client / Réservation</li>
+                            <li><a href="{{ route('admin.inspection.vehicule', [$reservation, $type]) }}">Véhicule</a></li>
+                            <li><a href="{{ route('admin.inspection.client', [$reservation, $type]) }}">Client / Réservation</a></li>
                         @endif
-                        <li>Kilométrage / Carburant / Checklist</li>
-                        <li>Dommages</li>
-                        <li>Photos</li>
-                        <li>Récapitulatif</li>
-                        <li>Signature client</li>
+                        <li><a href="{{ route('admin.inspection.checklist', [$reservation, $type]) }}">Kilométrage / Carburant / Checklist</a></li>
+                        <li><a href="{{ route('admin.inspection.dommage', [$reservation, $type]) }}">Dommages / Photos</a></li>
+                        <li><a href="{{ route('admin.inspection.recapitulatif', [$reservation, $type]) }}">Récapitulatif</a></li>
+                        <li><a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}">Signature client</a></li>
                         <li class="active">Signature agent</li>
                     </ul>
                 </div>
@@ -53,7 +52,7 @@
 
                             <!-- Navigation -->
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{{ URL::previous() }}" id="prevBtn" class="btn btn-secondary">Retour</a>
+                                <a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}" id="prevBtn" class="btn btn-secondary">Retour</a>
                                 <button type="submit" id="nextBtn" class="btn btn-success">Valider</button>
                             </div>
 

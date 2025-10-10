@@ -20,8 +20,7 @@
                             <li>Client / Réservation</li>
                         @endif
                         <li>Kilométrage / Carburant / Checklist</li>
-                        <li>Dommages</li>
-                        <li>Photos</li>
+                        <li>Dommages / Photos</li>
                         <li>Récapitulatif</li>
                         <li>Signature client</li>
                         <li>Signature agent</li>

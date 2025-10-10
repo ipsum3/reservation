@@ -16,12 +16,11 @@
                     <!-- Progress bar -->
                     <ul class="progressbar mt-2 clearfix overflow-auto">
                         @if($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                            <li>Véhicule</li>
-                            <li>Client / Réservation</li>
+                            <li><a href="{{ route('admin.inspection.vehicule', [$reservation, $type]) }}">Véhicule</a></li>
+                            <li><a href="{{ route('admin.inspection.client', [$reservation, $type]) }}">Client / Réservation</a></li>
                         @endif
-                        <li>Kilométrage / Carburant / Checklist</li>
-                        <li class="active">Dommages</li>
-                        <li>Photos</li>
+                        <li><a href="{{ route('admin.inspection.checklist', [$reservation, $type]) }}">Kilométrage / Carburant / Checklist</a></li>
+                        <li class="active">Dommages / Photos</li>
                         <li>Récapitulatif</li>
                         <li>Signature client</li>
                         <li>Signature agent</li>
@@ -29,306 +28,116 @@
                 </div>
                 <div class="box-body">
 
-                    {{ Aire::open()->id('reservation')->route('admin.inspection.dommage.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionDommage::class) }}
 
                     <!-- STEP 5 -->
                     <div class="step active">
 
+                        {{-- Dommages précédents (Inspection initiale) --}}
                         @if($inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale)
+                            <h2 class="h4 mb-3">Dommage(s) de l’inspection initiale</h2>
 
-                            <h2 class="text-xl font-semibold mb-2">Dommage(s) initiale(s)</h2>
-
-                            <table class="table table-hover table-striped"  style="min-width: 1000px">
-                                <thead>
-                                <tr>
-                                    <th> Type </th>
-                                    <th> Emplacement </th>
-                                    <th> Elément </th>
-                                    <th> Observations </th>
-                                    <th style="width: 200px">Image</th>
-                                    <th style="width: 100px"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($reservation->inspection_initiale?->dommages)
-                                    @foreach($reservation->inspection_initiale?->dommages as $dommage)
-                                        <tr>
-                                            <td>
-                                                {{ $dommage->type?->nom }}
-                                            </td>
-                                            <td>
-                                                {{ $dommage->emplacement?->nom }}
-                                            </td>
-                                            <td>
-                                                {{ $dommage->element?->nom }}
-                                            </td>
-                                            <td>
-                                                {!! $dommage->observations !!}
-                                            </td>
-                                            <td>
-                                                @if($dommage->inspection->medias()->groupe($dommage->id)->count())
-                                                    @php $media = $dommage->inspection->medias()->groupe($dommage->id)->first(); @endphp
-                                                    <div class="media sortable-item" data-sortable="{{ $media->id }}">
-                                                        <div class="media-img">
-                                                            @if ($media->isImage)
-                                                                <img src="{{ Croppa::url($media->cropPath, 200, 200) }}" alt="{{ $media->tagAlt }}" />
-                                                            @else
-                                                                <span class="media-icone {{ $media->icone }}"></span>
-                                                            @endif
-                                                        </div>
-                                                        <div class="media-title">
-                                                            {{ $media->titre }}
-                                                        </div>
-                                                        <div class="media-toolbar">
-                                                            <ul>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            </td>
-                                            <td>
-                                            </td>
-                                        </tr>
+                            @if($reservation->inspection_initiale?->dommages && $reservation->inspection_initiale->dommages->count())
+                                <div class="d-flex flex-row flex-wrap">
+                                    @foreach($reservation->inspection_initiale->dommages as $dommage)
+                                        @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
                                     @endforeach
-                                @endif
-                                </tbody>
-                            </table>
+                                </div>
+                            @else
+                                <p class="text-muted">Aucun dommage enregistré lors de l’inspection initiale.</p>
+                            @endif
 
-                            <h2 class="text-xl font-semibold mb-2 mt-4">Dommage(s)</h2>
+                            <hr class="my-4">
+                        @endif
+
+                        {{-- Dommages de l’inspection actuelle --}}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="h4 mb-0">Dommage(s) de l’inspection actuelle</h2>
+                            <a href="{{ route('admin.inspection.dommage.create', [$reservation, $type]) }}" class="btn btn-sm btn-success">
+                                <i class="bi bi-plus-circle"></i> <i class="fas fa-plus"></i> Ajouter un dommage
+                            </a>
+                        </div>
+
+                        <div class="d-flex flex-row flex-wrap">
+                            @if($reservation->vehicule?->dommages && $inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
+                                @foreach($reservation->vehicule?->dommages as $dommage)
+                                    @if($dommage->inspection->id != $inspection->id && $dommage->inspection->id != $reservation->inspection_initiale->id)
+                                        @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
+                                    @endif
+                                @endforeach
+                            @endif
+
+                            @if($inspection->dommages && $inspection->dommages->count())
+                                @foreach($inspection->dommages as $dommage)
+                                        @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
+                                @endforeach
+                        </div>
+                        @else
+                            <p class="text-muted">Aucun dommage enregistré pour cette inspection.</p>
                         @endif
 
 
-                        <button class="btn btn-outline-secondary table-editable-add" data-target="dommages" id="dommages-add" type="button" data-toggle="tooltip" title="Ajouter">
-                            <i class="fas fa-plus"></i> Ajouter un dommage
-                        </button>&nbsp;
-                        <div class="box-body overflow-auto">
-                            <input type="hidden" name="dommages">
-
-                            <table class="table table-hover table-striped"  style="min-width: 1000px">
-                                <thead>
-                                <tr>
-                                    <th> Type </th>
-                                    <th> Emplacement </th>
-                                    <th> Elément </th>
-                                    <th> Observations </th>
-                                    <th style="width: 200px">Image</th>
-                                    <th style="width: 100px"></th>
-                                </tr>
-                                </thead>
-                                <tbody id="dommages-lignes">
-                                @if($reservation->vehicule?->dommages && $inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                                    @foreach($reservation->vehicule?->dommages as $dommage)
-                                        @if($dommage->inspection->id != $inspection->id && $dommage->inspection->id != $reservation->inspection_initiale->id)
-                                            <tr>
-                                                <td>
-                                                    <input type="hidden" name="ids[]" value="{{ $dommage->id }}" />
-                                                    {{ $dommage->type?->nom }}
-                                                </td>
-                                                <td>
-                                                    {{ $dommage->emplacement?->nom }}
-                                                </td>
-                                                <td>
-                                                    {{ $dommage->element?->nom }}
-                                                </td>
-                                                <td>
-                                                    {!! $dommage->observations !!}
-                                                </td>
-                                                <td>
-                                                    @if($dommage->inspection->medias()->groupe($dommage->id)->count())
-                                                        @php $media = $dommage->inspection->medias()->groupe($dommage->id)->first(); @endphp
-                                                        <div class="media sortable-item" data-sortable="{{ $media->id }}">
-                                                            <div class="media-img">
-                                                                @if ($media->isImage)
-                                                                    <img src="{{ Croppa::url($media->cropPath, 200, 200) }}" alt="{{ $media->tagAlt }}" />
-                                                                @else
-                                                                    <span class="media-icone {{ $media->icone }}"></span>
-                                                                @endif
-                                                            </div>
-                                                            <div class="media-title">
-                                                                {{ $media->titre }}
-                                                            </div>
-                                                            <div class="media-toolbar">
-                                                                <ul>
-                                                                    <li><a href="{{ route('admin.media.edit', $media->id) }}" data-toggle="tooltip" title="Editer"><span class="fa fa-edit"></span></a></li>
-                                                                    <li><a href="{{ route('admin.media.getDestroy', $media->id) }}" data-toggle="tooltip" title="Supprimer"><span class="fa fa-trash-alt"></span></a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="dommages-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button>
-                                                    <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i></button>&nbsp;
-                                                </td>
-                                            </tr>
-
-                                        @endif
-                                    @endforeach
-                                @endif
-                                @if($inspection->dommages->count())
-                                    @php
-                                        $i = 1;
-                                    @endphp
-                                    @foreach($inspection->dommages as $dommage)
-                                        <tr>
-                                            <td>
-                                                <input type="hidden" name="dommages[{{ $i }}][id]" value="{{ $dommage->id }}" />
-                                                <select class="form-control" name="dommages[{{ $i }}][type_id]" required>
-                                                    <option value="">-- Types --</option>
-                                                    @foreach($dommage_types as $type)
-                                                        <option value="{{ $type->id }}" {{ $dommage->type?->id == $type->id  ? 'selected' : '' }}>{{ $type->nom }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select class="form-control" name="dommages[{{ $i }}][emplacement_id]" required>
-                                                    <option value="">-- Emplacement --</option>
-                                                    @foreach($dommage_emplacements as $emplacement)
-                                                        <option value="{{ $emplacement->id }}" {{ $dommage->emplacement?->id == $emplacement->id  ? 'selected' : '' }}>{{ $emplacement->nom }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select class="form-control" name="dommages[{{ $i }}][element_id]" required>
-                                                    <option value="">-- Elément --</option>
-                                                    @foreach($dommage_elements as $element)
-                                                        <option value="{{ $element->id }}" {{ $dommage->element?->id == $element->id  ? 'selected' : '' }}>{{ $element->nom }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <textarea class="form-control" rows="5" name="dommages[{{ $i }}][observations]">{{ $dommage->observations }}</textarea>
-                                            </td>
-                                            <td>
-                                                @if($inspection->medias()->groupe($dommage->id)->count())
-                                                    @php $media = $inspection->medias()->groupe($dommage->id)->first(); @endphp
-                                                    <div class="media sortable-item" data-sortable="{{ $media->id }}">
-                                                        <div class="media-img">
-                                                            @if ($media->isImage)
-                                                                <img src="{{ Croppa::url($media->cropPath, 200, 200) }}" alt="{{ $media->tagAlt }}" />
-                                                            @else
-                                                                <span class="media-icone {{ $media->icone }}"></span>
-                                                            @endif
-                                                        </div>
-                                                        <div class="media-title">
-                                                            {{ $media->titre }}
-                                                        </div>
-                                                        <div class="media-toolbar">
-                                                            <ul>
-                                                                <li><a href="{{ route('admin.media.edit', $media->id) }}" data-toggle="tooltip" title="Editer"><span class="fa fa-edit"></span></a></li>
-                                                                <li><a href="{{ route('admin.media.getDestroy', $media->id) }}" data-toggle="tooltip" title="Supprimer"><span class="fa fa-trash-alt"></span></a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
+                        @if($inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale)
+                            @php
+                                $photos = $reservation->inspection_initiale->medias()->groupe('photos')->get();
+                            @endphp
+                            @if($photos->count())
+                                <h2 class="text-xl font-semibold mb-2 mb-2">Médias de l'inspection initiale</h2>
+                                <div class="d-flex flex-row flex-wrap sortable upload-files">
+                                    @foreach($photos as $media)
+                                        <div class="media sortable-item" data-sortable="{{ $media->id }}">
+                                            <div class="media-img">
+                                                @if ($media->isImage)
+                                                    <img src="{{ Croppa::url($media->cropPath, 200, 200) }}" alt="{{ $media->tagAlt }}" />
                                                 @else
-                                                    <div class="upload"
-                                                         data-initialize="true"
-                                                         data-uploadendpoint="{{ route('admin.media.store') }}"
-                                                         data-uploadmedias="{{ route('admin.media.publication', ['publication_type' => \Ipsum\Reservation\app\Models\Inspection\Inspection::class, 'publication_id' => $inspection->exists ? $inspection->id : '', 'groupe' => $dommage->id ]) }}"
-                                                         data-uploadrepertoire=""
-                                                         data-uploadpublicationid="{{ $inspection->id ?? '' }}"
-                                                         data-uploadpublicationtype="{{ \Ipsum\Reservation\app\Models\Inspection\Inspection::class }}"
-                                                         data-uploadgroupe="{{ $dommage->id }}"
-                                                         data-uploadnote="Une seule image (max {{ config('ipsum.media.upload_max_filesize') }} Ko)"
-                                                         data-uploadmaxfilesize="{{ config('ipsum.media.upload_max_filesize') }}"
-                                                         data-uploadmmaxnumberoffiles="1"
-                                                         data-uploadminnumberoffiles="0"
-                                                         data-uploadallowedfiletypes="image/*"
-                                                         data-uploadcsrftoken="{{ csrf_token() }}">
-                                                        <div class="upload-DragDrop"></div>
-                                                        <div class="upload-ProgressBar"></div>
-                                                        <div class="upload-alerts mt-3"></div>
-                                                        <div class="mt-2 d-flex flex-row flex-wrap sortable upload-files"
-                                                             data-sortableurl="{{ route('admin.media.changeOrder') }}"
-                                                             data-sortablecsrftoken="{{ csrf_token() }}">
-                                                        </div>
-                                                    </div>
+                                                    <span class="media-icone {{ $media->icone }}"></span>
                                                 @endif
-                                            </td>
-                                            <td>
-                                                <input type="hidden" name="ids[]" value="{{ $dommage->id }}" />
-                                                <button type="button" class="dommages-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button>
-                                                <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i></button>&nbsp;
-                                            </td>
-                                        </tr>
-
-                                        @php
-                                            $i++;
-                                        @endphp
-                                    @endforeach
-                                @endif
-
-                                <script id="dommages-add-template" type="x-tmpl-mustache">
-                                    <tr>
-                                        <td>
-                                            <input type="hidden" name="dommages[@{{ indice }}][uuid]" value="uuid-@{{ indice }}" />
-                                            <select class="form-control" name="dommages[@{{ indice }}][type_id]" required>
-                                                <option value="">-- Types --</option>
-                                            @foreach($dommage_types as $dommage_type)
-                                                <option value="{{ $dommage_type->id }}" {{--{{ $paiement->type?->id == $type->id  ? 'selected' : '' }}--}}>{{ $dommage_type->nom }}</option>
-                                            @endforeach
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select class="form-control" name="dommages[@{{ indice }}][emplacement_id]" required>
-                                                <option value="">-- Emplacement --</option>
-                                            @foreach($dommage_emplacements as $emplacement)
-                                                <option value="{{ $emplacement->id }}" {{--{{ $paiement->type?->id == $type->id  ? 'selected' : '' }}--}}>{{ $emplacement->nom }}</option>
-                                            @endforeach
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select class="form-control" name="dommages[@{{ indice }}][element_id]" required>
-                                                <option value="">-- Elément --</option>
-                                            @foreach($dommage_elements as $element)
-                                                <option value="{{ $element->id }}" {{--{{ $paiement->type?->id == $type->id  ? 'selected' : '' }}--}}>{{ $element->nom }}</option>
-                                            @endforeach
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <textarea class="form-control" rows="3" name="dommages[@{{ indice }}][observations]"></textarea>
-                                        </td>
-                                        <td>
-                                            <div class="upload"
-                                                 data-initialize="false"
-                                                 data-uploadendpoint="{{ route('admin.media.store') }}"
-                                                 data-uploadmedias="{{ route('admin.media.publication', [ 'publication_type' => \Ipsum\Reservation\app\Models\Inspection\Inspection::class, 'publication_id' => $inspection->id ?? '' ]) }}&groupe=uuid-@{{ indice }}"
-                                                 data-uploadpublicationid="{{ $inspection->id ?? '' }}"
-                                                 data-uploadpublicationtype="{{ \Ipsum\Reservation\app\Models\Inspection\Inspection::class }}"
-                                                 data-uploadgroupe="uuid-@{{ indice }}"
-                                                 data-uploadnote="Une seule image (max {{ config('ipsum.media.upload_max_filesize') }} Ko)"
-                                                 data-uploadmaxfilesize="{{ config('ipsum.media.upload_max_filesize') }}"
-                                                 data-uploadmmaxnumberoffiles="1"
-                                                 data-uploadallowedfiletypes="image/*"
-                                                 data-uploadcsrftoken="{{ csrf_token() }}">
-                                                <div class="upload-DragDrop"></div>
-                                                <div class="upload-ProgressBar"></div>
-                                                <div class="upload-alerts mt-3"></div>
-                                                <div class="mt-2 d-flex flex-row flex-wrap sortable upload-files"
-                                                     data-sortableurl="{{ route('admin.media.changeOrder') }}"
-                                                     data-sortablecsrftoken="{{ csrf_token() }}">
-                                                </div>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="dommages-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button>
-                                            <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i></button>
-                                        </td>
-                                    </tr>
-                                </script>
-                                </tbody>
-                            </table>
+                                            <div class="media-title">
+                                                {{ $media->titre }}
+                                            </div>
+                                            <div class="media-toolbar">
+                                                <ul>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
 
+                                <h2 class="h4 mb-3">Médias de l'inspection finale</h2>
+                            @endif
+                        @endif
+                        <h3 class="text-xl font-semibold mt-4 mb-4">Ajout rapide de photo</h3>
+                        <div class="upload"
+                             data-uploadendpoint="{{ route('admin.media.store') }}"
+                             data-uploadmedias="{{ route('admin.media.publication', ['publication_type' => \Ipsum\Reservation\app\Models\Inspection\Inspection::class, 'publication_id' => $inspection->exists ? $inspection->id : '', "groupe" => "photos"]) }}"
+                             data-uploadrepertoire="inspection"
+                             data-uploadpublicationid="{{ $inspection->id }}"
+                             data-uploadpublicationtype="{{ \Ipsum\Reservation\app\Models\Inspection\Inspection::class }}"
+                             data-uploadgroupe="photos"
+                             data-uploadnote="Images et documents, poids maximum {{ config('ipsum.media.upload_max_filesize') }} Ko"
+                             data-uploadmaxfilesize="{{ config('ipsum.media.upload_max_filesize') }}"
+                             data-uploadmmaxnumberoffiles=""
+                             data-uploadminnumberoffiles=""
+                             data-uploadallowedfiletypes=""
+                             data-uploadcsrftoken="{{ csrf_token() }}">
+                            <div class="upload-DragDrop"></div>
+                            <div class="upload-ProgressBar"></div>
+                            <div class="upload-alerts mt-3"></div>
+                            <div class="mt-3">
+                                <h3>Médias associés :</h3>
+                                <div class="d-flex flex-row flex-wrap sortable upload-files" data-sortableurl="{{ route('admin.media.changeOrder') }}" data-sortablecsrftoken="{{ csrf_token() }}">
+                                </div>
+                            </div>
                         </div>
+
                     </div>
 
-                            <!-- Navigation -->
-                            <div class="d-flex justify-content-between mt-4">
-                                <a href="{{ route('admin.inspection.checklist', [$reservation, $type]) }}" id="prevBtn" class="btn btn-secondary">Retour</a>
-                                <button type="submit" id="nextBtn" class="btn btn-primary">Suivant</button>
-                            </div>
+                    <!-- Navigation -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ route('admin.inspection.checklist', [$reservation, $type]) }}" id="prevBtn" class="btn btn-secondary">Retour</a>
+                        <a href="{{ route('admin.inspection.recapitulatif', [$reservation, $type]) }}" id="nextBtn" class="btn btn-primary">Suivant</a>
+                    </div>
 
-                        {{ Aire::close() }}
                 </div>
             </div>
 

@@ -16,12 +16,11 @@
                     <!-- Progress bar -->
                     <ul class="progressbar mt-2 clearfix overflow-auto">
                         @if($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                            <li>Véhicule</li>
+                            <li><a href="{{ route('admin.inspection.vehicule', [$reservation, $type]) }}">Véhicule</a></li>
                             <li class="active">Client / Réservation</li>
                         @endif
                         <li>Kilométrage / Carburant / Checklist</li>
-                        <li>Dommages</li>
-                        <li>Photos</li>
+                        <li>Dommages / Photos</li>
                         <li>Récapitulatif</li>
                         <li>Signature client</li>
                         <li>Signature agent</li>
@@ -56,7 +55,6 @@
                                                 {{ Aire::date('permis_at', 'Permis délivré le')->value($reservation->permis_at)->disabled()->groupAddClass('col-md-6') }}
                                                 {{ Aire::input('permis_delivre', 'Permis délivré par')->value($reservation->permis_delivre)->disabled()->groupAddClass('col-md-6') }}
                                             </div>
-                                            <a href="{{ route('admin.reservation.edit', [$reservation]) }}#vehicule-select" class="btn btn-primary"><i class="fa fa-edit"></i> Editer les informations</a>
 
                                             @if (config('ipsum.reservation.conducteurs_additionnels') && $reservation->conducteurs->count() )
                                                 <h2 class="text-xl font-semibold mb-2 mt-4">Conducteurs additionnels</h2>
