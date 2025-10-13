@@ -24,6 +24,7 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Prologue\Alerts\Facades\Alert;
+use ddn\sapp\PDFDoc;
 
 class EtatDesLieuxController extends AdminController
 {
@@ -282,7 +283,7 @@ class EtatDesLieuxController extends AdminController
     public function signatureAgent(Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
+        //if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.signature_agent', compact(
             'reservation', 'inspection', 'type'
@@ -310,19 +311,59 @@ class EtatDesLieuxController extends AdminController
         }
 
         try{
+            /**
+             * Génération du PDF à signer
+             */
             $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
-            $pdf = \PDF::loadView(config('ipsum.reservation.etat_des_lieux.view'), [
+
+            $pdf = PDF::loadView(config('ipsum.reservation.etat_des_lieux.view'), [
                 'reservation' => $reservation,
                 'type' => $type,
                 'inspection' => $inspection,
                 'checklists' => $checklists,
             ]);
+
             $pdf->save($pdfPath);
 
-            Mail::send(new EtatDesLieux($reservation, $type, $inspection));
-        }catch(\Exception $exception){
+            /**
+             * CHARGEMENT DU PDF POUR SIGNATURE NUMÉRIQUE
+             */
+            $fileContent = file_get_contents($pdfPath);
+            $pdfDoc = PDFDoc::from_string($fileContent);
+            if ($pdfDoc === false) {
+                throw new \Exception("Impossible de charger le PDF pour signature.");
+            }
 
+            /**
+             * SIGNATURE NUMÉRIQUE
+             */
+            $cert = storage_path('app/certificat/certificat.p12');
+            $password = '1234';
+            if (!file_exists($cert)) throw new \Exception("Certificat agent introuvable.");
+
+            if (!$pdfDoc->set_signature_certificate($cert, $password)) {
+                throw new \Exception("Le certificat agent est invalide.");
+            }
+
+            $signedDoc = $pdfDoc->to_pdf_file_s();
+            if ($signedDoc === false) throw new \Exception("Erreur lors de la signature agent.");
+
+            $agentSignedPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}-signed.pdf");
+            file_put_contents($agentSignedPath, $signedDoc);
+
+            /**
+             * ENVOI DU DOCUMENT FINAL
+             */
+            Mail::send(new EtatDesLieux($reservation, $type));
+
+        }catch(\Exception $exception){
+            \Log::error("Erreur lors de la signature PDF : " . $exception->getMessage());
+            Alert::error("Une erreur est survenue lors de la signature du PDF.")->flash();
+            return back();
         }
+
+
+        Alert::success("Document signé et envoyé avec succès")->flash();
 
         return redirect()->route('admin.inspection.show', [$reservation, $type]);
     }
@@ -347,7 +388,11 @@ class EtatDesLieuxController extends AdminController
         $reservation = $inspection->reservation;
         $type = $inspection->type;
 
-        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
+        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}-signed.pdf");
+
+        if (!file_exists($pdfPath)) {
+            $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
+        }
 
         if (!file_exists($pdfPath)) {
             Alert::error('Fichier introuvable')->flash();

@@ -412,53 +412,75 @@
     @php
         $photos = $inspection->medias()->groupe('photos')->get();
     @endphp
+
     @if($photos->count())
-        <table class="tableau2" style="margin-top:40px;">
+        <table class="tableau2" style="margin-top:40px; width:100%; border-collapse:collapse;">
             <tr>
-                <th colspan="{{ $photos->count() }}" class="section-title">PHOTOS</th>
+                <th colspan="4" class="section-title">
+                    PHOTOS
+                </th>
             </tr>
+
+            @foreach($photos->chunk(4) as $chunk)
+                <tr>
+                    @foreach($chunk as $media)
+                        <td style="width:25%; padding:6px; text-align:center; vertical-align:top;">
+                            <img
+                                    src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400) }}"
+                                    alt="{{ $media->titre }}"
+                                    style="width:100%; height:auto; border:1px solid #ccc; border-radius:6px; margin-bottom:4px;"
+                            >
+                        </td>
+                    @endforeach
+
+                    {{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}
+                    @for($i = $chunk->count(); $i < 4; $i++)
+                        <td style="width:25%; padding:6px;"></td>
+                    @endfor
+                </tr>
+            @endforeach
+        </table>
+    @endif
+
+    <!-- PAGE DÉDIÉE POUR SIGNATURES : FORCER UNE NOUVELLE PAGE -->
+    <div style="page-break-before: always; margin-top: 10px;">
+        <table style="margin-top: 10px; width:100%; border-collapse:collapse;">
             <tr>
-                @foreach($photos as $media)
-                    <td>
-                        <img src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400) }}" alt="{{ $media->titre }}" style="width: 100%; ">
-                    </td>
-                @endforeach
+                <td style="border: none; background-color: #e6e6e6;">
+                    En signant le preneur accepte les conditions générales de location fournies en annexe
+                </td>
             </tr>
         </table>
 
-    @endif
-
-    <table style="margin-top: 10px;">
-        <tr>
-            <td style="border: none; background-color: #e6e6e6;">
-                En signant le preneur accepte les conditions générales de location fournies en annexe
-            </td>
-        </tr>
-        <table style="margin-top: 2mm">
-            <tr style="">
-                <td style="width:50%; border: none; text-align: center"><h3>SIGNATURE CLIENT</h3></td>
-                <td style="border: none; text-align: center"><h3>SIGNATURE LOUEUR</h3></td>
+        <table style="margin-top: 6mm; width:100%; border-collapse:collapse;">
+            <tr>
+                <td style="width:50%; border: none; text-align: center">
+                    <h3>SIGNATURE CLIENT</h3>
+                </td>
+                <td style="width:50%; border: none; text-align: center">
+                    <h3>SIGNATURE LOUEUR</h3>
+                </td>
             </tr>
             <tr>
-                <td style="border:none;text-align: center;">
+                <td style="border:none;text-align: center; height:120px; vertical-align:top;">
                     @if($inspection->locataire_signature)
                         <img src="{{ $inspection->locataire_signature }}" alt="Signature client" style="width:200px; height:80px; border:1px solid #000;">
                         <p style="margin-top: 10px;">Signé le : {{ $inspection->locataire_signature_at->format('d/m/Y à H:i') }}</p>
                     @else
-                        <span style="border:1px solid #000; display:inline-block; width:200px; height:80px;"></span>
+                        <div style="display:inline-block; width:195px; height:90px; border:1px solid #000;"></div>
                     @endif
                 </td>
-                <td style="border:none;text-align: center;">
+                <td style="border:none;text-align: center; height:120px; vertical-align:top;">
                     @if($inspection->agent_signature)
                         <img src="{{ $inspection->agent_signature }}" alt="Signature agent" style="width:200px; height:80px; border:1px solid #000;">
                         <p style="margin-top: 10px;">Signé le : {{ $inspection->agent_signature_at->format('d/m/Y à H:i') }}</p>
                     @else
-                        <span style="border:1px solid #000; display:inline-block; width:200px; height:80px;"></span>
+                        <div style="display:inline-block; width:195px; height:90px; border:1px solid #000;"></div>
                     @endif
                 </td>
             </tr>
         </table>
-    </table>
+    </div>
 
 
 </div>

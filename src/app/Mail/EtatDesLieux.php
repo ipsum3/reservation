@@ -32,10 +32,20 @@ class EtatDesLieux extends Mailable
         $inspection = $type->id == Type::FINAL_ID ? $reservation->inspection_finale : $reservation->inspection_initiale;
         $this->inspection = $inspection;
         $this->email = $email ? $email : $this->reservation->email;
-        $checklists = Checklist::orderBy('order')->get();
-        $pdf = Pdf::loadView(config('ipsum.reservation.etat_des_lieux.view'), compact('inspection', 'reservation', 'type', 'checklists'));
-        $pdf->render();
-        $this->file = $pdf->output();
+
+        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}-signed.pdf");
+
+        if (!file_exists($pdfPath)) {
+            $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
+        }
+
+        if (!file_exists($pdfPath)) {
+            throw new \Exception("Le fichier PDF de l’état des lieux est introuvable pour la réservation #{$reservation->id}");
+        }
+
+        $this->file = file_get_contents($pdfPath);
+        $this->filePath = $pdfPath;
+
         App::setLocale($reservation->locale);
     }
 

@@ -1,5 +1,5 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Promotions')
+@section('title', 'Inspections')
 
 @section('content')
 
@@ -23,24 +23,30 @@
                     <tr>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'id'])</th>
                         <th>Réservation</th>
-                        <th>Locataire</th>
-                        <th>Agent</th>
                         <th>Type</th>
+                        <th>Locataire</th>
+                        <th>Véhicule</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Du', 'champ' => 'debut_at'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Au', 'champ' => 'fin_at'])</th>
-                        <th width="240px">Actions</th>
+                        <th>Agent</th>
+                        <th>Dommages</th>
+                        <th>Statut</th>
+                        <th width="400px" class="text-center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach ($inspections as $inspection)
-                        <tr class="{{ $inspection->isSigned() ? 'bg-success' : '' }}">
+                        <tr class="">
                             <td>{{ $inspection->id }}</td>
                             <td><a href="{{ route('admin.reservation.edit', [$inspection->reservation]) }}">{{ $inspection->reservation->reference }}</a></td>
-                            <td>{{ $inspection->reservation->nom }} {{ $inspection->reservation->prenom }}</td>
-                            <td>{{ $inspection->admin->email }} ({{ $inspection->admin->name }} {{ $inspection->admin->firstname }})</td>
                             <td><span class="badge badge-{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'primary' : 'info' }}">{{ $inspection->type->nom }}</span></td>
+                            <td>{{ $inspection->reservation->nom }} {{ $inspection->reservation->prenom }}</td>
+                            <td>{{ $inspection->reservation->immatriculation }} ({{ $inspection->reservation->vehicule->marque_modele }})</td>
                             <td>{{ $inspection->reservation->debut_at?->format('d/m/Y') }}</td>
                             <td>{{ $inspection->reservation->fin_at?->format('d/m/Y') }}</td>
+                            <td>{{ $inspection->admin->email }} ({{ $inspection->admin->name }} {{ $inspection->admin->firstname }})</td>
+                            <td>{{ $inspection->dommages ? count($inspection->dommages). ' dommages ajoutés' : '' }}</td>
+                            <td><span class="badge badge-{{ $inspection->isSigned()  ? 'success' : 'warning' }}">{{ $inspection->isSigned() ? 'Document signé' : 'En attente' }}</span></td>
                             <td class="text-right">
                                 <form action="{{ route('admin.inspection.destroy', $inspection) }}" method="POST">
                                     @csrf
@@ -50,6 +56,7 @@
                                         <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
                                     @else
                                         <a class="btn btn-primary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-pdf"></i> Voir le document</a>
+                                        <a class="btn btn-primary" href="{{ route('admin.inspection.show', [$inspection->reservation, $inspection->type]) }}"><i class="fa fa-eye"></i> Voir le récapitulatif</a>
                                     @endif
                                 </form>
                             </td>
