@@ -52,7 +52,7 @@
     <div class="card mb-3 shadow-sm col-md-4">
         <div class="card-header bg-primary text-white p-2">Photos</div>
         <div class="card-body p-2">
-            <div class="row" id="ajax-photos">
+            <div class="d-flex flex-row flex-wrap sortable upload-files">
                 @include('IpsumReservation::reservation.etat_des_lieux.step.recap._photos')
             </div>
         </div>

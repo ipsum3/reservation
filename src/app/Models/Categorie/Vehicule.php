@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Classes\Carbon;
 use Ipsum\Reservation\app\Models\Dommage\Dommage;
+use Ipsum\Reservation\app\Models\Inspection\Inspection;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\database\factories\VehiculeFactory;
 
@@ -97,6 +98,27 @@ class Vehicule extends BaseModel
     public function dommages()
     {
         return $this->hasMany(Dommage::class);
+    }
+
+    public function inspections()
+    {
+        // hasManyThrough(Target, Through, keyOnThrough, keyOnTarget, localKey, secondLocalKey)
+        return $this->hasManyThrough(
+            Inspection::class,
+            Reservation::class,
+            'vehicule_id',   // foreign key on reservations table...
+            'reservation_id',// foreign key on inspections table...
+            'id',            // local key on vehicules
+            'id'             // local key on reservations
+        );
+    }
+
+    /**
+     * Dernière inspection (méthode pratique)
+     */
+    public function getLastInspectionAttribute()
+    {
+        return $this->inspections()->whereNotNull('agent_signature_at')->latest()->first();
     }
 
 

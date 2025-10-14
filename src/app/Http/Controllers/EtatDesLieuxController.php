@@ -405,6 +405,18 @@ class EtatDesLieuxController extends AdminController
         ]);
     }
 
+    public function showPdf(Inspection $inspection)
+    {
+
+        $reservation = $inspection->reservation;
+        $type = $inspection->type;
+        $checklists = Checklist::orderBy('order')->get();
+
+        $pdf = Pdf::loadView(config('ipsum.reservation.etat_des_lieux.view'), compact('inspection', 'reservation', 'type', 'checklists'));
+
+        return $pdf->stream("etat_des_lieux_{$inspection->id}.pdf");
+    }
+
     public function destroy(Inspection $inspection)
     {
 

@@ -234,6 +234,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
     function () {
         Route::get('', 'index')->name('index');
         Route::get('{inspection}/pdf', 'pdf')->name('pdf');
+        Route::get('{inspection}/pdf2', 'showPdf')->name('showPdf');
         Route::any('{inspection}/destroy', 'destroy')->name('destroy');
     }
 );

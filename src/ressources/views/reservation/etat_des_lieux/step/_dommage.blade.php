@@ -1,9 +1,11 @@
-<div class="media">
+<div class="media bg-white">
     <div class="media-img h-100 bg-light">
         @if($dommage->illustration)
-            <img src="{{ Croppa::url($dommage->illustration->cropPath, 400) }}" alt="{{ $dommage->illustration->tagAlt }}">
+            <a href="{{ Croppa::url($dommage->illustration->cropPath, 1200) }}" target="_blank" title="Voir">
+                <img src="{{ Croppa::url($dommage->illustration->cropPath, 327) }}" alt="{{ $dommage->illustration->tagAlt }}" width="100%">
+            </a>
         @else
-            <p class="p-2">Aucune photo</p>
+            <p class="p-2" style="max-width: 327px; min-width: 327px; width: 100%;">Aucune photo</p>
         @endif
     </div>
     <div class="media-toolbar">
@@ -12,6 +14,7 @@
                 {{ $dommage->emplacement? $dommage->emplacement?->nom.' - ' : ''}} {{ $dommage->element? $dommage->element?->nom.' - ' : ''}} {{ $dommage->type?->nom }}
             </h5>
         </div>
+        @if(!$dommage->protected)
         <ul>
             <li>
                 <a href="{{ route('admin.inspection.dommage.edit', [$reservation, $type, $dommage]) }}" title="Modifier">
@@ -26,5 +29,6 @@
                 </form>
             </li>
         </ul>
+        @endif
     </div>
 </div>

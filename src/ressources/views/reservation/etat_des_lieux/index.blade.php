@@ -39,13 +39,13 @@
                         <tr class="">
                             <td>{{ $inspection->id }}</td>
                             <td><a href="{{ route('admin.reservation.edit', [$inspection->reservation]) }}">{{ $inspection->reservation->reference }}</a></td>
-                            <td><span class="badge badge-{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'primary' : 'info' }}">{{ $inspection->type->nom }}</span></td>
+                            <td><span class="badge badge-{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'primary' : 'info' }}">{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'Départ' : 'Retour' }}</span></td>
                             <td>{{ $inspection->reservation->nom }} {{ $inspection->reservation->prenom }}</td>
-                            <td>{{ $inspection->reservation->immatriculation }} ({{ $inspection->reservation->vehicule->marque_modele }})</td>
+                            <td><a href="{{ route('admin.vehicule.edit', [$inspection->reservation->vehicule]) }}">{{ $inspection->reservation->immatriculation }} ({{ $inspection->reservation->vehicule->marque_modele }})</a></td>
                             <td>{{ $inspection->reservation->debut_at?->format('d/m/Y') }}</td>
                             <td>{{ $inspection->reservation->fin_at?->format('d/m/Y') }}</td>
                             <td>{{ $inspection->admin->email }} ({{ $inspection->admin->name }} {{ $inspection->admin->firstname }})</td>
-                            <td>{{ $inspection->dommages ? count($inspection->dommages). ' dommages ajoutés' : '' }}</td>
+                            <td>{{ $inspection->dommages ? count($inspection->dommages). ' dommage'.(count($inspection->dommages) > 1 ? 's' : '').' ajouté'.(count($inspection->dommages) > 1 ? 's' : '') : '' }}</td>
                             <td><span class="badge badge-{{ $inspection->isSigned()  ? 'success' : 'warning' }}">{{ $inspection->isSigned() ? 'Document signé' : 'En attente' }}</span></td>
                             <td class="text-right">
                                 <form action="{{ route('admin.inspection.destroy', $inspection) }}" method="POST">

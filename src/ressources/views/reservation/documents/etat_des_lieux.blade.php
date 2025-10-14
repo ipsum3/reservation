@@ -50,7 +50,6 @@
             padding: 2px 0;
 
             text-align: center;
-            font-weight: bold;
         }
 
         .tableau3 td {
@@ -138,13 +137,11 @@
             </td>
 
             <td style="width:35%; padding: 0 5mm 0 0; border: none;">
-                <div style="text-align: center; padding-bottom: 0mm;">
-                    <h2 style="font-size: 14px;">
-                        ETAT DES LIEUX<br> DE {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'DEPART' : 'RETOUR' }}<br>
-                        DU  {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? $reservation->debut_at->format('d/m/Y') : $reservation->fin_at->format('d/m/Y') }}
+                <div style="text-align: center; ">
+                    <h2>
+                        ETAT DES LIEUX DE {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'DEPART' : 'RETOUR' }}<br>
+                        {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? $reservation->debut_at->format('d/m/Y') : $reservation->fin_at->format('d/m/Y') }}
                     </h2>
-                    <h3 style="text-align: center">ANNEXE AU CONTRAT DE LOCATION {{ $reservation->contrat  }}</h3>
-                    <p style="text-align: center">fait par {{ $inspection->admin?->email }}</p>
                 </div>
             </td>
             <td style="width:32%; padding: 0 5mm 0 0; border: none;">
@@ -164,7 +161,15 @@
 
     </table>
 
-    <table style="margin-top: -10px;">
+    <table style="margin-top: 10px; width:100%; border-collapse:collapse;">
+        <tr>
+            <td style="border: none; background-color: #e6e6e6;">
+                Annexe au contrat de location {{ $reservation->contrat  }} fait par {{ $inspection->admin?->firstname }} {{ $inspection->admin?->name }} ({{ $inspection->admin?->email }})
+            </td>
+        </tr>
+    </table>
+
+    <table style="margin-top: 10px;">
         <tr>
             <td style="width:35%; border: none;">
 
@@ -193,25 +198,25 @@
                 </table>
 
                 @if($reservation->conducteurs->count())
-                <table class="tableau2" style="margin-top: 10px;">
-                    <tr>
-                        <th style="width: 49%">CONDUCTEUR ADDITIONNEL</th>
-                    </tr>
-                    <tr>
-                        <td>
+                    <table class="tableau2" style="margin-top: 10px;">
+                        <tr>
+                            <th style="width: 49%">CONDUCTEUR ADDITIONNEL</th>
+                        </tr>
+                        <tr>
+                            <td>
 
-                            @foreach($reservation->conducteurs as $conducteur)
-                                <strong>Nom :</strong> {{ $conducteur->nom }} - <strong>Prénom :</strong> {{ $conducteur->prenom }}<br>
-                                <strong>Date de naissance :</strong> {{ $conducteur->naissance_at }}<br>
-                                <strong>Lieu de naissance :</strong> {{ $conducteur->naissance_lieu }}<br>
-                                <strong>Numéro de permis :</strong> {{ $conducteur->permis_numero }}<br>
-                                <strong>Permis délivré le :</strong> {{ $conducteur->permis_at }}<br>
-                                <strong>Permis délivré par :</strong> {{ $conducteur->permis_delivre }}<br>
-                                <hr>
-                            @endforeach
-                        </td>
-                    </tr>
-                </table>
+                                @foreach($reservation->conducteurs as $conducteur)
+                                    <strong>Nom :</strong> {{ $conducteur->nom }} - <strong>Prénom :</strong> {{ $conducteur->prenom }}<br>
+                                    <strong>Date de naissance :</strong> {{ $conducteur->naissance_at }}<br>
+                                    <strong>Lieu de naissance :</strong> {{ $conducteur->naissance_lieu }}<br>
+                                    <strong>Numéro de permis :</strong> {{ $conducteur->permis_numero }}<br>
+                                    <strong>Permis délivré le :</strong> {{ $conducteur->permis_at }}<br>
+                                    <strong>Permis délivré par :</strong> {{ $conducteur->permis_delivre }}<br>
+                                    <hr>
+                                @endforeach
+                            </td>
+                        </tr>
+                    </table>
                 @endif
 
                 <table class="tableau2" style="margin-top: 10px;">
@@ -233,45 +238,15 @@
                     </tr>
                 </table>
 
-                {{--<table class="tableau2" style="margin-top: 10px;">
-                    <tr>
-                        <th>FRANCHISE / CAUTION</th>
-                    </tr>
-                    <tr>
-                        <td>
-
-                            <table class="tableau3">
-                                @if ($reservation->franchise)
-                                    <tr>
-                                        <td>{{ _('Montant de la franchise') }}</td>
-                                        <td align="right">
-                                            @prix($reservation->franchise)&nbsp;€
-                                        </td>
-                                    </tr>
-                                @endif
-                                @if ($reservation->caution)
-                                    <tr>
-                                        <td>{{ _('Montant de la caution') }}</td>
-                                        <td align="right">
-                                            @prix($reservation->caution)&nbsp;€
-                                        </td>
-                                    </tr>
-                                @endif
-                            </table>
-
-                        </td>
-                    </tr>
-                </table>--}}
-
-
-
             </td>
             <td style="width:65%; border: none;">
 
                 <table class="tableau2" style="">
                     <tr>
                         <th style="width: 49%">DEPART</th>
-                        <th style="width: 49%">RETOUR</th>
+                        @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
+                            <th style="width: 49%">RETOUR</th>
+                        @endif
                     </tr>
                     <tr>
                         <td>
@@ -293,33 +268,35 @@
                                     </tr>
                                 @endforeach
                                 <tr>
-                                    <td colspan="2" style="height: 125px">Observations : {!!  $reservation->inspection_initiale?->observations !!}</td>
+                                    <td colspan="2" style="height: 110px">Observations : {!!  $reservation->inspection_initiale?->observations !!}</td>
                                 </tr>
                             </table>
                         </td>
-                        <td>
-                            <table>
-                                <tr>
-                                    <td>Km compteur</td>
-                                    <td>{{ $reservation->inspection_finale?->kilometrage }} km</td>
-                                </tr>
-                                <tr>
-                                    <td>Carburant</td>
-                                    <td>{{ $reservation->inspection_finale?->carburant }}/8</td>
-                                </tr>
-                                @foreach($checklists as $item)
+                        @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
+                            <td>
+                                <table>
                                     <tr>
-                                        <td>{{ $item->nom }}</td>
-                                        <td>
-                                            <input style="" type="checkbox" {{ in_array($item->id, ($reservation->inspection_finale ? $reservation->inspection_finale->checklists->pluck('id')->toArray() : [])) ? 'checked' : '' }}>
-                                        </td>
+                                        <td>Km compteur</td>
+                                        <td>{{ $reservation->inspection_finale?->kilometrage }} km</td>
                                     </tr>
-                                @endforeach
-                                <tr>
-                                    <td colspan="2" style="height: 125px">Observations : {!! $reservation->inspection_finale?->observations !!}</td>
-                                </tr>
-                            </table>
-                        </td>
+                                    <tr>
+                                        <td>Carburant</td>
+                                        <td>{{ $reservation->inspection_finale?->carburant }}/8</td>
+                                    </tr>
+                                    @foreach($checklists as $item)
+                                        <tr>
+                                            <td>{{ $item->nom }}</td>
+                                            <td>
+                                                <input style="" type="checkbox" {{ in_array($item->id, ($reservation->inspection_finale ? $reservation->inspection_finale->checklists->pluck('id')->toArray() : [])) ? 'checked' : '' }}>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="2" style="height: 110px">Observations : {!! $reservation->inspection_finale?->observations !!}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        @endif
                     </tr>
                 </table>
 
@@ -328,119 +305,179 @@
         </tr>
     </table>
 
-    <table class="tableau2" style="margin-top:10px;">
+    <div style="page-break-before: always; margin-top: 10px;">
+    <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
         <tr>
             <th colspan="5" class="section-title">DOMMAGES (au départ)</th>
         </tr>
-        <tr>
-            <td>Image</td>
-            <td>Type</td>
-            <td>Emplacement</td>
-            <td>Élément</td>
-            <td>Observations</td>
-        </tr>
-        @if($reservation->vehicule?->dommages && $inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-            @foreach($reservation->vehicule?->dommages as $dommage)
-                @if($dommage->inspection->id != $inspection->id && $dommage->inspection->id != $reservation->inspection_initiale->id)
-                    <tr>
-                        <td>
-                            @php $media = $dommage?->inspection->medias()->groupe($dommage->id)->first(); @endphp
-                            @if($media)
-                                <img src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 200) }}" alt="{{ $media->titre }}">
-                            @endif
-                        </td>
-                        <td>{{ $dommage->type?->nom }}</td>
-                        <td>{{ $dommage->emplacement?->nom }}</td>
-                        <td>{{ $dommage->element?->nom }}</td>
-                        <td>{!! $dommage->observations !!}</td>
-                    </tr>
-                @endif
-            @endforeach
-        @endif
-        @if($reservation->inspection_initiale?->dommages->count())
-            @foreach($reservation->inspection_initiale?->dommages as $dommage)
-                <tr>
-                    <td>
-                        @php $media = $reservation->inspection_initiale->medias()->groupe($dommage->id)->first(); @endphp
-                        @if($media)
-                            <img src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 200) }}" alt="{{ $media->titre }}">
-                        @endif
-                    </td>
-                    <td>{{ $dommage->type?->nom }}</td>
-                    <td>{{ $dommage->emplacement?->nom }}</td>
-                    <td>{{ $dommage->element?->nom }}</td>
-                    <td>{!! $dommage->observations !!}</td>
-                </tr>
-            @endforeach
-        @endif
-
     </table>
+
+    <div>
+        <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm; border-bottom: 1px solid #b3b3b3;">
+            @php
+                $allDommages = collect();
+
+                // Dommages du véhicule sauf ceux de cette inspection et de l’inspection initiale
+                if ($reservation->vehicule?->dommages && $inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID) {
+                    $allDommages = $allDommages->merge(
+                        $reservation->vehicule->dommages->filter(function ($d) use ($inspection, $reservation) {
+                            return $d->inspection->id != $inspection->id && $d->inspection->id != $reservation->inspection_initiale->id;
+                        })
+                    );
+                }
+
+                // Dommages de l’inspection initiale
+                if ($reservation->inspection_initiale?->dommages->count()) {
+                    $allDommages = $allDommages->merge($reservation->inspection_initiale->dommages);
+                }
+            @endphp
+
+            @if($allDommages->count())
+                @foreach($allDommages->chunk(3) as $chunk)
+                    <tr>
+                        @foreach($chunk as $dommage)
+                            <td style="
+                            width: 33.33%;
+                            vertical-align: top;
+                            padding: 5px;
+                            border: none;
+                        ">
+                                @include('IpsumReservation::reservation.documents._dommage')
+                            </td>
+                        @endforeach
+
+                        {{-- complète les cellules vides --}}
+                        @for($i = $chunk->count(); $i < 3; $i++)
+                            <td style="width: 33.33%; padding: 5px;border: none;"></td>
+                        @endfor
+                    </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td style="text-align:center; font-style:italic; padding:10px;">
+                        Aucun dommage constaté
+                    </td>
+                </tr>
+            @endif
+        </table>
+    </div>
 
     @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
-    <table class="tableau2" style="margin-top:40px;">
-        <tr>
-            <th colspan="5" class="section-title">DOMMAGES (au retour)</th>
-        </tr>
-        <tr>
-            <td>Image</td>
-            <td>Type</td>
-            <td>Emplacement</td>
-            <td>Élément</td>
-            <td>Observations</td>
-        </tr>
-        @if($reservation->inspection_finale?->dommages->count())
-            @foreach($reservation->inspection_finale?->dommages as $dommage)
-                <tr>
-                    <td>
-                        @php $media = $reservation->inspection_finale?->medias()->groupe($dommage->id)->first(); @endphp
-                        @if($media)
-                            <img src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 200) }}" alt="{{ $media->titre }}">
-                        @endif
-                    </td>
-                    <td>{{ $dommage->type?->nom }}</td>
-                    <td>{{ $dommage->emplacement?->nom }}</td>
-                    <td>{{ $dommage->element?->nom }}</td>
-                    <td>{!! $dommage->observations !!}</td>
-                </tr>
-            @endforeach
-        @else
-            <tr><td colspan="5" style="text-align:center;">Aucun dommage constaté</td></tr>
-        @endif
-    </table>
+
+        <table class="tableau2" style="margin-top:10px;">
+            <tr>
+                <th colspan="5" class="section-title">DOMMAGES (au retour)</th>
+            </tr>
+        </table>
+
+        <div>
+            <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm; border-bottom: 1px solid #b3b3b3;">
+                @php
+                    $allDommages = $reservation->inspection_finale?->dommages;
+                @endphp
+
+                @if($allDommages->count())
+                    @foreach($allDommages->chunk(3) as $chunk)
+                        <tr>
+                            @foreach($chunk as $dommage)
+                                <td style="
+                            width: 33.33%;
+                            vertical-align: top;
+                            padding: 5px;
+                            border: none;
+                        ">
+                                    @include('IpsumReservation::reservation.documents._dommage')
+                                </td>
+                            @endforeach
+
+                            {{-- complète les cellules vides --}}
+                            @for($i = $chunk->count(); $i < 3; $i++)
+                                <td style="width: 33.33%; padding: 5px;border: none;"></td>
+                            @endfor
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td style="text-align:center; font-style:italic; padding:10px;">
+                            Aucun dommage constaté
+                        </td>
+                    </tr>
+                @endif
+            </table>
+        </div>
+
     @endif
+    </div>
 
     @php
-        $photos = $inspection->medias()->groupe('photos')->get();
+        $photos_depart = $reservation->inspection_initiale?->images()->groupe('photos')->get();
+        $photos_retour = $reservation->inspection_finale?->images()->groupe('photos')->get();
     @endphp
 
-    @if($photos->count())
-        <table class="tableau2" style="margin-top:40px; width:100%; border-collapse:collapse;">
-            <tr>
-                <th colspan="4" class="section-title">
-                    PHOTOS
-                </th>
-            </tr>
-
-            @foreach($photos->chunk(4) as $chunk)
+    <div style="page-break-before: always; margin-top: 10px;">
+    @if($photos_depart->count())
+            <table class="tableau2" style="margin-top:10px; width:100%; border-collapse:collapse;">
                 <tr>
-                    @foreach($chunk as $media)
-                        <td style="width:25%; padding:6px; text-align:center; vertical-align:top;">
-                            <img
-                                    src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400) }}"
-                                    alt="{{ $media->titre }}"
-                                    style="width:100%; height:auto; border:1px solid #ccc; border-radius:6px; margin-bottom:4px;"
-                            >
-                        </td>
-                    @endforeach
-
-                    {{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}
-                    @for($i = $chunk->count(); $i < 4; $i++)
-                        <td style="width:25%; padding:6px;"></td>
-                    @endfor
+                    <th colspan="4" class="section-title">
+                        PHOTOS (au départ)
+                    </th>
                 </tr>
-            @endforeach
-        </table>
+
+                @foreach($photos_depart->chunk(4) as $chunk)
+                    <tr style="">
+                        @foreach($chunk as $media)
+                            <td style="width:25%; padding:6px; text-align:center; vertical-align:top;border: none;">
+                                <img
+                                        src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400) }}"
+                                        alt="{{ $media->titre }}"
+                                        style="width:100%; height:auto; border:1px solid #ccc; border-radius:6px; margin-bottom:4px;"
+                                >
+                            </td>
+                        @endforeach
+
+                        {{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}
+                        @for($i = $chunk->count(); $i < 4; $i++)
+                            <td style="width:25%; padding:6px;border: none;"></td>
+                        @endfor
+                    </tr>
+                @endforeach
+            </table>
     @endif
+
+    @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
+
+        @if($photos_retour->count())
+            <table class="tableau2" style="margin-top:10px; width:100%; border-collapse:collapse;">
+                <tr>
+                    <th colspan="4" class="section-title">
+                        PHOTOS (au retour)
+                    </th>
+                </tr>
+
+                @foreach($photos_retour->chunk(4) as $chunk)
+                    <tr style="">
+                        @foreach($chunk as $media)
+                            <td style="width:25%; padding:6px; text-align:center; vertical-align:top;border: none;">
+                                <img
+                                        src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400) }}"
+                                        alt="{{ $media->titre }}"
+                                        style="width:100%; height:auto; border:1px solid #ccc; border-radius:6px; margin-bottom:4px;"
+                                >
+                            </td>
+                        @endforeach
+
+                        {{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}
+                        @for($i = $chunk->count(); $i < 4; $i++)
+                            <td style="width:25%; padding:6px;border: none;"></td>
+                        @endfor
+                    </tr>
+                @endforeach
+            </table>
+        @endif
+    @endif
+    </div>
+
+
 
     <!-- PAGE DÉDIÉE POUR SIGNATURES : FORCER UNE NOUVELLE PAGE -->
     <div style="page-break-before: always; margin-top: 10px;">
