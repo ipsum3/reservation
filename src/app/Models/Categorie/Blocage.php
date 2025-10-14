@@ -59,6 +59,9 @@ class Blocage extends BaseModel
 
     public function scopeBetweenDates($query, CarbonInterface $debut_at, CarbonInterface $fin_at)
     {
+        $debut_at = $debut_at->copy()->startOfDay();
+        $fin_at = $fin_at->copy()->startOfDay();
+
         return $query->where(function ($query) use ($debut_at, $fin_at) {
             return $query->where(function ($query) use ($debut_at, $fin_at) {
                 $query->where('debut_at', '>=', $debut_at)->where('debut_at', '<=', $fin_at);
