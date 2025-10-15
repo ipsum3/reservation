@@ -66,11 +66,19 @@
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
                                 @if ($is_depart)
                                     @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
-                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" title="Etat des lieux initial"><i class="fa fa-car"></i></a>
+                                        @if($reservation->inspection_initiale?->isSigned())
+                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_initiale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                        @else
+                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" title="État des lieux initial"><i class="fa fa-car"></i></a>
+                                        @endif
                                     @endif
                                     <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" title="contrat"><i class="fa fa-file-signature"></i></a>
                                 @elseif(config('ipsum.reservation.etat_des_lieux.enable') === true)
-                                    <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}" title="Etat des lieux final"><i class="fa fa-car"></i></a>
+                                    @if($reservation->inspection_finale?->isSigned())
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_finale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                    @else
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}" title="État des lieux final"><i class="fa fa-car"></i></a>
+                                    @endif
                                 @endif
                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$reservation]) }}"><i class="fa fa-edit"></i></a>
                                 @can('delete', $reservation)
