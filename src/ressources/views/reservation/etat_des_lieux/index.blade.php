@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <h1 class="main-title">Inspections</h1>
+    <h1 class="main-title">États des lieux</h1>
     <div class="box">
         <div class="box-header">
             <h2 class="box-title">Liste ({{ $inspections->total() }})</h2>
