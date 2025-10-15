@@ -8,7 +8,6 @@ use Ipsum\Reservation\app\Models\Dommage\Dommage;
 use Ipsum\Reservation\app\Models\Inspection\Inspection;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\StoreInspectionChecklist;
@@ -283,7 +282,7 @@ class EtatDesLieuxController extends AdminController
     public function signatureAgent(Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        //if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
+        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.signature_agent', compact(
             'reservation', 'inspection', 'type'
