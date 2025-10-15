@@ -49,14 +49,21 @@
     </div>
 
     <!-- Photos -->
-    <div class="card mb-3 shadow-sm col-md-4">
-        <div class="card-header bg-primary text-white p-2">Photos</div>
-        <div class="card-body p-2">
-            <div class="d-flex flex-row flex-wrap sortable upload-files">
-                @include('IpsumReservation::reservation.etat_des_lieux.step.recap._photos')
+    @php
+        $photos = $inspection->medias()->groupe('photos')->get();
+    @endphp
+    @if($photos->count())
+        <div class="card mb-3 shadow-sm col-md-4">
+            <div class="card-header bg-primary text-white p-2">Photos</div>
+            <div class="card-body p-2">
+                <div class="d-flex flex-row flex-wrap sortable upload-files">
+                    @foreach($photos as $media)
+                        @include('IpsumReservation::reservation.etat_des_lieux.step._media')
+                    @endforeach
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <!-- Checklist -->
     <div class="card mb-3 shadow-sm col-md-4">
@@ -67,12 +74,16 @@
     </div>
 
     <!-- Observations -->
-    <div class="card mb-3 shadow-sm col-md-4">
-        <div class="card-header bg-primary text-white p-2">Observations</div>
-        <div class="card-body p-2" id="ajax-observation">
-            @include('IpsumReservation::reservation.etat_des_lieux.step.recap._observation')
+    @if($inspection->observations)
+        <div class="card mb-3 shadow-sm col-md-4">
+            <div class="card-header bg-primary text-white p-2">Observations</div>
+            <div class="card-body p-2" id="ajax-observation">
+                <p class="text-muted">
+                    {!! $inspection->observations !!}
+                </p>
+            </div>
         </div>
-    </div>
+    @endif
 
     @if($inspection->locataire_signature && $inspection->agent_signature)
         <div class="card mb-3 shadow-sm col-md-4">

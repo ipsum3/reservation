@@ -36,3 +36,22 @@
     }
 </style>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBar = document.querySelector('.progressbar');
+        const activeItem = progressBar?.querySelector('.active');
+
+        if (progressBar && activeItem) {
+            // On calcule la position pour centrer l'élément actif
+            const scrollLeft = activeItem.offsetLeft
+                - (progressBar.clientWidth / 2)
+                + (activeItem.clientWidth / 2);
+
+            // On fait défiler en douceur vers cette position
+            progressBar.scrollTo({
+                left: scrollLeft,
+                behavior: 'smooth'
+            });
+        }
+    });
+</script>
