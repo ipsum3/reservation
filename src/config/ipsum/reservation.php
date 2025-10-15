@@ -120,6 +120,6 @@ return [
     ],
 
     'planning_duree' => 3,
-    'planning_days_before' => 1,
+    'planning_days_before' => 4,
 
 ];
