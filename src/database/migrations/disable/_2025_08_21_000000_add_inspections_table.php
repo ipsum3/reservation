@@ -18,10 +18,6 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('reservations', function (Blueprint $table) {
-            $table->string('immatriculation')->nullable()->after('vehicule_id');
-        });
-
         // Table inspections (liée à une réservation et un véhicule)
         Schema::create('inspections', function (Blueprint $table) {
             $table->id();
