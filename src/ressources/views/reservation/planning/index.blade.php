@@ -134,7 +134,11 @@
                 <table class="planning">
                     <thead>
                         <tr>
-                            <td></td>
+                            <td rowspan="2">
+                                @if($categorie->illustration)
+                                    <img src="{{ Croppa::url($categorie->illustration->cropPath, 100, 80, ['pad' => [255,255,255]]) }}" alt="{{ $categorie->illustration->tagAlt }}" width="100" height="80" />
+                                @endif
+                            </td>
                             @for($date = $date_debut->copy(); $date->lte($date_fin); $date->addMonthsNoOverflow()->firstOfMonth())
                                 <th class="planning-mois" colspan="{{ $date->diffInDays($date->copy()->lastOfMonth()->endOfDay()) + 1 }}">
                                     @if($date->diffInDays($date->copy()->lastOfMonth()->endOfDay()) > 4)
@@ -144,9 +148,8 @@
                             @endfor
                         </tr>
                         <tr>
-                            <td></td>
                             @for($date = $date_debut->copy(); $date->lte($date_fin); $date->addDay())
-                                <th class="planning-jour">{{ $date->format('d') }}</th>
+                                <th class="planning-jour" style="{{ $date->isToday() ? 'border-left: 2px dotted #4f494c;' : '' }}">{{ $date->format('d') }}</th>
                             @endfor
                         </tr>
                     </thead>

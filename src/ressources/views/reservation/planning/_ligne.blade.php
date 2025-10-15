@@ -22,7 +22,7 @@
         @endif
     </th>
     @for($date = $date_debut->copy(); $date->lte($date_fin); $date->addDay())
-        <td class="planning-case">
+        <td class="planning-case" style="{{ $date->isToday() ? 'border-left: 2px dotted #4f494c;' : '' }}">
             <div>
                 @if (isset($interventions[$date->format('Y-m-d')]))
                     @foreach($interventions[$date->format('Y-m-d')] as $intervention)
