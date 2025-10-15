@@ -31,17 +31,57 @@ class EtatDesLieuxController extends AdminController
 
     public function index(Request $request)
     {
-        $query = Inspection::query();
+        $query = Inspection::query()->with('reservation');
+
+        if ($request->filled('date_debut')) {
+            try {
+                $date = explode(' - ', $request->get('date_debut'));
+                $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
+                $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
+                //$query->whereBetween('debut_at', [$date1, $date2]);
+
+                $query->whereHas('reservation', function ($q) use ($date1, $date2) {
+                    $q->whereBetween('debut_at', [$date1, $date2]);
+                });
+            } catch (\Exception $e) {}
+        }
+        if ($request->filled('date_fin')) {
+            try {
+                $date = explode(' - ', $request->get('date_fin'));
+                $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
+                $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
+                //$query->whereBetween('fin_at', [$date1, $date2]);
+
+                $query->whereHas('reservation', function ($q) use ($date1, $date2) {
+                    $q->whereBetween('fin_at', [$date1, $date2]);
+                });
+            } catch (\Exception $e) {}
+        }
 
         if ($request->filled('search')) {
-            $query->where(function(Builder $query) use ($request) {
-                foreach (['nom', 'texte', 'extrait'] as $colonne) {
-                    $query->orWhere($colonne, 'like', '%'.$request->get('search').'%');
-                }
+            $search = $request->get('search');
+
+            $query->where(function (Builder $query) use ($search) {
+                $query->orWhere('id', 'reservation_id', 'like', "%{$search}%")
+                    ->orWhere('observations', 'like', "%{$search}%");
+
+                $query->orWhereHas('reservation', function ($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        foreach (['reference', 'contrat', 'nom', 'prenom', 'email', 'telephone'] as $colonne) {
+                            $q->orWhere($colonne, 'like', '%'.$search.'%');
+                        }
+                    });
+                });
             });
         }
 
-        $inspections = $query->orderBy('created_at', 'desc')->paginate();
+        if ($request->filled('tri')) {
+            $query->orderBy($request->tri, $request->order);
+        }else{
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $inspections = $query->paginate();
 
         return view('IpsumReservation::reservation.etat_des_lieux.index', compact('inspections'));
     }

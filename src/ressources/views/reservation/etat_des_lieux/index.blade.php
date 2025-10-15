@@ -15,7 +15,12 @@
             {{ Aire::open()->class('form-inline mt-4 mb-1')->route('admin.inspection.index') }}
             <label class="sr-only" for="search">Recherche</label>
             {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
+            <label class="sr-only" for="date_debut">Date de début</label>
+            {{ Aire::input('date_debut')->value(request()->get('date_debut'))->id('date_debut')->placeholder('Date de début')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
+            <label class="sr-only" for="date_fin">Date de fin</label>
+            {{ Aire::input('date_fin')->value(request()->get('date_fin'))->id('date_fin')->placeholder('Date de fin')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
+
             {{ Aire::close() }}
             <div class="table-wrapper">
                 <table class="table table-hover table-striped">
