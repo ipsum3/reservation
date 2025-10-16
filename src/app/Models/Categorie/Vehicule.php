@@ -121,6 +121,11 @@ class Vehicule extends BaseModel
         return $this->inspections()->whereNotNull('agent_signature_at')->latest()->first();
     }
 
+    public function allDommages()
+    {
+        return $this->hasMany(Dommage::class)->withTrashed();
+    }
+
 
 
 

@@ -1,7 +1,7 @@
 <div class="form-row">
 
     <!-- Informations Client -->
-    <div class="card mb-3 shadow-sm col-md-4">
+    <div class="card mb-3 shadow-sm col-md-6">
         <div class="card-header bg-primary text-white p-2">Informations Client</div>
         <div class="card-body p-2">
             {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
@@ -15,7 +15,7 @@
 
     @if($reservation->conducteurs)
         @foreach($reservation->conducteurs as $i => $conducteur)
-            <div class="card mb-3 shadow-sm col-md-4">
+            <div class="card mb-3 shadow-sm col-md-6">
                 <div class="card-header bg-primary text-white p-2">Conducteur additionnel #{{ $loop->iteration }}</div>
                 <div class="card-body p-2">
                     {{ $conducteur->prenom }} {{ $conducteur->nom }}<br/>
@@ -30,7 +30,7 @@
     @endif
 
     <!-- Véhicule -->
-    <div class="card mb-3 shadow-sm col-md-4">
+    <div class="card mb-3 shadow-sm col-md-6">
         <div class="card-header bg-primary text-white p-2">Véhicule</div>
         <div class="card-body p-2" id="ajax-vehicule">
             @include('IpsumReservation::reservation.etat_des_lieux.step.recap._vehicule')
@@ -39,7 +39,7 @@
 
 
     <!-- Dommages -->
-    <div class="card mb-3 shadow-sm col-md-4">
+    <div class="card mb-3 shadow-sm col-md-12">
         <div class="card-header bg-primary text-white p-2">Dommages constatés</div>
         <div class="card-body p-2">
             <div class="d-flex flex-row flex-wrap">
@@ -53,12 +53,12 @@
         $photos = $inspection->medias()->groupe('photos')->get();
     @endphp
     @if($photos->count())
-        <div class="card mb-3 shadow-sm col-md-4">
+        <div class="card mb-3 shadow-sm col-md-12">
             <div class="card-header bg-primary text-white p-2">Photos</div>
             <div class="card-body p-2">
                 <div class="d-flex flex-row flex-wrap sortable upload-files">
                     @foreach($photos as $media)
-                        @include('IpsumReservation::reservation.etat_des_lieux.step._media')
+                        @include('IpsumMedia::media._media', ['editable' => false, 'sortable' => false, 'title' => false, 'link' => true, 'pad' => true])
                     @endforeach
                 </div>
             </div>

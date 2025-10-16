@@ -11,7 +11,9 @@ use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
 use Ipsum\Reservation\app\Console\Commands\ReservationCheck;
+use Ipsum\Reservation\app\Http\Middleware\RedirectIfInspectionSigned;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
+use Ipsum\Reservation\app\Http\Middleware\ReservationEmail;
 use Ipsum\Reservation\app\Http\Middleware\ReservationTracking;
 use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
@@ -98,6 +100,10 @@ class ReservationServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/database/seeds/' => database_path('seeders'),
         ], 'seeds');
+
+        $this->publishes([
+            __DIR__ . '/storage' => storage_path('app/vendor/IpsumReservation'),
+        ], 'ipsum-reservation-storage');
     }
 
 
@@ -120,6 +126,8 @@ class ReservationServiceProvider extends ServiceProvider
     public function registerMiddlewareGroup(Router $router)
     {
         $router->aliasMiddleware('adminReservationConfirmed', ReservationConfirmed::class);
+        $router->aliasMiddleware('adminRedirectIfSigned', RedirectIfInspectionSigned::class);
+        $router->aliasMiddleware('adminReservationEmail', ReservationEmail::class);
         $this->app->booted(function () use($router) {
             $router->pushMiddlewareToGroup('web', ReservationTracking::class);
         });

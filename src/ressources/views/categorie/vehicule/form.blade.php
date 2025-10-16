@@ -207,17 +207,18 @@
                                 <th scope="col"> Type </th>
                                 <th scope="col"> Emplacement </th>
                                 <th scope="col"> Elément </th>
+                                <th scope="col"> Etat </th>
                                 <th scope="col"> Observations </th>
                                 <th  style="width: 210px">Image</th>
                                 <th style="width: 50px"></th>
                             </tr>
                             </thead>
                             <tbody id="dommages-lignes">
-                            @if($vehicule->dommages->count())
+                            @if($vehicule->allDommages->count())
                                 @php
                                     $i = 1;
                                 @endphp
-                                @foreach($vehicule->dommages as $dommage)
+                                @foreach($vehicule->allDommages as $dommage)
                                     <tr>
                                         <td>
                                             <input type="hidden" name="dommages[{{ $i }}][id]" value="{{ $dommage->id }}" />
@@ -230,31 +231,33 @@
                                             {{ $dommage->element->nom }}
                                         </td>
                                         <td>
+                                            @if($dommage->trashed())
+                                                <span class="badge badge-success ">Réparé</span>
+                                            @else
+                                                <span class="badge badge-warning">Actif</span>
+                                            @endif
+                                        </td>
+                                        <td>
                                             {!! $dommage->observations !!}
                                         </td>
                                         <td>
-                                            @if($dommage->inspection->medias()->groupe($dommage->id)->count())
-                                                @php $media = $dommage->inspection->medias()->groupe($dommage->id)->first(); @endphp
+                                            @if($dommage->illustration)
+                                                @php $media = $dommage->illustration; @endphp
                                                 <div class="media sortable-item" data-sortable="{{ $media->id }}">
                                                     <div class="media-img">
-                                                        @if ($media->isImage)
-                                                            <img src="{{ Croppa::url($media->cropPath, 200) }}" alt="{{ $media->tagAlt }}" />
-                                                        @else
-                                                            <span class="media-icone {{ $media->icone }}"></span>
-                                                        @endif
-                                                    </div>
-                                                    <div class="media-title">
-                                                        {{ $media->titre }}
+                                                        <img src="{{ Croppa::url($media->cropPath, 200) }}" alt="{{ $media->tagAlt }}" />
                                                     </div>
                                                 </div>
                                             @endif
                                         </td>
                                         <td class="text-right">
+                                            @if(!$dommage->trashed())
                                             <form action="{{ route('admin.vehicule.dommage.destroy', [$vehicule, $dommage]) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
                                             </form>
+                                            @endif
                                         </td>
                                     </tr>
 

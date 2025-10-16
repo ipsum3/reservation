@@ -234,8 +234,11 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
     function () {
         Route::get('', 'index')->name('index');
         Route::get('{inspection}/pdf', 'pdf')->name('pdf');
-        Route::get('{inspection}/pdf2', 'showPdf')->name('showPdf');
         Route::any('{inspection}/destroy', 'destroy')->name('destroy');
+
+        if (app()->environment('local', 'development')) {
+            Route::get('{inspection}/_pdf', 'showPdf')->name('showPdf');
+        }
     }
 );
 
@@ -244,29 +247,37 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
     ->name('admin.inspection.')
     ->group(function () {
 
-        Route::get('vehicule', 'vehicule')->name('vehicule');
-        Route::post('vehicule', 'storeVehicule')->name('vehicule.store');
+        Route::get('vehicule', 'vehicule')->name('vehicule')->middleware('adminRedirectIfSigned');
+        Route::post('vehicule', 'storeVehicule')->name('vehicule.store')->middleware('adminRedirectIfSigned');
+        Route::get('client', 'client')->name('client')->middleware('adminRedirectIfSigned');
 
-        Route::get('client', 'client')->name('client');
+        Route::middleware(['adminRedirectIfSigned', 'adminReservationEmail'])->group(function () {
 
-        Route::get('checklist', 'checklist')->name('checklist');
-        Route::post('checklist', 'storeChecklist')->name('checklist.store');
+            // Checklist
+            Route::get('checklist', 'checklist')->name('checklist');
+            Route::post('checklist', 'storeChecklist')->name('checklist.store');
 
-        Route::get('dommage', 'dommage')->name('dommage');
-        Route::get('dommage/create', 'createDommage')->name('dommage.create');
-        Route::post('dommage', 'storeDommage')->name('dommage.store');
-        Route::get('dommage/{dommage}/edit', 'editDommage')->name('dommage.edit');
-        Route::put('dommage/{dommage}', 'updateDommage')->name('dommage.update');
-        Route::any('dommage/{dommage}/destroy', 'destroyDommage')->name('dommage.destroy');
+            // Dommages
+            Route::get('dommage', 'dommage')->name('dommage');
+            Route::prefix('dommage')->name('dommage.')->group(function () {
+                Route::get('create', 'createDommage')->name('create');
+                Route::post('/', 'storeDommage')->name('store');
+                Route::get('{dommage}/edit', 'editDommage')->name('edit');
+                Route::put('{dommage}', 'updateDommage')->name('update');
+                Route::delete('{dommage}', 'destroyDommage')->name('destroy');
+            });
 
-        Route::get('signature-locataire', 'signatureLocataire')->name('signature.locataire');
-        Route::post('signature-locataire', 'storeSignatureLocataire')->name('signature.locataire.store');
+            // Signatures
+            Route::prefix('signature')->name('signature.')->group(function () {
+                Route::get('locataire', 'signatureLocataire')->name('locataire');
+                Route::post('locataire', 'storeSignatureLocataire')->name('locataire.store');
+                Route::get('agent', 'signatureAgent')->name('agent');
+                Route::post('agent', 'storeSignatureAgent')->name('agent.store');
+            });
+        });
 
-        Route::get('signature-agent', 'signatureAgent')->name('signature.agent');
-        Route::post('signature-agent', 'storeSignatureAgent')->name('signature.agent.store');
-
+        // Bloc final sans middleware spécifique
         Route::get('recapitulatif', 'recapitulatif')->name('recapitulatif');
-        Route::get('send', 'send')->name('send');
         Route::get('show', 'show')->name('show');
 
     });

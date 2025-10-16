@@ -298,6 +298,19 @@
                             </td>
                         @endif
                     </tr>
+                    @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
+                    <tr>
+                        <td colspan="2" style="border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border: none; background-color: #e6e6e6;">
+                            @php
+                                $count = $reservation->inspection_finale?->dommages->count() ?? 0;
+                            @endphp
+                            <strong>{{ $count }} dommage{{ $count > 1 ? 's' : '' }} déclaré{{ $count > 1 ? 's' : '' }}</strong>
+                        </td>
+                    </tr>
+                    @endif
                 </table>
 
 
@@ -428,9 +441,9 @@
                         @foreach($chunk as $media)
                             <td style="width:25%; padding:6px; text-align:center; vertical-align:top;border: none;">
                                 <img
-                                        src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400) }}"
+                                        src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400, 400, ['pad' => '255,255,255']) }}"
                                         alt="{{ $media->titre }}"
-                                        style="width:100%; height:auto; border:1px solid #ccc; border-radius:6px; margin-bottom:4px;"
+                                        style="width:100%; height:auto;  border-radius:6px; margin-bottom:4px;"
                                 >
                             </td>
                         @endforeach
@@ -459,9 +472,9 @@
                         @foreach($chunk as $media)
                             <td style="width:25%; padding:6px; text-align:center; vertical-align:top;border: none;">
                                 <img
-                                        src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400) }}"
+                                        src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400, 400, ['pad' => '255,255,255']) }}"
                                         alt="{{ $media->titre }}"
-                                        style="width:100%; height:auto; border:1px solid #ccc; border-radius:6px; margin-bottom:4px;"
+                                        style="width:100%; height:auto; border-radius:6px; margin-bottom:4px;"
                                 >
                             </td>
                         @endforeach

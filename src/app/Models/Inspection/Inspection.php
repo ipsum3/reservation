@@ -3,7 +3,6 @@
 namespace Ipsum\Reservation\app\Models\Inspection;
 
 use Ipsum\Admin\app\Models\Admin;
-use Ipsum\Admin\Concerns\Htmlable;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Media\Concerns\Mediable;
 use Ipsum\Reservation\app\Models\Dommage\Dommage;
@@ -12,7 +11,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
 class Inspection extends BaseModel
 {
-    use Htmlable, Mediable;
+    use Mediable;
 
     protected $casts = [
         'agent_signature_at' => 'datetime:Y-m-d\TH:i',

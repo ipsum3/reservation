@@ -11,8 +11,15 @@
     "require": {
         "php": "^8.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
-        "openspout/openspout": "^4.12"
+        "openspout/openspout": "^4.12",
+        "dealfonso/sapp": "dev-master"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/dealfonso/sapp"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Ipsum\\Reservation\\": "src"

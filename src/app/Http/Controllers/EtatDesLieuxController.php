@@ -38,7 +38,6 @@ class EtatDesLieuxController extends AdminController
                 $date = explode(' - ', $request->get('date_debut'));
                 $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
                 $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
-                //$query->whereBetween('debut_at', [$date1, $date2]);
 
                 $query->whereHas('reservation', function ($q) use ($date1, $date2) {
                     $q->whereBetween('debut_at', [$date1, $date2]);
@@ -50,7 +49,6 @@ class EtatDesLieuxController extends AdminController
                 $date = explode(' - ', $request->get('date_fin'));
                 $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
                 $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
-                //$query->whereBetween('fin_at', [$date1, $date2]);
 
                 $query->whereHas('reservation', function ($q) use ($date1, $date2) {
                     $q->whereBetween('fin_at', [$date1, $date2]);
@@ -67,7 +65,7 @@ class EtatDesLieuxController extends AdminController
 
                 $query->orWhereHas('reservation', function ($q) use ($search) {
                     $q->where(function($q) use ($search) {
-                        foreach (['reference', 'contrat', 'nom', 'prenom', 'email', 'telephone'] as $colonne) {
+                        foreach (['reference', 'contrat', 'nom', 'prenom', 'email', 'telephone', 'immatriculation'] as $colonne) {
                             $q->orWhere($colonne, 'like', '%'.$search.'%');
                         }
                     });
@@ -94,15 +92,6 @@ class EtatDesLieuxController extends AdminController
             : $reservation->inspection_initiale;
     }
 
-    /** Redirige si inspection déjà signée */
-    protected function redirectIfSigned($inspection, Reservation $reservation, Type $type)
-    {
-        if ($inspection?->isSigned()) {
-            return redirect()->route('admin.inspection.show', [$reservation, $type]);
-        }
-        return null;
-    }
-
     /** Met à jour ou crée une inspection */
     protected function updateInspection(array $data, Reservation $reservation, Type $type, $inspection)
     {
@@ -118,9 +107,6 @@ class EtatDesLieuxController extends AdminController
     /** --------- VÉHICULE --------- */
     public function vehicule(Reservation $reservation, Type $type)
     {
-        $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
-
         $vehicules = $reservation->categorie
             ? $reservation->categorie->vehicules()
                 ->with('categorie')
@@ -138,17 +124,13 @@ class EtatDesLieuxController extends AdminController
         $categories = Categorie::orderBy('nom')->pluck('nom', 'id');
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.vehicule', compact(
-            'reservation', 'inspection', 'type', 'vehicules', 'conflicts', 'categories'
+            'reservation', 'type', 'vehicules', 'conflicts', 'categories'
         ));
     }
 
     public function storeVehicule(StoreInspectionVehicule $request, Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($inspection?->isSigned()) {
-            Alert::error('Le document est déjà signé')->flash();
-            return back();
-        }
 
         $data = $request->validated();
         $this->updateInspection($data, $reservation, $type, $inspection);
@@ -165,14 +147,15 @@ class EtatDesLieuxController extends AdminController
     /** --------- CLIENT --------- */
     public function client(Reservation $reservation, Type $type)
     {
-        $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
+        if (!$reservation->email ) {
+            Alert::error("Email client non renseigné.")->flash();
+        }
 
         $pays = Pays::orderBy('nom')->pluck('nom', 'id');
         $lieux = Lieu::pluck('nom', 'id');
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.client', compact(
-            'reservation', 'inspection', 'type', 'pays', 'lieux'
+            'reservation', 'type', 'pays', 'lieux'
         ));
     }
 
@@ -180,7 +163,6 @@ class EtatDesLieuxController extends AdminController
     public function checklist(Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
         $checklists = Checklist::orderBy('order')->get();
 
@@ -192,10 +174,6 @@ class EtatDesLieuxController extends AdminController
     public function storeChecklist(StoreInspectionChecklist $request, Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($inspection?->isSigned()) {
-            Alert::error('Le document est déjà signé')->flash();
-            return back();
-        }
 
         $data = $request->validated();
         $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
@@ -209,7 +187,6 @@ class EtatDesLieuxController extends AdminController
     public function dommage(Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
         $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
         $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
@@ -224,7 +201,6 @@ class EtatDesLieuxController extends AdminController
     {
         $dommage = new Dommage();
         $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
         $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
         $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
@@ -236,10 +212,6 @@ class EtatDesLieuxController extends AdminController
     public function storeDommage(StoreInspectionDommage $request, Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($inspection?->isSigned()) {
-            Alert::error('Le document est déjà signé')->flash();
-            return back();
-        }
 
         $dommageData = $request->validated();
         $dommageData['inspection_id'] = $inspection->id;
@@ -253,7 +225,6 @@ class EtatDesLieuxController extends AdminController
     public function editDommage(Reservation $reservation, Type $type, Dommage $dommage)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
         $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
         $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
@@ -265,10 +236,6 @@ class EtatDesLieuxController extends AdminController
     public function updateDommage(StoreInspectionDommage $request, Reservation $reservation, Type $type, Dommage $dommage)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($inspection?->isSigned()) {
-            Alert::error('Le document est déjà signé')->flash();
-            return back();
-        }
 
         $dommageData = $request->validated();
         $dommageData['inspection_id'] = $inspection->id;
@@ -279,11 +246,19 @@ class EtatDesLieuxController extends AdminController
         return redirect()->route('admin.inspection.dommage', [$reservation, $type]);
     }
 
+    public function destroyDommage(Reservation $reservation, Type $type, Dommage $dommage)
+    {
+        $dommage->delete();
+        Alert::success('Le dommage a été supprimé avec succès.')->flash();
+
+        return redirect()->route('admin.inspection.dommage', [$reservation, $type]);
+    }
+
+
     /** --------- RÉCAP --------- */
     public function recapitulatif(Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
         $checklists = Checklist::orderBy('order')->get();
 
@@ -296,7 +271,6 @@ class EtatDesLieuxController extends AdminController
     public function signatureLocataire(Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.signature_locataire', compact(
             'reservation', 'inspection', 'type'
@@ -306,10 +280,6 @@ class EtatDesLieuxController extends AdminController
     public function storeSignatureLocataire(StoreInspectionSignatureLocataire $request, Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($inspection?->isSigned()) {
-            Alert::error('Le document est déjà signé')->flash();
-            return back();
-        }
 
         $data = $request->validated();
         $data['locataire_signature_at'] = !empty($data['locataire_signature']) ? Carbon::now() : null;
@@ -322,7 +292,6 @@ class EtatDesLieuxController extends AdminController
     public function signatureAgent(Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($redirect = $this->redirectIfSigned($inspection, $reservation, $type)) return $redirect;
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.signature_agent', compact(
             'reservation', 'inspection', 'type'
@@ -332,13 +301,9 @@ class EtatDesLieuxController extends AdminController
     public function storeSignatureAgent(StoreInspectionSignatureAgent $request, Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
-        if ($inspection?->isSigned()) {
-            Alert::error('Le document est déjà signé')->flash();
-            return back();
-        }
 
         $data = $request->validated();
-        $data['agent_signature_at'] = !empty($data['agent_signature']) ? Carbon::now() : null;
+        $data['agent_signature_at'] = Carbon::now();
 
         $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
         $checklists = Checklist::orderBy('order')->get();
@@ -351,9 +316,17 @@ class EtatDesLieuxController extends AdminController
 
         try{
             /**
-             * Génération du PDF à signer
+             * Création du dossier inspections s’il n’existe pas
              */
-            $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
+            $directory = storage_path('app/inspections');
+            if (!is_dir($directory)) {
+                mkdir($directory, 0775, true);
+            }
+
+            /**
+             * Génération du PDF
+             */
+            $pdfPath = $directory . "/etat_des_lieux-{$reservation->id}-{$type->id}.pdf";
 
             $pdf = PDF::loadView(config('ipsum.reservation.etat_des_lieux.view'), [
                 'reservation' => $reservation,
@@ -365,7 +338,7 @@ class EtatDesLieuxController extends AdminController
             $pdf->save($pdfPath);
 
             /**
-             * CHARGEMENT DU PDF POUR SIGNATURE NUMÉRIQUE
+             * Signature numérique du PDF
              */
             $fileContent = file_get_contents($pdfPath);
             $pdfDoc = PDFDoc::from_string($fileContent);
@@ -373,10 +346,7 @@ class EtatDesLieuxController extends AdminController
                 throw new \Exception("Impossible de charger le PDF pour signature.");
             }
 
-            /**
-             * SIGNATURE NUMÉRIQUE
-             */
-            $cert = storage_path('app/certificat/certificat.p12');
+            $cert = storage_path('app/vendor/IpsumReservation/certificat/certificat.p12');
             $password = '1234';
             if (!file_exists($cert)) throw new \Exception("Certificat agent introuvable.");
 
@@ -387,8 +357,8 @@ class EtatDesLieuxController extends AdminController
             $signedDoc = $pdfDoc->to_pdf_file_s();
             if ($signedDoc === false) throw new \Exception("Erreur lors de la signature agent.");
 
-            $agentSignedPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}-signed.pdf");
-            file_put_contents($agentSignedPath, $signedDoc);
+            // On écrase le fichier original avec la version signée
+            file_put_contents($pdfPath, $signedDoc);
 
             /**
              * ENVOI DU DOCUMENT FINAL
@@ -398,6 +368,11 @@ class EtatDesLieuxController extends AdminController
         }catch(\Exception $exception){
             \Log::error("Erreur lors de la signature PDF : " . $exception->getMessage());
             Alert::error("Une erreur est survenue lors de la signature du PDF.")->flash();
+
+            $data['agent_signature'] = null;
+            $data['agent_signature_at'] = null;
+            $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
+
             return back();
         }
 
@@ -427,11 +402,7 @@ class EtatDesLieuxController extends AdminController
         $reservation = $inspection->reservation;
         $type = $inspection->type;
 
-        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}-signed.pdf");
-
-        if (!file_exists($pdfPath)) {
-            $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
-        }
+        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
 
         if (!file_exists($pdfPath)) {
             Alert::error('Fichier introuvable')->flash();
@@ -444,9 +415,11 @@ class EtatDesLieuxController extends AdminController
         ]);
     }
 
+    /**
+     * Permet de visualiser le pdf pour tester
+     */
     public function showPdf(Inspection $inspection)
     {
-
         $reservation = $inspection->reservation;
         $type = $inspection->type;
         $checklists = Checklist::orderBy('order')->get();

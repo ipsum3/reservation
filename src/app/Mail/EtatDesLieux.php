@@ -33,11 +33,7 @@ class EtatDesLieux extends Mailable
         $this->inspection = $inspection;
         $this->email = $email ? $email : $this->reservation->email;
 
-        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}-signed.pdf");
-
-        if (!file_exists($pdfPath)) {
-            $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
-        }
+        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
 
         if (!file_exists($pdfPath)) {
             throw new \Exception("Le fichier PDF de l’état des lieux est introuvable pour la réservation #{$reservation->id}");

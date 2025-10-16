@@ -35,7 +35,7 @@
                     <div class="step active">
 
 
-                            <h2 class="text-xl font-semibold mb-2">Ajouter un dommage</h2>
+                            <h2 class="text-xl font-semibold mb-2">{{ $dommage->exists ? 'Modifier' : 'Ajouter' }} un dommage</h2>
 
                         <div class="row">
 
@@ -43,18 +43,18 @@
                                 <div class="upload"
                                      data-initialize="true"
                                      data-uploadendpoint="{{ route('admin.media.store') }}"
-                                     data-uploadmedias="{{ route('admin.media.publication', ['publication_type' => \Ipsum\Reservation\app\Models\Dommage\Dommage::class, 'publication_id' => $dommage->exists ? $dommage->id : '', 'groupe' => $inspection->id  ]) }}"
+                                     data-uploadmedias="{{ route('admin.media.publication', ['toolbar' => ['editable' => false, 'sortable' => false, 'title' => false, 'link' => true, 'pad' => true], 'publication_type' => \Ipsum\Reservation\app\Models\Dommage\Dommage::class, 'publication_id' => $dommage->exists ? $dommage->id : ''  ]) }}"
                                      data-uploadrepertoire=""
                                      data-uploadpublicationid="{{ $dommage->id ?? '' }}"
                                      data-uploadpublicationtype="{{ \Ipsum\Reservation\app\Models\Dommage\Dommage::class }}"
-                                     data-uploadgroupe="{{ $inspection->id }}"
+                                     data-uploadgroupe=""
                                      data-uploadnote="Une seule image (max {{ config('ipsum.media.upload_max_filesize') }} Ko)"
                                      data-uploadmaxfilesize="{{ config('ipsum.media.upload_max_filesize') }}"
                                      data-uploadmmaxnumberoffiles="1"
                                      data-uploadminnumberoffiles="0"
                                      data-uploadallowedfiletypes="image/*"
                                      data-uploadcsrftoken="{{ csrf_token() }}">
-                                    <div class="upload-DragDrop"></div>
+                                    <div class="upload-DragDrop {{ $dommage->illustration ? 'd-none' : '' }}"></div>
                                     <div class="upload-ProgressBar"></div>
                                     <div class="upload-alerts mt-3"></div>
                                     <div class="mt-3 mb-3">
@@ -63,6 +63,37 @@
                                              data-sortablecsrftoken="{{ csrf_token() }}">
                                         </div>
                                     </div>
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                            const uploadFiles = document.querySelector('.upload-files');
+                                            const uploadZone = document.querySelector('.upload-DragDrop');
+
+                                            if (!uploadFiles || !uploadZone) return;
+
+                                            function updateUploadZoneVisibility() {
+                                                const hasMedia = uploadFiles.querySelector('.media') !== null;
+
+                                                console.log(hasMedia)
+                                                if (hasMedia) {
+                                                    uploadZone.classList.add('d-none');
+                                                } else {
+                                                    uploadZone.classList.remove('d-none');
+                                                }
+                                            }
+
+                                            function initObserver() {
+                                                // Lancer l’observation des changements
+                                                const observer = new MutationObserver(updateUploadZoneVisibility);
+                                                observer.observe(uploadFiles, { childList: true, subtree: false });
+
+                                                // Vérifier une première fois
+                                                updateUploadZoneVisibility();
+                                            }
+
+                                            // Délai avant initialisation pour laisser Uppy injecter le DOM
+                                            setTimeout(initObserver, 1500); // Ajuste le délai (ms) selon le temps de rendu d’Uppy
+                                        });
+                                    </script>
                                 </div>
                             </div>
 

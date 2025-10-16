@@ -91,7 +91,7 @@
                                         @if($photos->count())
                                             <div class="d-flex flex-row flex-wrap sortable upload-files">
                                                 @foreach($photos as $media)
-                                                    @include('IpsumReservation::reservation.etat_des_lieux.step._media')
+                                                    @include('IpsumMedia::media._media', ['editable' => false, 'sortable' => false, 'title' => false, 'link' => true, 'pad' => true])
                                                 @endforeach
                                             </div>
 
@@ -106,7 +106,7 @@
                         <h2 class="mt-1 mb-4">Ajout rapide de photo</h2>
                         <div class="upload"
                              data-uploadendpoint="{{ route('admin.media.store') }}"
-                             data-uploadmedias="{{ route('admin.media.publication', ['publication_type' => \Ipsum\Reservation\app\Models\Inspection\Inspection::class, 'publication_id' => $inspection->exists ? $inspection->id : '', "groupe" => "photos"]) }}"
+                             data-uploadmedias="{{ route('admin.media.publication', ['toolbar' => ['editable' => false, 'sortable' => false, 'title' => false, 'link' => true, 'pad' => true], 'publication_type' => \Ipsum\Reservation\app\Models\Inspection\Inspection::class, 'publication_id' => $inspection->exists ? $inspection->id : '', "groupe" => "photos"]) }}"
                              data-uploadrepertoire="inspection"
                              data-uploadpublicationid="{{ $inspection->id }}"
                              data-uploadpublicationtype="{{ \Ipsum\Reservation\app\Models\Inspection\Inspection::class }}"
