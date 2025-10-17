@@ -40,15 +40,8 @@ return new class extends Migration
             $table->string('nom');
         });
 
-        $inspection_types = [
-            'Initial',
-            'Final'
-        ];
-
-        foreach ($inspection_types as $type) {
-            Type::create([
-                'nom' => $type,
-            ]);
+        if (\Ipsum\Core\app\Models\Setting::count()) {
+            Artisan::call('db:seed', ['--class' => \Ipsum\Reservation\database\seeds\InspectionTypeSeeder::class, '--force' => true]);
         }
 
         Schema::create('checklist-inspections', function (Blueprint $table) {
@@ -65,20 +58,8 @@ return new class extends Migration
             $table->tinyInteger('order')->default(0);
         });
 
-        $checklists = [
-            'Propreté intérieure',
-            'Propreté extérieure',
-            'Papiers du véhicule',
-            'Kit de sécurité',
-            'Niveaux',
-            'Roue de secours',
-        ];
-
-        foreach ($checklists as $index => $nom) {
-            Checklist::create([
-                'nom' => $nom,
-                'order' => $index + 1,
-            ]);
+        if (\Ipsum\Core\app\Models\Setting::count()) {
+            Artisan::call('db:seed', ['--class' => \Ipsum\Reservation\database\seeds\ChecklistSeeder::class, '--force' => true]);
         }
 
         // Table dommages constatés
@@ -101,20 +82,8 @@ return new class extends Migration
             $table->tinyInteger('order')->default(0);
         });
 
-        $dommage_types = [
-            'Rayure',
-            'Enfoncement / bosselage',
-            'Cassure',
-            'Éclats / bris',
-            'Pièce manquante',
-            'Autre'
-        ];
-
-        foreach ($dommage_types as $index => $nom) {
-            \Ipsum\Reservation\app\Models\Dommage\Type::create([
-                'nom' => $nom,
-                'order' => $index + 1
-            ]);
+        if (\Ipsum\Core\app\Models\Setting::count()) {
+            Artisan::call('db:seed', ['--class' => \Ipsum\Reservation\database\seeds\DommageTypeSeeder::class, '--force' => true]);
         }
 
         // Table éléments pouvant avoir un dommage
@@ -124,18 +93,8 @@ return new class extends Migration
             $table->tinyInteger('order')->default(0);
         });
 
-        $elements = [
-            'Carrosserie',
-            'Vitrage',
-            'Éclairage',
-            'Accessoires et divers'
-        ];
-
-        foreach ($elements as $index => $nom) {
-            Element::create([
-                'nom' => $nom,
-                'order' => $index + 1
-            ]);
+        if (\Ipsum\Core\app\Models\Setting::count()) {
+            Artisan::call('db:seed', ['--class' => \Ipsum\Reservation\database\seeds\DommageElementSeeder::class, '--force' => true]);
         }
 
         // Table emplacements du véhicule
@@ -145,20 +104,8 @@ return new class extends Migration
             $table->tinyInteger('order')->default(0);
         });
 
-        $emplacements =  [
-            'Avant',
-            'Avant droit',
-            'Avant gauche',
-            'Arrière droit',
-            'Arrière gauche',
-            'Arrière'
-        ];
-
-        foreach ($emplacements as $index => $nom) {
-            Emplacement::create([
-                'nom' => $nom,
-                'order' => $index + 1
-            ]);
+        if (\Ipsum\Core\app\Models\Setting::count()) {
+            Artisan::call('db:seed', ['--class' => \Ipsum\Reservation\database\seeds\DommageEmplacementSeeder::class, '--force' => true]);
         }
 
     }

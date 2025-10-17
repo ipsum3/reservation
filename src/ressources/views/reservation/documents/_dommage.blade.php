@@ -14,5 +14,8 @@
 
         <div style="font-size:11px; line-height:1.4;">
             <p>{{ $dommage->emplacement? $dommage->emplacement?->nom.' - ' : ''}} {{ $dommage->element? $dommage->element?->nom.' - ' : ''}} {{ $dommage->type?->nom }}</p>
+            @if($dommage->observations)
+                <p><small>{!! $dommage->observations !!}</small></p>
+            @endif
         </div>
     </div>
