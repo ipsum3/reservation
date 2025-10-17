@@ -91,11 +91,7 @@ class VehiculeController extends AdminController
 
         $conflicts = $vehicule->getConflicts();
 
-        $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
-        $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
-        $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
-
-        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories', 'stats', 'conflicts', 'dommage_types', 'dommage_elements', 'dommage_emplacements'));
+        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories', 'stats', 'conflicts'));
     }
 
     public function update(StoreVehicule $request, Vehicule $vehicule)

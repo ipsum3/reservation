@@ -45,14 +45,6 @@ class StoreVehicule extends FormRequest
                     return $query->where('account_id', 1);
                 }),*/
             ],
-            // Dommages
-            'dommages' => ['nullable', 'array'],
-            'dommages.*.id' => ['nullable', 'integer'],
-            'dommages.*.uuid' => ['nullable', 'string'],
-            'dommages.*.type_id' => ['required_with:dommages', 'integer', 'exists:dommage_types,id'],
-            'dommages.*.emplacement_id' => ['required_with:dommages', 'integer', 'exists:dommage_emplacements,id'],
-            'dommages.*.element_id' => ['required_with:dommages', 'integer', 'exists:dommage_elements,id'],
-            'dommages.*.observations' => ['nullable', 'string'],
         ];
     }
 

@@ -72,6 +72,7 @@ class Vehicule extends BaseModel
     {
         static::deleting(function (self $categorie) {
             $categorie->interventions()->delete();
+            /*$categorie->dommages()->delete(); // TODO REMETTRE*/
         });
     }
 
