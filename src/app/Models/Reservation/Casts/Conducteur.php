@@ -10,33 +10,14 @@ class Conducteur
 {
     use Objectable;
 
-    public function getDateNaissanceAttribute()
+    public function getNaissance_AtAttribute()
     {
-        return isset($this->attributes['naissance_at'])
-            ? Carbon::make($this->attributes['naissance_at'])
-            : null;
+        return Carbon::make($this->attributes['naissance_at']);
     }
 
-    /**
-     * Retourne la date d’obtention du permis (Carbon instance)
-     */
-    public function getDatePermisAttribute()
+    public function getPermis_AtAttribute()
     {
-        return isset($this->attributes['permis_at'])
-            ? Carbon::make($this->attributes['permis_at'])
-            : null;
-    }
-
-    /**
-     * Alias pratiques pour compatibilité : remplace les accès directs à naissance_at / permis_at
-     */
-    public function __get($key)
-    {
-        return match ($key) {
-            'naissance_at' => $this->getDateNaissanceAttribute(),
-            'permis_at' => $this->getDatePermisAttribute(),
-            default => $this->attributes[$key] ?? null,
-        };
+        return Carbon::make($this->attributes['permis_at']);
     }
 
 

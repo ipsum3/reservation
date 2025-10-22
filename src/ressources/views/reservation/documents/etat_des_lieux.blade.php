@@ -188,10 +188,10 @@
                             <strong>Code Postal :</strong> {!! $reservation->cp && $reservation->cp !='-' ? $reservation->cp : '<span class="tiret"> | _ | _ | _ | _ | _ | </span>' !!},<br>
                             <strong>Ville :</strong> {!! $reservation->ville && $reservation->ville !='-' ? $reservation->ville : '<span class="tiret">__________________</span>' !!},<br>
                             <strong>Pays :</strong> {!! $reservation->cp && $reservation->cp !='-' ? $reservation->pays_nom : '<span class="tiret">__________________</span>' !!},<br><br>
-                            <strong>Né le :</strong> {!! $reservation->naissance_at ? $reservation->naissance_at?->format('d/m/Y') : '<span class="tiret">__________________</span>' !!}
+                            <strong>Né le :</strong> {!! $reservation->naissance_at ? $reservation->naissance_at->format('d/m/Y') : '<span class="tiret">__________________</span>' !!}
                             à {!! $reservation->naissance_lieu ? e($reservation->naissance_lieu) : '<span class="tiret">__________________</span>' !!}<br>
                             <strong>N° de permis :</strong> {!! $reservation->permis_numero ? e($reservation->permis_numero) : '<span class="tiret">______________</span>' !!}
-                            {{ _('délivré le') }} {!! $reservation->permis_at ? $reservation->permis_at?->format('d/m/Y') : '<span class="tiret">____________</span>' !!}<br>
+                            {{ _('délivré le') }} {!! $reservation->permis_at ? $reservation->permis_at->format('d/m/Y') : '<span class="tiret">____________</span>' !!}<br>
                             {{ _('par') }} {!! $reservation->permis_delivre ? e($reservation->permis_delivre) : '<span class="tiret">__________________</span>' !!}<br>
                         </td>
                     </tr>
