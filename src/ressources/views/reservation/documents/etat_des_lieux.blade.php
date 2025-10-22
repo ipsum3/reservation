@@ -207,10 +207,10 @@
 
                                 @foreach($reservation->conducteurs as $conducteur)
                                     <strong>Nom :</strong> {{ $conducteur->nom }} - <strong>Prénom :</strong> {{ $conducteur->prenom }}<br>
-                                    <strong>Date de naissance :</strong> {{ $conducteur->naissance_at }}<br>
+                                    <strong>Date de naissance :</strong> {{ $conducteur->naissance_at->format('d/m/Y') }}<br>
                                     <strong>Lieu de naissance :</strong> {{ $conducteur->naissance_lieu }}<br>
                                     <strong>Numéro de permis :</strong> {{ $conducteur->permis_numero }}<br>
-                                    <strong>Permis délivré le :</strong> {{ $conducteur->permis_at }}<br>
+                                    <strong>Permis délivré le :</strong> {{ $conducteur->permis_at->format('d/m/Y') }}<br>
                                     <strong>Permis délivré par :</strong> {{ $conducteur->permis_delivre }}<br>
                                     <hr>
                                 @endforeach
