@@ -58,7 +58,7 @@
             <div class="card-body p-2">
                 <div class="d-flex flex-row flex-wrap sortable upload-files">
                     @foreach($photos as $media)
-                        @include('IpsumMedia::media._media', ['editable' => false, 'sortable' => false, 'title' => false, 'link' => true, 'pad' => true])
+                        @include('IpsumReservation::reservation.etat_des_lieux.step._photo')
                     @endforeach
                 </div>
             </div>

@@ -13,6 +13,9 @@
             <h5 class="card-title text-primary text-center p-2">
                 {{ $dommage->type?->nom }}<br> {{ $dommage->emplacement? $dommage->emplacement?->nom.' - ' : ''}} {{ $dommage->element?->nom}}
             </h5>
+            @if($dommage->observations)
+                <p class=" text-center p-2">{!! $dommage->observations !!}</p>
+            @endif
         </div>
         @if(!$dommage->protected)
         <ul>
