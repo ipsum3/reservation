@@ -72,7 +72,11 @@
 
                                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                                     <div class="card-body alert-warning">
-                                        @if($reservation->inspection_initiale?->dommages && $reservation->inspection_initiale->dommages->count())
+                                        @php
+                                            $photos = $reservation->inspection_initiale->medias()->groupe('photos')->get();
+                                        @endphp
+
+                                        @if(($reservation->inspection_initiale?->dommages && $reservation->inspection_initiale->dommages->count()) || $photos->count())
                                             <div class="d-flex flex-row flex-wrap">
                                                 @foreach($reservation->inspection_initiale->dommages as $dommage)
                                                     @php
@@ -80,21 +84,16 @@
                                                     @endphp
                                                     @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
                                                 @endforeach
+
+                                                @foreach($photos as $media)
+                                                        @php
+                                                            $media->protected = true;
+                                                        @endphp
+                                                        @include('IpsumReservation::reservation.etat_des_lieux.step._photo')
+                                                @endforeach
                                             </div>
                                         @else
                                             <p class="alert alert-info">Aucun dommage enregistré lors de l’inspection initiale.</p>
-                                        @endif
-                                        <hr>
-                                        @php
-                                            $photos = $reservation->inspection_initiale->medias()->groupe('photos')->get();
-                                        @endphp
-                                        @if($photos->count())
-                                            <div class="d-flex flex-row flex-wrap sortable upload-files">
-                                                @foreach($photos as $media)
-                                                    @include('IpsumMedia::media._media', ['editable' => false, 'sortable' => false, 'title' => false, 'link' => true, 'pad' => true])
-                                                @endforeach
-                                            </div>
-
                                         @endif
                                     </div>
                                 </div>
