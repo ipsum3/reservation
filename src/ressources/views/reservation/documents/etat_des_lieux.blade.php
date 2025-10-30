@@ -439,12 +439,13 @@
                 @foreach($photos_depart->chunk(4) as $chunk)
                     <tr style="">
                         @foreach($chunk as $media)
-                            <td style="width:25%; padding:6px; text-align:center; vertical-align:top;border: none;">
-                                <img
-                                        src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400, 400, ['pad' => '255,255,255']) }}"
-                                        alt="{{ $media->titre }}"
-                                        style="width:100%; height:auto;  border-radius:6px; margin-bottom:4px;"
-                                >
+                            <td style="
+                            width: 33.33%;
+                            vertical-align: top;
+                            padding: 5px;
+                            border: none;
+                        ">
+                                @include('IpsumReservation::reservation.documents._photo')
                             </td>
                         @endforeach
 
@@ -470,12 +471,13 @@
                 @foreach($photos_retour->chunk(4) as $chunk)
                     <tr style="">
                         @foreach($chunk as $media)
-                            <td style="width:25%; padding:6px; text-align:center; vertical-align:top;border: none;">
-                                <img
-                                        src="{{ config('app.url') }}{{ Croppa::url($media->cropPath, 400, 400, ['pad' => '255,255,255']) }}"
-                                        alt="{{ $media->titre }}"
-                                        style="width:100%; height:auto; border-radius:6px; margin-bottom:4px;"
-                                >
+                            <td style="
+                            width: 33.33%;
+                            vertical-align: top;
+                            padding: 5px;
+                            border: none;
+                        ">
+                                @include('IpsumReservation::reservation.documents._photo')
                             </td>
                         @endforeach
 
