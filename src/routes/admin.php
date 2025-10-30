@@ -251,7 +251,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
         Route::post('vehicule', 'storeVehicule')->name('vehicule.store')->middleware('adminRedirectIfSigned');
         Route::get('client', 'client')->name('client')->middleware('adminRedirectIfSigned');
 
-        Route::middleware([/*'adminRedirectIfSigned',*/ 'adminReservationEmail'])->group(function () {
+        Route::middleware(['adminRedirectIfSigned', 'adminReservationEmail'])->group(function () {
 
             // Checklist
             Route::get('checklist', 'checklist')->name('checklist');
