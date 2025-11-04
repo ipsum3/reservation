@@ -76,14 +76,23 @@
                                             $photos = $reservation->inspection_initiale->medias()->groupe('photos')->get();
                                         @endphp
 
-                                        @if(($reservation->inspection_initiale?->dommages && $reservation->inspection_initiale->dommages->count()) || $photos->count())
+                                        @if($reservation->vehicule?->dommages->count() || $photos->count())
                                             <div class="d-flex flex-row flex-wrap">
-                                                @foreach($reservation->inspection_initiale->dommages as $dommage)
+                                                @foreach($reservation->vehicule->dommages as $dommage)
+                                                    @php
+                                                        $dommage->protected = true;
+                                                    @endphp
+                                                    @if($dommage->inspection->id != $inspection->id)
+                                                        @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
+                                                    @endif
+                                                @endforeach
+
+                                                {{--@foreach($reservation->inspection_initiale->dommages as $dommage)
                                                     @php
                                                         $dommage->protected = true;
                                                     @endphp
                                                     @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
-                                                @endforeach
+                                                @endforeach--}}
 
                                                 @foreach($photos as $media)
                                                         @php
