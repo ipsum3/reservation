@@ -4,9 +4,8 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
-use Ipsum\Reservation\app\Rules\InterventionUnique;
-use Ipsum\Reservation\app\Models\Categorie\InterventionType;
-use Ipsum\Reservation\app\Models\Categorie\Vehicule;
+use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\app\Rules\VehiculeDisponible;
 
 class StoreInspectionVehicule extends FormRequest
 {
@@ -27,12 +26,18 @@ class StoreInspectionVehicule extends FormRequest
      */
     public function rules()
     {
-        return [
-            // Véhicule
+        $rules = [
             'categorie_id' => ['required', 'integer', 'exists:categories,id'],
             'vehicule_id' => ['required', 'integer', 'exists:vehicules,id'],
             "vehicule_blocage" => "nullable|boolean",
         ];
+
+        if($this->reservation_id){
+            $reservation = Reservation::find($this->reservation_id);
+            $rules['vehicule_id'] = ['required', 'integer', 'exists:vehicules,id', new VehiculeDisponible($reservation)];
+        }
+
+        return $rules;
     }
 
 }

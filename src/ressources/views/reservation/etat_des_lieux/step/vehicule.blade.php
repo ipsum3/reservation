@@ -65,7 +65,7 @@
                                             <div class="form-group col-md-6">
                                                 <label for="vehicule_id">Véhicule</label>
                                                 <div id="vehicule-select">
-                                                    @include('IpsumReservation::reservation._vehicules_select', ['vehicule_id' => $reservation->vehicule_id])
+                                                    @include('IpsumReservation::reservation._vehicules_select', ['vehicule_id' => old('vehicule_id', $reservation->vehicule_id)])
                                                 </div>
                                                 @error('vehicule_id')
                                                 <ul class="invalid-feedback d-block">
@@ -74,6 +74,7 @@
                                                 @enderror
                                             </div>
                                             <input type="hidden" name="vehicule_blocage" value="0">
+                                            <input type="hidden" name="reservation_id" value="{{ $reservation->id }}">
                                             <input type="hidden" name="debut_at" value="{{ $reservation->debut_at->format("Y-m-d\TH:i") }}">
                                             <input type="hidden" name="fin_at" value="{{ $reservation->fin_at->format("Y-m-d\TH:i") }}">
                                             {{ Aire::checkbox('vehicule_blocage', 'Bloquer le véhicule sur cette réservation')->checked()->groupAddClass('d-none col-md-6 offset-md-6') }}

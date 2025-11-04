@@ -44,7 +44,7 @@
                         <tr class="">
                             <td>{{ $inspection->id }}</td>
                             <td><a href="{{ route('admin.reservation.edit', [$inspection->reservation]) }}">{{ $inspection->reservation->reference }}</a></td>
-                            <td><span class="badge badge-{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'primary' : 'info' }}">{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'Départ' : 'Retour' }}</span></td>
+                            <td><span class="badge badge-{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'success' : 'info' }}">{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'Départ' : 'Retour' }}</span></td>
                             <td>{{ $inspection->reservation->nom }} {{ $inspection->reservation->prenom }}</td>
                             <td><a href="{{ route('admin.vehicule.edit', [$inspection->reservation->vehicule]) }}">{{ $inspection->reservation->immatriculation }} ({{ $inspection->reservation->vehicule->marque_modele }})</a></td>
                             <td>{{ $inspection->reservation->debut_at?->format('d/m/Y') }}</td>
