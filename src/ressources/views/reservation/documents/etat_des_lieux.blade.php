@@ -340,8 +340,16 @@
                 }
 
                 // Dommages de l’inspection initiale
-                if ($reservation->inspection_initiale?->dommages->count()) {
-                    $allDommages = $allDommages->merge($reservation->inspection_initiale->dommages);
+                if ($reservation->vehicule?->dommages->count()) {
+                    $inspection_initiale = [];
+                    foreach($reservation->vehicule->dommages as $dommage){
+                        if($dommage->inspection->id != $inspection->id){
+                            $inspection_initiale[] = $dommage;
+                        }
+                    }
+
+
+                    $allDommages = $allDommages->merge($inspection_initiale);
                 }
             @endphp
 
