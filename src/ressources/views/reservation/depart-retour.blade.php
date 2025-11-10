@@ -24,7 +24,7 @@
     </div>
 
     @foreach($jours as $jour)
-        <h2 class="main-title">Journée du {{ $jour['date']->format('d/m/Y') }}</h2>
+        <h2 class="main-title">{{ ucfirst($jour['date']->isoFormat('dddd D MMMM G')) }}</h2>
 
         @if(isset($jour['depart']))
             <h3 class="main-title">Départs</h3>
