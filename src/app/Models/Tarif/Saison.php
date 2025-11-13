@@ -179,7 +179,7 @@ class Saison extends BaseModel
 
             $date1 = $this->debut_at->addHours($date_debut->hour)->addMinutes($date_debut->minute);
 
-            if ($date1->copy()->addMinutes(60)->gte($date_fin)) {
+            if ($date1->copy()->addMinutes(config('settings.reservation.marge_courtoisie'))->gte($date_fin)) {
                 return 0;
             }
 

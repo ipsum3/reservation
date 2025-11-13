@@ -68,6 +68,15 @@ class SettingsTableSeeder extends Seeder
             ),
             array(
                 'group' => 'Réservation',
+                'key' => 'settings.reservation.marge_courtoisie',
+                'name' => 'Marge de courtoisie (en minutes)',
+                'description' => "Marge pour ne pas comptabiliser un jour supplémentaire au client. Exemple: une location de 24 heures et 50 minutes équivaut à seulement une journée grâce à une marge de courtoisie de 59 minutes.",
+                'value' => '60',
+                'type' => 'number',
+                'rules' => 'required|numeric',
+            ),
+            array(
+                'group' => 'Réservation',
                 'key' => 'settings.reservation.date_expiration',
                 'name' => 'Date d\'expiration du devis (en jour)',
                 'description' => 'Durée (en jour) pour l\'expiration d\'un devis',

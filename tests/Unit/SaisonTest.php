@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Carbon\Carbon;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Tarif\Saison;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class SaisonTest extends TestCase
 {
@@ -51,6 +51,7 @@ class SaisonTest extends TestCase
 
     public function test_duree_count()
     {
+        config()->set('settings.reservation.marge_courtoisie', 60);
 
         $saison = Saison::factory()->make([
             'debut_at' => '2023-09-01',
@@ -68,6 +69,8 @@ class SaisonTest extends TestCase
 
     public function test_duree_total_count()
     {
+
+        config()->set('settings.reservation.marge_courtoisie', 60);
 
         $saisons[] = Saison::factory()->make([
             'debut_at' => '2023-08-01',
