@@ -121,5 +121,6 @@ return [
 
     'planning_duree' => 3,
     'planning_days_before' => 4,
+    'planning_optimiser_button_disable' => false,
 
 ];
