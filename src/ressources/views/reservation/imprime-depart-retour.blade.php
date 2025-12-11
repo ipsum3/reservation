@@ -141,7 +141,7 @@
 
                     <div style="text-align: center; padding-bottom: 0mm;">
                         <h1>
-                            Retours du {{ $jour['date']->format('d/m/Y') }}
+                            Retours du {{ $jour['date']->isoFormat('dddd D MMMM G') }}
                         </h1>
                     </div>
 
