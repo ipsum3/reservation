@@ -64,6 +64,12 @@
                         </div>
                     @endif
 
+                    @if(config('ipsum.reservation.check_vehicules_disponible') and $reservation->is_confirmed and !$reservation->vehicule)
+                        <div class="alert alert-danger">
+                            <p><i class="fas fa-exclamation-triangle"></i> Aucun véhicule attribué pour cette réservation.</p>
+                        </div>
+                    @endif
+
                     <div class="form-row">
                         {{
                             Aire::select(collect(['' => '---- Catégories -----'])
