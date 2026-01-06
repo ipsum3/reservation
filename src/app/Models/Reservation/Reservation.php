@@ -144,7 +144,7 @@ class Reservation extends BaseModel
         self::created(function (self $reservation) {
             // Génération de la référence
             $reservation->reference = $reservation->generationReference($reservation->id);
-            $reservation->save();
+            $reservation->saveQuietly(); // quietly sinon cela retoune dans l'event saving et cela enléve le véhicule
         });
 
         self::saving(function (self $reservation) {
