@@ -11,6 +11,7 @@ use Ipsum\Reservation\app\Http\Requests\StoreLieuHoraire;
 use Ipsum\Reservation\app\Models\Lieu\Horaire;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Lieu\Type;
+use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Prologue\Alerts\Facades\Alert;
 
 class LieuController extends AdminController
@@ -48,20 +49,22 @@ class LieuController extends AdminController
     {
         $lieu = new Lieu;
         $types = Type::all()->pluck('nom', 'id');
+        $prestations = Prestation::whereHas('lieux')->get();
 
-        return view('IpsumReservation::lieu.form', compact('lieu', 'types'));
+        return view('IpsumReservation::lieu.form', compact('lieu', 'types', 'prestations'));
     }
 
     public function store(StoreLieu $request)
     {
-        $data = $request->all();
-        $lieu = Lieu::create($data);
+        $lieu = Lieu::create($request->validated());
+
+        $lieu->prestations()->sync($request->prestations);
 
         //horaires
-        if (!empty($datas['horaires'])) {
+        if ($request->horaires) {
             $horairesIds = [];
 
-            foreach ($datas['horaires'] as $data) {
+            foreach ($request->horaires as $data) {
 
                 if (empty($data['id'])) {
                     $horaire = $lieu->horaires()->create($data);
@@ -83,20 +86,22 @@ class LieuController extends AdminController
     public function edit(Lieu $lieu)
     {
         $types = Type::all()->pluck('nom', 'id');
-        
-        return view('IpsumReservation::lieu.form', compact('lieu', 'types'));
+        $prestations = Prestation::whereHas('lieux')->get();
+
+        return view('IpsumReservation::lieu.form', compact('lieu', 'types', 'prestations'));
     }
 
     public function update(StoreLieu $request, Lieu $lieu)
     {
-        $datas = $request->all();
-        $lieu->update($datas);
+        $lieu->update($request->validated());
+
+        $lieu->prestations()->sync($request->prestations);
 
         //horaires
-        if (!empty($datas['horaires'])) {
+        if ($request->horaires) {
             $horairesIds = [];
 
-            foreach ($datas['horaires'] as $data) {
+            foreach ($request->horaires as $data) {
 
                 if (empty($data['id'])) {
                     $horaire = $lieu->horaires()->create($data);

@@ -116,6 +116,36 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        @if ($prestations->count())
+            <div class="col-md-6">
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="box-title">
+                            Prestations
+                        </h2>
+                    </div>
+                    <div class="box-body">
+                        @foreach($prestations as $prestation)
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label" for="categorie-{{ $categorie->id }}">
+                                    <a href="{{ route('admin.prestation.edit', [$prestation]) }}">{{ $prestation->nom }}</a>
+                                </label>
+                                <div class="col-sm-1">
+                                    <input class="form-check-input" type="checkbox" name="prestations[{{ $prestation->id }}][has]" value="{{ $prestation->id }}" id="prestation-{{ $prestation->id }}" {{ old('prestations.'.$categorie->id.'.has', $prestation->categories->contains($categorie)) ? 'checked' : '' }}>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" name="prestations[{{ $prestation->id }}][montant]" step=".001" value="{{ old('prestations.'.$prestation->id.'.montant', $prestation->categories->contains($categorie) ? $prestation->categories->find($categorie)->pivot->montant : null) }}">
+                                    <span id="emailHelp" class="form-text text-muted">Montant à ajouter au @prix($prestation->montant)&nbsp;&euro; de base</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+
     <div class="box">
         <div class="box-header">
             <h2 class="box-title">Médias</h2>
