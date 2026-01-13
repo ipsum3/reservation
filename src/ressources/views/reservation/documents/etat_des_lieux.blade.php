@@ -343,7 +343,7 @@
                 if ($reservation->vehicule?->dommages->count()) {
                     $inspection_initiale = [];
                     foreach($reservation->vehicule->dommages as $dommage){
-                        if($dommage->inspection->id != $inspection->id){
+                        if($inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID || $dommage->inspection->id != $inspection->id){
                             $inspection_initiale[] = $dommage;
                         }
                     }
