@@ -346,7 +346,7 @@ class EtatDesLieuxController extends AdminController
                 throw new \Exception("Impossible de charger le PDF pour signature.");
             }
 
-            $cert =  __DIR__.'../../../../ressources/certificat/certificat.p12';
+            $cert =  __DIR__.'/../../../ressources/certificat/certificat.p12';
             $password = '1234';
             if (!file_exists($cert)) throw new \Exception("Certificat agent introuvable.");
 
