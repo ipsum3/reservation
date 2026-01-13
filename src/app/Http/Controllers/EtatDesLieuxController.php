@@ -346,7 +346,7 @@ class EtatDesLieuxController extends AdminController
                 throw new \Exception("Impossible de charger le PDF pour signature.");
             }
 
-            $cert = storage_path('app/vendor/IpsumReservation/certificat/certificat.p12');
+            $cert =  __DIR__.'../../../../ressources/certificat/certificat.p12';
             $password = '1234';
             if (!file_exists($cert)) throw new \Exception("Certificat agent introuvable.");
 
@@ -365,13 +365,14 @@ class EtatDesLieuxController extends AdminController
              */
             Mail::send(new EtatDesLieux($reservation, $type));
 
-        }catch(\Exception $exception){
-            \Log::error("Erreur lors de la signature PDF : " . $exception->getMessage());
-            Alert::error("Une erreur est survenue lors de la signature du PDF.")->flash();
+        } catch(\Exception $exception) {
+            \Log::error("Erreur lors de la signature numérique du PDF : " . $exception->getMessage());
 
             $data['agent_signature'] = null;
             $data['agent_signature_at'] = null;
             $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
+
+            Alert::error("Inspection #".$inspection->id." : Une erreur est survenue lors de la signature numérique du PDF.")->flash();
 
             return back();
         }
