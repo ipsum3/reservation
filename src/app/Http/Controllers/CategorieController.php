@@ -13,6 +13,7 @@ use Ipsum\Reservation\app\Models\Categorie\Motorisation;
 use Ipsum\Reservation\app\Models\Categorie\Transmission;
 use Ipsum\Reservation\app\Models\Categorie\Type;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
+use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Tarif\Tarif;
 use Prologue\Alerts\Facades\Alert;
 
@@ -63,8 +64,9 @@ class CategorieController extends AdminController
         $transmissions = Transmission::get()->pluck('nom', 'id');
         $lieux = Lieu::get()->pluck('nom', 'id');
         $carrosseries = Carrosserie::orderBy('order')->get()->pluck('nom', 'id');
+        $prestations = Prestation::whereHas('categories')->get();
 
-        return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries', 'lieux'));
+        return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries', 'lieux', 'prestations'));
     }
 
     public function store(StoreCategorie $request)
@@ -72,6 +74,7 @@ class CategorieController extends AdminController
         $categorie = Categorie::create($request->validated());
         $categorie->carrosseries()->sync($request->carrosseries);
         $categorie->lieuxExclus()->sync($request->lieux_exclus);
+        $categorie->prestations()->sync($request->prestations);
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.categorie.edit', [$categorie->id]);
     }
@@ -83,8 +86,9 @@ class CategorieController extends AdminController
         $transmissions = Transmission::get()->pluck('nom', 'id');
         $lieux = Lieu::get()->pluck('nom', 'id');
         $carrosseries = Carrosserie::orderBy('order')->get()->pluck('nom', 'id');
+        $prestations = Prestation::whereHas('categories')->get();
 
-        return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries', 'lieux'));
+        return view('IpsumReservation::categorie.form', compact('categorie', 'types', 'motorisations', 'transmissions', 'carrosseries', 'lieux', 'prestations'));
     }
 
     public function update(StoreCategorie $request, Categorie $categorie)
@@ -92,6 +96,7 @@ class CategorieController extends AdminController
         $categorie->update($request->validated());
         $categorie->carrosseries()->sync($request->carrosseries);
         $categorie->lieuxExclus()->sync($request->lieux_exclus);
+        $categorie->prestations()->sync($request->prestations);
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
     }

@@ -112,13 +112,15 @@
                 <label class="sr-only" for="type_id">Catégorie</label>
                 {{ Aire::select(collect(['' => '---- Catégorie -----'])->union($categories_all), 'categorie_id')->value(request()->get('categorie_id'))->id('categorie_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
                 <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
-                <a class="btn btn-outline-secondary mb-2 ml-5" href="{{ route('admin.reservation.planningOptimiser', [request()->get('categorie_id')]) }}">
-                    <i class="fas fa-random"></i>
-                    Optimiser le planning
-                    @if( request()->get('categorie_id') and $categories->count() )
-                        de la categorie {{ $categories->first()->nom }}
-                    @endif
-                </a>&nbsp;
+                @if(!config('ipsum.reservation.planning_optimiser_button_disable'))
+                    <a class="btn btn-outline-secondary mb-2 ml-5" href="{{ route('admin.reservation.planningOptimiser', [request()->get('categorie_id')]) }}">
+                        <i class="fas fa-random"></i>
+                        Optimiser le planning
+                        @if( request()->get('categorie_id') and $categories->count() )
+                            de la categorie {{ $categories->first()->nom }}
+                        @endif
+                    </a>&nbsp;
+                @endif
                 {{ Aire::close() }}
             </div>
         </div>
@@ -142,7 +144,7 @@
                             @for($date = $date_debut->copy(); $date->lte($date_fin); $date->addMonthsNoOverflow()->firstOfMonth())
                                 <th class="planning-mois" colspan="{{ $date->diffInDays($date->copy()->lastOfMonth()->endOfDay()) + 1 }}">
                                     @if($date->diffInDays($date->copy()->lastOfMonth()->endOfDay()) > 4)
-                                        {{ $date->format('F Y') }}
+                                        {{ $date->isoFormat('MMMM G') }}
                                     @endif
                                 </th>
                             @endfor

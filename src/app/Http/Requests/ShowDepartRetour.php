@@ -30,8 +30,8 @@ class ShowDepartRetour extends FormRequest
             $date = explode(' - ', $this->get('dates'));
             if (isset($date[1])) {
                 $this->merge([
-                    'debut_at' => $date[0],
-                    'fin_at' => $date[1],
+                    'range_debut_at' => $date[0],
+                    'range_fin_at' => $date[1],
                 ]);
             }
         }
@@ -46,9 +46,11 @@ class ShowDepartRetour extends FormRequest
     public function rules()
     {
         return [
-            "debut_at" => "nullable|date_format:d/m/Y",
-            "fin_at" => "nullable|required_with:debut_at|date_format:d/m/Y",
-            "lieu_id" => "nullable||exists:lieux,id",
+            "debut_at" => "nullable|date_format:Y-m-d",
+            "fin_at" => "nullable|date_format:Y-m-d",
+            "range_debut_at" => "nullable|date_format:d/m/Y",
+            "range_fin_at" => "nullable|date_format:d/m/Y",
+            "lieu_id" => "nullable|exists:lieux,id",
         ];
     }
 
@@ -56,16 +58,24 @@ class ShowDepartRetour extends FormRequest
     protected function passedValidation()
     {
         if ($this->filled('debut_at')) {
-            $debut_at = Carbon::createFromFormat('d/m/Y', $this->debut_at)->startOfDay();
-            $fin_at = Carbon::createFromFormat('d/m/Y', $this->fin_at)->endOfDay();
+            $debut_at = Carbon::createFromFormat('Y-m-d', $this->debut_at);
+        } elseif ($this->filled('range_debut_at')) {
+            $debut_at = Carbon::createFromFormat('d/m/Y', $this->range_debut_at);
+        }else {
+            $debut_at = Carbon::now();
+        }
+
+        if ($this->filled('fin_at')) {
+            $fin_at = Carbon::createFromFormat('Y-m-d', $this->fin_at);
+        } elseif ($this->filled('range_fin_at')) {
+            $fin_at = Carbon::createFromFormat('d/m/Y', $this->range_fin_at);
         } else {
-            $debut_at = Carbon::now()->startOfDay();
-            $fin_at = Carbon::now()->endOfDay();
+            $fin_at = $debut_at->clone();
         }
 
         $this->merge([
-            'debut_at' => $debut_at,
-            'fin_at' => $fin_at
+            'debut_at' => $debut_at->startOfDay(),
+            'fin_at' => $fin_at->endOfDay()
         ]);
     }
 

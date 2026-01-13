@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('reservations', function (Blueprint $table) {
-            $table->string('immatriculation')->nullable()->after('vehicule_id');
-        });
 
+        if (\Ipsum\Core\app\Models\Setting::count()) {
+            Artisan::call('db:seed', ['class' => "\Ipsum\Reservation\database\seeds\SettingsTableSeeder", '--force' => true]);
+        }
     }
 
     /**

@@ -160,3 +160,21 @@ $('.datepicker-range-next').daterangepicker({
 }).on('cancel.daterangepicker', function (ev, picker) {
     $(this).val('')
 })
+
+$('#switch-categorie, #switch-lieu').on('change', function (event) {
+    if (!$(this).prop('checked')) {
+        if (!window.confirm('Souhaitez-vous vraiment désactiver ?')) {
+            return false
+        }
+        $($(this).data('collapse')).collapse('hide')
+    } else {
+        $($(this).data('collapse')).collapse('show')
+    }
+})
+
+$('#collapse-categories, #collapse-lieux').on('hidden.bs.collapse', function (event) {
+    $(this).find('input[type="checkbox"]').prop('checked', false)
+    $(this).find('input[type="number"]').val('')
+}).on('show.bs.collapse', function () {
+    $(this).find('input[type="checkbox"]').prop('checked', true)
+})

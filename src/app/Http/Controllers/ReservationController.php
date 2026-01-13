@@ -608,13 +608,13 @@ class ReservationController extends AdminController
 
     public function departEtRetour(ShowDepartRetour $request)
     {
-        $dates = $request->debut_at->format('d/m/Y') . ' - ' . $request->fin_at->format('d/m/Y');
-
+        $debut_at = $request->debut_at;
+        $fin_at = $request->fin_at;
         $jours = $this->_getDepartRetourResa($request);
 
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.depart-retour', compact('jours', 'lieux', 'dates'));
+        return view('IpsumReservation::reservation.depart-retour', compact('jours', 'lieux', 'debut_at', 'fin_at'));
     }
 
     public function imprimerDepartEtRetour(ShowDepartRetour $request)

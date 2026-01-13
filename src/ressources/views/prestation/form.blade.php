@@ -107,8 +107,12 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Conditions par catégories</h2>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="switch-categorie" {{ $prestation->categories->count() ? 'checked' : '' }} data-collapse="#collapse-categories" aria-expanded="{{ $prestation->categories->count() ? 'true' : 'false' }}" aria-controls="collapse-categories">
+                        <label class="custom-control-label" for="switch-categorie">Activer</label>
+                    </div>
                 </div>
-                <div class="box-body">
+                <div class="box-body collapse {{ $prestation->categories->count() ? 'show' : 'true' }}" id="collapse-categories">
                     @foreach($categories as $categorie)
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label" for="categorie-{{ $categorie->id }}">
@@ -130,8 +134,12 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Conditions par lieux</h2>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="switch-lieu" {{ $prestation->lieux->count() ? 'checked' : '' }} data-collapse="#collapse-lieux" aria-expanded="{{ $prestation->lieux->count() ? 'true' : 'false' }}" aria-controls="collapse-lieux">
+                        <label class="custom-control-label" for="switch-lieu">Activer</label>
+                    </div>
                 </div>
-                <div class="box-body">
+                <div class="box-body collapse {{ $prestation->lieux->count() ? 'show' : 'true' }}" id="collapse-lieux">
                     @foreach($lieux as $lieu)
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label" for="lieu-{{ $lieu->id }}">

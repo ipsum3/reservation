@@ -17,6 +17,21 @@ class StoreCategorie extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $prestations = collect($this->prestations);
+        $prestations = $prestations->filter(function ($value, $key) {
+            return isset($value['has']);
+        })->map(function ($value, $key) {
+            unset($value['has']);
+            return $value;
+        });
+
+        $this->merge([
+            'prestations' => $prestations,
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

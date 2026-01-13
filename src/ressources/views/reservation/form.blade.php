@@ -64,6 +64,12 @@
                         </div>
                     @endif
 
+                    @if(config('ipsum.reservation.check_vehicules_disponible') and $reservation->is_confirmed and !$reservation->vehicule)
+                        <div class="alert alert-danger">
+                            <p><i class="fas fa-exclamation-triangle"></i> Aucun véhicule attribué pour cette réservation.</p>
+                        </div>
+                    @endif
+
                     <div class="form-row">
                         {{
                             Aire::select(collect(['' => '---- Catégories -----'])
@@ -333,10 +339,10 @@
                                 <tr>
                                     <td><input class="form-control" type="text" name="conducteurs[{{ $i }}][nom]" value="{{ old('nom', $conducteur->nom) }}" /></td>
                                     <td><input class="form-control" type="text" name="conducteurs[{{ $i }}][prenom]" value="{{ old('prenom', $conducteur->prenom) }}" /></td>
-                                    <td><input class="form-control" type="date" name="conducteurs[{{ $i }}][naissance_at]" value="{{ old('naissance_at', $conducteur->naissance_at) }}" /></td>
+                                    <td><input class="form-control" type="date" name="conducteurs[{{ $i }}][naissance_at]" value="{{ old('naissance_at', $conducteur->naissance_at?->format('Y-m-d')) }}" /></td>
                                     <td><input class="form-control" type="text" name="conducteurs[{{ $i }}][naissance_lieu]" value="{{ old('naissance_lieu', $conducteur->naissance_lieu) }}" /></td>
                                     <td><input class="form-control" type="text" name="conducteurs[{{ $i }}][permis_numero]" value="{{ old('permis_numero', $conducteur->permis_numero) }}" /></td>
-                                    <td><input class="form-control" type="date" name="conducteurs[{{ $i }}][permis_at]" value="{{ old('permis_at', $conducteur->permis_at) }}" /></td>
+                                    <td><input class="form-control" type="date" name="conducteurs[{{ $i }}][permis_at]" value="{{ old('permis_at', $conducteur->permis_at?->format('Y-m-d')) }}" /></td>
                                     <td><input class="form-control" type="text" name="conducteurs[{{ $i }}][permis_delivre]" value="{{ old('permis_delivre', $conducteur->permis_delivre) }}" /></td>
                                     <td><button type="button" class="conducteurs-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>
                                 </tr>

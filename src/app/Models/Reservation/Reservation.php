@@ -144,7 +144,7 @@ class Reservation extends BaseModel
         self::created(function (self $reservation) {
             // Génération de la référence
             $reservation->reference = $reservation->generationReference($reservation->id);
-            $reservation->save();
+            $reservation->saveQuietly(); // quietly sinon cela retoune dans l'event saving et cela enléve le véhicule
         });
 
         self::saving(function (self $reservation) {
@@ -289,7 +289,7 @@ class Reservation extends BaseModel
      */
     public static function calculDuree(CarbonInterface $date_debut, CarbonInterface $date_fin): int
     {
-        return $date_debut->diffInDays($date_fin->copy()->subMinutes(61)) + 1;
+        return $date_debut->diffInDays($date_fin->copy()->subMinutes(config('settings.reservation.marge_courtoisie') + 1)) + 1;
     }
 
     protected function generationReference($id)

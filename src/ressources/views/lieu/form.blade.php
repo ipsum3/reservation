@@ -68,96 +68,123 @@
             </div>
         </div>
     @endif
-    @if(auth()->user()->isSuperAdmin())
-    <div class="box">
-        <div class="box-header">
-            <h2 class="box-title">Seo</h2>
-        </div>
-        <div class="box-body">
-            {{ Aire::input('seo_title', 'Balise title') }}
-            {{ Aire::input('seo_description', 'Balise description') }}
-            {{ Aire::input('slug', 'Slug') }}
-        </div>
-    </div>
-    @endif
 
-    @if ($lieu->exists)
-        <div class="row">
-            <div class="col-md-6">
-                <div class="box">
-                    <div class="box-header">
-                        <h2 class="box-title">
-                            Créneaux horaires
-                        </h2>
-                        <div class="btn-toolbar">
-                            <a class="btn btn-outline-secondary table-editable-add" data-target="horaires" data-toggle="tooltip" title="Ajouter">
-                                <i class="fas fa-plus"></i>
-                            </a>&nbsp;
-                        </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">
+                        Créneaux horaires
+                    </h2>
+                    <div class="btn-toolbar">
+                        <a class="btn btn-outline-secondary table-editable-add" data-target="horaires" data-toggle="tooltip" title="Ajouter">
+                            <i class="fas fa-plus"></i>
+                        </a>&nbsp;
                     </div>
-                    <div class="box-body">
-                        <div class="table-wrapper">
-                            <table class="table table-hover table-striped">
-                                <thead>
-                                <tr>
-                                    <th scope="col">Jour</th>
-                                    <th scope="col">Début</th>
-                                    <th scope="col">Fin</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody id="horaires-lignes">
-                                @if($lieu->horaires)
-                                    @php $i = 1;  @endphp
-                                    @foreach($lieu->horaires()->orderBy('jour')->get() as $horaire)
-                                        <tr class="field-group mb-5">
-                                            <td>
-                                                <select name="horaires[{{ $i }}][jour]" class="form-control" required>
-                                                    <option value="">----- Jours -----</option>
-                                                    @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
-                                                        <option value="{{ $key }}" {{ old("horaires.$i.jour", $horaire->jour) == $key ? 'selected' : '' }}>{{ $jour }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="time" class="form-control" name="horaires[{{ $i }}][debut]" value="{{ old("horaires.$i.debut", $horaire->debut) }}" required>
-                                            </td>
-                                            <td>
-                                                <input type="time" class="form-control" name="horaires[{{ $i }}][fin]" value="{{ old("horaires.$i.fin", $horaire->fin) }}" required>
-                                            </td>
-                                            <td class="text-right">
-                                                <button type="button" class="horaires-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button>
-                                            </td>
-                                        </tr>
-                                        @php $i++; @endphp
-                                    @endforeach
-                                @endif
-
-                                <script id="horaires-add-template" type="x-tmpl-mustache">
-                                    <tr>
+                </div>
+                <div class="box-body">
+                    <div class="table-wrapper">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">Jour</th>
+                                <th scope="col">Début</th>
+                                <th scope="col">Fin</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="horaires-lignes">
+                            @if($lieu->horaires)
+                                @php $i = 1;  @endphp
+                                @foreach($lieu->horaires()->orderBy('jour')->get() as $horaire)
+                                    <tr class="field-group mb-5">
                                         <td>
-                                            <select name="horaires[@{{ indice }}][jour]" class="form-control" required>
+                                            <select name="horaires[{{ $i }}][jour]" class="form-control" required>
                                                 <option value="">----- Jours -----</option>
-                                            @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
-                                                <option value="{{ $key }}">{{ $jour }}</option>
-                                            @endforeach
+                                                @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
+                                                    <option value="{{ $key }}" {{ old("horaires.$i.jour", $horaire->jour) == $key ? 'selected' : '' }}>{{ $jour }}</option>
+                                                @endforeach
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="time" class="form-control" name="horaires[@{{ indice }}][debut]" required>
+                                            <input type="time" class="form-control" name="horaires[{{ $i }}][debut]" value="{{ old("horaires.$i.debut", $horaire->debut) }}" required>
                                         </td>
                                         <td>
-                                            <input type="time" class="form-control" name="horaires[@{{ indice }}][fin]" required>
+                                            <input type="time" class="form-control" name="horaires[{{ $i }}][fin]" value="{{ old("horaires.$i.fin", $horaire->fin) }}" required>
                                         </td>
                                         <td class="text-right">
                                             <button type="button" class="horaires-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button>
                                         </td>
                                     </tr>
-                                </script>
-                                </tbody>
-                            </table>
-                        </div>
+                                    @php $i++; @endphp
+                                @endforeach
+                            @endif
+
+                            <script id="horaires-add-template" type="x-tmpl-mustache">
+                                <tr>
+                                    <td>
+                                        <select name="horaires[@{{ indice }}][jour]" class="form-control" required>
+                                            <option value="">----- Jours -----</option>
+                                        @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
+                                            <option value="{{ $key }}">{{ $jour }}</option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="time" class="form-control" name="horaires[@{{ indice }}][debut]" required>
+                                    </td>
+                                    <td>
+                                        <input type="time" class="form-control" name="horaires[@{{ indice }}][fin]" required>
+                                    </td>
+                                    <td class="text-right">
+                                        <button type="button" class="horaires-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button>
+                                    </td>
+                                </tr>
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            </div>
+        </div>
+        @if ($prestations->count())
+            <div class="col-md-6">
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="box-title">
+                            Prestations
+                        </h2>
+                    </div>
+                    <div class="box-body">
+                        @foreach($prestations as $prestation)
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label" for="lieu-{{ $lieu->id }}">
+                                    <a href="{{ route('admin.prestation.edit', [$prestation]) }}">{{ $prestation->nom }}</a>
+                                </label>
+                                <div class="col-sm-1">
+                                    <input class="form-check-input" type="checkbox" name="prestations[{{ $prestation->id }}][has]" value="{{ $prestation->id }}" id="prestation-{{ $prestation->id }}" {{ old('prestations.'.$lieu->id.'.has', $prestation->lieux->contains($lieu)) ? 'checked' : '' }}>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" name="prestations[{{ $prestation->id }}][montant]" step=".001" value="{{ old('prestations.'.$prestation->id.'.montant', $prestation->lieux->contains($lieu) ? $prestation->lieux->find($lieu)->pivot->montant : null) }}">
+                                    <span id="emailHelp" class="form-text text-muted">Montant à ajouter au @prix($prestation->montant)&nbsp;&euro; de base</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+
+    @if(auth()->user()->isSuperAdmin())
+        <div class="box">
+            <div class="box-header">
+                <h2 class="box-title">Seo</h2>
+            </div>
+            <div class="box-body">
+                {{ Aire::input('seo_title', 'Balise title') }}
+                {{ Aire::input('seo_description', 'Balise description') }}
+                {{ Aire::input('slug', 'Slug') }}
             </div>
         </div>
     @endif
