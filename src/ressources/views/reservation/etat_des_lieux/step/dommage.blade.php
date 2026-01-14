@@ -72,9 +72,9 @@
 
                                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                                     <div class="card-body alert-warning">
-                                        @php
+                                        {{--@php
                                             $photos = $reservation->inspection_initiale->medias()->groupe('photos')->get();
-                                        @endphp
+                                        @endphp--}}
 
                                         @if($reservation->vehicule?->dommages->count() || $photos->count())
                                             <div class="d-flex flex-row flex-wrap">
@@ -87,19 +87,12 @@
                                                     @endif
                                                 @endforeach
 
-                                                {{--@foreach($reservation->inspection_initiale->dommages as $dommage)
-                                                    @php
-                                                        $dommage->protected = true;
-                                                    @endphp
-                                                    @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
-                                                @endforeach--}}
-
-                                                @foreach($photos as $media)
+                                                {{--@foreach($photos as $media)
                                                         @php
                                                             $media->protected = true;
                                                         @endphp
                                                         @include('IpsumReservation::reservation.etat_des_lieux.step._photo')
-                                                @endforeach
+                                                @endforeach--}}
                                             </div>
                                         @else
                                             <p class="alert alert-info">Aucun dommage enregistré lors de l’inspection initiale.</p>
@@ -109,7 +102,7 @@
                             </div>
                         @endif
 
-                        <hr class="my-4">
+                        {{--<hr class="my-4">
 
                         <h2 class="mt-1 mb-4">Ajout rapide de photo</h2>
                         <div class="upload"
@@ -133,7 +126,7 @@
                                 <div class="d-flex flex-row flex-wrap sortable upload-files" data-sortableurl="{{ route('admin.media.changeOrder') }}" data-sortablecsrftoken="{{ csrf_token() }}">
                                 </div>
                             </div>
-                        </div>
+                        </div>--}}
 
                     </div>
 

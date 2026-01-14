@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Models\Dommage\Dommage;
 use Ipsum\Reservation\app\Models\Inspection\Inspection;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -323,42 +324,37 @@ class EtatDesLieuxController extends AdminController
                 mkdir($directory, 0775, true);
             }
 
-            /**
-             * Génération du PDF
-             */
-            $pdfPath = $directory . "/etat_des_lieux-{$reservation->id}-{$type->id}.pdf";
+            $inspectionPdfPath = $directory . "/etat_des_lieux-{$reservation->id}-{$type->id}.pdf";
 
-            $pdf = PDF::loadView(config('ipsum.reservation.etat_des_lieux.view'), [
+            PDF::loadView(config('ipsum.reservation.etat_des_lieux.view'), [
                 'reservation' => $reservation,
                 'type' => $type,
                 'inspection' => $inspection,
                 'checklists' => $checklists,
-            ]);
+            ])->save($inspectionPdfPath);
 
-            $pdf->save($pdfPath);
+            // 🔐 Signature numérique état des lieux
+            $this->signPdf($inspectionPdfPath);
 
             /**
-             * Signature numérique du PDF
+             * SIGNATURE DU CONTRAT (CGL)
              */
-            $fileContent = file_get_contents($pdfPath);
-            $pdfDoc = PDFDoc::from_string($fileContent);
-            if ($pdfDoc === false) {
-                throw new \Exception("Impossible de charger le PDF pour signature.");
+            $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
+
+            $contratDirectory = storage_path('app/contrats');
+            if (!is_dir($contratDirectory)) {
+                mkdir($contratDirectory, 0775, true);
             }
 
-            $cert =  __DIR__.'/../../../ressources/certificat/certificat.p12';
-            $password = '1234';
-            if (!file_exists($cert)) throw new \Exception("Certificat agent introuvable.");
+            $contratPdfPath = $contratDirectory . "/contrat-{$reservation->id}.pdf";
 
-            if (!$pdfDoc->set_signature_certificate($cert, $password)) {
-                throw new \Exception("Le certificat agent est invalide.");
-            }
+            Pdf::loadView(
+                config('ipsum.reservation.contrat.view'),
+                compact('reservation', 'cgl')
+            )->save($contratPdfPath);
 
-            $signedDoc = $pdfDoc->to_pdf_file_s();
-            if ($signedDoc === false) throw new \Exception("Erreur lors de la signature agent.");
-
-            // On écrase le fichier original avec la version signée
-            file_put_contents($pdfPath, $signedDoc);
+            // 🔐 Signature numérique contrat
+            $this->signPdf($contratPdfPath);
 
             /**
              * ENVOI DU DOCUMENT FINAL
@@ -372,7 +368,7 @@ class EtatDesLieuxController extends AdminController
             $data['agent_signature_at'] = null;
             $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
 
-            Alert::error("Inspection #".$inspection->id." : Une erreur est survenue lors de la signature numérique du PDF.")->flash();
+            Alert::error("Inspection #".$inspection->id." : Une erreur est survenue lors de la signature numérique des documents.")->flash();
 
             return back();
         }
@@ -443,5 +439,36 @@ class EtatDesLieuxController extends AdminController
 
         return redirect()->route('admin.inspection.index');
 
+    }
+
+    private function signPdf(string $pdfPath): void
+    {
+        $fileContent = file_get_contents($pdfPath);
+        if ($fileContent === false) {
+            throw new \Exception("Impossible de lire le PDF.");
+        }
+
+        $pdfDoc = PDFDoc::from_string($fileContent);
+        if ($pdfDoc === false) {
+            throw new \Exception("Impossible de charger le PDF pour signature.");
+        }
+
+        $cert = __DIR__ . '/../../../ressources/certificat/certificat.p12';
+        $password = '1234';
+
+        if (!file_exists($cert)) {
+            throw new \Exception("Certificat agent introuvable.");
+        }
+
+        if (!$pdfDoc->set_signature_certificate($cert, $password)) {
+            throw new \Exception("Certificat agent invalide.");
+        }
+
+        $signedPdf = $pdfDoc->to_pdf_file_s();
+        if ($signedPdf === false) {
+            throw new \Exception("Erreur lors de la signature numérique.");
+        }
+
+        file_put_contents($pdfPath, $signedPdf);
     }
 }

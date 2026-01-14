@@ -98,15 +98,15 @@
                             </div>
 
                             <div class="col-md-4">
-                                {{ Aire::select($dommage_types->pluck('nom','id'), 'type_id', 'Type de dommage')->required() }}
+                                {{ Aire::select(collect(['' => '---- Types -----'])->union($dommage_types->pluck('nom','id')), 'type_id', 'Type de dommage*')->required() }}
                             </div>
 
                             <div class="col-md-4">
-                                {{ Aire::select($dommage_emplacements->pluck('nom','id'), 'emplacement_id', 'Emplacement')->required() }}
+                                {{ Aire::select(collect(['' => '---- Emplacements -----'])->union($dommage_emplacements->pluck('nom','id')), 'emplacement_id', 'Emplacement*')->required() }}
                             </div>
 
                             <div class="col-md-4">
-                                {{ Aire::select($dommage_elements->pluck('nom','id'), 'element_id', 'Élément')->required() }}
+                                {{ Aire::select(collect(['' => '---- Éléments -----'])->union($dommage_elements->pluck('nom','id')), 'element_id', 'Élément*')->required() }}
                             </div>
 
                             <div class="col-md-12 mt-3">

@@ -164,7 +164,7 @@
     <table style="margin-top: 10px; width:100%; border-collapse:collapse;">
         <tr>
             <td style="border: none; background-color: #e6e6e6;">
-                Annexe au contrat de location {{ $reservation->contrat  }} fait par {{ $inspection->admin?->firstname }} {{ $inspection->admin?->name }} ({{ $inspection->admin?->email }})
+                Annexe au contrat de location {{ $reservation->contrat  }} fait par {{ $inspection->admin?->firstname }} {{ $inspection->admin?->name }}
             </td>
         </tr>
     </table>
@@ -430,7 +430,7 @@
     @endif
     </div>
 
-    @php
+    {{--@php
         $photos_depart = $reservation->inspection_initiale?->images()->groupe('photos')->get();
         $photos_retour = $reservation->inspection_finale?->images()->groupe('photos')->get();
     @endphp
@@ -457,7 +457,7 @@
                             </td>
                         @endforeach
 
-                        {{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}
+                        --}}{{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}{{--
                         @for($i = $chunk->count(); $i < 4; $i++)
                             <td style="width:25%; padding:6px;border: none;"></td>
                         @endfor
@@ -489,7 +489,7 @@
                             </td>
                         @endforeach
 
-                        {{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}
+                        --}}{{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}{{--
                         @for($i = $chunk->count(); $i < 4; $i++)
                             <td style="width:25%; padding:6px;border: none;"></td>
                         @endfor
@@ -498,7 +498,7 @@
             </table>
         @endif
     @endif
-    </div>
+    </div>--}}
 
 
 
@@ -524,7 +524,7 @@
             <tr>
                 <td style="border:none;text-align: center; height:120px; vertical-align:top;">
                     @if($inspection->locataire_signature)
-                        <img src="{{ $inspection->locataire_signature }}" alt="Signature client" style="width:200px; height:80px; border:1px solid #000;">
+                        <img src="{{ $inspection->locataire_signature }}" alt="Signature client" style="width:200px; height:auto; border:1px solid #000;">
                         <p style="margin-top: 10px;">Signé le : {{ $inspection->locataire_signature_at->format('d/m/Y à H:i') }}</p>
                     @else
                         <div style="display:inline-block; width:195px; height:90px; border:1px solid #000;"></div>
@@ -532,7 +532,7 @@
                 </td>
                 <td style="border:none;text-align: center; height:120px; vertical-align:top;">
                     @if($inspection->agent_signature)
-                        <img src="{{ $inspection->agent_signature }}" alt="Signature agent" style="width:200px; height:80px; border:1px solid #000;">
+                        <img src="{{ $inspection->agent_signature }}" alt="Signature agent" style="width:200px; height:auto; border:1px solid #000;">
                         <p style="margin-top: 10px;">Signé le : {{ $inspection->agent_signature_at->format('d/m/Y à H:i') }}</p>
                     @else
                         <div style="display:inline-block; width:195px; height:90px; border:1px solid #000;"></div>
