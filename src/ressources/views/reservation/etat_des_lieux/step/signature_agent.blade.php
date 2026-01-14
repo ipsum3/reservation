@@ -41,7 +41,9 @@
                                                 Validation du  <a href="{{ route('admin.reservation.contrat', [$reservation]) }}" target="_blank">contrat</a> avec le client.
                                             </p>
                                         @endif
-                                        <canvas id="signature-agent-pad" class="border rounded w-full h-32"></canvas>
+                                        <div style="width: 335px">
+                                            <canvas id="signature-agent-pad" class="border rounded w-full h-32"></canvas>
+                                        </div>
                                         <div class="signature-agent-error"></div>
                                         <input type="hidden" name="agent_signature" id="agent_signature" value="{{ $inspection->agent_signature ??  '' }}" >
                                         <button type="button" class="btn btn-outline-danger" id="clear-signature-agent"><i class="fas fa-trash-alt"></i> Effacer la signature</button>
@@ -68,44 +70,81 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            // Gestion signatures
             const signatures = [
-                { canvas: document.getElementById('signature-agent-pad'), input: document.getElementById('agent_signature'), clearBtn: document.getElementById('clear-signature-agent') },
-                { canvas: document.getElementById('signature-client-pad'), input: document.getElementById('locataire_signature'), clearBtn: document.getElementById('clear-signature-client') }
+                {
+                    canvas: document.getElementById('signature-agent-pad'),
+                    input: document.getElementById('agent_signature'),
+                    clearBtn: document.getElementById('clear-signature-agent')
+                }
             ];
 
             signatures.forEach(({ canvas, input, clearBtn }) => {
                 if (!canvas) return;
-
-                const parentWidth = 302;
-                canvas.setAttribute('width', parentWidth);
 
                 const signaturePad = new SignaturePad(canvas, {
                     backgroundColor: 'rgba(0, 0, 0, 0.05)',
                     penColor: 'rgb(0, 0, 0)',
                 });
 
-                const updateSignatureInput = () => {
-                    input.value = !signaturePad.isEmpty() ? signaturePad.toDataURL() : '';
-                };
+                function resizeCanvas() {
+                    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                    const width = canvas.parentElement.offsetWidth;
+                    const height = 200;
 
-                if (input.value) {
-                    signaturePad.fromDataURL(input.value);
-                    signaturePad._isEmpty = false;
+                    const data = input.value || null;
+
+                    canvas.width  = width * ratio;
+                    canvas.height = height * ratio;
+                    canvas.style.width  = width + 'px';
+                    canvas.style.height = height + 'px';
+
+                    canvas.getContext('2d').scale(ratio, ratio);
+                    signaturePad.clear();
+
+                    if (data) {
+                        signaturePad.fromDataURL(data);
+                        disableSignature();
+                    }
                 }
 
-                ['mouseup', 'touchend'].forEach(evt => {
-                    canvas.addEventListener(evt, updateSignatureInput);
-                });
+                function disableSignature() {
+                    canvas.style.pointerEvents = 'none';
+                }
 
+                function enableSignature() {
+                    canvas.style.pointerEvents = 'auto';
+                }
+
+                function updateInput() {
+                    input.value = !signaturePad.isEmpty()
+                        ? signaturePad.toDataURL('image/png')
+                        : '';
+                }
+
+                // Init
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+
+                // Mise à jour après dessin
+                canvas.addEventListener('mouseup', updateInput);
+                canvas.addEventListener('touchend', updateInput);
+
+                // Si signature déjà existante → verrouillée
+                if (input.value) {
+                    disableSignature();
+                }
+
+                // Bouton effacer
                 if (clearBtn) {
                     clearBtn.addEventListener('click', () => {
                         signaturePad.clear();
-                        updateSignatureInput();
+                        input.value = '';
+                        enableSignature();
                     });
                 }
             });
         });
     </script>
+
 
 @endsection

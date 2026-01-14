@@ -53,12 +53,12 @@
                                 </script>
 
                                 @if(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale))
-                                    <div class="form-group col-md-2 mt-4 alert alert-light">
+                                    <div class="form-group col-md-2 alert alert-light">
                                         <label class=" cursor-pointer" data-aire-component="label" for="checklists">
                                             Checklist initiale
                                         </label>
                                         @foreach($checklists as $checklist)
-                                            <div class="form-check">
+                                            <div class="form-check mt-2">
                                                 @if(in_array($checklist->id, old('checklists', $reservation->inspection_initiale?->checklists->pluck('id')->toArray() ?? [])))
                                                     <i class="fa fa-check-square text-success"></i>
                                                 @else
@@ -77,18 +77,9 @@
                                         Checklist
                                     </label>
                                     @foreach($checklists as $checklist)
-                                        <div class="form-check mt-2">
-                                            <input
-                                                    type="checkbox"
-                                                    class="form-check-input"
-                                                    name="checklists[]"
-                                                    value="{{ $checklist->id }}"
-                                                    id="checklist_{{ $checklist->id }}"
-                                                    {{ in_array($checklist->id, old('checklists', $inspection?->checklists->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}
-                                            >
-                                            <label class="form-check-label" for="checklist_{{ $checklist->id }}">
-                                                {{ $checklist->nom }}
-                                            </label>
+                                        <div class="custom-control custom-switch form-check mt-2">
+                                            <input name="checklists[]" value="{{ $checklist->id }}" type="checkbox" class="custom-control-input" id="checklist_{{ $checklist->id }}" {{ in_array($checklist->id, old('checklists', $inspection?->checklists->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="checklist_{{ $checklist->id }}">{{ $checklist->nom }}</label>
                                         </div>
                                     @endforeach
                                 </div>

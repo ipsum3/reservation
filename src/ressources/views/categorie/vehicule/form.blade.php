@@ -218,7 +218,7 @@
                                 @php
                                     $i = 1;
                                 @endphp
-                                @foreach($vehicule->allDommages as $dommage)
+                                @foreach($vehicule->allDommages()->orderBy('created_at','desc')->get() as $dommage)
                                     <tr>
                                         <td>
                                             <input type="hidden" name="dommages[{{ $i }}][id]" value="{{ $dommage->id }}" />

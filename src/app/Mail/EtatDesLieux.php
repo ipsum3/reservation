@@ -18,6 +18,8 @@ class EtatDesLieux extends Mailable
 
 
     public $reservation;
+    public $inspection;
+    public $type;
     public $email;
 
     /**
@@ -33,6 +35,9 @@ class EtatDesLieux extends Mailable
         $this->inspection = $inspection;
         $this->email = $email ? $email : $this->reservation->email;
 
+        /**
+         * ÉTAT DES LIEUX
+         */
         $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
 
         if (!file_exists($pdfPath)) {
@@ -41,6 +46,20 @@ class EtatDesLieux extends Mailable
 
         $this->file = file_get_contents($pdfPath);
         $this->filePath = $pdfPath;
+
+        /**
+         * CONTRAT SIGNÉ
+         */
+        $contratPath = storage_path("app/contrats/contrat-{$reservation->id}.pdf");
+
+        if (!file_exists($contratPath)) {
+            throw new \Exception(
+                "Le PDF du contrat est introuvable pour la réservation #{$reservation->id}"
+            );
+        }
+
+        $this->contratFilePath = $contratPath;
+        $this->contratFile = file_get_contents($contratPath);
 
         App::setLocale($reservation->locale);
     }
@@ -56,11 +75,14 @@ class EtatDesLieux extends Mailable
             ->attachData($this->file, 'etat_des_lieux_'.$this->type->nom.'.pdf', [
                 'mime' => 'application/pdf',
             ])
+            ->attachData(
+                $this->contratFile, 'contrat_location-'.$this->reservation->id.'.pdf',
+                ['mime' => 'application/pdf']
+            )
             ->from(config('mail.from.address'), config('mail.from.name'))
             ->replyTo($this->reservation->lieuDebut->email_first, config('settings.nom_site'))
             ->to($this->email, $this->reservation->prenom.' '.$this->reservation->nom)
-            ->cc($this->reservation->lieuDebut->email_reservation_first, config('settings.nom_site'))
-            ->subject('Etat des lieux réservation ' . $this->reservation->reference);
+            ->subject('État des lieux '. ($this->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initial': 'final') .' – Réservation ' . $this->reservation->reference);
 
     }
 }
