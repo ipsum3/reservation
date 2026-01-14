@@ -66,7 +66,7 @@
                             <div id="accordion">
                                 <h5 class="mb-0">
                                     <button class="btn btn-link text-warning" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                        Voir les photos et dommages de l’inspection initiale
+                                        Voir les {{--photos et--}} dommages de l’inspection initiale
                                     </button>
                                 </h5>
 

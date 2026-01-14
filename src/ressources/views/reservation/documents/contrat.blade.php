@@ -164,10 +164,10 @@
                 </table>
 
                 @if($reservation->conducteurs)
-                    @foreach($reservation->conducteurs as $i => $conducteur)
+                    @foreach($reservation->conducteurs as $conducteur)
                         <table class="tableau2">
                             <tr>
-                                <th>Conducteur {{ $i }}</th>
+                                <th>Conducteur {{ $loop->iteration + 1 }}</th>
                             </tr>
                             <tr>
                                 <td>
@@ -182,34 +182,6 @@
                         </table>
                     @endforeach
                 @endif
-
-                <table class="tableau2" style="margin-top: 10px">
-                    <tr>
-                        <th>Conducteur 2</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="tiret">__________________________________________</span><br />
-                            {{ _('Né le') }} <span class="tiret">__________________</span> à <span class="tiret">__________________</span><br>
-                            {{ _('Permis') }} {{ _('n°') }} <span class="tiret">______________</span> {{ _('délivré le') }} <span class="tiret">____________</span><br>
-                            {{ _('par') }} <span class="tiret">__________________</span><br>
-                        </td>
-                    </tr>
-                </table>
-
-                <table class="tableau2" style="margin-top: 10px">
-                    <tr>
-                        <th>Conducteur 3</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="tiret">__________________________________________</span><br />
-                            {{ _('Né le') }} <span class="tiret">__________________</span> à <span class="tiret">__________________</span><br>
-                            {{ _('Permis') }} {{ _('n°') }} <span class="tiret">______________</span> {{ _('délivré le') }} <span class="tiret">____________</span><br>
-                            {{ _('par') }} <span class="tiret">__________________</span><br>
-                        </td>
-                    </tr>
-                </table>
 
                 @if ($reservation->prestations)
                     <table class="tableau2" style="margin-top: 10px">
@@ -362,10 +334,46 @@
             <td style="border: none">
                 Par ma signature, je reconnais être d'accord avec le contrat avec le montant estimé de la location. Je reconnais avoir lu et approuvé les conditions de location figurant au verso de mon contrat de location.
 
-                <div style="float: right; margin-top: 5mm">
-                    A&nbsp;<span style="display: inline-block; width: 150px;"></span>,le<br>
-                    Signature, précédée de la mention "Lu et approuvé"
-                </div>
+                @if(isset($inspection))
+                    <div style="float: right; margin-top: 5mm">
+                        <p>A&nbsp;{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? $reservation->lieuDebut->nom : $reservation->lieuFin->nom  }},le {{ $inspection->created_at->format('d/m/Y') }}<br>
+                        Signature numérique</p>
+
+                        <table style="margin-top: 6mm; width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td style="width:50%; border: none; text-align: center">
+                                    <h5>SIGNATURE CLIENT</h5>
+                                </td>
+                                <td style="width:50%; border: none; text-align: center">
+                                    <h5>SIGNATURE LOUEUR</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:none;text-align: center; height:120px; vertical-align:top;">
+                                    @if($inspection->locataire_signature)
+                                        <img src="{{ $inspection->locataire_signature }}" alt="Signature client" style="width:200px; height:auto; border:1px solid #000;">
+                                        <p style="margin-top: 10px;">Signé le : {{ $inspection->locataire_signature_at->format('d/m/Y à H:i') }}</p>
+                                    @else
+                                        <div style="display:inline-block; width:195px; height:90px; border:1px solid #000;"></div>
+                                    @endif
+                                </td>
+                                <td style="border:none;text-align: center; height:120px; vertical-align:top;">
+                                    @if($inspection->agent_signature)
+                                        <img src="{{ $inspection->agent_signature }}" alt="Signature agent" style="width:200px; height:auto; border:1px solid #000;">
+                                        <p style="margin-top: 10px;">Signé le : {{ $inspection->agent_signature_at->format('d/m/Y à H:i') }}</p>
+                                    @else
+                                        <div style="display:inline-block; width:195px; height:90px; border:1px solid #000;"></div>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                @else
+                    <div style="float: right; margin-top: 5mm">
+                        A&nbsp;<span style="display: inline-block; width: 150px;"></span>,le<br>
+                        Signature, précédée de la mention "Lu et approuvé"
+                    </div>
+                @endif
             </td>
 
 

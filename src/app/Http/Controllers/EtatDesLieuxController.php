@@ -350,7 +350,7 @@ class EtatDesLieuxController extends AdminController
 
             Pdf::loadView(
                 config('ipsum.reservation.contrat.view'),
-                compact('reservation', 'cgl')
+                compact('reservation', 'cgl', 'inspection')
             )->save($contratPdfPath);
 
             // 🔐 Signature numérique contrat
@@ -457,11 +457,11 @@ class EtatDesLieuxController extends AdminController
         $password = '1234';
 
         if (!file_exists($cert)) {
-            throw new \Exception("Certificat agent introuvable.");
+            throw new \Exception("Certificat introuvable.");
         }
 
         if (!$pdfDoc->set_signature_certificate($cert, $password)) {
-            throw new \Exception("Certificat agent invalide.");
+            throw new \Exception("Certificat invalide.");
         }
 
         $signedPdf = $pdfDoc->to_pdf_file_s();
