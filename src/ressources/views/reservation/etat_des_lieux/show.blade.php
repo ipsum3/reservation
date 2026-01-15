@@ -21,10 +21,7 @@
                 </div>
                 <div class="box-body">
 
-
-                    <div class="step active" id="ajax-recap">
-                        @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap')
-                    </div>
+                    @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap')
 
                 </div>
             </div>

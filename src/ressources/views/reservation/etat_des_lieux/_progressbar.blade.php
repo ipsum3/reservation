@@ -1,19 +1,19 @@
 <style>
-    .step { display: none; }
-    .step.active { display: block; }
     .progressbar {
+        margin-bottom: 30px;
+        padding: 0;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        text-align: center;
         counter-reset: step;
-        width: 100%;
     }
     .progressbar li {
+        margin-top: 10px;
+        padding-left: 10px;
         list-style-type: none;
-        width: 12.5%;
-        float: left;
         font-size: 12px;
         position: relative;
-        text-align: center;
         color: #7d7d7d;
-        min-width: 120px;
     }
     .progressbar li:before {
         content: counter(step);
@@ -26,7 +26,6 @@
         text-align: center;
         margin: 0 auto 10px auto;
         border-radius: 50%;
-        background-color: white;
     }
     .progressbar li.active {
         color: #26b2ed;
@@ -36,6 +35,7 @@
     }
 </style>
 
+{{--
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const progressBar = document.querySelector('.progressbar');
@@ -54,4 +54,16 @@
             });
         }
     });
-</script>
+</script>--}}
+
+<ul class="progressbar d-flex">
+    @if($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
+        <li class="active">Véhicule</li>
+        <li>Réservation</li>
+    @endif
+    <li>Checklist</li>
+    <li>Dommages</li>
+    <li>Récapitulatif</li>
+    <li>Signature client</li>
+    <li>Signature agent</li>
+</ul>
