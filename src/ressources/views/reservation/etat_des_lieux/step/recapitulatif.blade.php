@@ -3,6 +3,8 @@
 
 @section('content')
 
+    @include('IpsumReservation::reservation.etat_des_lieux._progressbar')
+
     <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
 
     <div class="row">
@@ -11,7 +13,10 @@
 
             <div class="box">
                 <div class="box-header">
-                    @include('IpsumReservation::reservation.etat_des_lieux._progressbar')
+                    <h2 class="box-title">Récapitualtif</h2>
+                    <div></div>
+
+                    {{--@include('IpsumReservation::reservation.etat_des_lieux._progressbar')
 
                     <!-- Progress bar -->
                     <ul class="progressbar mt-2 clearfix overflow-auto">
@@ -24,20 +29,17 @@
                         <li class="active">Récapitulatif</li>
                         <li>Signature client</li>
                         <li>Signature agent</li>
-                    </ul>
+                    </ul>--}}
                 </div>
                 <div class="box-body">
 
+                    @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap')
 
-                    <div class="step active" id="ajax-recap">
-                        @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap')
-                    </div>
+                </div>
 
-                    <!-- Navigation -->
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ route('admin.inspection.dommage', [$reservation, $type]) }}" id="prevBtn" class="btn btn-secondary">Retour</a>
-                        <a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}" id="nextBtn" class="btn btn-primary">Suivant</a>
-                    </div>
+                <div class="box-footer">
+                    <div><a href="{{ route('admin.inspection.dommage', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div><a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}" id="nextBtn" class="btn btn-primary">Suivant</a></div>
                 </div>
             </div>
 

@@ -3,15 +3,20 @@
 
 @section('content')
 
+    @include('IpsumReservation::reservation.etat_des_lieux._progressbar')
+
     <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
 
+    {{ Aire::open()->id('reservation')->route('admin.inspection.signature.locataire.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureLocataire::class) }}
+
     <div class="row">
-
         <div class="col-md-12">
-
             <div class="box">
                 <div class="box-header">
-                    @include('IpsumReservation::reservation.etat_des_lieux._progressbar')
+                    <h2 class="box-title">Signature client</h2>
+                    <div></div>
+
+                    {{--@include('IpsumReservation::reservation.etat_des_lieux._progressbar')
 
                     <!-- Progress bar -->
                     <ul class="progressbar mt-2 clearfix overflow-auto">
@@ -24,43 +29,33 @@
                         <li><a href="{{ route('admin.inspection.recapitulatif', [$reservation, $type]) }}">Récapitulatif</a></li>
                         <li class="active">Signature client</li>
                         <li>Signature agent</li>
-                    </ul>
+                    </ul>--}}
                 </div>
                 <div class="box-body">
 
-                    {{ Aire::open()->id('reservation')->route('admin.inspection.signature.locataire.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureLocataire::class) }}
-
-
-                            <!-- STEP 8 -->
-                            <div class="step active">
-                                {{-- Signatures --}}
-                                <div class="form-row">
-                                    <div class="col-md-12 mb-2">
-                                        <h2 class="text-xl font-semibold mb-2">Signature client</h2>
-                                        <p>
-                                            Par ma signature, je reconnais être d'accord avec l'état des lieux
-                                        </p>
-                                        <div style="width: 335px">
-                                            <canvas id="signature-client-pad" class="border rounded w-full h-32 {{ $inspection->locataire_signature ? '' : '' }}"></canvas>
-                                        </div>
-                                        <div class="signature-client-error"></div>
-                                        <input type="hidden" name="locataire_signature" id="locataire_signature" value="{{ $inspection->locataire_signature ??  '' }}">
-                                        <button type="button" class="btn btn-outline-danger" id="clear-signature-client"><i class="fas fa-trash-alt"></i> Effacer la signature</button>
-                                    </div>
-                                </div>
+                    {{-- Signatures --}}
+                    <div class="form-row">
+                        <div class="col-md-12 mb-2">
+                            <p>
+                                Par ma signature, je reconnais être d'accord avec l'état des lieux
+                            </p>
+                            <div style="width: 335px">
+                                <canvas id="signature-client-pad" class="border rounded w-full h-32 {{ $inspection->locataire_signature ? '' : '' }}"></canvas>
                             </div>
+                            <div class="signature-client-error"></div>
+                            <input type="hidden" name="locataire_signature" id="locataire_signature" value="{{ $inspection->locataire_signature ??  '' }}">
+                            <button type="button" class="btn btn-outline-danger" id="clear-signature-client"><i class="fas fa-trash-alt"></i> Effacer la signature</button>
+                        </div>
+                    </div>
 
-                            <!-- Navigation -->
-                            <div class="d-flex justify-content-between mt-4">
-                                <a href="{{ route('admin.inspection.recapitulatif', [$reservation, $type]) }}" id="prevBtn" class="btn btn-secondary">Retour</a>
-                                <button type="submit" id="nextBtn" class="btn btn-primary">Suivant</button>
-                            </div>
-
-                        {{ Aire::close() }}
+                </div>
+                <div class="box-footer">
+                    <div><a href="{{ route('admin.inspection.recapitulatif', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div><button type="submit" id="nextBtn" class="btn btn-primary">Suivant</button></div>
                 </div>
             </div>
-
         </div>
+        {{ Aire::close() }}
 
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.4/signature_pad.min.js" integrity="sha512-Mtr2f9aMp/TVEdDWcRlcREy9NfgsvXvApdxrm3/gK8lAMWnXrFsYaoW01B5eJhrUpBT7hmIjLeaQe0hnL7Oh1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
