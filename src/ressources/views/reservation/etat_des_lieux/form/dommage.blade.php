@@ -36,65 +36,15 @@
                 </div>
                 <div class="box-body">
 
-                    <div class="row">
+                    <div class="row justify-content-center">
 
-                        <div class="col-md-12 mt-3">
-                            <div class="upload"
-                                 data-initialize="true"
-                                 data-uploadendpoint="{{ route('admin.media.store') }}"
-                                 data-uploadmedias="{{ route('admin.media.publication', ['toolbar' => ['editable' => false, 'sortable' => false, 'title' => false, 'link' => true, 'pad' => true], 'publication_type' => \Ipsum\Reservation\app\Models\Dommage\Dommage::class, 'publication_id' => $dommage->exists ? $dommage->id : ''  ]) }}"
-                                 data-uploadrepertoire=""
-                                 data-uploadpublicationid="{{ $dommage->id ?? '' }}"
-                                 data-uploadpublicationtype="{{ \Ipsum\Reservation\app\Models\Dommage\Dommage::class }}"
-                                 data-uploadgroupe=""
-                                 data-uploadnote="Une seule image (max {{ config('ipsum.media.upload_max_filesize') }} Ko)"
-                                 data-uploadmaxfilesize="{{ config('ipsum.media.upload_max_filesize') }}"
-                                 data-uploadmmaxnumberoffiles="1"
-                                 data-uploadminnumberoffiles="0"
-                                 data-uploadallowedfiletypes="image/*"
-                                 data-uploadcsrftoken="{{ csrf_token() }}">
-                                <div class="upload-DragDrop {{ $dommage->illustration ? 'd-none' : '' }}"></div>
-                                <div class="upload-ProgressBar"></div>
-                                <div class="upload-alerts mt-3"></div>
-                                <div class="mt-3 mb-3">
-                                    <div class="d-flex flex-row flex-wrap sortable upload-files"
-                                         data-sortableurl="{{ route('admin.media.changeOrder') }}"
-                                         data-sortablecsrftoken="{{ csrf_token() }}">
-                                    </div>
-                                </div>
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        const uploadFiles = document.querySelector('.upload-files');
-                                        const uploadZone = document.querySelector('.upload-DragDrop');
+                        <div class="col-md-4 mt-3 mb-5">
 
-                                        if (!uploadFiles || !uploadZone) return;
+                                <div id="upload-DragDrop"></div>
 
-                                        function updateUploadZoneVisibility() {
-                                            const hasMedia = uploadFiles.querySelector('.media') !== null;
-
-                                            console.log(hasMedia)
-                                            if (hasMedia) {
-                                                uploadZone.classList.add('d-none');
-                                            } else {
-                                                uploadZone.classList.remove('d-none');
-                                            }
-                                        }
-
-                                        function initObserver() {
-                                            // Lancer l’observation des changements
-                                            const observer = new MutationObserver(updateUploadZoneVisibility);
-                                            observer.observe(uploadFiles, { childList: true, subtree: false });
-
-                                            // Vérifier une première fois
-                                            updateUploadZoneVisibility();
-                                        }
-
-                                        // Délai avant initialisation pour laisser Uppy injecter le DOM
-                                        setTimeout(initObserver, 1500); // Ajuste le délai (ms) selon le temps de rendu d’Uppy
-                                    });
-                                </script>
-                            </div>
                         </div>
+                    </div>
+                    <div class="row">
 
                         <div class="col-md-4">
                             {{ Aire::select(collect(['' => '---- Types -----'])->union($dommage_types->pluck('nom','id')), 'type_id', 'Type de dommage*')->required() }}
@@ -129,7 +79,100 @@
     {{ Aire::close() }}
 
 
-    <link href="{{ asset('ipsum/admin/dist/uppy.css') }}" rel="stylesheet">
-    <script src="{{ asset('ipsum/admin/dist/uppy.js') }}"></script>
+
+    <link href="https://releases.transloadit.com/uppy/v5.2.1/uppy.min.css" rel="stylesheet">
+    {{--<script src="https://releases.transloadit.com/uppy/locales/v5.1.0/fr_FR.min.js"></script>--}}
+    <script type="module">
+        var medias = [];
+
+        import { Uppy, Dashboard, Webcam, XHRUpload  } from "https://releases.transloadit.com/uppy/v5.2.1/uppy.min.mjs"
+
+        const uppy = new Uppy({
+            debug: false,
+            autoProceed: true,
+            //locale: Uppy.locales.fr_FR, // todo locales fr_FR
+            restrictions: {
+                maxFileSize: 10000000,
+                maxNumberOfFiles: 1,
+                allowedFileTypes: ['image/*']
+            },
+            meta: {
+                publication_id: '{{ $dommage->id ?? '' }}',
+                publication_type: "Ipsum\\Reservation\\app\\Models\\Dommage\\Dommage",
+                //repertoire: 'dommages',
+                _token: '{{ csrf_token() }}'
+            }})
+
+        uppy.use(
+            Dashboard, {
+                inline: true,
+                target: '#upload-DragDrop',
+                replaceTargetContent: true,
+                showLinkToFileUploadResult: false,
+                showProgressDetails: true,
+                showRemoveButtonAfterComplete: true,
+                note: 'Uniquement des photos, maximum un fichier de 1 MB.',
+                height: 400,
+                width: "100%",
+                browserBackButtonClose: true,
+                proudlyDisplayPoweredByUppy: false
+            });
+
+        uppy.use(
+            Webcam, {
+                countdown: false,
+                target: Uppy.Dashboard,
+                modes: [
+                    'picture'
+                ],
+                mirror: true,
+                showRecordingLength: false,
+                preferredVideoMimeType: null,
+                preferredImageMimeType: null,
+                locale: {},
+                videoConstraints: {
+                    facingMode: 'environment',
+                    width: { min: 1280, ideal: 1280, max: 1920 },
+                    height: { min: 720, ideal: 720, max: 1080 },
+                },
+            });
+
+        uppy.use(XHRUpload, {
+            endpoint: '{{ route('admin.media.store') }}',
+            formData: true,
+            fieldName: 'media',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        uppy.on('upload-success', function (file, response) {
+            medias.push(response.body.media);
+        });
+
+        uppy.on('upload-error', function (file, error, response) {
+            console.log('error with file:', file.id);
+            console.log('error message:', error);
+            console.log('error message:', response);
+        });
+        uppy.on('file-removed', function (file) {
+            console.log('file removed', file)
+            medias.forEach(function(media, index, medias){
+                console.log( media)
+                if (media.nom === file.name) {
+                    medias.splice(index, 1);
+
+                    $.ajax({
+                        url: "/signalement/media/" + media.tmp_file + "/destroy" // TODO A FAIRE
+                    });
+
+                    return false;
+                }
+            });
+        });
+        uppy.on('restriction-failed', function (file, error) {
+            /*document.querySelector('#upload-alerts').insertAdjacentHTML('beforeend', '<div class="alert alert-warning">' + file.name +' : ' + error +'</div>')*/
+        });
+    </script>
 
 @endsection
