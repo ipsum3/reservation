@@ -249,7 +249,7 @@ class EtatDesLieuxController extends AdminController
 
     public function destroyDommage(Reservation $reservation, Type $type, Dommage $dommage)
     {
-        $dommage->delete();
+        $dommage->delete(); // TODO SUPPRIMER L'IMAGE
         Alert::success('Le dommage a été supprimé avec succès.')->flash();
 
         return redirect()->route('admin.inspection.dommage', [$reservation, $type]);
