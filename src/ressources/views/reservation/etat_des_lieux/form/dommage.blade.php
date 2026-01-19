@@ -189,7 +189,6 @@
 
         uppy.on('file-added', (file) => {
             if (file.meta.existing === true) {
-                console.log(file.meta.previewUrl)
                 uppy.setFileState(file.id, {
                     preview: file.meta.previewUrl,
                     progress: { uploadComplete: true }
