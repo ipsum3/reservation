@@ -14,6 +14,7 @@ class Dommage extends BaseModel
     use SoftDeletes, Mediable;
 
     protected $guarded = ['id'];
+    protected $mediable_delete = true;
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
