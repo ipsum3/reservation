@@ -230,7 +230,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\MotorisationController
     }
 );
 
-Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)->prefix('inspections')->name('admin.inspection.')->group(
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)->prefix('inspections')->name('admin.inspection.')->middleware('CheckEtatDesLieuxEnabled')->group(
     function () {
         Route::get('', 'index')->name('index');
         Route::get('{inspection}/pdf', 'pdf')->name('pdf');
@@ -245,6 +245,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)
     ->prefix('etat-des-lieux/{reservation}/{type}')
     ->name('admin.inspection.')
+    ->middleware('CheckEtatDesLieuxEnabled')
     ->group(function () {
 
         Route::get('vehicule', 'vehicule')->name('vehicule')->middleware('adminRedirectIfSigned');
