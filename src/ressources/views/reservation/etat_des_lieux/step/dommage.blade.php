@@ -75,7 +75,7 @@
                                         $photos = $reservation->inspection_initiale->medias()->groupe('photos')->get();
                                     @endphp--}}
 
-                                    @if($reservation->vehicule?->dommages->count() || $photos->count())
+                                    @if($reservation->vehicule?->dommages->count() /*|| $photos->count()*/)
                                         <div class="d-flex flex-row flex-wrap">
                                             @foreach($reservation->vehicule->dommages as $dommage)
                                                 @php

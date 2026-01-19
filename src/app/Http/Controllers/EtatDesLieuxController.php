@@ -346,7 +346,7 @@ class EtatDesLieuxController extends AdminController
             /**
              * SIGNATURE DU CONTRAT (CGL)
              */
-            $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
+            $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->first();
 
             $contratDirectory = storage_path('app/contrats');
             if (!is_dir($contratDirectory)) {
