@@ -11,6 +11,7 @@ use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
 use Ipsum\Reservation\app\Console\Commands\ReservationCheck;
+use Ipsum\Reservation\app\Http\Middleware\CheckEtatDesLieuxEnabled;
 use Ipsum\Reservation\app\Http\Middleware\RedirectIfInspectionSigned;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
 use Ipsum\Reservation\app\Http\Middleware\ReservationEmail;
@@ -127,6 +128,7 @@ class ReservationServiceProvider extends ServiceProvider
     {
         $router->aliasMiddleware('adminReservationConfirmed', ReservationConfirmed::class);
         $router->aliasMiddleware('adminRedirectIfSigned', RedirectIfInspectionSigned::class);
+        $router->aliasMiddleware('CheckEtatDesLieuxEnabled', CheckEtatDesLieuxEnabled::class);
         $router->aliasMiddleware('adminReservationEmail', ReservationEmail::class);
         $this->app->booted(function () use($router) {
             $router->pushMiddlewareToGroup('web', ReservationTracking::class);
