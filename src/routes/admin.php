@@ -230,7 +230,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\MotorisationController
     }
 );
 
-Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)->prefix('inspections')->name('admin.inspection.')->middleware('CheckEtatDesLieuxEnabled')->group(
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)->prefix('inspections')->name('admin.inspection.')->middleware('adminCheckEtatDesLieuxEnabled')->group(
     function () {
         Route::get('', 'index')->name('index');
         Route::get('{inspection}/pdf', 'pdf')->name('pdf');
@@ -245,21 +245,21 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)
     ->prefix('etat-des-lieux/{reservation}/{type}')
     ->name('admin.inspection.')
-    ->middleware('CheckEtatDesLieuxEnabled')
+    ->middleware('adminCheckEtatDesLieuxEnabled')
     ->group(function () {
 
-        Route::get('vehicule', 'vehicule')->name('vehicule')->middleware('adminRedirectIfSigned');
-        Route::post('vehicule', 'storeVehicule')->name('vehicule.store')->middleware('adminRedirectIfSigned');
-        Route::get('client', 'client')->name('client')->middleware('adminRedirectIfSigned');
+        Route::get('vehicule', 'vehicule')->name('vehicule')->middleware('adminRedirectIfInspectionSigned');
+        Route::post('vehicule', 'storeVehicule')->name('vehicule.store')->middleware('adminRedirectIfInspectionSigned');
+        Route::get('client', 'client')->name('client')->middleware('adminRedirectIfInspectionSigned');
 
-        Route::middleware(['adminRedirectIfSigned', 'adminReservationEmail'])->group(function () {
+        Route::middleware(['adminRedirectIfInspectionSigned', 'adminReservationEmail'])->group(function () {
 
             // Checklist
             Route::get('checklist', 'checklist')->name('checklist');
             Route::post('checklist', 'storeChecklist')->name('checklist.store');
 
             // Dommages
-            Route::get('dommage', 'dommage')->name('dommage');
+            Route::get('dommages', 'dommages')->name('dommages');
             Route::prefix('dommage')->name('dommage.')->group(function () {
                 Route::get('create', 'createDommage')->name('create');
                 Route::post('/', 'storeDommage')->name('store');

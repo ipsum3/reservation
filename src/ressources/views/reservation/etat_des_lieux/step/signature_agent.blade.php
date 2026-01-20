@@ -3,7 +3,7 @@
 
 @section('content')
 
-    @include('IpsumReservation::reservation.etat_des_lieux._progressbar')
+    @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
     <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
 
@@ -16,22 +16,6 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Signature agent</h2>
-                    <div></div>
-
-                    {{--@include('IpsumReservation::reservation.etat_des_lieux._progressbar')
-
-                    <!-- Progress bar -->
-                    <ul class="progressbar mt-2 clearfix overflow-auto">
-                        @if($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                            <li><a href="{{ route('admin.inspection.vehicule', [$reservation, $type]) }}">Véhicule</a></li>
-                            <li><a href="{{ route('admin.inspection.client', [$reservation, $type]) }}">Client / Réservation</a></li>
-                        @endif
-                        <li><a href="{{ route('admin.inspection.checklist', [$reservation, $type]) }}">Kilométrage / Carburant / Checklist</a></li>
-                        <li><a href="{{ route('admin.inspection.dommage', [$reservation, $type]) }}">Dommages / Photos</a></li>
-                        <li><a href="{{ route('admin.inspection.recapitulatif', [$reservation, $type]) }}">Récapitulatif</a></li>
-                        <li><a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}">Signature client</a></li>
-                        <li class="active">Signature agent</li>
-                    </ul>--}}
                 </div>
                 <div class="box-body">
 
@@ -43,7 +27,7 @@
                                 <canvas id="signature-agent-pad" class="border rounded w-full h-32"></canvas>
                             </div>
                             <div class="signature-agent-error"></div>
-                            <input type="hidden" name="agent_signature" id="agent_signature" value="{{ $inspection->agent_signature ??  '' }}" >
+                            <input type="hidden" name="agent_signature" id="agent_signature" value="{{ $inspection->agent_signature ??  '' }}">
                             <button type="button" class="btn btn-outline-danger" id="clear-signature-agent"><i class="fas fa-trash-alt"></i> Effacer la signature</button>
 
                         </div>
@@ -53,14 +37,17 @@
 
                 <div class="box-footer">
                     <div><a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
-                    <div><button type="submit" id="nextBtn" class="btn btn-success">Valider</button></div>
+                    <div>
+                        <button type="submit" id="nextBtn" class="btn btn-success">Valider</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     {{ Aire::close() }}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.4/signature_pad.min.js" integrity="sha512-Mtr2f9aMp/TVEdDWcRlcREy9NfgsvXvApdxrm3/gK8lAMWnXrFsYaoW01B5eJhrUpBT7hmIjLeaQe0hnL7Oh1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.4/signature_pad.min.js" integrity="sha512-Mtr2f9aMp/TVEdDWcRlcREy9NfgsvXvApdxrm3/gK8lAMWnXrFsYaoW01B5eJhrUpBT7hmIjLeaQe0hnL7Oh1w==" crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -72,7 +59,7 @@
                 }
             ];
 
-            signatures.forEach(({ canvas, input, clearBtn }) => {
+            signatures.forEach(({canvas, input, clearBtn}) => {
                 if (!canvas) return;
 
                 const signaturePad = new SignaturePad(canvas, {
@@ -87,9 +74,9 @@
 
                     const data = input.value || null;
 
-                    canvas.width  = width * ratio;
+                    canvas.width = width * ratio;
                     canvas.height = height * ratio;
-                    canvas.style.width  = width + 'px';
+                    canvas.style.width = width + 'px';
                     canvas.style.height = height + 'px';
 
                     canvas.getContext('2d').scale(ratio, ratio);
@@ -139,6 +126,5 @@
             });
         });
     </script>
-
 
 @endsection

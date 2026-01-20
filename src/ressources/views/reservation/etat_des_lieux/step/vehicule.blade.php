@@ -3,7 +3,7 @@
 
 @section('content')
 
-    @include('IpsumReservation::reservation.etat_des_lieux._progressbar')
+    @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
     <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
 
@@ -15,21 +15,6 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Véhicule</h2>
-                    <div></div>
-                    {{--<ul class="progressbar d-flex">
-                        @if($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                            <li class="active">Véhicule</li>
-                            <li>Réservation</li>
-                        @endif
-                        <li>Checklist</li>
-                        <li>Dommages</li>
-                        <li>Récapitulatif</li>
-                        <li>Signature client</li>
-                        <li>Signature agent</li>
-                    </ul>
-                    <div>
-
-                    </div>--}}
                 </div>
                 <div class="box-body">
 
@@ -83,8 +68,10 @@
                 </div>
 
                 <div class="box-footer">
-                    <div><a href="{{ URL::previous() }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
-                    <div><button type="submit" id="nextBtn" class="btn btn-primary">Suivant</button></div>
+                    <div><a href="{{ route('admin.reservation.edit', $reservation) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div>
+                        <button type="submit" id="nextBtn" class="btn btn-primary">Suivant</button>
+                    </div>
                 </div>
             </div>
         </div>

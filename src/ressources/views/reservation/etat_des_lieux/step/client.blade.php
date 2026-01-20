@@ -3,7 +3,7 @@
 
 @section('content')
 
-    @include('IpsumReservation::reservation.etat_des_lieux._progressbar')
+    @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
     <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
 
@@ -19,21 +19,6 @@
                     <div class="btn-toolbar">
                         <a href="{{ route('admin.reservation.edit', [$reservation]) }}#vehicule-select" class="btn btn-outline-primary"><i class="fa fa-edit"></i> Editer les informations</a>
                     </div>
-
-                    {{--@include('IpsumReservation::reservation.etat_des_lieux._progressbar')
-
-                    <!-- Progress bar -->
-                    <ul class="progressbar mt-2 clearfix overflow-auto">
-                        @if($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                            <li><a href="{{ route('admin.inspection.vehicule', [$reservation, $type]) }}">Véhicule</a></li>
-                            <li class="active">Client / Réservation</li>
-                        @endif
-                        <li>Kilométrage / Carburant / Checklist</li>
-                        <li>Dommages / Photos</li>
-                        <li>Récapitulatif</li>
-                        <li>Signature client</li>
-                        <li>Signature agent</li>
-                    </ul>--}}
                 </div>
                 <div class="box-body">
                     <div class="form-row">
@@ -60,16 +45,16 @@
 
                                 @if (config('ipsum.reservation.conducteurs_additionnels') && $reservation->conducteurs->count() )
                                     <h3 class="mt-4">Conducteurs additionnels</h3>
-                                    <table class="table table-hover table-striped"  style="min-width: 1000px">
+                                    <table class="table table-hover table-striped" style="min-width: 1000px">
                                         <thead>
                                         <tr>
-                                            <th> Nom </th>
-                                            <th> Prénom </th>
-                                            <th> Date de naissance </th>
-                                            <th> Lieu de naissance </th>
-                                            <th> Numéro de permis </th>
-                                            <th> Permis délivré le </th>
-                                            <th> Permis délivré par </th>
+                                            <th> Nom</th>
+                                            <th> Prénom</th>
+                                            <th> Date de naissance</th>
+                                            <th> Lieu de naissance</th>
+                                            <th> Numéro de permis</th>
+                                            <th> Permis délivré le</th>
+                                            <th> Permis délivré par</th>
                                         </tr>
                                         </thead>
                                         <tbody id="conducteurs-lignes">
@@ -78,13 +63,13 @@
                                         @endphp
                                         @foreach($reservation->conducteurs as $conducteur)
                                             <tr>
-                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][nom]" value="{{ old('nom', $conducteur->nom) }}" /></td>
-                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][prenom]" value="{{ old('prenom', $conducteur->prenom) }}" /></td>
-                                                <td><input class="form-control" type="date" disabled name="conducteurs[{{ $i }}][naissance_at]" value="{{ old('naissance_at', $conducteur->naissance_at?->format('Y-m-d')) }}" /></td>
-                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][naissance_lieu]" value="{{ old('naissance_lieu', $conducteur->naissance_lieu) }}" /></td>
-                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][permis_numero]" value="{{ old('permis_numero', $conducteur->permis_numero) }}" /></td>
-                                                <td><input class="form-control" type="date" disabled name="conducteurs[{{ $i }}][permis_at]" value="{{ old('permis_at', $conducteur->permis_at?->format('Y-m-d')) }}" /></td>
-                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][permis_delivre]" value="{{ old('permis_delivre', $conducteur->permis_delivre) }}" /></td>
+                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][nom]" value="{{ old('nom', $conducteur->nom) }}"/></td>
+                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][prenom]" value="{{ old('prenom', $conducteur->prenom) }}"/></td>
+                                                <td><input class="form-control" type="date" disabled name="conducteurs[{{ $i }}][naissance_at]" value="{{ old('naissance_at', $conducteur->naissance_at?->format('Y-m-d')) }}"/></td>
+                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][naissance_lieu]" value="{{ old('naissance_lieu', $conducteur->naissance_lieu) }}"/></td>
+                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][permis_numero]" value="{{ old('permis_numero', $conducteur->permis_numero) }}"/></td>
+                                                <td><input class="form-control" type="date" disabled name="conducteurs[{{ $i }}][permis_at]" value="{{ old('permis_at', $conducteur->permis_at?->format('Y-m-d')) }}"/></td>
+                                                <td><input class="form-control" type="text" disabled name="conducteurs[{{ $i }}][permis_delivre]" value="{{ old('permis_delivre', $conducteur->permis_delivre) }}"/></td>
                                             </tr>
 
                                             @php

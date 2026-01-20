@@ -1,3 +1,5 @@
+{{--TODO supprimer ?--}}
+
 <div class="media bg-white col-md-2" >
     <div class="media-img h-100 bg-light">
         @if($media->isImage)

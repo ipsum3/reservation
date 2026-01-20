@@ -14,9 +14,8 @@
                     <h2 class="box-title">Récapitulatif</h2>
                     <div class="btn-toolbar">
                        {{-- <a href="{{ route('admin.reservation.departEtRetour') }}" id="prevBtn" class="btn btn-secondary">Départ / Retour</a>--}}
-                        @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir l'état des lieux</a>&nbsp;
-                        @endif
+                        <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir l'état des lieux</a>&nbsp;
+                        {{--TODO contrat--}}
                     </div>
                 </div>
                 <div class="box-body">

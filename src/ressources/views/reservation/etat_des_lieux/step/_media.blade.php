@@ -1,3 +1,5 @@
+{{--TODO supprimer ?--}}
+
 <div class="media sortable-item" data-sortable="{{ $media->id }}">
     <div class="media-img">
         @if ($media->isImage)

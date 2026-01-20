@@ -3,7 +3,7 @@
 
 @section('content')
 
-    @include('IpsumReservation::reservation.etat_des_lieux._progressbar')
+    @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
     <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
 
@@ -16,23 +16,6 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Checklist</h2>
-                    <div></div>
-
-                    {{--@include('IpsumReservation::reservation.etat_des_lieux._progressbar')
-
-                    <!-- Progress bar -->
-                    <ul class="progressbar mt-2 clearfix overflow-auto">
-                        @if($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                            <li><a href="{{ route('admin.inspection.vehicule', [$reservation, $type]) }}">Véhicule</a></li>
-                            <li><a href="{{ route('admin.inspection.client', [$reservation, $type]) }}">Client / Réservation</a></li>
-                        @endif
-                        <li class="active">Kilométrage / Carburant / Checklist</li>
-                        <li>Dommages</li>
-                        <li>Photos</li>
-                        <li>Récapitulatif</li>
-                        <li>Signature client</li>
-                        <li>Signature agent</li>
-                    </ul>--}}
                 </div>
                 <div class="box-body">
 
@@ -82,7 +65,8 @@
                             </label>
                             @foreach($checklists as $checklist)
                                 <div class="custom-control custom-switch form-check mt-2">
-                                    <input name="checklists[]" value="{{ $checklist->id }}" type="checkbox" class="custom-control-input" id="checklist_{{ $checklist->id }}" {{ in_array($checklist->id, old('checklists', $inspection?->checklists->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
+                                    <input name="checklists[]" value="{{ $checklist->id }}" type="checkbox" class="custom-control-input"
+                                           id="checklist_{{ $checklist->id }}" {{ in_array($checklist->id, old('checklists', $inspection?->checklists->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
                                     <label class="custom-control-label" for="checklist_{{ $checklist->id }}">{{ $checklist->nom }}</label>
                                 </div>
                             @endforeach
@@ -107,7 +91,9 @@
 
                 <div class="box-footer">
                     <div><a href="{{ route('admin.inspection.client', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
-                    <div><button type="submit" id="nextBtn" class="btn btn-primary">Suivant</button></div>
+                    <div>
+                        <button type="submit" id="nextBtn" class="btn btn-primary">Suivant</button>
+                    </div>
                 </div>
             </div>
 
@@ -118,6 +104,5 @@
     {{ Aire::close() }}
 
     <script src="{{ asset('ipsum/admin/dist/tinymce.js') }}"></script>
-
 
 @endsection
