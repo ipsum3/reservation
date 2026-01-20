@@ -127,8 +127,8 @@ class ReservationServiceProvider extends ServiceProvider
     public function registerMiddlewareGroup(Router $router)
     {
         $router->aliasMiddleware('adminReservationConfirmed', ReservationConfirmed::class);
-        $router->aliasMiddleware('adminRedirectIfSigned', RedirectIfInspectionSigned::class);
-        $router->aliasMiddleware('CheckEtatDesLieuxEnabled', CheckEtatDesLieuxEnabled::class);
+        $router->aliasMiddleware('adminRedirectIfInspectionSigned', RedirectIfInspectionSigned::class);
+        $router->aliasMiddleware('adminCheckEtatDesLieuxEnabled', CheckEtatDesLieuxEnabled::class);
         $router->aliasMiddleware('adminReservationEmail', ReservationEmail::class);
         $this->app->booted(function () use($router) {
             $router->pushMiddlewareToGroup('web', ReservationTracking::class);

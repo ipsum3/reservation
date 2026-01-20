@@ -159,12 +159,15 @@ class Reservation extends BaseModel
             ) {
                 $vehicule = Vehicule::where('categorie_id', $reservation->categorie_id)->whereDoesntHaveReservationConfirmed($reservation->debut_at, $reservation->fin_at)->orderBy('mise_en_circualtion_at', 'desc')->first();
                 $reservation->vehicule_id = !is_null($vehicule) ? $vehicule->id : null;
-                $reservation->immatriculation = !is_null($vehicule) ? $vehicule->immatriculation : null;
             }
 
             if($reservation->is_confirmed and !$reservation->contrat) {
                 // Création du contrat
                 $reservation->generationReferenceContrat();
+            }
+
+            if ($reservation->vehicule_id != $reservation->getOriginal('vehicule_id')) {
+                $reservation->immatriculation = $reservation->vehicule?->immatriculation;
             }
         });
 

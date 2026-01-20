@@ -138,8 +138,7 @@ class EtatDesLieuxController extends AdminController
 
         $reservation->update([
             'categorie_id'    => $data['categorie_id'],
-            'vehicule_id'     => $data['vehicule_id'],
-            'immatriculation' => $reservation->vehicule?->immatriculation ?? $reservation->immatriculation,
+            'vehicule_id'     => $data['vehicule_id']
         ]);
 
         return redirect()->route('admin.inspection.client', [$reservation, $type]);
@@ -181,11 +180,11 @@ class EtatDesLieuxController extends AdminController
 
         $inspection->checklists()->sync($data['checklists'] ?? []);
 
-        return redirect()->route('admin.inspection.dommage', [$reservation, $type]);
+        return redirect()->route('admin.inspection.dommages', [$reservation, $type]);
     }
 
     /** --------- DOMMAGE --------- */
-    public function dommage(Reservation $reservation, Type $type)
+    public function dommages(Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
 
@@ -193,7 +192,7 @@ class EtatDesLieuxController extends AdminController
         $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
         $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
 
-        return view('IpsumReservation::reservation.etat_des_lieux.step.dommage', compact(
+        return view('IpsumReservation::reservation.etat_des_lieux.step.dommages', compact(
             'reservation', 'inspection', 'type', 'dommage_types', 'dommage_elements', 'dommage_emplacements'
         ));
     }
@@ -207,7 +206,7 @@ class EtatDesLieuxController extends AdminController
         $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
         $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
 
-        return view('IpsumReservation::reservation.etat_des_lieux.form.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
+        return view('IpsumReservation::reservation.etat_des_lieux.step.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
     }
 
     public function storeDommage(StoreInspectionDommage $request, Reservation $reservation, Type $type)
@@ -220,7 +219,7 @@ class EtatDesLieuxController extends AdminController
 
         $dommage = Dommage::create($dommageData);
 
-        return redirect()->route('admin.inspection.dommage', [$reservation, $type]);
+        return redirect()->route('admin.inspection.dommages', [$reservation, $type]);
     }
 
     public function editDommage(Reservation $reservation, Type $type, Dommage $dommage)
@@ -231,7 +230,7 @@ class EtatDesLieuxController extends AdminController
         $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
         $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
 
-        return view('IpsumReservation::reservation.etat_des_lieux.form.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
+        return view('IpsumReservation::reservation.etat_des_lieux.step.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
     }
 
     public function updateDommage(StoreInspectionDommage $request, Reservation $reservation, Type $type, Dommage $dommage)
@@ -244,7 +243,7 @@ class EtatDesLieuxController extends AdminController
 
         $dommage->update($dommageData);
 
-        return redirect()->route('admin.inspection.dommage', [$reservation, $type]);
+        return redirect()->route('admin.inspection.dommages', [$reservation, $type]);
     }
 
     public function destroyDommage(Reservation $reservation, Type $type, Dommage $dommage)
@@ -259,7 +258,7 @@ class EtatDesLieuxController extends AdminController
 
         Alert::success('Le dommage a été supprimé avec succès.')->flash();
 
-        return redirect()->route('admin.inspection.dommage', [$reservation, $type]);
+        return redirect()->route('admin.inspection.dommages', [$reservation, $type]);
     }
 
 
