@@ -479,17 +479,23 @@ class ReservationController extends AdminController
         return view('IpsumReservation::reservation.envoi-document-informations', compact('reservation', 'document'));
     }
 
+    /**
+     * @desc Génération du contrat pdf
+     **/
     public function contrat(Reservation $reservation)
     {
-        $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
+        $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->first();
 
         $pdf = Pdf::loadView(config('ipsum.reservation.contrat.view'), compact('reservation', 'cgl'));
         return $pdf->stream();
     }
 
+    /**
+     * @desc Génération de tous contrat pdfs de la page départ et retour
+     **/
     public function contratDepart(ShowDepartRetour $request)
     {
-        $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->firstOrFail();
+        $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->first();
 
         $query = Reservation::confirmed()
             ->whereBetween('debut_at', [$request->debut_at, $request->fin_at]);
@@ -506,6 +512,25 @@ class ReservationController extends AdminController
         //$pdf = Pdf::loadView(config('ipsum.reservation.contrat.view'), compact('reservations', 'cgl'));
         $pdf = Pdf::loadHTML($html);
         return $pdf->stream();
+    }
+
+    /**
+     * @desc Téléchargement du contrat signé
+     */
+    public function contratSigne(Reservation $reservation)
+    {
+
+        $contratPath = storage_path("app/contrats/contrat-{$reservation->contrat}.pdf");
+
+        if (!file_exists($contratPath)) {
+            Alert::error('Fichier introuvable')->flash();
+            return back();
+        }
+
+        return response()->file($contratPath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="contrat-'.$reservation->contrat.'.pdf"',
+        ]);
     }
 
     public function planning(ShowPlanning $request)

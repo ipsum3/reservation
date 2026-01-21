@@ -19,6 +19,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('{reservation}/document/{document}/send', 'reservationDocumentSend')->name('reservationDocumentSend');
         Route::post('document/send', 'documentSend')->name('documentSend');
         Route::get('{reservation}/contrat', 'contrat')->name('contrat')->middleware('adminReservationConfirmed');
+        Route::get('{reservation}/contrat-signe', 'contratSigne')->name('contratSigne')->middleware('adminReservationConfirmed');
         Route::get('planning', 'planning')->name('planning');
         Route::get('planning/optimiser/{categorie?}', 'planningOptimiser')->name('planningOptimiser');
         Route::get('depart-retour', 'departEtRetour')->name('departEtRetour');

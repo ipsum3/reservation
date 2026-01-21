@@ -3,31 +3,59 @@
     <div class="col-md-6">
         <!-- Informations Client -->
         <div class="card mb-3 shadow-sm">
-            <div class="card-header bg-secondary text-white p-2">Informations Client</div>
+            <div class="card-header bg-secondary text-white p-2">Informations client</div>
             <div class="card-body p-2">
                 {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
-                {{ _('Né le') }} {!! $reservation->naissance_at ? $reservation->naissance_at->format('d/m/Y') : '<span class="tiret">__________________</span>' !!}
-                à {!! $reservation->naissance_lieu ? e($reservation->naissance_lieu) : '<span class="tiret">__________________</span>' !!}<br>
-                {{ _('Permis') }} {{ _('n°') }} {!! $reservation->permis_numero ? e($reservation->permis_numero) : '<span class="tiret">______________</span>' !!}
-                {{ _('délivré le') }} {!! $reservation->permis_at ? $reservation->permis_at->format('d/m/Y') : '<span class="tiret">____________</span>' !!}<br>
-                {{ _('par') }} {!! $reservation->permis_delivre ? e($reservation->permis_delivre) : '<span class="tiret">__________________</span>' !!}<br>
-            </div>
+                {{ $reservation->email }}<br>
+                @if ($reservation->naissance_at)
+                    {{ _('Né le') }} {{ $reservation->naissance_at->format('d/m/Y') }}
+                    @if ($reservation->naissance_lieu)
+                        à {{ $reservation->naissance_lieu }}
+                    @endif
+                    <br>
+                @endif
+                @if ($reservation->permis_numero or $reservation->permis_at)
+                    {{ _('Permis') }}
+                    @if ($reservation->permis_numero)
+                        {{ _('n°') }}{{ $reservation->permis_numero }}
+                    @endif
+                    @if ($reservation->permis_at)
+                        {{ _('délivré le') }} {{ $reservation->permis_at->format('d/m/Y') }}
+                    @endif
+                    @if ($reservation->permis_delivre)
+                        {{ _('par') }} {{ $reservation->permis_delivre }}
+                    @endif
+                @endif
+             </div>
         </div>
     </div>
 
-
     @if($reservation->conducteurs)
-        @foreach($reservation->conducteurs as $i => $conducteur)
+        @foreach($reservation->conducteurs as $conducteur)
             <div class="col-md-6">
                 <div class="card mb-3 shadow-sm">
                     <div class="card-header bg-secondary text-white p-2">Conducteur additionnel #{{ $loop->iteration }}</div>
                     <div class="card-body p-2">
                         {{ $conducteur->prenom }} {{ $conducteur->nom }}<br/>
-                        {{ _('Né le') }} {!! $conducteur->naissance_at ? $conducteur->naissance_at?->format('d/m/Y') : '<span class="tiret">__________________</span>' !!}
-                        à {!! $conducteur->naissance_lieu ? e($conducteur->naissance_lieu) : '<span class="tiret">__________________</span>' !!}<br>
-                        {{ _('Permis') }} {{ _('n°') }} {!! $conducteur->permis_numero ? e($conducteur->permis_numero) : '<span class="tiret">______________</span>' !!}
-                        {{ _('délivré le') }} {!! $conducteur->permis_at ? $conducteur->permis_at?->format('d/m/Y') : '<span class="tiret">____________</span>' !!}<br>
-                        {{ _('par') }} {!! $conducteur->permis_delivre ? e($conducteur->permis_delivre) : '<span class="tiret">__________________</span>' !!}<br>
+                        @if ($conducteur->naissance_at)
+                            {{ _('Né le') }} {{ $conducteur->naissance_at->format('d/m/Y') }}
+                            @if ($conducteur->naissance_lieu)
+                                à {{ $conducteur->naissance_lieu }}
+                            @endif
+                            <br>
+                        @endif
+                        @if ($conducteur->permis_numero or $conducteur->permis_at)
+                            {{ _('Permis') }}
+                            @if ($conducteur->permis_numero)
+                                {{ _('n°') }}{{ $conducteur->permis_numero }}
+                            @endif
+                            @if ($conducteur->permis_at)
+                                {{ _('délivré le') }} {{ $conducteur->permis_at->format('d/m/Y') }}
+                            @endif
+                            @if ($conducteur->permis_delivre)
+                                {{ _('par') }} {{ $conducteur->permis_delivre }}
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>

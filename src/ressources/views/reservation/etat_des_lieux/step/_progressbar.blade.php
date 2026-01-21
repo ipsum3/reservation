@@ -8,14 +8,16 @@
         counter-reset: step;
     }
     .progressbar li {
+        list-style-type: none;
+    }
+    .progressbar-item {
         margin-bottom: 20px;
         padding-left: 10px;
-        list-style-type: none;
         font-size: 12px;
         position: relative;
         color: #7d7d7d;
     }
-    .progressbar li:before {
+    .progressbar-item:before {
         content: counter(step);
         counter-increment: step;
         width: 30px;
@@ -27,20 +29,22 @@
         margin: 0 auto 10px auto;
         border-radius: 50%;
     }
-    .progressbar li.active {
+    .progressbar-item.active {
         color: #26b2ed;
+        font-weight: bold;
     }
-    .progressbar li.active:before {
+    .progressbar-item.active:before {
         border-color: #26b2ed;
     }
     .progressbar li a {
         color: #7d7d7d;
+        text-decoration: none;
     }
     @media screen and (max-width: 640px) {
-        .progressbar li {
+        .progressbar-item {
             font-size: 10px
         }
-        .progressbar li:before {
+        .progressbar-item:before {
             width: 20px;
             height: 20px;
             line-height: 18px;
@@ -95,16 +99,16 @@ $has_link = true;
 <ul class="progressbar d-flex">
     @foreach($etapes as $etape)
         @if($etape['show'])
-            <li class="{{ request()->routeIs($etape['route']) ? 'active' : '' }}">
+            <li>
                 @php
                 if (request()->routeIs($etape['route'])) {
                     $has_link = false;
                 }
                 @endphp
                 @if($has_link)
-                    <a href="{{ route($etape['route'], [$reservation, $type]) }}">{{ $etape['nom'] }}</a>
+                    <a href="{{ route($etape['route'], [$reservation, $type]) }}"><div class="progressbar-item">{{ $etape['nom'] }}</div></a>
                 @else
-                    {{ $etape['nom'] }}
+                    <div class="progressbar-item {{ request()->routeIs($etape['route']) ? 'active' : '' }}">{{ $etape['nom'] }}</div>
                 @endif
             </li>
         @endif

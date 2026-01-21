@@ -20,8 +20,8 @@ class InspectionTypeSeeder extends Seeder
     private function getTypes()
     {
         return [
-            'Initial',
-            'Final'
+            'Initiale',
+            'Finale'
         ];
     }
 

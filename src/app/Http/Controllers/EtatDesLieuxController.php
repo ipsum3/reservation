@@ -25,6 +25,7 @@ use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Prologue\Alerts\Facades\Alert;
 use ddn\sapp\PDFDoc;
+use Str;
 
 class EtatDesLieuxController extends AdminController
 {
@@ -330,7 +331,7 @@ class EtatDesLieuxController extends AdminController
                 mkdir($directory, 0775, true);
             }
 
-            $inspectionPdfPath = $directory . "/etat_des_lieux-{$reservation->id}-{$type->id}.pdf";
+            $inspectionPdfPath = $directory . "/etat_des_lieux-{$inspection->id}.pdf";
 
             PDF::loadView(config('ipsum.reservation.etat_des_lieux.view'), [
                 'reservation' => $reservation,
@@ -352,7 +353,7 @@ class EtatDesLieuxController extends AdminController
                 mkdir($contratDirectory, 0775, true);
             }
 
-            $contratPdfPath = $contratDirectory . "/contrat-{$reservation->id}.pdf";
+            $contratPdfPath = $contratDirectory . "/contrat-{$reservation->contrat}.pdf";
 
             Pdf::loadView(
                 config('ipsum.reservation.contrat.view'),
@@ -365,7 +366,7 @@ class EtatDesLieuxController extends AdminController
             /**
              * ENVOI DU DOCUMENT FINAL
              */
-            Mail::send(new EtatDesLieux($reservation, $type));
+            Mail::send(new EtatDesLieux($inspection));
 
         } catch(\Exception $exception) {
             \Log::error("Erreur lors de la signature numérique du PDF : " . $exception->getMessage());
@@ -374,7 +375,7 @@ class EtatDesLieuxController extends AdminController
             $data['agent_signature_at'] = null;
             $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
 
-            Alert::error("Inspection #".$inspection->id." : Une erreur est survenue lors de la signature numérique des documents.")->flash();
+            Alert::error("Inspection #".$inspection->id." : ".$exception->getMessage())->flash();
 
             return back();
         }
@@ -402,10 +403,7 @@ class EtatDesLieuxController extends AdminController
 
     public function pdf(Inspection $inspection)
     {
-        $reservation = $inspection->reservation;
-        $type = $inspection->type;
-
-        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$reservation->id}-{$type->id}.pdf");
+        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$inspection->id}.pdf");
 
         if (!file_exists($pdfPath)) {
             Alert::error('Fichier introuvable')->flash();
@@ -414,7 +412,7 @@ class EtatDesLieuxController extends AdminController
 
         return response()->file($pdfPath, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="etat_des_lieux-'.$reservation->id.'-'.$type->id.'.pdf"',
+            'Content-Disposition' => 'inline; filename="etat-des-lieux-'.$inspection->reservation->id.'-'.Str::slug($inspection->type->nom).'.pdf"',
         ]);
     }
 
