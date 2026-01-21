@@ -55,7 +55,7 @@ return [
     'contrat' => [
         'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
         'couleur' => '#bbb',
-        'cgl_nom' => null,
+        'cgl_nom' => 'Conditions générales de location',
         'view' => 'IpsumReservation::reservation.documents.contrat',
         'disable' => false,
     ],

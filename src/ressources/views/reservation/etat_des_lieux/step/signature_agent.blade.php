@@ -5,7 +5,7 @@
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
+    <h1 class="main-title">État des lieux - Inspection {{ strtolower($type->nom) }}</h1>
 
     {{ Aire::open()->id('reservation')->route('admin.inspection.signature.agent.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureAgent::class) }}
 

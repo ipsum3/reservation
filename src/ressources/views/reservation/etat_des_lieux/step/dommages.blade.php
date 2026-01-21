@@ -5,7 +5,7 @@
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
+    <h1 class="main-title">État des lieux - Inspection {{ strtolower($type->nom) }}</h1>
 
     <div class="row">
 
@@ -13,7 +13,7 @@
 
             <div class="box">
                 <div class="box-header">
-                    <h2 class="box-title">Dommages de l’inspection</h2>
+                    <h2 class="box-title">Dommages relevés à l’inspection</h2>
                     <div class="btn-toolbar">
                         <a href="{{ route('admin.inspection.dommage.create', [$reservation, $type]) }}" class="btn btn-outline-primary">
                             <i class="bi bi-plus-circle"></i> <i class="fas fa-plus"></i> Ajouter un dommage

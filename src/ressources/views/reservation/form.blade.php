@@ -257,16 +257,19 @@
                                 @endif
                                 @if($reservation->inspection_finale)
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_finale]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir l'état des lieux final</a>&nbsp;
-                                    @else
-                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux final</a>&nbsp;
+                                @else
+                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux final</a>&nbsp;
                                 @endif
                             @endif
                         @endif
 
                         @if($reservation->contrat && !config('ipsum.reservation.contrat.disable'))
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i> Voir le contrat</a>&nbsp;
+                            @if($reservation->inspection_initiale)
+                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir le contrat</a>&nbsp;
+                            @else
+                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i> Générer le contrat</a>&nbsp;
+                            @endif
                         @endif
-
                     </div>
                 </div>
             @endif

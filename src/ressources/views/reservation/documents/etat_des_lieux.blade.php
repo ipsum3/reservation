@@ -139,7 +139,7 @@
             <td style="width:35%; padding: 0 5mm 0 0; border: none;">
                 <div style="text-align: center; ">
                     <h2>
-                        ETAT DES LIEUX DE {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'DEPART' : 'RETOUR' }}<br>
+                        ETAT DES LIEUX {{ strtolower($type->nom) }}<br>
                         {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? $reservation->debut_at->format('d/m/Y') : $reservation->fin_at->format('d/m/Y') }}
                     </h2>
                 </div>

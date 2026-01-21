@@ -5,7 +5,7 @@
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
+    <h1 class="main-title">État des lieux - Inspection {{ strtolower($type->nom) }}</h1>
 
     {{ Aire::open()->id('reservation')->route($dommage->exists ? 'admin.inspection.dommage.update' : 'admin.inspection.dommage.store', $dommage->exists ? [$reservation, $type, $dommage] : [$reservation, $type])->bind($dommage)/*->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionDommage::class)*/ }}
 
@@ -21,7 +21,7 @@
 
                     <div class="row justify-content-center">
 
-                        <div class="col-md-4 mt-3 mb-5">
+                        <div class="col-md-8 mt-3 mb-5">
 
                             <div id="upload-DragDrop" class=""
                                  data-uploadmedias="{{ route('admin.media.publication', ['toolbar' => ['editable' => false, 'sortable' => false, 'title' => false, 'link' => true, 'pad' => true], 'publication_type' => \Ipsum\Reservation\app\Models\Dommage\Dommage::class, 'publication_id' => $dommage->exists ? $dommage->id : ''  ]) }}"
@@ -85,7 +85,7 @@
             autoProceed: true,
             locale: fr_FR,
             restrictions: {
-                maxFileSize: 10000000,
+                maxFileSize: 2000000,
                 maxNumberOfFiles: 1,
                 allowedFileTypes: ['image/*']
             },
@@ -105,9 +105,9 @@
                 showLinkToFileUploadResult: false,
                 showProgressDetails: true,
                 showRemoveButtonAfterComplete: true,
-                note: 'Uniquement des photos, maximum un fichier de 1 MB.',
+                note: 'Uniquement des photos, maximum un fichier de 2 MB.',
                 height: 400,
-                width: "100%",
+                width: 600,
                 browserBackButtonClose: true,
                 proudlyDisplayPoweredByUppy: false
             });

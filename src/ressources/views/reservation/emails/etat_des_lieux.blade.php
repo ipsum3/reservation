@@ -1,9 +1,15 @@
 @component('mail::message')
 Bonjour,
 
-Vous avez reçu l'état des lieux {{{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initial': 'final' }}} de votre véhicule en provenance du site [{{{ config('settings.nom_site') }}}]({{{ config('app.url') }}}).
+@if($inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
+Vous venez de signer éléctroniquement le contrat et l'état des lieux {{ strtolower($inspection->type->nom) }} pour votre réservation n°{{ $reservation->reference }} sur le site [{{ config('settings.nom_site') }}]({{ config('app.url') }}).
 
-Veuillez trouver ci-joint le PDF de l'état des lieux de votre véhicule pour votre réservation n°{{ $reservation->id }}.
+Vous pouvez retrouver ces documents en pièce jointe de ce courriel.
+@else
+Vous venez de signer éléctroniquement l'état des lieux {{ strtolower($inspection->type->nom) }} pour votre réservation n°{{ $reservation->reference }} sur le site [{{ config('settings.nom_site') }}]({{ config('app.url') }}).
+
+Vous pouvez retrouver ce document en pièce jointe de ce courriel.
+@endif
 
 Bonne réception.
 @endcomponent

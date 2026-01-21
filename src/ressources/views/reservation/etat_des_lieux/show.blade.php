@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
+    <h1 class="main-title">État des lieux - Inspection {{ strtolower($type->nom) }}</h1>
 
     <div class="row">
 
@@ -14,8 +14,10 @@
                     <h2 class="box-title">Récapitulatif</h2>
                     <div class="btn-toolbar">
                        {{-- <a href="{{ route('admin.reservation.departEtRetour') }}" id="prevBtn" class="btn btn-secondary">Départ / Retour</a>--}}
-                        <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir l'état des lieux</a>&nbsp;
-                        {{--TODO contrat--}}
+                        @if ($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$inspection->reservation]) }}" target="_blank"><i class="fa fa-file-download"></i> Contrat signé</a>&nbsp;
+                        @endif
+                        <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-download"></i> Etat des lieux signé</a>
                     </div>
                 </div>
                 <div class="box-body">

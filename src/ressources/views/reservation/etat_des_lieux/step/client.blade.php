@@ -5,7 +5,7 @@
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux - Inspection {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'initiale': 'finale' }}</h1>
+    <h1 class="main-title">État des lieux - Inspection {{ strtolower($type->nom) }}</h1>
 
     {{ Aire::open()->id('reservation')->route('admin.inspection.vehicule.store', [$reservation, $type])->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionVehicule::class) }}
 
@@ -17,7 +17,7 @@
                 <div class="box-header">
                     <h2 class="box-title">Réservation</h2>
                     <div class="btn-toolbar">
-                        <a href="{{ route('admin.reservation.edit', [$reservation]) }}#vehicule-select" class="btn btn-outline-primary"><i class="fa fa-edit"></i> Editer les informations</a>
+                        <a href="{{ route('admin.reservation.edit', [$reservation]) }}#vehicule-select" class="btn btn-outline-primary"><i class="fa fa-edit"></i> Modifier les informations</a>
                     </div>
                 </div>
                 <div class="box-body">
