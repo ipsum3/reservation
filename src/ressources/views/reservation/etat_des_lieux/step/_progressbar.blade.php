@@ -77,11 +77,6 @@ $etapes = [
         'show' => true
     ],
     [
-        'route' => 'admin.inspection.recapitulatif',
-        'nom' => 'Récapitulatif',
-        'show' => true
-    ],
-    [
         'route' => 'admin.inspection.signature.locataire',
         'nom' => 'Signature client',
         'show' => true

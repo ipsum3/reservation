@@ -266,25 +266,17 @@ class EtatDesLieuxController extends AdminController
     }
 
 
-    /** --------- RÉCAP --------- */
-    public function recapitulatif(Reservation $reservation, Type $type)
-    {
-        $inspection = $this->getInspection($reservation, $type);
-
-        $checklists = Checklist::orderBy('order')->get();
-
-        return view('IpsumReservation::reservation.etat_des_lieux.step.recapitulatif', compact(
-            'reservation', 'inspection', 'type', 'checklists'
-        ));
-    }
-
     /** --------- SIGNATURE --------- */
     public function signatureLocataire(Reservation $reservation, Type $type)
     {
         $inspection = $this->getInspection($reservation, $type);
 
+        $checklists = Checklist::orderBy('order')->get();
+
+        $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->first();
+
         return view('IpsumReservation::reservation.etat_des_lieux.step.signature_locataire', compact(
-            'reservation', 'inspection', 'type'
+            'reservation', 'inspection', 'type', 'checklists', 'cgl'
         ));
     }
 

@@ -38,7 +38,7 @@
                 <div class="box-footer">
                     <div><a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
                     <div>
-                        <button type="submit" id="nextBtn" class="btn btn-success">Valider</button>
+                        <button type="submit" id="nextBtn" class="btn btn-success">Signer et terminer</button>
                     </div>
                 </div>
             </div>

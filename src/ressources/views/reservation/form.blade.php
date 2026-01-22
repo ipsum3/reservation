@@ -250,14 +250,13 @@
                             <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation']) }}" ><i class="fas fa-envelope"></i> Envoyer le mail de confirmation</a>&nbsp;
 
                             @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
-                                @if($reservation->inspection_initiale)
-                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_initiale]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir l'état des lieux initial</a>&nbsp;
-                                @else
+                                @foreach($reservation->inspections->filter(fn($inspection) => $inspection->isSigned())->sortKeysDesc() as $inspection)
+                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.show', [$inspection]) }}"><i class="fa fa-file-download"></i> Voir l'état des lieux {{ strtolower($inspection->type->nom) }}</a>&nbsp;
+                                @endforeach
+                                @if(!$reservation->inspection_initiale?->isSigned())
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux initial</a>&nbsp;
                                 @endif
-                                @if($reservation->inspection_finale)
-                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_finale]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir l'état des lieux final</a>&nbsp;
-                                @else
+                                @if(!$reservation->inspection_finale?->isSigned())
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux final</a>&nbsp;
                                 @endif
                             @endif

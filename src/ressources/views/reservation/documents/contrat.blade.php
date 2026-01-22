@@ -146,7 +146,7 @@
         <tr>
             <td style="width:50%; border: none;">
 
-
+                {{--TODO virer tirés sur signature signé--}}
                 <table class="tableau2">
                     <tr>
                         <th>Conducteur 1</th>
@@ -183,7 +183,7 @@
                     @endforeach
                 @endif
 
-                @if ($reservation->prestations)
+                @if ($reservation->prestations->count())
                     <table class="tableau2" style="margin-top: 10px">
                         <tr>
                             <th>Prestation{{ count($reservation->prestations) > 1 ? 's' : '' }}</th>

@@ -27,7 +27,7 @@
         td,th {
             vertical-align: top;
             padding: 1.5mm;
-            border: 0.2mm solid #888;
+            border: 0.2mm solid #ccc;
         }
 
         .tableau1 th {
@@ -53,7 +53,6 @@
         }
 
         .tableau3 td {
-            padding: 0;
             border: 0 none;
         }
 
@@ -139,7 +138,7 @@
             <td style="width:35%; padding: 0 5mm 0 0; border: none;">
                 <div style="text-align: center; ">
                     <h2>
-                        ETAT DES LIEUX {{ strtolower($type->nom) }}<br>
+                        État des lieux {{ strtolower($type->nom) }}<br>
                         {{ \Carbon\Carbon::now()->format('d/m/Y') }}
                     </h2>
                     <p>Annexe au contrat de location {{ $reservation->contrat  }}</p>
@@ -169,7 +168,7 @@
 
                 <table class="tableau2">
                     <tr>
-                        <th>LOCATAIRE</th>
+                        <th>Locataire</th>
                     </tr>
                     <tr>
                         <td>
@@ -199,43 +198,9 @@
                     </tr>
                 </table>
 
-                {{--@if($reservation->conducteurs->count())
-                    <table class="tableau2" style="margin-top: 10px;">
-                        <tr>
-                            <th style="width: 49%">CONDUCTEURS ADDITIONNELS</th>
-                        </tr>
-                        @foreach($reservation->conducteurs as $conducteur)
-                            <tr>
-                                <td>
-                                    <strong>Nom :</strong> {{ $conducteur->civilite }} {{ $conducteur->prenom }} {{ $conducteur->nom }}<br>
-                                    @if ($conducteur->naissance_at)
-                                        <strong>{{ _('Né le') }} :</strong> {{ $conducteur->naissance_at->format('d/m/Y') }}
-                                        @if ($conducteur->naissance_lieu)
-                                            à {{ $conducteur->naissance_lieu }}
-                                        @endif
-                                        <br>
-                                    @endif
-                                    @if ($conducteur->permis_numero or $conducteur->permis_at)
-                                        <strong>{{ _('Permis') }} :</strong>
-                                        @if ($conducteur->permis_numero)
-                                            {{ _('n°') }}{{ $conducteur->permis_numero }}
-                                        @endif
-                                        @if ($conducteur->permis_at)
-                                            {{ _('délivré le') }} {{ $conducteur->permis_at->format('d/m/Y') }}
-                                        @endif
-                                        @if ($conducteur->permis_delivre)
-                                            {{ _('par') }} {{ $conducteur->permis_delivre }}
-                                        @endif
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </table>
-                @endif--}}
-
                 <table class="tableau2" style="margin-top: 10px;">
                     <tr>
-                        <th style="width: 49%">VEHICULE RÉSERVÉ</th>
+                        <th style="width: 49%">Véhicule réservé</th>
                     </tr>
                     <tr>
                         <td>
@@ -256,14 +221,14 @@
 
                 <table class="tableau2" style="">
                     <tr>
-                        <th style="width: 49%">DÉPART</th>
+                        <th style="width: 49%">Initial</th>
                         @if(!$inspection->type->is_initial )
-                            <th style="width: 49%">RETOUR</th>
+                            <th style="width: 49%">Final</th>
                         @endif
                     </tr>
                     <tr>
                         <td>
-                            <table>
+                            <table class="tableau3">
                                 <tr>
                                     <td>Km compteur</td>
                                     <td>{{ $reservation->inspection_initiale?->kilometrage }} km</td>
@@ -281,13 +246,13 @@
                                     </tr>
                                 @endforeach
                                 <tr>
-                                    <td colspan="2" style="height: 110px">Observations : {!!  $reservation->inspection_initiale?->observations !!}</td>
+                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspection_initiale?->observations)) !!}</td>
                                 </tr>
                             </table>
                         </td>
                         @if(!$inspection->type->is_initial)
                             <td>
-                                <table>
+                                <table class="tableau3">
                                     <tr>
                                         <td>Km compteur</td>
                                         <td>{{ $reservation->inspection_finale?->kilometrage }} km</td>
@@ -305,25 +270,21 @@
                                         </tr>
                                     @endforeach
                                     <tr>
-                                        <td colspan="2" style="height: 110px">Observations : {!! $reservation->inspection_finale?->observations !!}</td>
+                                        <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspection_finale?->observations)) !!}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            @php
+                                                $count = $reservation->inspection_finale?->dommages->count() ?? 0;
+                                            @endphp
+                                            <strong>{{ $count }} dommage{{ $count > 1 ? 's' : '' }} déclaré{{ $count > 1 ? 's' : '' }}</strong>
+                                        </td>
                                     </tr>
                                 </table>
                             </td>
+
                         @endif
                     </tr>
-                    @if(!$inspection->type->is_initial)
-                    <tr>
-                        <td colspan="2" style="border: none;"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="border: none; background-color: #e6e6e6;">
-                            @php
-                                $count = $reservation->inspection_finale?->dommages->count() ?? 0;
-                            @endphp
-                            <strong>{{ $count }} dommage{{ $count > 1 ? 's' : '' }} déclaré{{ $count > 1 ? 's' : '' }}</strong>
-                        </td>
-                    </tr>
-                    @endif
                 </table>
 
 
@@ -331,41 +292,17 @@
         </tr>
     </table>
 
-    {{--<div style="page-break-before: always; margin-top: 10px;">--}}
-
     <div style="page-break-inside: avoid;">
         <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
             <tr>
-                <th colspan="5" class="section-title">DOMMAGES (au départ)</th>
+                <th colspan="5" class="section-title">Dommage(s) (au départ)</th>
             </tr>
         </table>
 
         <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm;">
             @php
-                /*$allDommages = collect();
-
-                // Dommages du véhicule sauf ceux de cette inspection et de l’inspection initiale
-                if ($reservation->vehicule->dommages && $inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID) {
-                    $allDommages = $allDommages->merge(
-                        $reservation->vehicule->dommages->filter(function ($d) use ($inspection, $reservation) {
-                            return $d->inspection->id != $inspection->id && $d->inspection->id != $reservation->inspection_initiale->id;
-                        })
-                    );
-                }
-
-                // Dommages de l’inspection initiale
-                if ($reservation->vehicule->dommages->count()) {
-                    $inspection_initiale = [];
-                    foreach($reservation->vehicule->dommages as $dommage){
-                        if($inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID || $dommage->inspection->id != $inspection->id){
-                            $inspection_initiale[] = $dommage;
-                        }
-                    }
-
-                    $allDommages = $allDommages->merge($inspection_initiale);
-                }*/
-                $allDommages = $reservation->vehicule->dommages->filter(function ($d) use ($inspection, $reservation) {
-                    return $d->inspection->id != $reservation->inspection_finale?->id;
+                $allDommages = $reservation->vehicule->dommages->filter(function ($dommage) use ($inspection, $reservation) {
+                    return $dommage->inspection->id != $reservation->inspection_finale?->id;
                 });
             @endphp
 
@@ -399,12 +336,12 @@
         </table>
     </div>
 
-    @if($inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID )
+    @if(!$inspection->type->is_inital)
 
         <div style="page-break-inside: avoid;">
             <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
                 <tr>
-                    <th colspan="5" class="section-title">DOMMAGES (au retour)</th>
+                    <th colspan="5" class="section-title">Dommage(s) (au retour)</th>
                 </tr>
             </table>
 
@@ -445,79 +382,6 @@
 
     @endif
 
-    {{--@php
-        $photos_depart = $reservation->inspection_initiale?->images()->groupe('photos')->get();
-        $photos_retour = $reservation->inspection_finale?->images()->groupe('photos')->get();
-    @endphp
-
-    <div style="page-break-before: always; margin-top: 10px;">
-    @if($photos_depart->count())
-            <table class="tableau2" style="margin-top:10px; width:100%; border-collapse:collapse;">
-                <tr>
-                    <th colspan="4" class="section-title">
-                        PHOTOS (au départ)
-                    </th>
-                </tr>
-
-                @foreach($photos_depart->chunk(4) as $chunk)
-                    <tr style="">
-                        @foreach($chunk as $media)
-                            <td style="
-                            width: 33.33%;
-                            vertical-align: top;
-                            padding: 5px;
-                            border: none;
-                        ">
-                                @include('IpsumReservation::reservation.documents._photo')
-                            </td>
-                        @endforeach
-
-                        --}}{{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}{{--
-                        @for($i = $chunk->count(); $i < 4; $i++)
-                            <td style="width:25%; padding:6px;border: none;"></td>
-                        @endfor
-                    </tr>
-                @endforeach
-            </table>
-    @endif
-
-    @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
-
-        @if($photos_retour->count())
-            <table class="tableau2" style="margin-top:10px; width:100%; border-collapse:collapse;">
-                <tr>
-                    <th colspan="4" class="section-title">
-                        PHOTOS (au retour)
-                    </th>
-                </tr>
-
-                @foreach($photos_retour->chunk(4) as $chunk)
-                    <tr style="">
-                        @foreach($chunk as $media)
-                            <td style="
-                            width: 33.33%;
-                            vertical-align: top;
-                            padding: 5px;
-                            border: none;
-                        ">
-                                @include('IpsumReservation::reservation.documents._photo')
-                            </td>
-                        @endforeach
-
-                        --}}{{-- Si la dernière ligne a moins de 4 images, on complète les colonnes vides --}}{{--
-                        @for($i = $chunk->count(); $i < 4; $i++)
-                            <td style="width:25%; padding:6px;border: none;"></td>
-                        @endfor
-                    </tr>
-                @endforeach
-            </table>
-        @endif
-    @endif
-    </div>--}}
-
-
-
-    <!-- PAGE DÉDIÉE POUR SIGNATURES : FORCER UNE NOUVELLE PAGE -->
     <div style="page-break-inside: avoid; /*page-break-before: always;*/ margin-top: 10px;">
         <table style="margin-top: 6mm; width:100%; border-collapse:collapse;">
             <tr>
@@ -530,16 +394,16 @@
         <table style="margin-top: 2mm; width:100%; border-collapse:collapse;">
             <tr>
                 <td style="width:50%; border: none; text-align: center">
-                    <h3>SIGNATURE CLIENT</h3>
+                    <h3>Signature locataire</h3>
                 </td>
                 <td style="width:50%; border: none; text-align: center">
-                    <h3>SIGNATURE LOUEUR</h3>
+                    <h3>Signature loueur</h3>
                 </td>
             </tr>
             <tr>
                 <td style="border:none;text-align: center; height:120px; vertical-align:top;">
                     @if($inspection->locataire_signature)
-                        <img src="{{ $inspection->locataire_signature }}" alt="Signature client" style="width:200px; height:auto; border:1px solid #000;">
+                        <img src="{{ $inspection->locataire_signature }}" alt="Signature client" style="width:200px; height:auto;">
                         <p style="margin-top: 10px;">Signé le : {{ $inspection->locataire_signature_at->format('d/m/Y à H:i') }}</p>
                     @else
                         <div style="display:inline-block; width:195px; height:90px; border:1px solid #000;"></div>
@@ -547,7 +411,7 @@
                 </td>
                 <td style="border:none;text-align: center; height:120px; vertical-align:top;">
                     @if($inspection->agent_signature)
-                        <img src="{{ $inspection->agent_signature }}" alt="Signature agent" style="width:200px; height:auto; border:1px solid #000;">
+                        <img src="{{ $inspection->agent_signature }}" alt="Signature agent" style="width:200px; height:auto;">
                         <p style="margin-top: 10px;">Signé le : {{ $inspection->agent_signature_at->format('d/m/Y à H:i') }} par {{ $inspection->admin?->firstname }} {{ $inspection->admin?->name }}</p>
                     @else
                         <div style="display:inline-block; width:195px; height:90px; border:1px solid #000;"></div>

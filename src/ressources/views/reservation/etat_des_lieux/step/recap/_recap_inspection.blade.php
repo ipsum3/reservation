@@ -1,0 +1,77 @@
+<div class="row">
+    <div class="col-md-6">
+        <!-- Véhicule -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-secondary text-white p-1">Véhicule</div>
+            <div class="card-body p-2" id="ajax-vehicule">
+                {{ _('Catégorie') }} {{ $reservation->categorie_nom }}<br>
+                @if ($reservation->vehicule)
+                    {{ _('Marque et modéle') }} : {{ $reservation->vehicule->marque_modele }}<br>
+                    {{ _('Immatriculation') }} : {{ $reservation->vehicule->immatriculation }}<br>
+                @endif
+                {{ _('Kilométrage') }} : {{ $inspection?->kilometrage }}
+                @if (!$inspection->type->is_initial && $reservation->inspection_initiale)
+                    <span class="text-muted">(initial : {{ $reservation->inspection_initiale->kilometrage }} km)</span>
+                @endif
+                <br>
+                {{ _('Carburant') }} : {{ $inspection?->carburant }}/8
+                @if (!$inspection->type->is_initial && $reservation->inspection_initiale)
+                    <span class="text-muted">(initial : {{ $reservation->inspection_initiale->carburant }}/8)</span>
+                @endif
+                <br>
+                @if($inspection->observations)
+                    Observations : {!! nl2br(e($inspection->observations)) !!}
+                @endif
+                @if(!$inspection->type->is_initial && $reservation->inspection_initiale && $reservation->inspection_initiale->observations)
+                    <br>
+                    <span class="text-muted">Observations initial : {!! nl2br(e($reservation->inspection_initiale->observations)) !!}</span>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Checklist -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-secondary text-white p-1">Checklist</div>
+            <div class="card-body p-2">
+                @foreach($checklists as $checklist)
+                    <div class="mt-2">
+                        @if( in_array($checklist->id, $inspection->checklists->pluck('id')->toArray() ?? []) )
+                            <i class="fa fa-check-square text-success"></i>
+                        @else
+                            <i class="fa fa-window-close text-danger"></i>
+                        @endif
+                        <label class="form-check-label" for="checklist_{{ $checklist->id }}">
+                            {{ $checklist->nom }}
+                            @if(!$type->is_initial && $reservation->inspection_initiale)
+                                <span class="text-muted">(initial
+                                    @if(in_array($checklist->id, $reservation->inspection_initiale->checklists->pluck('id')->toArray()))
+                                        <i class="fa fa-check-square text-success"></i>
+                                    @else
+                                        <i class="fa fa-window-close text-danger"></i>
+                                    @endif
+                                    )
+                                </span>
+                            @endif
+                        </label>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <!-- Dommages -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-secondary text-white p-1">Dommages constatés</div>
+            <div class="card-body p-2">
+                <div class="d-flex flex-row flex-wrap">
+                    {{--TODO mettre les info sur l'inspection initiale si présente pas possible actuelement avec la bdd --}}
+                    @include('IpsumReservation::reservation.etat_des_lieux.step.recap._dommage')
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
