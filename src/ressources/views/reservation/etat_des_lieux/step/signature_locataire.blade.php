@@ -7,21 +7,56 @@
 
     <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
 
-    {{ Aire::open()->id('reservation')->route('admin.inspection.signature.locataire.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureLocataire::class) }}
-
     <div class="row">
         <div class="col-md-12">
             <div class="box">
                 <div class="box-header">
-                    <h2 class="box-title">Signature client</h2>
+                    <h2 class="box-title">Contrat de location</h2>
+                </div>
+                <div class="box-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap_contrat')
+                        </div>
+                        <div class="col-md-6">
+                            @if($cgl)
+                                <h3>{{ $cgl->titre }}</h3>
+                                <div class="p-2" style="height: 600px; overflow: auto; border: 1px solid #eee">
+                                    {!! $cgl->texte !!}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">État des lieux</h2>
+                </div>
+                <div class="box-body">
+
+                    @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap_inspection')
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            {{ Aire::open()->route('admin.inspection.signature.locataire.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureLocataire::class) }}
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">Signature locataire</h2>
                 </div>
                 <div class="box-body">
 
                     {{-- Signatures --}}
-                    <div class="form-row">
+                    <div class="row">
                         <div class="col-md-12 mb-2">
                             <p>
-                                Par ma signature, je reconnais être d'accord avec le contrat de location, l'état des lieux et les conditions générales de location.
+                                Par ma signature, je reconnais être d'accord avec les informations ci-dessus et valide le contrat de location, les conditions générales de location et l'état des lieux.
                             </p>
                             <div style="width: 335px">
                                 <canvas id="signature-client-pad" class="border rounded w-full h-32 {{ $inspection->locataire_signature ? '' : '' }}"></canvas>
@@ -34,16 +69,17 @@
 
                 </div>
                 <div class="box-footer">
-                    <div><a href="{{ route('admin.inspection.recapitulatif', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div><a href="{{ route('admin.inspection.dommages', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
                     <div>
-                        <button type="submit" id="nextBtn" class="btn btn-primary">Suivant</button>
+                        <button type="submit" id="nextBtn" class="btn btn-primary">Valider la signature</button>
                     </div>
                 </div>
             </div>
+            {{ Aire::close() }}
         </div>
-        {{ Aire::close() }}
-
     </div>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.4/signature_pad.min.js" integrity="sha512-Mtr2f9aMp/TVEdDWcRlcREy9NfgsvXvApdxrm3/gK8lAMWnXrFsYaoW01B5eJhrUpBT7hmIjLeaQe0hnL7Oh1w==" crossorigin="anonymous"
             referrerpolicy="no-referrer"></script>
     <script>

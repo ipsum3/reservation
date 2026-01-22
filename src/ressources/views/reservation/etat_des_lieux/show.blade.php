@@ -22,7 +22,7 @@
                 </div>
                 <div class="box-body">
 
-                    @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap')
+                    @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap_inspection')
 
                 </div>
             </div>

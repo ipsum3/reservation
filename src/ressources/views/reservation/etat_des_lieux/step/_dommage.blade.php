@@ -14,10 +14,10 @@
                 {{ $dommage->type?->nom }}<br> {{ $dommage->emplacement? $dommage->emplacement?->nom.' - ' : ''}} {{ $dommage->element?->nom}}
             </h5>
             @if($dommage->observations)
-                <p class=" text-center p-2">{!! $dommage->observations !!}</p>
+                <p class=" text-center p-2">{!! nl2br(e($dommage->observations)) !!}</p>
             @endif
         </div>
-        @if(!$dommage->protected)
+        @if(empty($protected))
         <ul>
             <li>
                 <a href="{{ route('admin.inspection.dommage.edit', [$reservation, $type, $dommage]) }}" title="Modifier">

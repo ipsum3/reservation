@@ -20,8 +20,13 @@
                 <div class="box-body">
 
                     <div class="row">
-                        {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->value(old('kilometrage', $inspection->kilometrage ?? ($reservation->vehicule->last_inspection->kilometrage ?? '') ))->helpText(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale) ? 'Kilométrage initial : '.$reservation->inspection_initiale?->kilometrage.' km' : '')->groupAddClass('col-md-12') }}
-                        {{ Aire::range('carburant', 'Niveau de carburant*')->step('1')->min(0)->max(8)->value(old('carburant', $inspection->carburant ?? ($reservation->vehicule->last_inspection->carburant ?? 8) ))->list('markers')->id('carburant')->helpText(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale) ? 'Niveau de carburant initial : '.$reservation->inspection_initiale?->carburant.'/8' : '')->groupAddClass('col-md-11') }}
+                        {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->value(old('kilometrage', $inspection->kilometrage ?? ($reservation->vehicule->last_inspection->kilometrage ?? '') ))
+                            ->helpText(( !$type->is_initial && $reservation->inspection_initiale) ? 'Kilométrage initial : '.$reservation->inspection_initiale?->kilometrage.' km' : '')
+                            ->groupAddClass('col-md-12') }}
+                        {{ Aire::range('carburant', 'Niveau de carburant*')->step('1')->min(0)->max(8)->value(old('carburant', $inspection->carburant ?? ($reservation->vehicule->last_inspection->carburant ?? 8) ))->list('markers')
+                            ->id('carburant')
+                            ->helpText((!$type->is_initial && $reservation->inspection_initiale) ? 'Niveau de carburant initial : '.$reservation->inspection_initiale?->carburant.'/8' : '')
+                            ->groupAddClass('col-md-11') }}
                         <p class="d-flex pl-3">
                             <output id="carburant_value"></output>
                         </p>
@@ -39,27 +44,7 @@
                             });
                         </script>
 
-                        @if(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale))
-                            <div class="form-group col-md-4 alert alert-light">
-                                <label class=" cursor-pointer" data-aire-component="label" for="checklists">
-                                    Checklist initiale
-                                </label>
-                                @foreach($checklists as $checklist)
-                                    <div class="form-check mt-2">
-                                        @if(in_array($checklist->id, old('checklists', $reservation->inspection_initiale?->checklists->pluck('id')->toArray() ?? [])))
-                                            <i class="fa fa-check-square text-success"></i>
-                                        @else
-                                            <i class="fa fa-window-close text-danger"></i>
-                                        @endif
-                                        <label class="form-check-label" for="checklist_{{ $checklist->id }}">
-                                            {{ $checklist->nom }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-
-                        <div class="form-group col-md-4 mt-2 alert">
+                        <div class="form-group col-md-6 mt-2 alert">
                             <label class=" cursor-pointer" data-aire-component="label" for="checklists">
                                 Checklist
                             </label>
@@ -67,23 +52,26 @@
                                 <div class="custom-control custom-switch form-check mt-2">
                                     <input name="checklists[]" value="{{ $checklist->id }}" type="checkbox" class="custom-control-input"
                                            id="checklist_{{ $checklist->id }}" {{ in_array($checklist->id, old('checklists', $inspection?->checklists->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
-                                    <label class="custom-control-label" for="checklist_{{ $checklist->id }}">{{ $checklist->nom }}</label>
+                                    <label class="custom-control-label" for="checklist_{{ $checklist->id }}">
+                                        {{ $checklist->nom }}
+                                        @if(!$type->is_initial && $reservation->inspection_initiale)
+                                            <br>
+                                            <span class="text-muted">(initial
+                                                @if(in_array($checklist->id, $reservation->inspection_initiale->checklists->pluck('id')->toArray()))
+                                                    <i class="fa fa-check-square text-success"></i>
+                                                @else
+                                                    <i class="fa fa-window-close text-danger"></i>
+                                                @endif
+                                                )
+                                            </span>
+                                        @endif
+                                    </label>
                                 </div>
                             @endforeach
                         </div>
 
-                        @if(( $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale))
-                            <div class="form-group col-md-4 mt-2 alert alert-light" data-aire-component="group" data-aire-for="observations">
-                                <label class=" cursor-pointer" data-aire-component="label" for="__aire-0-observations10">
-                                    Observation(s) initiale(s)
-                                </label>
-                                <div class="mt-2">
-                                    {!! $reservation->inspection_initiale->observations !!}
-                                </div>
-                            </div>
-                        @endif
-
-                        {{ Aire::textArea('observations', 'Observation(s)')->rows(5)->groupAddClass('col-md-4 mt-2 alert') }}
+                        {{ Aire::textArea('observations', 'Observation(s)')->rows(5)->groupAddClass('col-md-6 mt-2 alert')
+                            ->helpText((!$type->is_initial && $reservation->inspection_initiale) ? 'Observation(s) initiale(s) : '.($reservation->inspection_initiale->observations ?: '-') : '') }}
 
                     </div>
 

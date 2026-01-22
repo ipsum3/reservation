@@ -18,10 +18,10 @@ class RedirectIfInspectionSigned
     {
         $reservation = $request->route('reservation');
         $type = $request->route('type');
-        $inspection = $type->id == Type::FINAL_ID ? $reservation->inspection_finale : $reservation->inspection_initiale;
+        $inspection = !$type->is_initial ? $reservation->inspection_finale : $reservation->inspection_initiale;
 
         if ($inspection && $inspection->isSigned()) {
-            return redirect()->route('admin.inspection.show', [$reservation, $type]);
+            return redirect()->route('admin.inspection.show', [$inspection]);
         }
 
         return $next($request);
