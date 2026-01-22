@@ -20,4 +20,10 @@ class Type extends BaseModel
         return $this->hasMany(Inspection::class, 'type_id');
     }
 
+
+    public function getIsInitialAttribute(): bool
+    {
+        return $this->id === self::INITIAL_ID;
+    }
+
 }

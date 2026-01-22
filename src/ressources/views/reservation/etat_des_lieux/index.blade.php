@@ -1,5 +1,5 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Inspections')
+@section('title', 'État des lieux')
 
 @section('content')
 
@@ -44,24 +44,24 @@
                         <tr class="">
                             <td>{{ $inspection->id }}</td>
                             <td><a href="{{ route('admin.reservation.edit', [$inspection->reservation]) }}">{{ $inspection->reservation->reference }}</a></td>
-                            <td><span class="badge badge-{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'success' : 'info' }}">{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? 'Départ' : 'Retour' }}</span></td>
+                            <td><span class="badge badge-{{ $inspection->type->is_initial ? 'success' : 'info' }}">{{ $inspection->type->nom }}</span></td>
                             <td>{{ $inspection->reservation->nom }} {{ $inspection->reservation->prenom }}</td>
-                            <td><a href="{{ route('admin.vehicule.edit', [$inspection->reservation->vehicule]) }}">{{ $inspection->reservation->immatriculation }} ({{ $inspection->reservation->vehicule->marque_modele }})</a></td>
+                            <td><a href="{{ route('admin.vehicule.edit', [$inspection->reservation->vehicule]) }}">{{ $inspection->reservation->immatriculation }} ({{ $inspection->reservation->vehicule?->marque_modele }})</a></td>
                             <td>{{ $inspection->reservation->debut_at?->format('d/m/Y') }}</td>
                             <td>{{ $inspection->reservation->fin_at?->format('d/m/Y') }}</td>
-                            <td>{{ $inspection->admin->email }} ({{ $inspection->admin->name }} {{ $inspection->admin->firstname }})</td>
-                            <td>{{ $inspection->dommages ? count($inspection->dommages). ' dommage'.(count($inspection->dommages) > 1 ? 's' : '').' ajouté'.(count($inspection->dommages) > 1 ? 's' : '') : '' }}</td>
+                            <td>{{ $inspection->admin->name }} {{ $inspection->admin->firstname }}</td>
+                            <td>{{ $inspection->dommages_count. ' dommage'.($inspection->dommages_count > 1 ? 's' : '').' ajouté'.($inspection->dommages_count > 1 ? 's' : '') }}</td>
                             <td><span class="badge badge-{{ $inspection->isSigned()  ? 'success' : 'warning' }}">{{ $inspection->isSigned() ? 'Document signé' : 'En attente' }}</span></td>
                             <td class="text-right">
                                 <form action="{{ route('admin.inspection.destroy', $inspection) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     @if (!$inspection->isSigned())
-                                        <a class="btn btn-primary" href="{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? route('admin.inspection.vehicule', [$inspection->reservation, $inspection->type]) : route('admin.inspection.checklist', [$inspection->reservation, $inspection->type]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                        <a class="btn btn-primary" href="{{ $inspection->type->is_initial ? route('admin.inspection.vehicule', [$inspection->reservation, $inspection->type]) : route('admin.inspection.checklist', [$inspection->reservation, $inspection->type]) }}"><i class="fa fa-edit"></i> Modifier</a>
                                         <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
                                     @else
                                         <a class="btn btn-primary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-pdf"></i> Voir le document</a>
-                                        <a class="btn btn-primary" href="{{ route('admin.inspection.show', [$inspection->reservation, $inspection->type]) }}"><i class="fa fa-eye"></i> Voir le récapitulatif</a>
+                                        <a class="btn btn-primary" href="{{ route('admin.inspection.show', [$inspection]) }}"><i class="fa fa-eye"></i> Voir le récapitulatif</a>
                                     @endif
                                 </form>
                             </td>

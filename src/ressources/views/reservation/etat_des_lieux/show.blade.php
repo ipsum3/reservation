@@ -1,9 +1,9 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Inspection')
+@section('title', 'État des lieux')
 
 @section('content')
 
-    <h1 class="main-title">État des lieux - Inspection {{ strtolower($type->nom) }}</h1>
+    <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
 
     <div class="row">
 
@@ -11,10 +11,10 @@
 
             <div class="box">
                 <div class="box-header">
-                    <h2 class="box-title">Récapitulatif</h2>
+                    <h2 class="box-title">Confirmation</h2>
                     <div class="btn-toolbar">
                        {{-- <a href="{{ route('admin.reservation.departEtRetour') }}" id="prevBtn" class="btn btn-secondary">Départ / Retour</a>--}}
-                        @if ($type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
+                        @if ($type->is_initial)
                             <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$inspection->reservation]) }}" target="_blank"><i class="fa fa-file-download"></i> Contrat signé</a>&nbsp;
                         @endif
                         <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-download"></i> Etat des lieux signé</a>

@@ -1,11 +1,11 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Inspection')
+@section('title', 'État des lieux')
 
 @section('content')
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux - Inspection {{ strtolower($type->nom) }}</h1>
+    <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
 
     {{ Aire::open()->id('reservation')->route('admin.inspection.signature.locataire.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureLocataire::class) }}
 
@@ -21,7 +21,7 @@
                     <div class="form-row">
                         <div class="col-md-12 mb-2">
                             <p>
-                                Par ma signature, je reconnais être d'accord avec l'état des lieux
+                                Par ma signature, je reconnais être d'accord avec le contrat de location, l'état des lieux et les conditions générales de location.
                             </p>
                             <div style="width: 335px">
                                 <canvas id="signature-client-pad" class="border rounded w-full h-32 {{ $inspection->locataire_signature ? '' : '' }}"></canvas>

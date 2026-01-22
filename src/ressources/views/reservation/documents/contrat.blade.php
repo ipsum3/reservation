@@ -332,11 +332,11 @@
     <table>
         <tr>
             <td style="border: none">
-                Par ma signature, je reconnais être d'accord avec le contrat avec le montant estimé de la location. Je reconnais avoir lu et approuvé les conditions de location figurant au verso de mon contrat de location.
+                Par ma signature, je reconnais être d'accord avec le contrat et le montant estimé de la location. Je reconnais avoir lu et approuvé les conditions de location figurant au verso de mon contrat de location.
 
                 @if(isset($inspection))
                     <div style="float: right; margin-top: 5mm">
-                        <p>A&nbsp;{{ $inspection->type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? $reservation->lieuDebut->nom : $reservation->lieuFin->nom  }},le {{ $inspection->created_at->format('d/m/Y') }}<br>
+                        <p>A&nbsp;{{ $inspection->type->is_initial ? $reservation->lieuDebut->nom : $reservation->lieuFin->nom  }},le {{ $inspection->created_at->format('d/m/Y') }}<br>
                         Signature numérique</p>
 
                         <table style="margin-top: 6mm; width:100%; border-collapse:collapse;">
