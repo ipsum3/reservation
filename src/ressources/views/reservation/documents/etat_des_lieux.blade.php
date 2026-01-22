@@ -336,7 +336,7 @@
         </table>
     </div>
 
-    @if(!$inspection->type->is_inital)
+    @if(!$inspection->type->is_initial)
 
         <div style="page-break-inside: avoid;">
             <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
