@@ -68,18 +68,22 @@ class EtatDesLieux extends Mailable
      */
     public function build()
     {
-        return $this->markdown('IpsumReservation::reservation.emails.etat_des_lieux')
+        $this->markdown('IpsumReservation::reservation.emails.etat_des_lieux')
             ->attachData($this->file, 'etat-des-lieux-'.$this->inspection->reservation->id.'-'.Str::slug($this->inspection->type->nom).'.pdf', [
                 'mime' => 'application/pdf',
             ])
-            ->attachData(
-                $this->contratFile, 'contrat-'.$this->reservation->contrat.'.pdf',
-                ['mime' => 'application/pdf']
-            )
             ->from(config('mail.from.address'), config('mail.from.name'))
             ->replyTo($this->reservation->lieuDebut->email_first, config('settings.nom_site'))
             ->to($this->email, $this->reservation->prenom.' '.$this->reservation->nom)
             ->subject('État des lieux '. strtolower($this->inspection->type->nom) .' – Réservation ' . $this->reservation->reference);
 
+        if ($this->inspection->type->is_initial) {
+            $this->attachData(
+                $this->contratFile, 'contrat-'.$this->reservation->contrat.'.pdf',
+                ['mime' => 'application/pdf']
+            );
+        }
+
+        return $this;
     }
 }

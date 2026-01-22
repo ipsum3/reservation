@@ -140,13 +140,14 @@
                 <div style="text-align: center; ">
                     <h2>
                         ETAT DES LIEUX {{ strtolower($type->nom) }}<br>
-                        {{ $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ? $reservation->debut_at->format('d/m/Y') : $reservation->fin_at->format('d/m/Y') }}
+                        {{ \Carbon\Carbon::now()->format('d/m/Y') }}
                     </h2>
+                    <p>Annexe au contrat de location {{ $reservation->contrat  }}</p>
                 </div>
             </td>
             <td style="width:32%; padding: 0 5mm 0 0; border: none;">
 
-                <div style="text-align: center; padding-bottom: 0mm;">
+                <div style="text-align: left; padding-bottom: 0mm;">
                     <p>
                         {{ Config::get('settings.adresse') }} - {{ Config::get('settings.cp') }} {{ Config::get('settings.ville') }}<br>
                         SIRET : {{ Config::get('settings.entreprise_identification') }}<br>
@@ -161,13 +162,6 @@
 
     </table>
 
-    <table style="margin-top: 10px; width:100%; border-collapse:collapse;">
-        <tr>
-            <td style="border: none; background-color: #e6e6e6;">
-                Annexe au contrat de location {{ $reservation->contrat  }} fait par {{ $inspection->admin?->firstname }} {{ $inspection->admin?->name }}
-            </td>
-        </tr>
-    </table>
 
     <table style="margin-top: 10px;">
         <tr>
@@ -175,49 +169,69 @@
 
                 <table class="tableau2">
                     <tr>
-                        <th style="border:none;"></th>
-                    </tr>
-                    <tr>
                         <th>LOCATAIRE</th>
                     </tr>
                     <tr>
                         <td>
-                            <strong>Nom :</strong> {{ $reservation->nom }} - <strong>Prénom :</strong> {{ $reservation->prenom }}<br>
+                            <strong>Nom :</strong> {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br>
                             <strong>Téléphone :</strong> {{ $reservation->telephone }}<br><br>
-                            <strong>Adresse :</strong> {!! $reservation->adresse && $reservation->adresse !='-' ? $reservation->adresse : '<span class="tiret">_______________________</span><br><span class="tiret">________________________________</span>' !!},<br>
-                            <strong>Code Postal :</strong> {!! $reservation->cp && $reservation->cp !='-' ? $reservation->cp : '<span class="tiret"> | _ | _ | _ | _ | _ | </span>' !!},<br>
-                            <strong>Ville :</strong> {!! $reservation->ville && $reservation->ville !='-' ? $reservation->ville : '<span class="tiret">__________________</span>' !!},<br>
-                            <strong>Pays :</strong> {!! $reservation->cp && $reservation->cp !='-' ? $reservation->pays_nom : '<span class="tiret">__________________</span>' !!},<br><br>
-                            <strong>Né le :</strong> {!! $reservation->naissance_at ? $reservation->naissance_at->format('d/m/Y') : '<span class="tiret">__________________</span>' !!}
-                            à {!! $reservation->naissance_lieu ? e($reservation->naissance_lieu) : '<span class="tiret">__________________</span>' !!}<br>
-                            <strong>N° de permis :</strong> {!! $reservation->permis_numero ? e($reservation->permis_numero) : '<span class="tiret">______________</span>' !!}
-                            {{ _('délivré le') }} {!! $reservation->permis_at ? $reservation->permis_at->format('d/m/Y') : '<span class="tiret">____________</span>' !!}<br>
-                            {{ _('par') }} {!! $reservation->permis_delivre ? e($reservation->permis_delivre) : '<span class="tiret">__________________</span>' !!}<br>
+                            <strong>Adresse :</strong> {{ $reservation->adresse }} {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }} <br>
+                            @if ($reservation->naissance_at)
+                                <strong>{{ _('Né le') }} :</strong> {{ $reservation->naissance_at->format('d/m/Y') }}
+                                @if ($reservation->naissance_lieu)
+                                    à {{ $reservation->naissance_lieu }}
+                                @endif
+                                <br>
+                            @endif
+                            @if ($reservation->permis_numero or $reservation->permis_at)
+                                <strong>{{ _('Permis') }} :</strong>
+                                @if ($reservation->permis_numero)
+                                    {{ _('n°') }}{{ $reservation->permis_numero }}
+                                @endif
+                                @if ($reservation->permis_at)
+                                    {{ _('délivré le') }} {{ $reservation->permis_at->format('d/m/Y') }}
+                                @endif
+                                @if ($reservation->permis_delivre)
+                                    {{ _('par') }} {{ $reservation->permis_delivre }}
+                                @endif
+                            @endif
                         </td>
                     </tr>
                 </table>
 
-                @if($reservation->conducteurs->count())
+                {{--@if($reservation->conducteurs->count())
                     <table class="tableau2" style="margin-top: 10px;">
                         <tr>
-                            <th style="width: 49%">CONDUCTEUR ADDITIONNEL</th>
+                            <th style="width: 49%">CONDUCTEURS ADDITIONNELS</th>
                         </tr>
-                        <tr>
-                            <td>
-
-                                @foreach($reservation->conducteurs as $conducteur)
-                                    <strong>Nom :</strong> {{ $conducteur->nom }} - <strong>Prénom :</strong> {{ $conducteur->prenom }}<br>
-                                    <strong>Date de naissance :</strong> {{ $conducteur->naissance_at->format('d/m/Y') }}<br>
-                                    <strong>Lieu de naissance :</strong> {{ $conducteur->naissance_lieu }}<br>
-                                    <strong>Numéro de permis :</strong> {{ $conducteur->permis_numero }}<br>
-                                    <strong>Permis délivré le :</strong> {{ $conducteur->permis_at->format('d/m/Y') }}<br>
-                                    <strong>Permis délivré par :</strong> {{ $conducteur->permis_delivre }}<br>
-                                    <hr>
-                                @endforeach
-                            </td>
-                        </tr>
+                        @foreach($reservation->conducteurs as $conducteur)
+                            <tr>
+                                <td>
+                                    <strong>Nom :</strong> {{ $conducteur->civilite }} {{ $conducteur->prenom }} {{ $conducteur->nom }}<br>
+                                    @if ($conducteur->naissance_at)
+                                        <strong>{{ _('Né le') }} :</strong> {{ $conducteur->naissance_at->format('d/m/Y') }}
+                                        @if ($conducteur->naissance_lieu)
+                                            à {{ $conducteur->naissance_lieu }}
+                                        @endif
+                                        <br>
+                                    @endif
+                                    @if ($conducteur->permis_numero or $conducteur->permis_at)
+                                        <strong>{{ _('Permis') }} :</strong>
+                                        @if ($conducteur->permis_numero)
+                                            {{ _('n°') }}{{ $conducteur->permis_numero }}
+                                        @endif
+                                        @if ($conducteur->permis_at)
+                                            {{ _('délivré le') }} {{ $conducteur->permis_at->format('d/m/Y') }}
+                                        @endif
+                                        @if ($conducteur->permis_delivre)
+                                            {{ _('par') }} {{ $conducteur->permis_delivre }}
+                                        @endif
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
                     </table>
-                @endif
+                @endif--}}
 
                 <table class="tableau2" style="margin-top: 10px;">
                     <tr>
@@ -232,7 +246,6 @@
                             @endif
                             <strong>Durée :</strong> {{ $reservation->nb_jours }} jour(s)<br>
                             <strong>Départ :</strong> {{ $reservation->debut_lieu_nom }}, le {{ $reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->debut_at->format('H\hi') }}<br>
-                            @if($reservation->custom_fields->vol) Numéro de vol : {{ $reservation->custom_fields->vol }}<br> @endif
                             <strong>Retour :</strong> {{ $reservation->fin_lieu_nom }}, le {{ $reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->fin_at->format('H\hi') }}<br>
                         </td>
                     </tr>
@@ -243,8 +256,8 @@
 
                 <table class="tableau2" style="">
                     <tr>
-                        <th style="width: 49%">DEPART</th>
-                        @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
+                        <th style="width: 49%">DÉPART</th>
+                        @if(!$inspection->type->is_initial )
                             <th style="width: 49%">RETOUR</th>
                         @endif
                     </tr>
@@ -272,7 +285,7 @@
                                 </tr>
                             </table>
                         </td>
-                        @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
+                        @if(!$inspection->type->is_initial)
                             <td>
                                 <table>
                                     <tr>
@@ -298,7 +311,7 @@
                             </td>
                         @endif
                     </tr>
-                    @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
+                    @if(!$inspection->type->is_initial)
                     <tr>
                         <td colspan="2" style="border: none;"></td>
                     </tr>
@@ -318,20 +331,21 @@
         </tr>
     </table>
 
-    <div style="page-break-before: always; margin-top: 10px;">
-    <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
-        <tr>
-            <th colspan="5" class="section-title">DOMMAGES (au départ)</th>
-        </tr>
-    </table>
+    {{--<div style="page-break-before: always; margin-top: 10px;">--}}
 
-    <div>
-        <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm; border-bottom: 1px solid #b3b3b3;">
+    <div style="page-break-inside: avoid;">
+        <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
+            <tr>
+                <th colspan="5" class="section-title">DOMMAGES (au départ)</th>
+            </tr>
+        </table>
+
+        <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm;">
             @php
-                $allDommages = collect();
+                /*$allDommages = collect();
 
                 // Dommages du véhicule sauf ceux de cette inspection et de l’inspection initiale
-                if ($reservation->vehicule?->dommages && $inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID) {
+                if ($reservation->vehicule->dommages && $inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID) {
                     $allDommages = $allDommages->merge(
                         $reservation->vehicule->dommages->filter(function ($d) use ($inspection, $reservation) {
                             return $d->inspection->id != $inspection->id && $d->inspection->id != $reservation->inspection_initiale->id;
@@ -340,7 +354,7 @@
                 }
 
                 // Dommages de l’inspection initiale
-                if ($reservation->vehicule?->dommages->count()) {
+                if ($reservation->vehicule->dommages->count()) {
                     $inspection_initiale = [];
                     foreach($reservation->vehicule->dommages as $dommage){
                         if($inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID || $dommage->inspection->id != $inspection->id){
@@ -348,9 +362,11 @@
                         }
                     }
 
-
                     $allDommages = $allDommages->merge($inspection_initiale);
-                }
+                }*/
+                $allDommages = $reservation->vehicule->dommages->filter(function ($d) use ($inspection, $reservation) {
+                    return $d->inspection->id != $reservation->inspection_finale?->id;
+                });
             @endphp
 
             @if($allDommages->count())
@@ -383,16 +399,16 @@
         </table>
     </div>
 
-    @if($inspection->type_id != \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID )
+    @if($inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID )
 
-        <table class="tableau2" style="margin-top:10px;">
-            <tr>
-                <th colspan="5" class="section-title">DOMMAGES (au retour)</th>
-            </tr>
-        </table>
+        <div style="page-break-inside: avoid;">
+            <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
+                <tr>
+                    <th colspan="5" class="section-title">DOMMAGES (au retour)</th>
+                </tr>
+            </table>
 
-        <div>
-            <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm; border-bottom: 1px solid #b3b3b3;">
+            <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm;">
                 @php
                     $allDommages = $reservation->inspection_finale?->dommages;
                 @endphp
@@ -428,7 +444,6 @@
         </div>
 
     @endif
-    </div>
 
     {{--@php
         $photos_depart = $reservation->inspection_initiale?->images()->groupe('photos')->get();
@@ -503,16 +518,16 @@
 
 
     <!-- PAGE DÉDIÉE POUR SIGNATURES : FORCER UNE NOUVELLE PAGE -->
-    <div style="page-break-before: always; margin-top: 10px;">
-        <table style="margin-top: 10px; width:100%; border-collapse:collapse;">
+    <div style="page-break-inside: avoid; /*page-break-before: always;*/ margin-top: 10px;">
+        <table style="margin-top: 6mm; width:100%; border-collapse:collapse;">
             <tr>
-                <td style="border: none; background-color: #e6e6e6;">
-                    En signant le preneur accepte les conditions générales de location fournies en annexe
+                <td style="border: none;">
+                    Par ma signature, je reconnais être d'accord l'état des lieux.
                 </td>
             </tr>
         </table>
 
-        <table style="margin-top: 6mm; width:100%; border-collapse:collapse;">
+        <table style="margin-top: 2mm; width:100%; border-collapse:collapse;">
             <tr>
                 <td style="width:50%; border: none; text-align: center">
                     <h3>SIGNATURE CLIENT</h3>
@@ -533,7 +548,7 @@
                 <td style="border:none;text-align: center; height:120px; vertical-align:top;">
                     @if($inspection->agent_signature)
                         <img src="{{ $inspection->agent_signature }}" alt="Signature agent" style="width:200px; height:auto; border:1px solid #000;">
-                        <p style="margin-top: 10px;">Signé le : {{ $inspection->agent_signature_at->format('d/m/Y à H:i') }}</p>
+                        <p style="margin-top: 10px;">Signé le : {{ $inspection->agent_signature_at->format('d/m/Y à H:i') }} par {{ $inspection->admin?->firstname }} {{ $inspection->admin?->name }}</p>
                     @else
                         <div style="display:inline-block; width:195px; height:90px; border:1px solid #000;"></div>
                     @endif

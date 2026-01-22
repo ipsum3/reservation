@@ -231,9 +231,14 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\MotorisationController
     }
 );
 
-Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)->prefix('inspections')->name('admin.inspection.')->middleware('adminCheckEtatDesLieuxEnabled')->group(
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)
+    ->prefix('inspection')
+    ->name('admin.inspection.')
+    ->middleware('adminCheckEtatDesLieuxEnabled')
+    ->group(
     function () {
         Route::get('', 'index')->name('index');
+        Route::get('{inspection}/show', 'show')->name('show');
         Route::get('{inspection}/pdf', 'pdf')->name('pdf');
         Route::any('{inspection}/destroy', 'destroy')->name('destroy');
 
@@ -269,6 +274,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
                 Route::delete('{dommage}', 'destroyDommage')->name('destroy');
             });
 
+            Route::get('recapitulatif', 'recapitulatif')->name('recapitulatif');
+
             // Signatures
             Route::prefix('signature')->name('signature.')->group(function () {
                 Route::get('locataire', 'signatureLocataire')->name('locataire');
@@ -277,9 +284,4 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
                 Route::post('agent', 'storeSignatureAgent')->name('agent.store');
             });
         });
-
-        // Bloc final sans middleware spécifique
-        Route::get('recapitulatif', 'recapitulatif')->name('recapitulatif');
-        Route::get('show', 'show')->name('show');
-
     });

@@ -1,11 +1,11 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Inspection')
+@section('title', 'État des lieux')
 
 @section('content')
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux - Inspection {{ strtolower($type->nom) }}</h1>
+    <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
 
     <div class="row">
 
@@ -24,66 +24,44 @@
 
                     {{-- Dommages de l’inspection actuelle --}}
 
-                    @if($reservation->vehicule?->dommages->count() || $inspection->dommages->count())
-                        <div class="d-flex flex-row flex-wrap">
-                            @if($reservation->vehicule?->dommages->count() && $inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-                                @foreach($reservation->vehicule?->dommages as $dommage)
-                                    @if($dommage->inspection->id != $inspection->id && $dommage->inspection->id != $reservation->inspection_initiale->id)
-                                        @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
-                                    @endif
-                                @endforeach
-                            @endif
-
-                            @if($inspection->dommages && $inspection->dommages->count())
-                                @foreach($inspection->dommages as $dommage)
-                                    @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
-                                @endforeach
-                            @endif
-                        </div>
-                    @else
-                        <p class="alert alert-info">Aucun dommage enregistré pour cette inspection.</p>
-                    @endif
-
+                    <div class="d-flex flex-row flex-wrap">
+                        @if($reservation->vehicule->dommages->count() && $inspection->type->is_initial)
+                            @foreach($reservation->vehicule->dommages as $dommage)
+                                @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
+                            @endforeach
+                        @elseif($inspection->dommages->count())
+                            @foreach($inspection->dommages as $dommage)
+                                @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
+                            @endforeach
+                        @else
+                            <p class="alert alert-info">Aucun dommage enregistré pour cette inspection.</p>
+                        @endif
+                    </div>
 
                     {{-- Dommages précédents (Inspection initiale) --}}
                     @if($inspection->type_id == \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID && $reservation->inspection_initiale)
-                        <div id="accordion">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link text-warning" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                    Voir les {{--photos et--}} dommages de l’inspection initiale
-                                </button>
-                            </h5>
-
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                                <div class="card-body alert-warning">
-                                    {{--@php
-                                        $photos = $reservation->inspection_initiale->medias()->groupe('photos')->get();
-                                    @endphp--}}
-
-                                    @if($reservation->vehicule?->dommages->count() /*|| $photos->count()*/)
-                                        <div class="d-flex flex-row flex-wrap">
-                                            @foreach($reservation->vehicule->dommages as $dommage)
-                                                @php
-                                                    $dommage->protected = true;
-                                                @endphp
-                                                @if($dommage->inspection->id != $inspection->id)
-                                                    @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
-                                                @endif
-                                            @endforeach
-
-                                            {{--@foreach($photos as $media)
-                                                    @php
-                                                        $media->protected = true;
-                                                    @endphp
-                                                    @include('IpsumReservation::reservation.etat_des_lieux.step._photo')
-                                            @endforeach--}}
-                                        </div>
-                                    @else
-                                        <p class="alert alert-info">Aucun dommage enregistré lors de l’inspection initiale.</p>
+                        <h3>Les {{--photos et--}} dommages de l’inspection initiale</h3>
+                        @if($reservation->vehicule->dommages->count() /*|| $photos->count()*/)
+                            <div class="d-flex flex-row flex-wrap">
+                                @foreach($reservation->vehicule->dommages as $dommage)
+                                    @php
+                                        $dommage->protected = true;
+                                    @endphp
+                                    @if($dommage->inspection->id != $inspection->id)
+                                        @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
                                     @endif
-                                </div>
+                                @endforeach
+
+                                {{--@foreach($photos as $media)
+                                        @php
+                                            $media->protected = true;
+                                        @endphp
+                                        @include('IpsumReservation::reservation.etat_des_lieux.step._photo')
+                                @endforeach--}}
                             </div>
-                        </div>
+                        @else
+                            <p class="alert alert-info">Aucun dommage enregistré lors de l’inspection initiale.</p>
+                        @endif
                     @endif
 
                     {{--<hr class="my-4">

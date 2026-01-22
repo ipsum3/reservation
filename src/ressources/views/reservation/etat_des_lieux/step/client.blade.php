@@ -1,11 +1,11 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Inspection')
+@section('title', 'État des lieux')
 
 @section('content')
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux - Inspection {{ strtolower($type->nom) }}</h1>
+    <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
 
     {{ Aire::open()->id('reservation')->route('admin.inspection.vehicule.store', [$reservation, $type])->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionVehicule::class) }}
 

@@ -33,7 +33,7 @@ class EtatDesLieuxController extends AdminController
 
     public function index(Request $request)
     {
-        $query = Inspection::query()->with('reservation');
+        $query = Inspection::query()->with(['reservation', 'admin', 'type', 'reservation.vehicule'])->withCount(['dommages']);
 
         if ($request->filled('date_debut')) {
             try {
@@ -99,6 +99,9 @@ class EtatDesLieuxController extends AdminController
     {
         $data['type_id'] = $type->id;
         $data['admin_id'] = auth()->id();
+
+
+        // TODO pas de creation initiale si déjà une autre inspection
 
         return $reservation->inspections()->updateOrCreate(
             ['id' => $inspection?->id],
@@ -383,13 +386,15 @@ class EtatDesLieuxController extends AdminController
 
         Alert::success("Document signé et envoyé avec succès")->flash();
 
-        return redirect()->route('admin.inspection.show', [$reservation, $type]);
+        return redirect()->route('admin.inspection.show', [$inspection]);
     }
 
 
-    public function show(Reservation $reservation, Type $type)
+    public function show(Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
+        $reservation = $inspection->reservation;
+        $type = $inspection->type;
+
         if (!$inspection->isSigned()) {
             Alert::error('Signature manquante')->flash();
             return back();

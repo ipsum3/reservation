@@ -59,12 +59,12 @@ $etapes = [
     [
         'route' => 'admin.inspection.vehicule',
         'nom' => 'Véhicule',
-        'show' => $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID
+        'show' => $type->is_initial
     ],
     [
         'route' => 'admin.inspection.client',
         'nom' => 'Réservation',
-        'show' => $type->id == \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID
+        'show' => $type->is_initial
     ],
     [
         'route' => 'admin.inspection.checklist',
