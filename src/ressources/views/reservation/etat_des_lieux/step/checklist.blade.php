@@ -23,19 +23,20 @@
                         {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->value(old('kilometrage', $inspection->kilometrage ?? ($reservation->vehicule->last_inspection->kilometrage ?? '') ))
                             ->helpText(( !$type->is_initial && $reservation->inspection_initiale) ? 'Kilométrage initial : '.$reservation->inspection_initiale?->kilometrage.' km' : '')
                             ->groupAddClass('col-md-12') }}
-                        {{ Aire::range('carburant', 'Niveau de carburant*')->step('1')->min(0)->max(8)->value(old('carburant', $inspection->carburant ?? ($reservation->vehicule->last_inspection->carburant ?? 8) ))->list('markers')
+                        {{ Aire::range('carburant', 'Niveau de carburant* : ')->step('1')->min(0)->max(8)->value(old('carburant', $inspection->carburant ?? ($reservation->vehicule->last_inspection->carburant ?? 8) ))
+                            ->list('markers')
                             ->id('carburant')
                             ->helpText((!$type->is_initial && $reservation->inspection_initiale) ? 'Niveau de carburant initial : '.$reservation->inspection_initiale?->carburant.'/8' : '')
-                            ->groupAddClass('col-md-11') }}
-                        <p class="d-flex pl-3">
-                            <output id="carburant_value"></output>
-                        </p>
+                            ->groupAddClass('col-md-12') }}
                         <datalist id="markers">
                             @for($i=0; $i<=8; $i++)
                                 <option value="{{ $i }}" label="{{ $i }}"></option>
                             @endfor
                         </datalist>
                         <script>
+                            var span = document.createElement("span");
+                            span.id = 'carburant_value';
+                            document.querySelector("label[for=carburant]").appendChild(span);
                             const value = document.querySelector("#carburant_value");
                             const input = document.querySelector("#carburant");
                             value.textContent = input.value + '/8';
@@ -49,7 +50,7 @@
                                 Checklist
                             </label>
                             @foreach($checklists as $checklist)
-                                <div class="custom-control custom-switch form-check mt-2">
+                                <div class="custom-control custom-switch form-check mt-3">
                                     <input name="checklists[]" value="{{ $checklist->id }}" type="checkbox" class="custom-control-input"
                                            id="checklist_{{ $checklist->id }}" {{ in_array($checklist->id, old('checklists', $inspection?->checklists->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
                                     <label class="custom-control-label" for="checklist_{{ $checklist->id }}">
@@ -71,7 +72,7 @@
                         </div>
 
                         {{ Aire::textArea('observations', 'Observation(s)')->rows(5)->groupAddClass('col-md-6 mt-2 alert')
-                            ->helpText((!$type->is_initial && $reservation->inspection_initiale) ? 'Observation(s) initiale(s) : '.($reservation->inspection_initiale->observations ?: '-') : '') }}
+                            ->helpText((!$type->is_initial && $reservation->inspection_initiale) ? 'Observation(s) initiale : '.($reservation->inspection_initiale->observations ?: '-') : '') }}
 
                     </div>
 

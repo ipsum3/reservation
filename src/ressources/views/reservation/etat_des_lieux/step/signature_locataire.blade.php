@@ -51,22 +51,19 @@
                     <h2 class="box-title">Signature locataire</h2>
                 </div>
                 <div class="box-body">
-
-                    {{-- Signatures --}}
-                    <div class="row">
-                        <div class="col-md-12 mb-2">
-                            <p>
-                                Par ma signature, je reconnais être d'accord avec les informations ci-dessus et valide le contrat de location, les conditions générales de location et l'état des lieux.
-                            </p>
-                            <div style="width: 335px">
-                                <canvas id="signature-client-pad" class="border rounded w-full h-32 {{ $inspection->locataire_signature ? '' : '' }}"></canvas>
-                            </div>
-                            <div class="signature-client-error"></div>
+                    <p>
+                        Par ma signature, je reconnais être d'accord avec les informations ci-dessus et valide le contrat de location, les conditions générales de location et l'état des lieux.
+                    </p>
+                    <div class="row justify-content-center no-gutters">
+                        <div class="col-auto mb-2" style="width: 330px">
+                            <canvas id="signature-client-pad" class="border rounded"></canvas>
+                            @error('locataire_signature')
+                            <div class="invalid-feedback d-block mb-2">{{ $message }}</div>
+                            @enderror
                             <input type="hidden" name="locataire_signature" id="locataire_signature" value="{{ $inspection->locataire_signature ??  '' }}">
                             <button type="button" class="btn btn-outline-danger" id="clear-signature-client"><i class="fas fa-trash-alt"></i> Effacer la signature</button>
                         </div>
                     </div>
-
                 </div>
                 <div class="box-footer">
                     <div><a href="{{ route('admin.inspection.dommages', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
@@ -97,13 +94,13 @@
                 if (!canvas) return;
 
                 const signaturePad = new SignaturePad(canvas, {
-                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    backgroundColor: 'rgba(0, 0, 0, 0)',
                     penColor: 'rgb(0, 0, 0)',
                 });
 
                 function resizeCanvas() {
                     const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                    const width = canvas.parentElement.offsetWidth;
+                    const width = 330;
                     const height = 200;
 
                     const data = input.value || null;
