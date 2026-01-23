@@ -4,7 +4,7 @@
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Informations locataire</div>
             <div class="card-body p-2">
-                {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
+                <strong>{{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}</strong><br/>
                 {{ $reservation->adresse }}<br />
                 {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }}<br />
                 {{ $reservation->telephone }}<br />
@@ -14,7 +14,7 @@
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Conducteur{{ $reservation->conducteurs->count() ? 's' : '' }}</div>
             <div class="card-body p-2">
-                {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
+                <strong>{{ $reservation->prenom }} {{ $reservation->nom }}</strong><br/>
                 @if ($reservation->naissance_at)
                     {{ _('Né le') }} {{ $reservation->naissance_at->format('d/m/Y') }}
                     @if ($reservation->naissance_lieu)
@@ -37,7 +37,7 @@
 
                 @foreach($reservation->conducteurs as $conducteur)
                     <br><br>
-                    {{ $conducteur->prenom }} {{ $conducteur->nom }}<br/>
+                    <strong>{{ $conducteur->prenom }} {{ $conducteur->nom }}</strong><br/>
                     @if ($conducteur->naissance_at)
                         {{ _('Né le') }} {{ $conducteur->naissance_at->format('d/m/Y') }}
                         @if ($conducteur->naissance_lieu)
@@ -102,12 +102,12 @@
                         </tr>
                     @endif
                     <tr>
-                        <td>Total (TTC)</td>
+                        <td><strong>Total (TTC)</strong></td>
                         <td class="text-right">@prix($reservation->total)&nbsp;€</td>
                     </tr>
                     @if (!$reservation->is_payed)
                         <tr>
-                            <td>Reste à régler</td>
+                            <td><strong>Reste à régler</strong></td>
                             <td class="text-right">@prix($reservation->total - $reservation->montant_paye)&nbsp;€</td>
                         </tr>
                     @endif
@@ -121,10 +121,10 @@
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Véhicule</div>
             <div class="card-body p-2">
-                {{ _('Catégorie') }} {{ $reservation->categorie_nom }}<br>
+                <strong>{{ _('Catégorie') }} {{ $reservation->categorie_nom }}</strong><br>
                 @if ($reservation->vehicule)
-                    {{ _('Marque et modéle') }} : {{ $reservation->vehicule->marque_modele }}<br>
-                    {{ _('Immatriculation') }} : {{ $reservation->vehicule->immatriculation }}<br>
+                    <strong>{{ _('Marque et modéle') }} :</strong> {{ $reservation->vehicule->marque_modele }}<br>
+                    <strong>{{ _('Immatriculation') }} :</strong> {{ $reservation->vehicule->immatriculation }}<br>
                 @endif
             </div>
         </div>
@@ -132,15 +132,15 @@
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Période</div>
             <div class="card-body p-2">
-                {{ _('Départ') }} :
+                <strong>{{ _('Départ') }} :</strong>
                 {{ $reservation->debut_lieu_nom }}
                 {{ _('le') }} {{ $reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->debut_at->format('H\hi') }}
                 <br>
-                {{ _('Retour') }} :
+                <strong>{{ _('Retour') }} :</strong>
                 {{ $reservation->fin_lieu_nom }}
                 {{ _('le') }} {{ $reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->fin_at->format('H\hi') }}
                 <br><br>
-                Nombre de jours : {{ $reservation->nb_jours }}
+                <strong>Nombre de jours :</strong> {{ $reservation->nb_jours }}
             </div>
         </div>
     </div>

@@ -98,7 +98,7 @@
                     <thead>
                     <tr>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => '#', 'champ' => 'reference'])</th>
-                        <th width="70px" >@include('IpsumAdmin::partials.tri', ['label' => 'Origine', 'champ' => 'source_id'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Orig.', 'champ' => 'source_id'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Création', 'champ' => 'created_at'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Départ', 'champ' => 'debut_at'])</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Lieu', 'champ' => 'debut_lieu_nom'])</th>

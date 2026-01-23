@@ -18,21 +18,16 @@
                     <h2 class="box-title">Signature agent</h2>
                 </div>
                 <div class="box-body">
-
-                    {{-- Signatures --}}
-                    <div class="form-row">
-                        <div class="col-md-12 mb-2">
-                            <h2>Signature agent</h2>
-                            <div style="width: 335px">
-                                <canvas id="signature-agent-pad" class="border rounded w-full h-32"></canvas>
-                            </div>
-                            <div class="signature-agent-error"></div>
+                    <div class="row justify-content-center no-gutters">
+                        <div class="col-auto mb-2" style="width: 330px">
+                            <canvas id="signature-agent-pad" class="border rounded"></canvas>
+                            @error('agent_signature')
+                            <div class="invalid-feedback d-block mb-2">{{ $message }}</div>
+                            @enderror
                             <input type="hidden" name="agent_signature" id="agent_signature" value="{{ $inspection->agent_signature ??  '' }}">
                             <button type="button" class="btn btn-outline-danger" id="clear-signature-agent"><i class="fas fa-trash-alt"></i> Effacer la signature</button>
-
                         </div>
                     </div>
-
                 </div>
 
                 <div class="box-footer">
@@ -63,13 +58,13 @@
                 if (!canvas) return;
 
                 const signaturePad = new SignaturePad(canvas, {
-                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    backgroundColor: 'rgba(0, 0, 0, 0)',
                     penColor: 'rgb(0, 0, 0)',
                 });
 
                 function resizeCanvas() {
                     const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                    const width = canvas.parentElement.offsetWidth;
+                    const width = 330;
                     const height = 200;
 
                     const data = input.value || null;

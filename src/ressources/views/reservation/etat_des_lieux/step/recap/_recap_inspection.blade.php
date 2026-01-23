@@ -4,23 +4,23 @@
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Véhicule</div>
             <div class="card-body p-2" id="ajax-vehicule">
-                {{ _('Catégorie') }} {{ $reservation->categorie_nom }}<br>
+                <strong>{{ _('Catégorie') }} {{ $reservation->categorie_nom }}</strong><br>
                 @if ($reservation->vehicule)
-                    {{ _('Marque et modéle') }} : {{ $reservation->vehicule->marque_modele }}<br>
-                    {{ _('Immatriculation') }} : {{ $reservation->vehicule->immatriculation }}<br>
+                    <strong>{{ _('Marque et modéle') }} :</strong> {{ $reservation->vehicule->marque_modele }}<br>
+                    <strong>{{ _('Immatriculation') }} :</strong> {{ $reservation->vehicule->immatriculation }}<br>
                 @endif
-                {{ _('Kilométrage') }} : {{ $inspection?->kilometrage }}
+                <strong>{{ _('Kilométrage') }} :</strong> {{ $inspection?->kilometrage }} km
                 @if (!$inspection->type->is_initial && $reservation->inspection_initiale)
                     <span class="text-muted">(initial : {{ $reservation->inspection_initiale->kilometrage }} km)</span>
                 @endif
                 <br>
-                {{ _('Carburant') }} : {{ $inspection?->carburant }}/8
+                <strong>{{ _('Carburant') }} :</strong> {{ $inspection?->carburant }}/8
                 @if (!$inspection->type->is_initial && $reservation->inspection_initiale)
                     <span class="text-muted">(initial : {{ $reservation->inspection_initiale->carburant }}/8)</span>
                 @endif
                 <br>
                 @if($inspection->observations)
-                    Observations : {!! nl2br(e($inspection->observations)) !!}
+                    <strong>Observations :</strong> {!! nl2br(e($inspection->observations)) !!}
                 @endif
                 @if(!$inspection->type->is_initial && $reservation->inspection_initiale && $reservation->inspection_initiale->observations)
                     <br>
