@@ -33,7 +33,9 @@ class EtatDesLieuxController extends AdminController
 
     public function index(Request $request)
     {
-        $query = Inspection::query()->with(['reservation', 'admin', 'type', 'reservation.vehicule'])->withCount(['dommages']);
+        $query = Inspection::query()->with(['reservation', 'admin', 'type', 'reservation.vehicule'])
+            ->withCount(['dommages'])
+            ->whereHas('reservation');
 
         if ($request->filled('date_debut')) {
             try {
@@ -387,6 +389,11 @@ class EtatDesLieuxController extends AdminController
         $reservation = $inspection->reservation;
         $type = $inspection->type;
 
+        if (!$reservation) {
+            Alert::error('Réservation supprimée')->flash();
+            return back();
+        }
+
         if (!$inspection->isSigned()) {
             Alert::error('Signature manquante')->flash();
             return back();
@@ -409,7 +416,7 @@ class EtatDesLieuxController extends AdminController
 
         return response()->file($pdfPath, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="etat-des-lieux-'.$inspection->reservation->id.'-'.Str::slug($inspection->type->nom).'.pdf"',
+            'Content-Disposition' => 'inline; filename="etat-des-lieux-'.$inspection->reservation_id.'-'.Str::slug($inspection->type->nom).'.pdf"',
         ]);
     }
 
