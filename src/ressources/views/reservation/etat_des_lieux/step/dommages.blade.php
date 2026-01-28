@@ -32,9 +32,11 @@
                             @endphp
                             <h3>Dommages de l’état des lieux initial</h3>
                             @if($dommages_initial->count())
-                                <div class="d-flex flex-row flex-wrap">
+                                <div class="row">
                                     @foreach($dommages_initial as $dommage)
-                                        @include('IpsumReservation::reservation.etat_des_lieux.step._dommage', ['protected' => true])
+                                        <div class="d-flex flex-row flex-wrap justify-content-center">
+                                            @include('IpsumReservation::reservation.etat_des_lieux.step._dommage', ['protected' => true])
+                                        </div>
                                     @endforeach
                                 </div>
                             @else
@@ -52,8 +54,8 @@
                     @endphp
                     <h3>Nouveaux dommages</h3>
 
-                    @if($dommages_new->count())
-                        <div class="d-flex flex-row flex-wrap">
+                    @if($dommages_new->count())<div class="<!--col-sm-6 col-lg-4 col-xl-3-->"></div>
+                        <div class="d-flex flex-row flex-wrap justify-content-center">
                             @foreach($dommages_new as $dommage)
                                 @include('IpsumReservation::reservation.etat_des_lieux.step._dommage')
                             @endforeach

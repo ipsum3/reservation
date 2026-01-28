@@ -68,7 +68,20 @@
             <div class="card-body p-2">
                 <div class="d-flex flex-row flex-wrap">
                     {{--TODO mettre les info sur l'inspection initiale si présente pas possible actuelement avec la bdd --}}
-                    @include('IpsumReservation::reservation.etat_des_lieux.step.recap._dommage')
+                    @php
+                        // TODO pour la page show, impossible de connaitre les dommages de l'inspection iitiale après qu'une autre inspection soit faite. Il faudrait ajouter une table dommage_inspections
+                         $dommages = $inspection->type->is_initial ? $reservation->vehicule->dommages : $inspection->dommages;
+                    @endphp
+
+                    @if($dommages->count())
+                        @foreach($dommages as $dommage)
+                            <div class="d-flex flex-row flex-wrap justify-content-center">
+                                @include('IpsumReservation::reservation.etat_des_lieux.step._dommage', ['protected' => true])
+                            </div>
+                        @endforeach
+                    @else
+                        <p>Aucun dommage constaté</p>
+                    @endif
                 </div>
             </div>
         </div>
