@@ -103,7 +103,6 @@ class VehiculeController extends AdminController
     }
 
     public function destroy(Vehicule $vehicule)
-
     {
         $vehicule->delete();
 
@@ -112,8 +111,7 @@ class VehiculeController extends AdminController
 
     }
 
-    public function dommage_destroy(Vehicule $vehicule, dommage $dommage)
-
+    public function dommage_destroy(Vehicule $vehicule, Dommage $dommage)
     {
         $dommage->delete();
 

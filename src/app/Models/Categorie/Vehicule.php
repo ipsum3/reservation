@@ -101,6 +101,11 @@ class Vehicule extends BaseModel
         return $this->hasMany(Dommage::class);
     }
 
+    public function allDommages()
+    {
+        return $this->dommages()->withTrashed();
+    }
+
     public function inspections()
     {
         // hasManyThrough(Target, Through, keyOnThrough, keyOnTarget, localKey, secondLocalKey)
@@ -120,11 +125,6 @@ class Vehicule extends BaseModel
     public function getLastInspectionAttribute()
     {
         return $this->inspections()->whereNotNull('agent_signature_at')->latest()->first();
-    }
-
-    public function allDommages()
-    {
-        return $this->hasMany(Dommage::class)->withTrashed();
     }
 
 
