@@ -1,9 +1,9 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Catégories')
+@section('title', 'Véhicules')
 
 @section('content')
 
-    <h1 class="main-title">Véhicule</h1>
+    <h1 class="main-title">Véhicules</h1>
     <div class="box">
         <div class="box-header">
             <h2 class="box-title">Liste ({{ $vehicules->total() }})</h2>
