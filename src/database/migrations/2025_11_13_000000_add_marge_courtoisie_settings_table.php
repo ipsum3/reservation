@@ -15,6 +15,10 @@ return new class extends Migration
     {
 
         if (\Ipsum\Core\app\Models\Setting::count()) {
+            Schema::table('settings', function (Blueprint $table) {
+                $table->string('description', 255)->change();
+            });
+
             Artisan::call('db:seed', ['class' => "\Ipsum\Reservation\database\seeds\SettingsTableSeeder", '--force' => true]);
         }
     }
