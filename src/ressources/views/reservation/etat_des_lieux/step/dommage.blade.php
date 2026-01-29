@@ -119,7 +119,7 @@
                 modes: [
                     'picture'
                 ],
-                mirror: true,
+                mirror: false,
                 showRecordingLength: false,
                 preferredVideoMimeType: null,
                 preferredImageMimeType: null,
