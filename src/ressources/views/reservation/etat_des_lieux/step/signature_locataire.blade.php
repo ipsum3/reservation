@@ -66,7 +66,7 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    <div><a href="{{ route('admin.inspection.dommages', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div><a href="{{ route('admin.inspection.photo', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
                     <div>
                         <button type="submit" id="nextBtn" class="btn btn-primary">Valider la signature</button>
                     </div>
