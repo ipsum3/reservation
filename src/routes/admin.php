@@ -274,6 +274,9 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
                 Route::delete('{dommage}', 'destroyDommage')->name('destroy');
             });
 
+            // Photos
+            Route::get('photo', 'photo')->name('photo');
+
             // Signatures
             Route::prefix('signature')->name('signature.')->group(function () {
                 Route::get('locataire', 'signatureLocataire')->name('locataire');

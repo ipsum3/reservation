@@ -64,40 +64,11 @@
                         <p class="alert alert-info">Aucun dommage enregistré pour cette état des lieux.</p>
                     @endif
 
-
-
-
-                    {{--<hr class="my-4">
-
-                    <h2 class="mt-1 mb-4">Ajout rapide de photo</h2>
-                    <div class="upload"
-                         data-uploadendpoint="{{ route('admin.media.store') }}"
-                         data-uploadmedias="{{ route('admin.media.publication', ['toolbar' => ['editable' => false, 'sortable' => false, 'title' => false, 'link' => true, 'pad' => true], 'publication_type' => \Ipsum\Reservation\app\Models\Inspection\Inspection::class, 'publication_id' => $inspection->exists ? $inspection->id : '', "groupe" => "photos"]) }}"
-                         data-uploadrepertoire="inspection"
-                         data-uploadpublicationid="{{ $inspection->id }}"
-                         data-uploadpublicationtype="{{ \Ipsum\Reservation\app\Models\Inspection\Inspection::class }}"
-                         data-uploadgroupe="photos"
-                         data-uploadnote="Images et documents, poids maximum {{ config('ipsum.media.upload_max_filesize') }} Ko"
-                         data-uploadmaxfilesize="{{ config('ipsum.media.upload_max_filesize') }}"
-                         data-uploadmmaxnumberoffiles=""
-                         data-uploadminnumberoffiles=""
-                         data-uploadallowedfiletypes=""
-                         data-uploadcsrftoken="{{ csrf_token() }}">
-                        <div class="upload-DragDrop"></div>
-                        <div class="upload-ProgressBar"></div>
-                        <div class="upload-alerts mt-3"></div>
-                        <div class="mt-3">
-                            <h3>Médias associés :</h3>
-                            <div class="d-flex flex-row flex-wrap sortable upload-files" data-sortableurl="{{ route('admin.media.changeOrder') }}" data-sortablecsrftoken="{{ csrf_token() }}">
-                            </div>
-                        </div>
-                    </div>--}}
-
                 </div>
 
                 <div class="box-footer">
                     <div><a href="{{ route('admin.inspection.checklist', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
-                    <div><a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}" id="nextBtn" class="btn btn-primary">Suivant</a></div>
+                    <div><a href="{{ route('admin.inspection.photo', [$reservation, $type]) }}" id="nextBtn" class="btn btn-primary">Suivant</a></div>
                 </div>
 
             </div>
@@ -105,29 +76,5 @@
         </div>
 
     </div>
-
-
-    <link href="{{ asset('ipsum/admin/dist/uppy.css') }}" rel="stylesheet">
-    <script src="{{ asset('ipsum/admin/dist/uppy.js') }}"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function initUploads() {
-                document.querySelectorAll('.upload').forEach(function (el) {
-                    console.log(el, el.dataset.initialize)
-                    if (el.dataset.initialize === "false") {
-                        window.uppyInit(el);
-                        el.dataset.initialize = "true";
-                    }
-                });
-            }
-
-            // Init au chargement
-            //initUploads();
-
-            document.getElementById('dommages-add').addEventListener('click', function () {
-                setTimeout(initUploads, 100);
-            });
-        });
-    </script>
 
 @endsection

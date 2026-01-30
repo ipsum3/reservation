@@ -87,4 +87,21 @@
         </div>
     </div>
 
+    <!-- Photos -->
+    {{--@php
+        $photos = $inspection->medias()->groupe('photos')->get();
+    @endphp
+    @if($photos->count())
+        <div class="card mb-3 shadow-sm col-md-12">
+            <div class="card-header bg-secondary text-white p-2">Photos</div>
+            <div class="card-body p-2">
+                <div class="d-flex flex-row flex-wrap sortable upload-files">
+                    @foreach($photos as $media)
+                        @include('IpsumReservation::reservation.etat_des_lieux.step._photo')
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif--}}
+
 </div>

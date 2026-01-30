@@ -55,6 +55,8 @@
 </style>
 
 @php
+/** @var \Ipsum\Reservation\app\Models\Inspection\Type::class $type **/
+
 $etapes = [
     [
         'route' => 'admin.inspection.vehicule',
@@ -74,6 +76,11 @@ $etapes = [
     [
         'route' => 'admin.inspection.dommages',
         'nom' => 'Dommages',
+        'show' => true
+    ],
+    [
+        'route' => 'admin.inspection.photo',
+        'nom' => 'Photos',
         'show' => true
     ],
     [

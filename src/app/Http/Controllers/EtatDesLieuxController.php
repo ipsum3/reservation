@@ -194,12 +194,8 @@ class EtatDesLieuxController extends AdminController
     {
         $inspection = $this->getInspection($reservation, $type);
 
-        $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
-        $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
-        $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
-
         return view('IpsumReservation::reservation.etat_des_lieux.step.dommages', compact(
-            'reservation', 'inspection', 'type', 'dommage_types', 'dommage_elements', 'dommage_emplacements'
+            'reservation', 'inspection', 'type'
         ));
     }
 
@@ -265,6 +261,17 @@ class EtatDesLieuxController extends AdminController
         Alert::success('Le dommage a été supprimé avec succès.')->flash();
 
         return redirect()->route('admin.inspection.dommages', [$reservation, $type]);
+    }
+
+
+    /** --------- PHOTOS --------- */
+    public function photo(Reservation $reservation, Type $type)
+    {
+        $inspection = $this->getInspection($reservation, $type);
+
+        return view('IpsumReservation::reservation.etat_des_lieux.step.photos', compact(
+            'reservation', 'inspection', 'type'
+        ));
     }
 
 
