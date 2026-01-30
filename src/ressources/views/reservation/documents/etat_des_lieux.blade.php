@@ -222,9 +222,11 @@
                 <table class="tableau2" style="">
                     <tr>
                         <th style="width: 49%">Initial</th>
-                        @if(!$inspection->type->is_initial )
-                            <th style="width: 49%">Final</th>
-                        @endif
+                        <th style="width: 49%">
+                            @if(!$inspection->type->is_initial )
+                            Final
+                            @endif
+                        </th>
                     </tr>
                     <tr>
                         <td>
@@ -250,40 +252,39 @@
                                 </tr>
                             </table>
                         </td>
-                        @if(!$inspection->type->is_initial)
-                            <td>
-                                <table class="tableau3">
+                        <td>
+                            @if(!$inspection->type->is_initial)
+                            <table class="tableau3">
+                                <tr>
+                                    <td>Km compteur</td>
+                                    <td>{{ $reservation->inspection_finale?->kilometrage }} km</td>
+                                </tr>
+                                <tr>
+                                    <td>Carburant</td>
+                                    <td>{{ $reservation->inspection_finale?->carburant }}/8</td>
+                                </tr>
+                                @foreach($checklists as $item)
                                     <tr>
-                                        <td>Km compteur</td>
-                                        <td>{{ $reservation->inspection_finale?->kilometrage }} km</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Carburant</td>
-                                        <td>{{ $reservation->inspection_finale?->carburant }}/8</td>
-                                    </tr>
-                                    @foreach($checklists as $item)
-                                        <tr>
-                                            <td>{{ $item->nom }}</td>
-                                            <td>
-                                                <input style="" type="checkbox" {{ in_array($item->id, ($reservation->inspection_finale ? $reservation->inspection_finale->checklists->pluck('id')->toArray() : [])) ? 'checked' : '' }}>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    <tr>
-                                        <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspection_finale?->observations)) !!}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            @php
-                                                $count = $reservation->inspection_finale?->dommages->count() ?? 0;
-                                            @endphp
-                                            <strong>{{ $count }} dommage{{ $count > 1 ? 's' : '' }} déclaré{{ $count > 1 ? 's' : '' }}</strong>
+                                        <td>{{ $item->nom }}</td>
+                                        <td>
+                                            <input style="" type="checkbox" {{ in_array($item->id, ($reservation->inspection_finale ? $reservation->inspection_finale->checklists->pluck('id')->toArray() : [])) ? 'checked' : '' }}>
                                         </td>
                                     </tr>
-                                </table>
-                            </td>
-
-                        @endif
+                                @endforeach
+                                <tr>
+                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspection_finale?->observations)) !!}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        @php
+                                            $count = $reservation->inspection_finale?->dommages->count() ?? 0;
+                                        @endphp
+                                        <strong>{{ $count }} dommage{{ $count > 1 ? 's' : '' }} déclaré{{ $count > 1 ? 's' : '' }}</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                            @endif
+                        </td>
                     </tr>
                 </table>
 
@@ -292,20 +293,19 @@
         </tr>
     </table>
 
+    @php
+        $allDommages = $reservation->vehicule->dommages->filter(function ($dommage) use ($inspection, $reservation) {
+            return $dommage->inspection->id != $reservation->inspection_finale?->id;
+        });
+    @endphp
     <div style="page-break-inside: avoid;">
         <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
             <tr>
-                <th colspan="5" class="section-title">Dommage(s) (au départ)</th>
+                <th colspan="5" class="section-title">Dommage{{ $allDommages->count() > 1 ? 's' : '' }} (initial)</th>
             </tr>
         </table>
 
         <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm;">
-            @php
-                $allDommages = $reservation->vehicule->dommages->filter(function ($dommage) use ($inspection, $reservation) {
-                    return $dommage->inspection->id != $reservation->inspection_finale?->id;
-                });
-            @endphp
-
             @if($allDommages->count())
                 @foreach($allDommages->chunk(3) as $chunk)
                     <tr>
@@ -337,19 +337,17 @@
     </div>
 
     @if(!$inspection->type->is_initial)
-
+        @php
+            $allDommages = $reservation->inspection_finale?->dommages;
+        @endphp
         <div style="page-break-inside: avoid;">
             <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
                 <tr>
-                    <th colspan="5" class="section-title">Dommage(s) (au retour)</th>
+                    <th colspan="5" class="section-title">Dommage{{ $allDommages->count() > 1 ? 's' : '' }} (final)</th>
                 </tr>
             </table>
 
             <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm;">
-                @php
-                    $allDommages = $reservation->inspection_finale?->dommages;
-                @endphp
-
                 @if($allDommages->count())
                     @foreach($allDommages->chunk(3) as $chunk)
                         <tr>
@@ -379,7 +377,41 @@
                 @endif
             </table>
         </div>
+    @endif
 
+    @php
+        $photos = $inspection->medias()->groupe('photos')->get();
+    @endphp
+    @if($photos->count())
+        <div style="page-break-inside: avoid;">
+            <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
+                <tr>
+                    <th colspan="5" class="section-title">Photo{{ $photos->count() > 1 ? 's' : '' }} rapide{{ $photos->count() > 1 ? 's' : '' }}</th>
+                </tr>
+            </table>
+
+            <table style="width:100%; border-collapse:collapse; padding-bottom: 2mm;">
+                @foreach($photos->chunk(3) as $chunk)
+                    <tr>
+                        @foreach($chunk as $photo)
+                            <td style="
+                        width: 33.33%;
+                        vertical-align: top;
+                        padding: 5px;
+                        border: none;
+                    ">
+                                @include('IpsumReservation::reservation.documents._photo')
+                            </td>
+                        @endforeach
+
+                        {{-- complète les cellules vides --}}
+                        @for($i = $chunk->count(); $i < 3; $i++)
+                            <td style="width: 33.33%; padding: 5px;border: none;"></td>
+                        @endfor
+                    </tr>
+                @endforeach
+            </table>
+        </div>
     @endif
 
     <div style="page-break-inside: avoid; /*page-break-before: always;*/ margin-top: 10px;">
