@@ -63,16 +63,15 @@
 
     <div class="col-md-12">
         <!-- Dommages -->
+        {{--TODO mettre les info sur l'inspection initiale si présente pas possible actuelement avec la bdd --}}
+        @php
+            // TODO pour la page show, impossible de connaitre les dommages de l'inspection iitiale après qu'une autre inspection soit faite. Il faudrait ajouter une table dommage_inspections
+             $dommages = $inspection->type->is_initial ? $reservation->vehicule->dommages : $inspection->dommages;
+        @endphp
         <div class="card mb-3 shadow-sm">
-            <div class="card-header bg-secondary text-white p-1">Dommages constatés</div>
+            <div class="card-header bg-secondary text-white p-1">Dommage{{ $dommages->count() > 1 ? 's' : '' }} constaté{{ $dommages->count() > 1 ? 's' : '' }}</div>
             <div class="card-body p-2">
                 <div class="d-flex flex-row flex-wrap">
-                    {{--TODO mettre les info sur l'inspection initiale si présente pas possible actuelement avec la bdd --}}
-                    @php
-                        // TODO pour la page show, impossible de connaitre les dommages de l'inspection iitiale après qu'une autre inspection soit faite. Il faudrait ajouter une table dommage_inspections
-                         $dommages = $inspection->type->is_initial ? $reservation->vehicule->dommages : $inspection->dommages;
-                    @endphp
-
                     @if($dommages->count())
                         @foreach($dommages as $dommage)
                             <div class="d-flex flex-row flex-wrap justify-content-center">
@@ -87,21 +86,29 @@
         </div>
     </div>
 
-    <!-- Photos -->
-    {{--@php
+    @php
         $photos = $inspection->medias()->groupe('photos')->get();
     @endphp
     @if($photos->count())
-        <div class="card mb-3 shadow-sm col-md-12">
-            <div class="card-header bg-secondary text-white p-2">Photos</div>
-            <div class="card-body p-2">
-                <div class="d-flex flex-row flex-wrap sortable upload-files">
-                    @foreach($photos as $media)
-                        @include('IpsumReservation::reservation.etat_des_lieux.step._photo')
-                    @endforeach
+        <div class="col-md-12">
+            <!-- Photos -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header bg-secondary text-white p-1">Photo{{ $photos->count() > 1 ? 's' : '' }} rapide{{ $photos->count() > 1 ? 's' : '' }}</div>
+                <div class="card-body p-2">
+                    <div class="d-flex flex-row flex-wrap">
+                        @foreach($photos as $media)
+                            <div class="media" style="min-width: 200px">
+                                <div class="media-img">
+                                    <a href="{{ asset($media->path) }}" target="_blank" title="Voir">
+                                        <img src="{{ Croppa::url($media->cropPath, 300) }}" alt="{{ $media->tagAlt }}">
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
-    @endif--}}
+    @endif
 
 </div>

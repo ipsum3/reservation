@@ -63,165 +63,20 @@
 
     {{ Aire::close() }}
 
+    <script>
+        const existingMedias = @json($dommage->images->each(function ($media) {
+                $media->url = url(Croppa::url($media->crop_path, 400));
+            }));
 
-
-    <link href="https://releases.transloadit.com/uppy/v5.2.1/uppy.min.css" rel="stylesheet">
-    <style>
-        .uppy-StatusBar-actionBtn--done, .uppy-StatusBar-actionBtn {
-            display: none;
-        }
-    </style>
-    <script type="module">
-        var medias = [];
-
-        import {Uppy, Dashboard, Webcam, XHRUpload} from "https://releases.transloadit.com/uppy/v5.2.1/uppy.min.mjs"
-
-        import fr_FR from 'https://cdn.jsdelivr.net/npm/@uppy/locales@3.4.0/lib/fr_FR.js'
-
-        const uppy = new Uppy({
-            debug: true,
-            autoProceed: true,
-            locale: fr_FR,
-            restrictions: {
-                maxFileSize: 2000000,
-                maxNumberOfFiles: 1,
-                allowedFileTypes: ['image/*']
-            },
-            meta: {
-                publication_id: '{{ $dommage->id ?? '' }}',
-                publication_type: "Ipsum\\Reservation\\app\\Models\\Dommage\\Dommage",
-                //repertoire: 'inspection', / TODO
-                _token: '{{ csrf_token() }}'
-            }
-        })
-
-        uppy.use(
-            Dashboard, {
-                inline: true,
-                target: '#upload-DragDrop',
-                replaceTargetContent: true,
-                showLinkToFileUploadResult: false,
-                showProgressDetails: true,
-                showRemoveButtonAfterComplete: true,
-                note: 'Uniquement des photos, maximum un fichier de 2 MB.',
-                height: 400,
-                width: 600,
-                browserBackButtonClose: true,
-                proudlyDisplayPoweredByUppy: false
-            });
-
-        uppy.use(
-            Webcam, {
-                countdown: false,
-                target: Uppy.Dashboard,
-                modes: [
-                    'picture'
-                ],
-                mirror: false,
-                showRecordingLength: false,
-                preferredVideoMimeType: null,
-                preferredImageMimeType: null,
-                locale: {},
-                videoConstraints: {
-                    facingMode: 'environment',
-                    width: {min: 1280, ideal: 1280, max: 1920},
-                    height: {min: 720, ideal: 720, max: 1080},
-                },
-            });
-
-        uppy.use(XHRUpload, {
-            endpoint: '{{ route('admin.media.store') }}',
-            formData: true,
-            fieldName: 'media',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
-
-        const existingMedias = @json($dommage->medias ?? []);
-
-        existingMedias.forEach(media => {
-            const media_url = "{{ asset($dommage->illustration?->path) }}";
-            //console.log(media, media_url)
-            if (!media_url) return;
-
-            fetch(media_url)
-                .then((response) => response.blob())
-                .then((blob) => {
-
-                    uppy.addFile({
-                        id: media.id,
-                        name: media.fichier,
-                        type: blob.type,
-                        data: blob,
-                        source: 'Server',
-                        isRemote: true,
-                        meta: {
-                            existing: true,
-                            publication_id: media.id,
-                            publication_type: media.publication_type,
-                            titre: media.titre,
-                            alt: media.tag_alt,
-                            previewUrl: media_url,
-                        },
-                    });
-                });
-
-            // Ajouter dans le tableau pour pouvoir supprimer
-            medias.push(media);
-        });
-
-        uppy.on('file-added', (file) => {
-            if (file.meta.existing === true) {
-                uppy.setFileState(file.id, {
-                    preview: file.meta.previewUrl,
-                    progress: {uploadComplete: true}
-                })
-            }
-        })
-
-        uppy.on('upload-success', function (file, response) {
-            medias.push(response.body.media);
-        });
-
-        uppy.on('upload-error', function (file, error, response) {
-            console.log('error with file:', file.id);
-            console.log('error message:', error);
-            console.log('error message:', response);
-        });
-
-        uppy.on('file-removed', function (file) {
-            medias.forEach(function (media, index, medias) {
-                //console.log(media, file)
-                if (media.fichier === file.name) {
-
-                    medias.splice(index, 1);
-
-                    fetch("/administration/media/" + media.id + "/destroy", {
-                        method: "GET" // Par défaut fetch fait GET, donc cette ligne est optionnelle
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error("Erreur lors de la suppression");
-                            }
-                            return true;
-                        })
-                        .then(data => {
-                            console.log("Suppression réussie :", data);
-                        })
-                        .catch(error => {
-                            console.error("Erreur :", error);
-                        });
-
-                    return false;
-                }
-            });
-        });
-
-        uppy.on('restriction-failed', function (file, error) {
-            /*document.querySelector('#upload-alerts').insertAdjacentHTML('beforeend', '<div class="alert alert-warning">' + file.name +' : ' + error +'</div>')*/
-        });
+        const maxNumberOfFiles = 1;
+        const publicationId = '{{ $dommage->id ?? '' }}';
+        const publicationType = "Ipsum\\Reservation\\app\\Models\\Dommage\\Dommage";
+        const groupe = "";
+        const repertoire = 'inspection';
 
     </script>
+
+    @include('IpsumReservation::reservation.etat_des_lieux.step._uppy')
+
 
 @endsection
