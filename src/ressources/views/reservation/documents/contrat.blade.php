@@ -305,6 +305,12 @@
                                 </tr>
                                 @if (!$reservation->is_payed)
                                     <tr>
+                                        <td>{{ _('Montant payé') }}</td>
+                                        <td align="right">
+                                            @prix($reservation->montant_paye)&nbsp;€
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>{{ _('Reste à régler') }}</td>
                                         <td align="right">
                                             @prix($reservation->total - $reservation->montant_paye)&nbsp;€
