@@ -418,7 +418,7 @@
         <table style="margin-top: 6mm; width:100%; border-collapse:collapse;">
             <tr>
                 <td style="border: none;">
-                    Par ma signature, je reconnais être d'accord l'état des lieux.
+                    Par ma signature, je reconnais être d'accord avec l'état des lieux.
                 </td>
             </tr>
         </table>
