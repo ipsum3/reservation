@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Models\Dommage\Dommage;
+use Ipsum\Reservation\app\Models\Dommage\Element;
+use Ipsum\Reservation\app\Models\Dommage\Emplacement;
 use Ipsum\Reservation\app\Models\Inspection\Inspection;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -204,9 +206,9 @@ class EtatDesLieuxController extends AdminController
         $dommage = new Dommage();
         $inspection = $this->getInspection($reservation, $type);
 
-        $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
-        $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
-        $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
+        $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::orderBy('order')->get();
+        $dommage_elements    = Element::orderBy('order')->get();
+        $dommage_emplacements = Emplacement::orderBy('order')->get();
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
     }
@@ -228,9 +230,9 @@ class EtatDesLieuxController extends AdminController
     {
         $inspection = $this->getInspection($reservation, $type);
 
-        $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::all();
-        $dommage_elements    = \Ipsum\Reservation\app\Models\Dommage\Element::all();
-        $dommage_emplacements= \Ipsum\Reservation\app\Models\Dommage\Emplacement::all();
+        $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::orderBy('order')->get();
+        $dommage_elements    = Element::orderBy('order')->get();
+        $dommage_emplacements = Emplacement::orderBy('order')->get();
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
     }
