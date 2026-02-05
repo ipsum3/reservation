@@ -61,7 +61,7 @@
                             @endforeach
                         </div>
                     @else
-                        <p class="alert alert-info">Aucun dommage enregistré pour cette état des lieux.</p>
+                        <p class="alert alert-info">Aucun dommage enregistré pour cet état des lieux.</p>
                     @endif
 
                 </div>
