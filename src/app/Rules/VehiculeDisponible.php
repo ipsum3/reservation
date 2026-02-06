@@ -38,7 +38,7 @@ class VehiculeDisponible implements Rule
 
         // Récupération des conflits déjà prévue dans ton modèle
         try {
-        $conflicts = $vehicule->getConflicts($this->reservation);
+            $conflicts = $vehicule->getConflicts($this->reservation);
 
             if ($conflicts->isNotEmpty()) {
                 $this->message = "Ce véhicule n'est pas disponible sur cette période.";
