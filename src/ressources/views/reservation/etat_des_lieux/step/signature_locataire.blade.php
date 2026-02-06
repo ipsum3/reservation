@@ -16,17 +16,19 @@
                 <div class="box-body">
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="{{ $type->is_initial ? 'col-md-6' : 'col-md-12' }}">
                             @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap_contrat')
                         </div>
-                        <div class="col-md-6">
-                            @if($cgl)
-                                <h3>{{ $cgl->titre }}</h3>
-                                <div class="p-2" style="height: 600px; overflow: auto; border: 1px solid #eee">
-                                    {!! $cgl->texte !!}
-                                </div>
-                            @endif
-                        </div>
+                        @if ($type->is_initial)
+                            <div class="col-md-6">
+                                @if($cgl)
+                                    <h3>{{ $cgl->titre }}</h3>
+                                    <div class="p-2" style="height: 600px; overflow: auto; border: 1px solid #eee">
+                                        {!! $cgl->texte !!}
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

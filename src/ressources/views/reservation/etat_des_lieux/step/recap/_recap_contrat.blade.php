@@ -1,6 +1,6 @@
 <div class="row">
 
-    <div class="col-xl-6">
+    <div class="{{ $type->is_initial ? 'col-xl-6' : 'col-md-6' }}">
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Informations locataire</div>
             <div class="card-body p-2">
@@ -117,7 +117,7 @@
         </div>
     </div>
 
-    <div class="col-xl-6">
+    <div class="{{ $type->is_initial ? 'col-xl-6' : 'col-md-6' }}">
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Véhicule</div>
             <div class="card-body p-2">
