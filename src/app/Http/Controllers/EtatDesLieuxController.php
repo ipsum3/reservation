@@ -25,9 +25,11 @@ use Ipsum\Reservation\app\Models\Inspection\Type;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\app\Rules\VehiculeDisponible;
 use Prologue\Alerts\Facades\Alert;
 use ddn\sapp\PDFDoc;
 use Str;
+use Illuminate\Support\Facades\Validator;
 
 class EtatDesLieuxController extends AdminController
 {
@@ -144,10 +146,20 @@ class EtatDesLieuxController extends AdminController
         $data = $request->validated();
         $this->updateInspection($data, $reservation, $type, $inspection);
 
-        $reservation->update([
-            'categorie_id'    => $data['categorie_id'],
-            'vehicule_id'     => $data['vehicule_id']
-        ]);
+        if ($reservation->vehicule_id != $data['vehicule_id']) {
+            $reservation->update([
+                'categorie_id'    => $data['categorie_id'],
+                'vehicule_id'     => $data['vehicule_id']
+            ]);
+
+            $validator = Validator::make($request->all(), [
+                'vehicule_id' => new VehiculeDisponible($reservation)
+            ]);
+
+            if ($validator->fails()) {
+                return back();
+            }
+        }
 
         return redirect()->route('admin.inspection.client', [$reservation, $type]);
     }

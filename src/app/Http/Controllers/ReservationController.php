@@ -306,10 +306,9 @@ class ReservationController extends AdminController
         }
 
         // Comparaison pour les conflits
-        $conflicts = collect();
-        if($reservation->vehicule != null){
-            $conflicts = $reservation->vehicule->getConflicts($reservation);
-        }
+        $conflicts = $reservation->vehicule
+            ? $reservation->vehicule->getConflicts($reservation)
+            : collect();
 
         if($reservation->client_id == null) {
             $client = Client::where('email', $reservation->email)->where('has_login', '0')->get();

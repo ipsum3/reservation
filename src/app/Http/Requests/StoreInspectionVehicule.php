@@ -34,8 +34,7 @@ class StoreInspectionVehicule extends FormRequest
                 'integer',
                 Rule::exists(Vehicule::class, 'id')->where(function ($query) {
                     return $query->where('categorie_id', $this->categorie_id);
-                }),
-                new VehiculeDisponible($this->reservation ?? new Reservation())
+                })
             ],
             "vehicule_blocage" => "nullable|boolean",
         ];
