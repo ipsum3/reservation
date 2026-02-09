@@ -250,7 +250,7 @@
                         @endif
 
                         @if($reservation->contrat && !config('ipsum.reservation.contrat.disable'))
-                            @if($reservation->inspection_initiale)
+                            @if($reservation->inspection_initiale?->isSigned())
                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir le contrat</a>&nbsp;
                             @else
                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i> Générer le contrat</a>&nbsp;
