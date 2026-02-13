@@ -99,8 +99,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if($vehicule->allDommages->count())
-                                    @foreach($vehicule->allDommages()->orderBy('created_at','desc')->get() as $dommage)
+                                @if($vehicule->dommages->count())
+                                    @foreach($vehicule->dommages->sortByDesc('created_at') as $dommage)
                                         <tr>
                                             <td>
                                                 @if($dommage->trashed())
