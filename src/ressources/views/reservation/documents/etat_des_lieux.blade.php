@@ -294,8 +294,8 @@
     </table>
 
     @php
-        $allDommages = $reservation->vehicule->dommages->filter(function ($dommage) use ($inspection, $reservation) {
-            return $dommage->inspection->id != $reservation->inspection_finale?->id;
+        $allDommages = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation) {
+            return !$dommage->inspection_id or $dommage->inspection_id != $reservation->inspection_finale?->id;
         });
     @endphp
     <div style="page-break-inside: avoid;">

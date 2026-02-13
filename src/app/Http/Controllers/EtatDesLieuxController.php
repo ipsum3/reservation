@@ -37,7 +37,7 @@ class EtatDesLieuxController extends AdminController
 
     public function index(Request $request)
     {
-        $query = Inspection::query()->with(['reservation', 'admin', 'type', 'reservation.vehicule'])
+        $query = Inspection::query()->with(['admin', 'type', 'reservation.vehicule'])
             ->withCount(['dommages'])
             ->whereHas('reservation');
 
