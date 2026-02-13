@@ -466,7 +466,7 @@ class EtatDesLieuxController extends AdminController
         $inspection->delete();
         Alert::warning("L'enregistrement a bien été supprimé")->flash();
 
-        return redirect()->route('admin.inspection.index');
+        return back();
 
     }
 
