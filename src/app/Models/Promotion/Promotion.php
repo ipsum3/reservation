@@ -25,8 +25,8 @@ use Ipsum\Reservation\app\Models\Reservation\Condition;
  * @property string|null $texte
  * @property int|null $condition_paiement_id
  * @property string|null $code
- * @property \Illuminate\Support\Carbon $debut_at
- * @property \Illuminate\Support\Carbon $fin_at
+ * @property \Illuminate\Support\Carbon|null $debut_at
+ * @property \Illuminate\Support\Carbon|null $fin_at
  * @property \Illuminate\Support\Carbon|null $activation_at
  * @property \Illuminate\Support\Carbon|null $desactivation_at
  * @property int|null $duree_min
@@ -51,10 +51,12 @@ use Ipsum\Reservation\app\Models\Reservation\Condition;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates
  * @property-read int|null $translates_count
  * @method static Builder|Promotion active()
+ * @method static Builder|Promotion dureeBetween(int $duree)
  * @method static Builder|Promotion enCours()
  * @method static Builder|Promotion newModelQuery()
  * @method static Builder|Promotion newQuery()
  * @method static Builder|Promotion query()
+ * @method static Builder|Promotion valable(\Ipsum\Reservation\app\Classes\Carbon $debut_at, \Ipsum\Reservation\app\Classes\Carbon $fin_at)
  * @mixin \Eloquent
  */
 class Promotion extends BaseModel

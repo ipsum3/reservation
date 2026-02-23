@@ -9,6 +9,35 @@ use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Inspection\Inspection;
 
 
+/**
+ * Ipsum\Reservation\app\Models\Dommage\Dommage
+ *
+ * @property int $id
+ * @property int $vehicule_id
+ * @property int|null $inspection_id
+ * @property int $type_id
+ * @property int $emplacement_id
+ * @property int $element_id
+ * @property string|null $observations
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Ipsum\Reservation\app\Models\Dommage\Element|null $element
+ * @property-read \Ipsum\Reservation\app\Models\Dommage\Emplacement|null $emplacement
+ * @property-read \Ipsum\Media\app\Models\Media|null $illustration
+ * @property-read Inspection|null $inspection
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Media\app\Models\Media> $medias
+ * @property-read int|null $medias_count
+ * @property-read \Ipsum\Reservation\app\Models\Dommage\Type|null $type
+ * @property-read Vehicule|null $vehicule
+ * @method static \Illuminate\Database\Eloquent\Builder|Dommage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Dommage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Dommage onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Dommage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Dommage withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Dommage withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Dommage extends BaseModel
 {
     use SoftDeletes, Mediable;

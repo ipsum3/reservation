@@ -9,6 +9,7 @@ use Ipsum\Core\app\Models\BaseModel;
  *
  * @property int $id
  * @property string $nom
+ * @property int $order
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Categorie> $categories
  * @property-read int|null $categories_count
  * @method static \Illuminate\Database\Eloquent\Builder|Type newModelQuery()
