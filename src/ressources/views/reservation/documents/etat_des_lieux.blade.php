@@ -243,7 +243,7 @@
                                     <tr>
                                         <td>{{ $item->nom }}</td>
                                         <td>
-                                            <input style="" type="checkbox" {{ in_array($item->id, ($reservation->inspection_initiale ? $reservation->inspection_initiale->checklists?->pluck('id')->toArray() : [])) ? 'checked' : '' }}>
+                                            {{ in_array($item->id, ($reservation->inspection_initiale ? $reservation->inspection_initiale->checklists?->pluck('id')->toArray() : [])) ? 'ok' : '-' }}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -267,7 +267,7 @@
                                     <tr>
                                         <td>{{ $item->nom }}</td>
                                         <td>
-                                            <input style="" type="checkbox" {{ in_array($item->id, ($reservation->inspection_finale ? $reservation->inspection_finale->checklists->pluck('id')->toArray() : [])) ? 'checked' : '' }}>
+                                            {{ in_array($item->id, ($reservation->inspection_finale ? $reservation->inspection_finale->checklists->pluck('id')->toArray() : [])) ? 'ok' : '-' }}
                                         </td>
                                     </tr>
                                 @endforeach
