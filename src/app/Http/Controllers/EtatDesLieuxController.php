@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Http\Controllers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Ipsum\Article\app\Models\Article;
+use Ipsum\Reservation\app\Mail\NewDommage;
 use Ipsum\Reservation\app\Models\Dommage\Dommage;
 use Ipsum\Reservation\app\Models\Dommage\Element;
 use Ipsum\Reservation\app\Models\Dommage\Emplacement;
@@ -385,6 +386,11 @@ class EtatDesLieuxController extends AdminController
              * ENVOI DU DOCUMENT FINAL
              */
             Mail::send(new EtatDesLieux($inspection));
+
+
+            if (config('settings.reservation.email_alerte_dommage') and $inspection->type->is_final and $inspection->dommages->count()) {
+                Mail::send(new NewDommage($inspection));
+            }
 
         } catch(\Exception $exception) {
             \Log::error("Erreur lors de la signature numérique du PDF : " . $exception->getMessage());

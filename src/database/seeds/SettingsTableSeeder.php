@@ -84,6 +84,15 @@ class SettingsTableSeeder extends Seeder
                 'type' => 'number',
                 'rules' => 'nullable|numeric',
             ),
+            array(
+                'group' => 'Réservation',
+                'key' => 'settings.reservation.email_alerte_dommage',
+                'name' => 'Email alerte nouveau dommage',
+                'description' => '',
+                'value' => '',
+                'type' => 'email',
+                'rules' => 'nullable|email',
+            ),
         );
     }
 }
