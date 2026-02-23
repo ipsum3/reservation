@@ -62,7 +62,7 @@
                             @error('locataire_signature')
                             <div class="invalid-feedback d-block mb-2">{{ $message }}</div>
                             @enderror
-                            <input type="hidden" name="locataire_signature" id="locataire_signature" value="{{ $inspection->locataire_signature ??  '' }}">
+                            <input type="hidden" name="locataire_signature" id="locataire_signature" value="">
                             <button type="button" class="btn btn-outline-danger" id="clear-signature-client"><i class="fas fa-trash-alt"></i> Effacer la signature</button>
                         </div>
                     </div>
