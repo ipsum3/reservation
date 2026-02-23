@@ -23,7 +23,7 @@ use Ipsum\Reservation\app\Models\Promotion\Promotion;
  * @property string|null $acompte_type
  * @property int|null $acompte_value
  * @property int|null $echeance_nombre
- * @property string $surplus_type
+ * @property string|null $surplus_type
  * @property string|null $surplus_valeur
  * @property int $order
  * @property-read bool $has_acompte

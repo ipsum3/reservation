@@ -39,9 +39,9 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property string|null $franchise
  * @property int $age_minimum
  * @property int $annee_permis_minimum
+ * @property AsCustomFieldsObject|null $custom_fields
  * @property string|null $seo_title
  * @property string|null $seo_description
- * @property AsCustomFieldsObject|null $custom_fields
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $reservoir_capacite

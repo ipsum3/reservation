@@ -11,7 +11,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property int $id
  * @property int $is_special
  * @property string|null $type
- * @property string $nom
+ * @property string|null $nom
  * @property string $tarification
  * @property int $min
  * @property int|null $max

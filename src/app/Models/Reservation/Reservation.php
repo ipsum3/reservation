@@ -54,6 +54,7 @@ use Carbon\Carbon;
  * @property AsCustomFieldsObject|null $custom_fields
  * @property int $categorie_id
  * @property int|null $vehicule_id
+ * @property string|null $immatriculation
  * @property int $vehicule_blocage
  * @property string $categorie_nom
  * @property string|null $caution
@@ -73,6 +74,7 @@ use Carbon\Carbon;
  * @property string|null $total
  * @property string|null $montant_paye
  * @property string|null $note
+ * @property int $saved
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Admin|null $admin
@@ -83,10 +85,14 @@ use Carbon\Carbon;
  * @property-read float|null $acompte
  * @property-read mixed $date_naissance_minimum
  * @property-read mixed $date_permis_minimum
+ * @property-read mixed $inspection_finale
+ * @property-read mixed $inspection_initiale
  * @property-read bool $is_confirmed
  * @property-read bool $is_payed
  * @property-read int $nb_jours
  * @property-read mixed $tarif_journalier
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Inspection> $inspections
+ * @property-read int|null $inspections_count
  * @property-read Lieu|null $lieuDebut
  * @property-read Lieu|null $lieuFin
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Paiement> $paiements
