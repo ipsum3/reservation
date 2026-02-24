@@ -46,7 +46,7 @@ class ReservationController extends AdminController
 
     protected function query(Request $request)
     {
-        $query = Reservation::with('etat', 'condition', 'client');
+        $query = Reservation::with('etat', 'condition', 'client', 'source.type');
 
         if ($request->filled('client_id')) {
             $query->where('client_id', $request->get('client_id'));

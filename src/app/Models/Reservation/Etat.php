@@ -31,7 +31,7 @@ class Etat extends BaseModel
 
     const NON_VALIDEE_ID = 1;
     const VALIDEE_ID = 2;
-    const ANNULEE_ID = 3;
+    const ANNULEE_ID = 5;
 
 
     /*

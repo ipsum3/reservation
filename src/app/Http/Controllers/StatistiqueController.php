@@ -20,8 +20,6 @@ class StatistiqueController extends ReservationController
     protected $acces = 'statistique';
 
     public function index(Request $request){
-        $reservations = $this->query($request)->get();
-
         $etats = Etat::all()->pluck('nom', 'id');
         $conditions = Condition::all()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
@@ -41,12 +39,12 @@ class StatistiqueController extends ReservationController
             $request->merge(['periode' => $dateDebut->format('d/m/Y').' - '. $dateFin->format('d/m/Y') ]);
         }
 
-        $reservationsTransactionQuery = Reservation::confirmed()->whereBetween($type_date, [$dateDebut, $dateFin])->get();
+        $reservationsTransactionQuery = Reservation::with(['source'])->confirmed()->whereBetween($type_date, [$dateDebut, $dateFin])->get();
 
         $reservationsJourQuery = Reservation::confirmed()->whereRaw("DATE(`debut_at`) = CURDATE()");
         $reservationsHierQuery = Reservation::confirmed()->whereRaw("DATE(`created_at`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)");
-        $reservationsEnCoursQuery = Reservation::confirmed()->whereDate('debut_at', '<=', Carbon::now())->whereDate('fin_at', '>=', Carbon::now())->get();
-        $reservationsIncomingQuery = Reservation::confirmed()->whereDate('debut_at', '>=', Carbon::now())->get();
+        $reservationsEnCoursQuery = Reservation::confirmed()->whereDate('debut_at', '<=', Carbon::now())->whereDate('fin_at', '>=', Carbon::now());
+        $reservationsIncomingQuery = Reservation::confirmed()->whereDate('debut_at', '>=', Carbon::now());
         $stats['hier'] = $reservationsHierQuery->count();
         $stats['jour'] = $reservationsJourQuery->count();
         $stats['montant'] = $reservationsTransactionQuery->sum('total');
@@ -141,7 +139,7 @@ class StatistiqueController extends ReservationController
 
         // taux d'annulation
         $totalConfirmedReservations = $reservationsTransactionQuery->count();
-        $totalCancelledReservations = Reservation::where('etat_id', '5')->whereBetween($type_date, [$dateDebut, $dateFin])->count();
+        $totalCancelledReservations = Reservation::where('etat_id', Etat::ANNULEE_ID)->whereBetween($type_date, [$dateDebut, $dateFin])->count();
         // Calculer le taux d'annulation de réservation
         //dd($totalCancelledReservations,$totalConfirmedReservations);
         if($totalConfirmedReservations <=0){
@@ -189,7 +187,7 @@ class StatistiqueController extends ReservationController
 
         $origines = Source::all()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.statistiques', compact('reservations', 'etats', 'conditions', 'categories', 'stats', 'origines'));
+        return view('IpsumReservation::reservation.statistiques', compact('etats', 'conditions', 'categories', 'stats', 'origines'));
     }
 
     public function getListeMois($dateDebut, $dateFin)
