@@ -1,6 +1,6 @@
 <div class="box">
     <div class="box-header">
-        <h2 class="box-title text-primary"><i class="fa fa-clock mr-2"></i> {{ $heure }}</h2>
+        <h2 class="box-title text-primary"><i class="fa fa-clock mr-2"></i> {{ $heure }}:00</h2>
     </div>
     <div class="box-body">
 
@@ -20,8 +20,12 @@
                 </thead>
                 <tbody>
                 @foreach ($reservations as $reservation)
-                    <tr>
-                        <td class="text-white {{ $is_depart ? 'bg-success' : 'bg-info' }}">{{ $is_depart ? 'Départ' : 'Retour' }}</td>
+                    <tr style="{{ (($is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))) ? 'opacity: 0.5' : '' }}">
+                        <td class="text-white {{ $is_depart ? 'bg-success' : 'bg-info' }}">
+                            {{ $is_depart ? 'Départ' : 'Retour' }}<br>
+                            {{ $reservation->reference }}
+                            <div class="lead mt-1">{{ $is_depart ? $reservation->debut_at->format('H:i') : $reservation->fin_at->format('H:i') }}</div>
+                        </td>
                         <td>
                             <a href="{{ $reservation->categorie ? route('admin.categorie.edit', $reservation->categorie) : '#' }}">
                                 Catégorie {{ $reservation->categorie_nom }}
@@ -97,9 +101,11 @@
         {{-- VERSION MOBILE --}}
         <div class="d-md-none">
             @foreach ($reservations as $reservation)
-                <div class="mb-3 shadow-sm">
+                <div class="mb-3 shadow-sm" style="{{ (($is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))) ? 'opacity: 0.5' : '' }}">
                     <div class="{{ $is_depart ? 'bg-success' : 'bg-info' }} text-center text-white p-1">
+                        <span class="lead">{{ $is_depart ? $reservation->debut_at->format('H:i') : $reservation->fin_at->format('H:i') }}</span> -
                         {{ $is_depart ? 'Départ' : 'Retour' }}
+                        {{ $reservation->reference }}
                     </div>
                     <div class="p-2">
                         <h3 class="mb-1">
