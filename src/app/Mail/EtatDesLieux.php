@@ -42,21 +42,21 @@ class EtatDesLieux extends Mailable
         }
 
         $this->file = file_get_contents($pdfPath);
-        $this->filePath = $pdfPath;
 
         /**
          * CONTRAT SIGNÉ
          */
-        $contratPath = storage_path("app/contrats/contrat-{$inspection->reservation->contrat}.pdf");
+        if ($this->inspection->type->is_initial) {
+            $contratPath = storage_path("app/contrats/contrat-{$inspection->reservation->contrat}.pdf");
 
-        if (!file_exists($contratPath)) {
-            throw new \Exception(
-                "Le PDF du contrat est introuvable pour la réservation #{$inspection->reservation->id}"
-            );
+            if (!file_exists($contratPath)) {
+                throw new \Exception(
+                    "Le PDF du contrat est introuvable pour la réservation #{$inspection->reservation->id}"
+                );
+            }
+
+            $this->contratFile = file_get_contents($contratPath);
         }
-
-        $this->contratFilePath = $contratPath;
-        $this->contratFile = file_get_contents($contratPath);
 
         App::setLocale($inspection->reservation->locale);
     }

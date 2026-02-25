@@ -365,22 +365,24 @@ class EtatDesLieuxController extends AdminController
             /**
              * SIGNATURE DU CONTRAT (CGL)
              */
-            $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->first();
+            if ($inspection->type->is_initial) {
+                $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->first();
 
-            $contratDirectory = storage_path('app/contrats');
-            if (!is_dir($contratDirectory)) {
-                mkdir($contratDirectory, 0775, true);
+                $contratDirectory = storage_path('app/contrats');
+                if (!is_dir($contratDirectory)) {
+                    mkdir($contratDirectory, 0775, true);
+                }
+
+                $contratPdfPath = $contratDirectory . "/contrat-{$reservation->contrat}.pdf";
+
+                Pdf::loadView(
+                    config('ipsum.reservation.contrat.view'),
+                    compact('reservation', 'cgl', 'inspection')
+                )->save($contratPdfPath);
+
+                // 🔐 Signature numérique contrat
+                $this->signPdf($contratPdfPath);
             }
-
-            $contratPdfPath = $contratDirectory . "/contrat-{$reservation->contrat}.pdf";
-
-            Pdf::loadView(
-                config('ipsum.reservation.contrat.view'),
-                compact('reservation', 'cgl', 'inspection')
-            )->save($contratPdfPath);
-
-            // 🔐 Signature numérique contrat
-            $this->signPdf($contratPdfPath);
 
             /**
              * ENVOI DU DOCUMENT FINAL
