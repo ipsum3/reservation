@@ -587,7 +587,7 @@ class ReservationController extends AdminController
         };
         if ($groupe_by_heure) {
             $depart_group_by[] = function (Reservation $reservation) {
-                return  $reservation->debut_at->format('H:i');
+                return  $reservation->debut_at->format('H');
             };
         }
         $heures_depart = $query->orderBy('debut_at')->get()->groupBy($depart_group_by);
@@ -603,7 +603,7 @@ class ReservationController extends AdminController
         };
         if ($groupe_by_heure) {
             $retour_group_by[] = function (Reservation $reservation) {
-                return  $reservation->fin_at->format('H:i');
+                return  $reservation->fin_at->format('H');
             };
         }
         $heures_retour = $query->orderBy('fin_at')->get()->groupBy($retour_group_by);
