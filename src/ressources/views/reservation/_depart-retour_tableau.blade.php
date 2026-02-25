@@ -20,7 +20,10 @@
                 </thead>
                 <tbody>
                 @foreach ($reservations as $reservation)
-                    <tr style="{{ (($is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))) ? 'opacity: 0.5' : '' }}">
+                    <tr style="{{ (
+                            (!config('ipsum.reservation.etat_des_lieux.enable') and (($is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))))
+                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($is_depart and $reservation->inspection_initiale?->isSigned()) or (!$is_depart and $reservation->inspection_finale?->isSigned())))
+                            ) ? 'opacity: 0.5' : '' }}">
                         <td class="text-white {{ $is_depart ? 'bg-success' : 'bg-info' }}">
                             {{ $is_depart ? 'Départ' : 'Retour' }}<br>
                             {{ $reservation->reference }}
@@ -101,7 +104,10 @@
         {{-- VERSION MOBILE --}}
         <div class="d-md-none">
             @foreach ($reservations as $reservation)
-                <div class="mb-3 shadow-sm" style="{{ (($is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))) ? 'opacity: 0.5' : '' }}">
+                <div class="mb-3 shadow-sm" style="{{ (
+                            (!config('ipsum.reservation.etat_des_lieux.enable') and (($is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))))
+                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($is_depart and $reservation->inspection_initiale?->isSigned()) or (!$is_depart and $reservation->inspection_finale?->isSigned())))
+                            ) ? 'opacity: 0.5' : '' }}">
                     <div class="{{ $is_depart ? 'bg-success' : 'bg-info' }} text-center text-white p-1">
                         <span class="lead">{{ $is_depart ? $reservation->debut_at->format('H:i') : $reservation->fin_at->format('H:i') }}</span> -
                         {{ $is_depart ? 'Départ' : 'Retour' }}
