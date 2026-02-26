@@ -205,6 +205,9 @@ class StatistiqueController extends ReservationController
         return $listeMois;
     }
 
+    /*
+     * TODO a quoi sert cette methode, il semble y avoir la même dans la méthode parente
+     */
     public function searchClients(Request $request) {
         $search = $request->input('client_search');
         $infos = [

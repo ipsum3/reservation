@@ -27,22 +27,12 @@
         </div>
     </div>
 
-    @foreach($jours as $jour)
-        <h2 class="main-title">{{ ucfirst($jour['date']->isoFormat('dddd D MMMM G')) }}</h2>
+    @foreach($jours as $date => $jour)
+        <h2 class="main-title">{{ ucfirst(\Carbon\Carbon::createFromFormat('Y-m-d', $date)->isoFormat('dddd D MMMM G')) }}</h2>
 
-        @if(isset($jour['depart']))
-            <h3 class="main-title">Départs</h3>
-            @foreach($jour['depart'] as $heure => $reservations)
-                @include('IpsumReservation::reservation._depart-retour_tableau', ['is_depart' => true])
-            @endforeach
-        @endif
-
-        @if(isset($jour['retour']))
-            <h3 class="main-title">Retours</h3>
-            @foreach($jour['retour'] as $heure => $reservations)
-                @include('IpsumReservation::reservation._depart-retour_tableau', ['is_depart' => false])
-            @endforeach
-        @endif
+        @foreach($jour->groupBy(function ($reservation) { return  $reservation->is_depart ? $reservation->debut_at->format('H') : $reservation->fin_at->format('H'); }) as $heure => $reservations)
+            @include('IpsumReservation::reservation._depart-retour_tableau')
+        @endforeach
         <div class="mb-5"></div>
     @endforeach
 

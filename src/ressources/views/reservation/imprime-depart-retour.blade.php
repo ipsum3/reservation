@@ -55,15 +55,18 @@
 </div>
 <div>
 
-@foreach($jours as $jour)
-    @if(isset($jour['depart']))
+@foreach($jours as $date => $jour)
+    @php
+        $reservations = $jour->groupBy(function ($reservation) { return  $reservation->is_depart ? 'depart' : 'retour'; });
+    @endphp
+    @if(isset($reservations['depart']))
         <table style="padding-bottom: 5mm;">
             <tr>
                 <td style="width:50%; padding: 0 5mm 0 0; border: none;">
 
                     <div style="text-align: center; padding-bottom: 0mm;">
                         <h1>
-                            Départs du {{ $jour['date']->isoFormat('dddd D MMMM G') }}
+                            Départs du {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->isoFormat('dddd D MMMM G') }}
                         </h1>
                     </div>
 
@@ -81,7 +84,7 @@
                 <td>Info.</td>
                 <td>Prestation</td>
             </tr>
-            @foreach($jour['depart'] as $reservation)
+            @foreach($reservations['depart'] as $reservation)
                 <tr>
                     <td>
                         {{ $reservation->debut_at->format('H:i') }}
@@ -131,14 +134,14 @@
         </table>
     @endif
 
-    @if(isset($jour['retour']))
-        <table class="{{ isset($jour['depart']) ? 'page_break' : '' }}" style="margin-top: 20px;padding-bottom: 5mm;">
+    @if(isset($reservations['retour']))
+        <table class="{{ isset($reservations['depart']) ? 'page_break' : '' }}" style="margin-top: 20px;padding-bottom: 5mm;">
             <tr>
                 <td style="width:50%; padding: 0 5mm 0 0; border: none;">
 
                     <div style="text-align: center; padding-bottom: 0mm;">
                         <h1>
-                            Retours du {{ $jour['date']->isoFormat('dddd D MMMM G') }}
+                            Retours du {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->isoFormat('dddd D MMMM G') }}
                         </h1>
                     </div>
 
@@ -155,7 +158,7 @@
                 <td>Contrat</td>
                 <td>Prestation</td>
             </tr>
-            @foreach($jour['retour'] as $reservation)
+            @foreach($reservations['retour'] as $reservation)
                 <tr>
                     <td>{{ $reservation->fin_at->format('H:i') }}</td>
                     <td>

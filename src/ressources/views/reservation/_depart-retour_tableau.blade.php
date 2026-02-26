@@ -21,13 +21,13 @@
                 <tbody>
                 @foreach ($reservations as $reservation)
                     <tr style="{{ (
-                            (!config('ipsum.reservation.etat_des_lieux.enable') and (($is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))))
-                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($is_depart and $reservation->inspection_initiale?->isSigned()) or (!$is_depart and $reservation->inspection_finale?->isSigned())))
+                            (!config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$reservation->is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))))
+                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->inspection_initiale?->isSigned()) or (!$reservation->is_depart and $reservation->inspection_finale?->isSigned())))
                             ) ? 'opacity: 0.5' : '' }}">
-                        <td class="text-white {{ $is_depart ? 'bg-success' : 'bg-info' }}">
-                            {{ $is_depart ? 'Départ' : 'Retour' }}<br>
+                        <td class="text-white {{ $reservation->is_depart ? 'bg-success' : 'bg-info' }}">
+                            {{ $reservation->is_depart ? 'Départ' : 'Retour' }}<br>
                             {{ $reservation->reference }}
-                            <div class="lead mt-1">{{ $is_depart ? $reservation->debut_at->format('H:i') : $reservation->fin_at->format('H:i') }}</div>
+                            <div class="lead mt-1">{{ $reservation->is_depart ? $reservation->debut_at->format('H:i') : $reservation->fin_at->format('H:i') }}</div>
                         </td>
                         <td>
                             <a href="{{ $reservation->categorie ? route('admin.categorie.edit', $reservation->categorie) : '#' }}">
@@ -49,7 +49,7 @@
                             @endif
                         </td>
                         <td>
-                            {{ $is_depart ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}
+                            {{ $reservation->is_depart ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}
                             @if ($reservation->custom_fields->vol)
                                 <i class="fa fa-plane-arrival" data-toggle="tooltip" data-placement="auto" data-html="true" title="Numéro de vol : {{ $reservation->custom_fields->vol }}"></i>
                             @endif
@@ -71,7 +71,7 @@
                         <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
                         <td class="text-right">
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
-                                @if ($is_depart)
+                                @if ($reservation->is_depart)
                                     @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
                                         @if($reservation->inspection_initiale?->isSigned())
                                             <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspection_initiale]) }}" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
@@ -105,12 +105,12 @@
         <div class="d-md-none">
             @foreach ($reservations as $reservation)
                 <div class="mb-3 shadow-sm" style="{{ (
-                            (!config('ipsum.reservation.etat_des_lieux.enable') and (($is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))))
-                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($is_depart and $reservation->inspection_initiale?->isSigned()) or (!$is_depart and $reservation->inspection_finale?->isSigned())))
+                            (!config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$reservation->is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))))
+                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->inspection_initiale?->isSigned()) or (!$reservation->is_depart and $reservation->inspection_finale?->isSigned())))
                             ) ? 'opacity: 0.5' : '' }}">
-                    <div class="{{ $is_depart ? 'bg-success' : 'bg-info' }} text-center text-white p-1">
-                        <span class="lead">{{ $is_depart ? $reservation->debut_at->format('H:i') : $reservation->fin_at->format('H:i') }}</span> -
-                        {{ $is_depart ? 'Départ' : 'Retour' }}
+                    <div class="{{ $reservation->is_depart ? 'bg-success' : 'bg-info' }} text-center text-white p-1">
+                        <span class="lead">{{ $reservation->is_depart ? $reservation->debut_at->format('H:i') : $reservation->fin_at->format('H:i') }}</span> -
+                        {{ $reservation->is_depart ? 'Départ' : 'Retour' }}
                         {{ $reservation->reference }}
                     </div>
                     <div class="p-2">
@@ -135,7 +135,7 @@
                         </h3>
                         <p class="mb-3">
                             <i class="fa fa-map-marker-alt"></i>
-                            {{ $is_depart ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}
+                            {{ $reservation->is_depart ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}
                             @if ($reservation->custom_fields->vol)
                                 <i class="fa fa-plane-arrival" data-toggle="tooltip" data-placement="auto" data-html="true" title="Numéro de vol : {{ $reservation->custom_fields->vol }}"></i>
                             @endif
@@ -155,7 +155,7 @@
 
                         <div class="text-right">
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
-                                @if ($is_depart)
+                                @if ($reservation->is_depart)
                                     @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
                                         @if($reservation->inspection_initiale?->isSigned())
                                             <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_initiale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>

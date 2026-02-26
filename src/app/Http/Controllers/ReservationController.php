@@ -574,59 +574,39 @@ class ReservationController extends AdminController
         return back();
     }
 
-    protected function _getDepartRetourResa(ShowDepartRetour $request, $groupe_by_heure = true) :Collection
+    protected function _getDepartRetourResa(ShowDepartRetour $request) :Collection
     {
-        // Départ
-        $query = Reservation::confirmed()
-            ->whereBetween('debut_at', [$request->debut_at, $request->fin_at]);
-        if ($request->filled('lieu_id')) {
-            $query->where( 'debut_lieu_id', $request->lieu_id );
-        }
-        $depart_group_by[] = function (Reservation $reservation) {
-            return  $reservation->debut_at->format('Y-m-d');
-        };
-        if ($groupe_by_heure) {
-            $depart_group_by[] = function (Reservation $reservation) {
-                return  $reservation->debut_at->format('H');
-            };
-        }
-        $heures_depart = $query->orderBy('debut_at')->get()->groupBy($depart_group_by);
+        // Requete départ
+        $resas_depart = Reservation::confirmed()
+            ->whereBetween('debut_at', [$request->debut_at, $request->fin_at])
+            ->when($request->filled('lieu_id'), function ($query) use ($request) {
+                $query->where( 'debut_lieu_id', $request->lieu_id );
+            })
+            ->orderBy('debut_at')
+            ->get()
+            ->each(function ($reservation) { return $reservation->is_depart = true; });
 
-        // Retour
-        $query = Reservation::confirmed()
-            ->whereBetween('fin_at', [$request->debut_at, $request->fin_at]);
-        if ($request->filled('lieu_id')) {
-            $query->where( 'fin_lieu_id', $request->lieu_id );
-        }
-        $retour_group_by[] = function (Reservation $reservation) {
-            return  $reservation->fin_at->format('Y-m-d');
-        };
-        if ($groupe_by_heure) {
-            $retour_group_by[] = function (Reservation $reservation) {
-                return  $reservation->fin_at->format('H');
-            };
-        }
-        $heures_retour = $query->orderBy('fin_at')->get()->groupBy($retour_group_by);
 
-        // Fusion des dates
-        $periode = CarbonPeriod::create($request->debut_at, $request->fin_at);
-        $jours = collect();
-        foreach ($periode as $date) {
-            $heures = [];
-            $date_format = $date->format('Y-m-d');
+        // Requete retour
+        $resas_retour = Reservation::confirmed()
+            ->whereBetween('fin_at', [$request->debut_at, $request->fin_at])
+            ->when($request->filled('lieu_id'), function ($query) use ($request) {
+                $query->where( 'fin_lieu_id', $request->lieu_id );
+            })
+            ->orderBy('fin_at')
+            ->get()
+            ->each(function ($reservation) { return $reservation->is_depart = false; });
 
-            if (isset($heures_depart[$date_format])) {
-                $heures['depart'] = $heures_depart[$date_format];
-            }
-            if (isset($heures_retour[$date_format])) {
-                $heures['retour'] = $heures_retour[$date_format];;
-            }
 
-            if (isset($heures['depart']) or isset($heures['retour'])) {
-                $heures['date'] = $date;
-                $jours->push($heures);
-            }
-        }
+        $reservations = $resas_depart->concat($resas_retour);
+
+        // Regroupement par dates
+        $jours = $reservations->groupBy(function (Reservation $reservation) {
+            return  $reservation->is_depart ? $reservation->debut_at->format('Y-m-d') : $reservation->fin_at->format('Y-m-d');
+        });
+
+        //dd($resas_depart, $resas_retour, $reservations, $jours);
+
         return $jours;
     }
 
@@ -643,7 +623,7 @@ class ReservationController extends AdminController
 
     public function imprimerDepartEtRetour(ShowDepartRetour $request)
     {
-        $jours = $this->_getDepartRetourResa($request, false);
+        $jours = $this->_getDepartRetourResa($request);
 
         $pdf = Pdf::loadView('IpsumReservation::reservation.imprime-depart-retour', compact('jours'));
 
