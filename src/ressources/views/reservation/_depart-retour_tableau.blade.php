@@ -41,17 +41,28 @@
                                 </a>
                             @endif
                             @if ($reservation->prestations->count())
-                                <i class="fa fa-clipboard-list" data-toggle="tooltip" data-placement="auto" data-html="true" title="Prestations :<br>
+                                @if (!config('ipsum.reservation.depart_retour_affichage_complet'))
+                                    <i class="fa fa-clipboard-list" data-toggle="tooltip" data-placement="auto" data-html="true" title="Prestations :<br>
+                                        @foreach ($reservation->prestations as $prestation)
+                                            {{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }} <br>
+                                        @endforeach
+                                    "></i>
+                                @else
+                                    <br>Prestations :<br>
                                     @foreach ($reservation->prestations as $prestation)
                                         {{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }} <br>
                                     @endforeach
-                                "></i>
+                                @endif
                             @endif
                         </td>
                         <td>
                             {{ $reservation->is_depart ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}
                             @if ($reservation->custom_fields->vol)
-                                <i class="fa fa-plane-arrival" data-toggle="tooltip" data-placement="auto" data-html="true" title="Numéro de vol : {{ $reservation->custom_fields->vol }}"></i>
+                                @if (!config('ipsum.reservation.depart_retour_affichage_complet'))
+                                    <i class="fa fa-plane-arrival" data-toggle="tooltip" data-placement="auto" data-html="true" title="Numéro de vol : {{ $reservation->custom_fields->vol }}"></i>
+                                @else
+                                    <br>Numéro de vol : {{ $reservation->custom_fields->vol }}
+                                @endif
                             @endif
                         </td>
                         <td>
@@ -126,18 +137,29 @@
                                 </a>
                             @endif
                             @if ($reservation->prestations->count())
-                                <i class="fa fa-clipboard-list" data-toggle="tooltip" data-placement="auto" data-html="true" title="Prestations :<br>
+                                @if (!config('ipsum.reservation.depart_retour_affichage_complet'))
+                                    <i class="fa fa-clipboard-list" data-toggle="tooltip" data-placement="auto" data-html="true" title="Prestations :<br>
+                                        @foreach ($reservation->prestations as $prestation)
+                                            {{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }} <br>
+                                        @endforeach
+                                    "></i>
+                                @else
+                                    <br>Prestations :<br>
                                     @foreach ($reservation->prestations as $prestation)
                                         {{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }} <br>
                                     @endforeach
-                                "></i>
+                                @endif
                             @endif
                         </h3>
                         <p class="mb-3">
                             <i class="fa fa-map-marker-alt"></i>
                             {{ $reservation->is_depart ? $reservation->debut_lieu_nom : $reservation->fin_lieu_nom }}
                             @if ($reservation->custom_fields->vol)
-                                <i class="fa fa-plane-arrival" data-toggle="tooltip" data-placement="auto" data-html="true" title="Numéro de vol : {{ $reservation->custom_fields->vol }}"></i>
+                                @if (!config('ipsum.reservation.depart_retour_affichage_complet'))
+                                    <i class="fa fa-plane-arrival" data-toggle="tooltip" data-placement="auto" data-html="true" title="Numéro de vol : {{ $reservation->custom_fields->vol }}"></i>
+                                @else
+                                    <br>Numéro de vol : {{ $reservation->custom_fields->vol }}
+                                @endif
                             @endif
                         </p>
                         <p class="mb-3">
