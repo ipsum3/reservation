@@ -226,36 +226,75 @@
                 <div class="box">
                     <div class="box-header">
                         <h2 class="box-title">Documents</h2>
-                    </div>
-                    <div class="box-body">
-                        @if($reservation->etat_id == \Ipsum\Reservation\app\Models\Reservation\Etat::NON_VALIDEE_ID)
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}"><i class="fa fa-eye"></i> Voir le devis</a>&nbsp;
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'devis']) }}" ><i class="fas fa-envelope"></i> Envoyer le devis par mail</a>&nbsp;
-                        @endif
-                        @if($reservation->is_confirmed)
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir la confirmation</a>&nbsp;
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation']) }}" ><i class="fas fa-envelope"></i> Envoyer le mail de confirmation</a>&nbsp;
 
-                            @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
-                                @foreach($reservation->inspections->filter(fn($inspection) => $inspection->isSigned())->sortKeysDesc() as $inspection)
-                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.show', [$inspection]) }}"><i class="fa fa-file-download"></i> Voir l'état des lieux {{ strtolower($inspection->type->nom) }}</a>&nbsp;
-                                @endforeach
+                        @if($reservation->is_confirmed)
+                            <div class="btn-toolbar">
                                 @if(!$reservation->inspectionInitiale?->isSigned())
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux initial</a>&nbsp;
                                 @endif
                                 @if(!$reservation->inspectionFinale?->isSigned())
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux final</a>&nbsp;
                                 @endif
-                            @endif
+                            </div>
                         @endif
+                    </div>
+                    <div class="box-body">
+                        <div class="table-wrapper">
+                            <table class="table table-hover table-striped">
+                                <tbody>
+                                    @if($reservation->etat_id == \Ipsum\Reservation\app\Models\Reservation\Etat::NON_VALIDEE_ID)
+                                        <tr>
+                                            <td>Devis</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'devis']) }}" ><i class="fas fa-envelope"></i></a>
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}"><i class="fa fa-file-download"></i></a>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if($reservation->is_confirmed)
+                                        <tr>
+                                            <td>Confirmation de réservation</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation']) }}" ><i class="fas fa-envelope"></i></a>
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i></a>&nbsp;
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if($reservation->contrat && !config('ipsum.reservation.contrat.disable'))
+                                        @if($reservation->inspectionInitiale?->isSigned())
+                                            <tr>
+                                                <td>Contrat de location {{ $reservation->contrat }} signé</td>
+                                                <td class="text-right">
+                                                    {{--<a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'contrat']) }}" ><i class="fas fa-envelope"></i></a>--}}
+                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                </td>
+                                            </tr>
+                                        @endif
+                                        <tr>
+                                            <td>Contrat papier</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i></a>&nbsp;
+                                            </td>
+                                        </tr>
+                                    @endif
 
-                        @if($reservation->contrat && !config('ipsum.reservation.contrat.disable'))
-                            @if($reservation->inspectionInitiale?->isSigned())
-                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir le contrat</a>&nbsp;
-                            @else
-                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i> Générer le contrat</a>&nbsp;
-                            @endif
-                        @endif
+                                    @if($reservation->is_confirmed)
+                                        @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
+                                            @foreach($reservation->inspections->filter(fn($inspection) => $inspection->isSigned())->sortKeysDesc() as $inspection)
+                                                <tr>
+                                                    <td>État des lieux {{ strtolower($inspection->type->nom) }} #{{ $inspection->id }}</td>
+                                                    <td class="text-right">
+                                                        {{--<a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'inspectionTodo']) }}" ><i class="fas fa-envelope"></i></a>--}}
+                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.show', [$inspection]) }}"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
+                                    @endif
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             @endif
