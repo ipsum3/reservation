@@ -77,7 +77,7 @@ class Vehicule extends BaseModel
     {
         static::deleting(function (self $categorie) {
             $categorie->interventions()->delete();
-            $categorie->dommages()->delete();
+            /*$categorie->dommages()->delete(); Ne pas supprimer les dommages sinon il ne seront plus dispo sur le récap de l'éatat des lieux*/
         });
     }
 
