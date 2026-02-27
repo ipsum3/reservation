@@ -19,7 +19,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($reservations as $reservation)
+                @foreach ($reservations->sortBy(function ($reservation) { return $reservation->is_depart ? $reservation->debut_at : $reservation->fin_at; }) as $reservation)
                     <tr style="{{ (
                             (!config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$reservation->is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))))
                             or (config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->inspection_initiale?->isSigned()) or (!$reservation->is_depart and $reservation->inspection_finale?->isSigned())))
