@@ -27,11 +27,12 @@ class SendDocumentEmail extends FormRequest
 
     public function rules()
     {
-
         return [
-            'reservation_id' => 'required',
             'document' => 'required',
             'email' => 'required|email',
+            'objet' => 'required',
+            'message' => 'required_unless:document,confirmation',
+            'id' => 'nullable'
         ];
     }
 

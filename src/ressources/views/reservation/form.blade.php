@@ -246,8 +246,8 @@
                                         <tr>
                                             <td>Devis</td>
                                             <td class="text-right">
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'devis']) }}" ><i class="fas fa-envelope"></i></a>
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}"><i class="fa fa-file-download"></i></a>
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'devis', 'objet' => 'Devis de location']) }}" ><i class="fas fa-envelope"></i></a>
                                             </td>
                                         </tr>
                                     @endif
@@ -255,8 +255,8 @@
                                         <tr>
                                             <td>Confirmation de réservation</td>
                                             <td class="text-right">
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation']) }}" ><i class="fas fa-envelope"></i></a>
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i></a>&nbsp;
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation', 'objet' => 'Confirmation de réservation '.$reservation->reference]) }}" ><i class="fas fa-envelope"></i></a>
                                             </td>
                                         </tr>
                                     @endif
@@ -265,15 +265,15 @@
                                             <tr>
                                                 <td>Contrat de location {{ $reservation->contrat }} signé</td>
                                                 <td class="text-right">
-                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'contrat']) }}" ><i class="fas fa-envelope"></i></a>
                                                     <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'contrat', 'objet' => 'Contrat de location '.$reservation->contrat]) }}" ><i class="fas fa-envelope"></i></a>
                                                 </td>
                                             </tr>
                                         @endif
                                         <tr>
                                             <td>Contrat papier</td>
                                             <td class="text-right">
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
                                             </td>
                                         </tr>
                                     @endif
@@ -284,8 +284,9 @@
                                                 <tr>
                                                     <td>État des lieux {{ strtolower($inspection->type->nom) }} #{{ $inspection->id }}</td>
                                                     <td class="text-right">
-                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'inspection', $inspection->id]) }}" ><i class="fas fa-envelope"></i></a>
-                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.show', [$inspection]) }}"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.show', [$inspection]) }}"><i class="fa fa-car-crash"></i></a>&nbsp;
+                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'inspection', 'id' => $inspection->id, 'objet' => 'État des lieux '.strtolower($inspection->type->nom).' #'.$inspection->id]) }}" ><i class="fas fa-envelope"></i></a>
                                                     </td>
                                                 </tr>
                                             @endforeach

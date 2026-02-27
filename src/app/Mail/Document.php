@@ -43,14 +43,14 @@ class Document extends Mailable
      */
     public function build()
     {
-        return $this->markdown('IpsumReservation::reservation.emails.devis')
+        return $this->markdown('IpsumReservation::reservation.emails.document')
             ->attachData($this->document_file, $this->document_name, [
                 'mime' => 'application/pdf',
             ])
             ->from(config('mail.from.address'), config('mail.from.name'))
             ->replyTo($this->reservation->lieuDebut->email_first, config('settings.nom_site'))
             ->to($this->email, $this->reservation->prenom.' '.$this->reservation->nom)
-            ->subject('Devis réservation ' . $this->reservation->reference);
+            ->subject($this->objet);
 
     }
 }

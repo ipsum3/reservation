@@ -31,6 +31,8 @@ use Str;
  * @property-read int|null $checklists_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Dommage> $dommages
  * @property-read int|null $dommages_count
+ * @property-read string $document_path
+ * @property-read string $document_public_file_name
  * @property-read \Ipsum\Media\app\Models\Media|null $illustration
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Media\app\Models\Media> $medias
  * @property-read int|null $medias_count

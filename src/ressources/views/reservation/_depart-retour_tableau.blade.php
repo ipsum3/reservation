@@ -85,15 +85,16 @@
                                 @if ($reservation->is_depart)
                                     @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
                                         @if($reservation->inspectionInitiale?->isSigned())
-                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionInitiale]) }}" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionInitiale]) }}" title="Voir l'état des lieux"><i class="fa fa-car-crash"></i></a>
                                         @else
                                             <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" title="État des lieux initial"><i class="fa fa-car"></i></a>
                                         @endif
+                                    @else
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" title="contrat"><i class="fa fa-file-signature"></i></a>
                                     @endif
-                                    <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" title="contrat"><i class="fa fa-file-signature"></i></a>
                                 @elseif(config('ipsum.reservation.etat_des_lieux.enable') === true)
                                     @if($reservation->inspectionFinale?->isSigned())
-                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionFinale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionFinale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car-crash"></i></a>
                                     @else
                                         <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}" title="État des lieux final"><i class="fa fa-car"></i></a>
                                     @endif
@@ -180,15 +181,16 @@
                                 @if ($reservation->is_depart)
                                     @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
                                         @if($reservation->inspectionInitiale?->isSigned())
-                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspectionInitiale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspectionInitiale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car-crash"></i></a>
                                         @else
                                             <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" title="État des lieux initial"><i class="fa fa-car"></i></a>
                                         @endif
+                                    @else
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" title="contrat"><i class="fa fa-file-signature"></i></a>
                                     @endif
-                                    <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" title="contrat"><i class="fa fa-file-signature"></i></a>
                                 @elseif(config('ipsum.reservation.etat_des_lieux.enable') === true)
                                     @if($reservation->inspectionFinale?->isSigned())
-                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspectionFinale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspectionFinale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car-crash"></i></a>
                                     @else
                                         <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}" title="État des lieux final"><i class="fa fa-car"></i></a>
                                     @endif

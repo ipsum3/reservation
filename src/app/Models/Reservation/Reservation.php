@@ -83,14 +83,16 @@ use Carbon\Carbon;
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Condition|null $condition
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Etat|null $etat
  * @property-read float|null $acompte
+ * @property-read string $contrat_path
+ * @property-read string $contrat_public_file_name
  * @property-read mixed $date_naissance_minimum
  * @property-read mixed $date_permis_minimum
- * @property-read mixed $inspectionFinale
- * @property-read mixed $inspectionInitiale
  * @property-read bool $is_confirmed
  * @property-read bool $is_payed
  * @property-read int $nb_jours
  * @property-read mixed $tarif_journalier
+ * @property-read Inspection|null $inspectionFinale
+ * @property-read Inspection|null $inspectionInitiale
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Inspection> $inspections
  * @property-read int|null $inspections_count
  * @property-read Lieu|null $lieuDebut
@@ -407,5 +409,15 @@ class Reservation extends BaseModel
     {
         $this->attributes['fin_lieu_id'] = $value;
         $this->attributes['fin_lieu_nom'] = $this->lieuFin ? $this->lieuFin->nom : '';
+    }
+
+    public function getContratPathAttribute(): string
+    {
+        return storage_path("app/contrats/contrat-{$this->contrat}.pdf");
+    }
+
+    public function getContratPublicFileNameAttribute(): string
+    {
+        return 'contrat-'.$this->contrat.'.pdf';
     }
 }

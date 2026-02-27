@@ -455,21 +455,20 @@ class ReservationController extends AdminController
         return view(config('ipsum.reservation.confirmation.view'), compact('reservation'));
     }
 
-    public function documentSend(SendDocumentEmail $request, string $id = null)
+    public function documentSend(SendDocumentEmail $request, Reservation $reservation)
     {
         try {
-            $reservation = Reservation::findOrFail( $request->reservation_id );
             if( $request->document == 'confirmation' ) {
                 Mail::send(new Confirmation($reservation, $request->email, false, $request->objet));
-                Alert::success("L'email de confirmation a bien été envoyé")->flash();
             } elseif ( $request->document == 'devis' ) {
                 Mail::send(new Devis($reservation, $request->email, $request->objet));
-                Alert::success("L'email de devis a bien été envoyé")->flash();
             } elseif ( $request->document == 'inspection' ) {
-                $inspection = $reservation->inspections()->findOrFail($id);
+                $inspection = $reservation->inspections()->findOrFail($request->id);
                 Mail::send(new Document($reservation, $inspection->document_path, $inspection->document_public_file_name, $request->objet, $request->message, $request->email));
-                Alert::success("L'email de l'inspection a bien été envoyé")->flash();
+            } elseif ( $request->document == 'contrat' ) {
+                Mail::send(new Document($reservation, $reservation->contrat_path, $reservation->contrat_public_file_name, $request->objet, $request->message, $request->email));
             }
+            Alert::success("Le document a bien été envoyé")->flash();
             return redirect()->route('admin.reservation.edit', $reservation);
         } catch (\Exception $exception) {
             Alert::error("Impossible d'envoyer l'email")->flash();
@@ -523,17 +522,14 @@ class ReservationController extends AdminController
      */
     public function contratSigne(Reservation $reservation)
     {
-
-        $contratPath = storage_path("app/contrats/contrat-{$reservation->contrat}.pdf");
-
-        if (!file_exists($contratPath)) {
+        if (!file_exists($reservation->contrat_path)) {
             Alert::error('Fichier introuvable')->flash();
             return back();
         }
 
-        return response()->file($contratPath, [
+        return response()->file($reservation->contrat_path, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="contrat-'.$reservation->contrat.'.pdf"',
+            'Content-Disposition' => 'inline; filename="'.$reservation->contrat_public_file_name.'"',
         ]);
     }
 
