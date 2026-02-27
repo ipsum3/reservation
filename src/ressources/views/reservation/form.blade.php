@@ -240,17 +240,17 @@
                                 @foreach($reservation->inspections->filter(fn($inspection) => $inspection->isSigned())->sortKeysDesc() as $inspection)
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.show', [$inspection]) }}"><i class="fa fa-file-download"></i> Voir l'état des lieux {{ strtolower($inspection->type->nom) }}</a>&nbsp;
                                 @endforeach
-                                @if(!$reservation->inspection_initiale?->isSigned())
+                                @if(!$reservation->inspectionInitiale?->isSigned())
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux initial</a>&nbsp;
                                 @endif
-                                @if(!$reservation->inspection_finale?->isSigned())
+                                @if(!$reservation->inspectionFinale?->isSigned())
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux final</a>&nbsp;
                                 @endif
                             @endif
                         @endif
 
                         @if($reservation->contrat && !config('ipsum.reservation.contrat.disable'))
-                            @if($reservation->inspection_initiale?->isSigned())
+                            @if($reservation->inspectionInitiale?->isSigned())
                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i> Voir le contrat</a>&nbsp;
                             @else
                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}"><i class="fa fa-file-download"></i> Générer le contrat</a>&nbsp;

@@ -233,22 +233,22 @@
                             <table class="tableau3">
                                 <tr>
                                     <td>Km compteur</td>
-                                    <td>{{ $reservation->inspection_initiale?->kilometrage }} km</td>
+                                    <td>{{ $reservation->inspectionInitiale?->kilometrage }} km</td>
                                 </tr>
                                 <tr>
                                     <td>Carburant</td>
-                                    <td>{{ $reservation->inspection_initiale?->carburant }}/8</td>
+                                    <td>{{ $reservation->inspectionInitiale?->carburant }}/8</td>
                                 </tr>
                                 @foreach($checklists as $item)
                                     <tr>
                                         <td>{{ $item->nom }}</td>
                                         <td>
-                                            {{ in_array($item->id, ($reservation->inspection_initiale ? $reservation->inspection_initiale->checklists?->pluck('id')->toArray() : [])) ? 'ok' : '-' }}
+                                            {{ in_array($item->id, ($reservation->inspectionInitiale ? $reservation->inspectionInitiale->checklists?->pluck('id')->toArray() : [])) ? 'ok' : '-' }}
                                         </td>
                                     </tr>
                                 @endforeach
                                 <tr>
-                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspection_initiale?->observations)) !!}</td>
+                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspectionInitiale?->observations)) !!}</td>
                                 </tr>
                             </table>
                         </td>
@@ -257,27 +257,27 @@
                             <table class="tableau3">
                                 <tr>
                                     <td>Km compteur</td>
-                                    <td>{{ $reservation->inspection_finale?->kilometrage }} km</td>
+                                    <td>{{ $reservation->inspectionFinale?->kilometrage }} km</td>
                                 </tr>
                                 <tr>
                                     <td>Carburant</td>
-                                    <td>{{ $reservation->inspection_finale?->carburant }}/8</td>
+                                    <td>{{ $reservation->inspectionFinale?->carburant }}/8</td>
                                 </tr>
                                 @foreach($checklists as $item)
                                     <tr>
                                         <td>{{ $item->nom }}</td>
                                         <td>
-                                            {{ in_array($item->id, ($reservation->inspection_finale ? $reservation->inspection_finale->checklists->pluck('id')->toArray() : [])) ? 'ok' : '-' }}
+                                            {{ in_array($item->id, ($reservation->inspectionFinale ? $reservation->inspectionFinale->checklists->pluck('id')->toArray() : [])) ? 'ok' : '-' }}
                                         </td>
                                     </tr>
                                 @endforeach
                                 <tr>
-                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspection_finale?->observations)) !!}</td>
+                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspectionFinale?->observations)) !!}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
                                         @php
-                                            $count = $reservation->inspection_finale?->dommages->count() ?? 0;
+                                            $count = $reservation->inspectionFinale?->dommages->count() ?? 0;
                                         @endphp
                                         <strong>{{ $count }} dommage{{ $count > 1 ? 's' : '' }} déclaré{{ $count > 1 ? 's' : '' }}</strong>
                                     </td>
@@ -295,7 +295,7 @@
 
     @php
         $allDommages = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation) {
-            return !$dommage->inspection_id or $dommage->inspection_id != $reservation->inspection_finale?->id;
+            return !$dommage->inspection_id or $dommage->inspection_id != $reservation->inspectionFinale?->id;
         });
     @endphp
     <div style="page-break-inside: avoid;">
@@ -338,7 +338,7 @@
 
     @if(!$inspection->type->is_initial)
         @php
-            $allDommages = $reservation->inspection_finale?->dommages;
+            $allDommages = $reservation->inspectionFinale?->dommages;
         @endphp
         <div style="page-break-inside: avoid;">
             <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">

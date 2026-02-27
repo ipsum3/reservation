@@ -26,7 +26,7 @@
                     <div class="mb-5">
                         @php
                             $dommages_initial = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation) {
-                                return !$dommage->inspection_id or $dommage->inspection_id != $reservation->inspection_finale?->id;
+                                return !$dommage->inspection_id or $dommage->inspection_id != $reservation->inspectionFinale?->id;
                             });
                         @endphp
 
@@ -58,7 +58,7 @@
                         {{-- Dommages de l’inspection finale --}}
                         @php
                             $dommages_new = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation, $inspection) {
-                                return $inspection->type->is_initial or $dommage->inspection_id == $reservation->inspection_finale?->id;
+                                return $inspection->type->is_initial or $dommage->inspection_id == $reservation->inspectionFinale?->id;
                             });
                         @endphp
 

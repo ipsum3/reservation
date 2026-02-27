@@ -97,8 +97,8 @@ class EtatDesLieuxController extends AdminController
     public function getInspection(Reservation $reservation, Type $type)
     {
         return $type->id == Type::FINAL_ID
-            ? $reservation->inspection_finale
-            : $reservation->inspection_initiale;
+            ? $reservation->inspectionFinale
+            : $reservation->inspectionInitiale;
     }
 
     /** Met à jour ou crée une inspection */

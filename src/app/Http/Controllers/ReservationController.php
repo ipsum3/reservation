@@ -578,6 +578,7 @@ class ReservationController extends AdminController
     {
         // Requete départ
         $resas_depart = Reservation::confirmed()
+            ->with(['categorie', 'vehicule', 'client', 'condition', 'inspectionInitiale'])
             ->whereBetween('debut_at', [$request->debut_at, $request->fin_at])
             ->when($request->filled('lieu_id'), function ($query) use ($request) {
                 $query->where( 'debut_lieu_id', $request->lieu_id );
@@ -589,6 +590,7 @@ class ReservationController extends AdminController
 
         // Requete retour
         $resas_retour = Reservation::confirmed()
+            ->with(['categorie', 'vehicule', 'client', 'condition', 'inspectionFinale'])
             ->whereBetween('fin_at', [$request->debut_at, $request->fin_at])
             ->when($request->filled('lieu_id'), function ($query) use ($request) {
                 $query->where( 'fin_lieu_id', $request->lieu_id );

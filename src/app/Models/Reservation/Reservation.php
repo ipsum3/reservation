@@ -85,8 +85,8 @@ use Carbon\Carbon;
  * @property-read float|null $acompte
  * @property-read mixed $date_naissance_minimum
  * @property-read mixed $date_permis_minimum
- * @property-read mixed $inspection_finale
- * @property-read mixed $inspection_initiale
+ * @property-read mixed $inspectionFinale
+ * @property-read mixed $inspectionInitiale
  * @property-read bool $is_confirmed
  * @property-read bool $is_payed
  * @property-read int $nb_jours
@@ -245,6 +245,19 @@ class Reservation extends BaseModel
         return $this->hasMany(Inspection::class);
     }
 
+    public function inspectionInitiale()
+    {
+        return $this->hasOne(Inspection::class)
+            ->where('type_id', \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
+            ->latest();
+    }
+    public function inspectionFinale()
+    {
+        return $this->hasOne(Inspection::class)
+            ->where('type_id', \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID)
+            ->latest();
+    }
+
 
 
 
@@ -394,20 +407,5 @@ class Reservation extends BaseModel
     {
         $this->attributes['fin_lieu_id'] = $value;
         $this->attributes['fin_lieu_nom'] = $this->lieuFin ? $this->lieuFin->nom : '';
-    }
-
-    public function getInspectionInitialeAttribute()
-    {
-        return $this->inspections()
-            ->where('type_id', \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID)
-            ->latest()
-            ->first();
-    }
-    public function getInspectionFinaleAttribute()
-    {
-        return $this->inspections()
-            ->where('type_id', \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID)
-            ->latest()
-            ->first();
     }
 }

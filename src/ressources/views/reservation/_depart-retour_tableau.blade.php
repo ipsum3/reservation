@@ -22,7 +22,7 @@
                 @foreach ($reservations->sortBy(function ($reservation) { return $reservation->is_depart ? $reservation->debut_at : $reservation->fin_at; }) as $reservation)
                     <tr style="{{ (
                             (!config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$reservation->is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))))
-                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->inspection_initiale?->isSigned()) or (!$reservation->is_depart and $reservation->inspection_finale?->isSigned())))
+                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->inspectionInitiale?->isSigned()) or (!$reservation->is_depart and $reservation->inspectionFinale?->isSigned())))
                             ) ? 'opacity: 0.5' : '' }}">
                         <td class="text-white {{ $reservation->is_depart ? 'bg-success' : 'bg-info' }}">
                             {{ $reservation->is_depart ? 'Départ' : 'Retour' }}<br>
@@ -84,16 +84,16 @@
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
                                 @if ($reservation->is_depart)
                                     @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
-                                        @if($reservation->inspection_initiale?->isSigned())
-                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspection_initiale]) }}" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                        @if($reservation->inspectionInitiale?->isSigned())
+                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionInitiale]) }}" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
                                         @else
                                             <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" title="État des lieux initial"><i class="fa fa-car"></i></a>
                                         @endif
                                     @endif
                                     <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" title="contrat"><i class="fa fa-file-signature"></i></a>
                                 @elseif(config('ipsum.reservation.etat_des_lieux.enable') === true)
-                                    @if($reservation->inspection_finale?->isSigned())
-                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspection_finale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                    @if($reservation->inspectionFinale?->isSigned())
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionFinale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
                                     @else
                                         <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}" title="État des lieux final"><i class="fa fa-car"></i></a>
                                     @endif
@@ -117,7 +117,7 @@
             @foreach ($reservations as $reservation)
                 <div class="mb-3 shadow-sm" style="{{ (
                             (!config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->debut_at->lt(\Carbon\Carbon::now())) or (!$reservation->is_depart and $reservation->fin_at->lt(\Carbon\Carbon::now()))))
-                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->inspection_initiale?->isSigned()) or (!$reservation->is_depart and $reservation->inspection_finale?->isSigned())))
+                            or (config('ipsum.reservation.etat_des_lieux.enable') and (($reservation->is_depart and $reservation->inspectionInitiale?->isSigned()) or (!$reservation->is_depart and $reservation->inspectionFinale?->isSigned())))
                             ) ? 'opacity: 0.5' : '' }}">
                     <div class="{{ $reservation->is_depart ? 'bg-success' : 'bg-info' }} text-center text-white p-1">
                         <span class="lead">{{ $reservation->is_depart ? $reservation->debut_at->format('H:i') : $reservation->fin_at->format('H:i') }}</span> -
@@ -179,16 +179,16 @@
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
                                 @if ($reservation->is_depart)
                                     @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
-                                        @if($reservation->inspection_initiale?->isSigned())
-                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_initiale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                        @if($reservation->inspectionInitiale?->isSigned())
+                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspectionInitiale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
                                         @else
                                             <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" title="État des lieux initial"><i class="fa fa-car"></i></a>
                                         @endif
                                     @endif
                                     <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" title="contrat"><i class="fa fa-file-signature"></i></a>
                                 @elseif(config('ipsum.reservation.etat_des_lieux.enable') === true)
-                                    @if($reservation->inspection_finale?->isSigned())
-                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspection_finale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
+                                    @if($reservation->inspectionFinale?->isSigned())
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.pdf', [$reservation->inspectionFinale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car"></i></a>
                                     @else
                                         <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}" title="État des lieux final"><i class="fa fa-car"></i></a>
                                     @endif

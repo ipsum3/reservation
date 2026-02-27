@@ -10,21 +10,21 @@
                     <strong>{{ _('Immatriculation') }} :</strong> {{ $reservation->vehicule->immatriculation }}<br>
                 @endif
                 <strong>{{ _('Kilométrage') }} :</strong> {{ $inspection?->kilometrage }} km
-                @if (!$inspection->type->is_initial && $reservation->inspection_initiale)
-                    <span class="text-muted">(initial : {{ $reservation->inspection_initiale->kilometrage }} km)</span>
+                @if (!$inspection->type->is_initial && $reservation->inspectionInitiale)
+                    <span class="text-muted">(initial : {{ $reservation->inspectionInitiale->kilometrage }} km)</span>
                 @endif
                 <br>
                 <strong>{{ _('Carburant') }} :</strong> {{ $inspection?->carburant }}/8
-                @if (!$inspection->type->is_initial && $reservation->inspection_initiale)
-                    <span class="text-muted">(initial : {{ $reservation->inspection_initiale->carburant }}/8)</span>
+                @if (!$inspection->type->is_initial && $reservation->inspectionInitiale)
+                    <span class="text-muted">(initial : {{ $reservation->inspectionInitiale->carburant }}/8)</span>
                 @endif
                 <br>
                 @if($inspection->observations)
                     <strong>Observations :</strong> {!! nl2br(e($inspection->observations)) !!}
                 @endif
-                @if(!$inspection->type->is_initial && $reservation->inspection_initiale && $reservation->inspection_initiale->observations)
+                @if(!$inspection->type->is_initial && $reservation->inspectionInitiale && $reservation->inspectionInitiale->observations)
                     <br>
-                    <span class="text-muted">Observations initial : {!! nl2br(e($reservation->inspection_initiale->observations)) !!}</span>
+                    <span class="text-muted">Observations initial : {!! nl2br(e($reservation->inspectionInitiale->observations)) !!}</span>
                 @endif
             </div>
         </div>
@@ -44,9 +44,9 @@
                         @endif
                         <label class="form-check-label" for="checklist_{{ $checklist->id }}">
                             {{ $checklist->nom }}
-                            @if(!$type->is_initial && $reservation->inspection_initiale)
+                            @if(!$type->is_initial && $reservation->inspectionInitiale)
                                 <span class="text-muted">(initial
-                                    @if(in_array($checklist->id, $reservation->inspection_initiale->checklists->pluck('id')->toArray()))
+                                    @if(in_array($checklist->id, $reservation->inspectionInitiale->checklists->pluck('id')->toArray()))
                                         <i class="fa fa-check-square text-success"></i>
                                     @else
                                         <i class="fa fa-window-close text-danger"></i>

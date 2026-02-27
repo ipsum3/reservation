@@ -21,12 +21,12 @@
 
                     <div class="row">
                         {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->value(old('kilometrage', $inspection->kilometrage ?? ($reservation->vehicule->last_inspection->kilometrage ?? '') ))
-                            ->helpText(( !$type->is_initial && $reservation->inspection_initiale) ? 'Kilométrage initial : '.$reservation->inspection_initiale?->kilometrage.' km' : '')
+                            ->helpText(( !$type->is_initial && $reservation->inspectionInitiale) ? 'Kilométrage initial : '.$reservation->inspectionInitiale?->kilometrage.' km' : '')
                             ->groupAddClass('col-md-12') }}
                         {{ Aire::range('carburant', 'Niveau de carburant* : ')->step('1')->min(0)->max(8)->value(old('carburant', $inspection->carburant ?? ($reservation->vehicule->last_inspection->carburant ?? 8) ))
                             ->list('markers')
                             ->id('carburant')
-                            ->helpText((!$type->is_initial && $reservation->inspection_initiale) ? 'Niveau de carburant initial : '.$reservation->inspection_initiale?->carburant.'/8' : '')
+                            ->helpText((!$type->is_initial && $reservation->inspectionInitiale) ? 'Niveau de carburant initial : '.$reservation->inspectionInitiale?->carburant.'/8' : '')
                             ->groupAddClass('col-md-12') }}
                         <datalist id="markers">
                             @for($i=0; $i<=8; $i++)
@@ -55,10 +55,10 @@
                                            id="checklist_{{ $checklist->id }}" {{ in_array($checklist->id, old('checklists', $inspection?->checklists->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
                                     <label class="custom-control-label" for="checklist_{{ $checklist->id }}">
                                         {{ $checklist->nom }}
-                                        @if(!$type->is_initial && $reservation->inspection_initiale)
+                                        @if(!$type->is_initial && $reservation->inspectionInitiale)
                                             <br>
                                             <span class="text-muted">(initial
-                                                @if(in_array($checklist->id, $reservation->inspection_initiale->checklists->pluck('id')->toArray()))
+                                                @if(in_array($checklist->id, $reservation->inspectionInitiale->checklists->pluck('id')->toArray()))
                                                     <i class="fa fa-check-square text-success"></i>
                                                 @else
                                                     <i class="fa fa-window-close text-danger"></i>
@@ -72,7 +72,7 @@
                         </div>
 
                         {{ Aire::textArea('observations', 'Observation(s)')->rows(5)->groupAddClass('col-md-6 mt-2 alert')
-                            ->helpText((!$type->is_initial && $reservation->inspection_initiale) ? 'Observation(s) initiale : '.($reservation->inspection_initiale->observations ?: '-') : '') }}
+                            ->helpText((!$type->is_initial && $reservation->inspectionInitiale) ? 'Observation(s) initiale : '.($reservation->inspectionInitiale->observations ?: '-') : '') }}
 
                     </div>
 
