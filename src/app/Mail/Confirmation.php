@@ -22,11 +22,12 @@ class Confirmation extends Mailable
      *
      * @return void
      */
-    public function __construct(Reservation $reservation, $email = null, $has_cc = true)
+    public function __construct(Reservation $reservation, string $email = null, bool $has_cc = true, string $objet = null)
     {
         $this->reservation = $reservation;
         $this->email = $email ?: $this->reservation->email;
         $this->has_cc = $has_cc;
+        $this->objet = $objet ?: 'Confirmation réservation '.$this->reservation->reference;
 
         App::setLocale($reservation->locale);
     }
@@ -42,7 +43,7 @@ class Confirmation extends Mailable
             ->from(config('mail.from.address'), config('mail.from.name'))
             ->replyTo($this->reservation->lieuDebut->email_first, config('settings.nom_site'))
             ->to($this->email, $this->reservation->prenom.' '.$this->reservation->nom)
-            ->subject('Confirmation réservation '.$this->reservation->reference);
+            ->subject($this->objet);
 
         if ($this->has_cc) {
             $this->cc($this->reservation->lieuDebut->emails_reservation, config('settings.nom_site'));

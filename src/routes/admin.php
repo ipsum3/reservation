@@ -16,7 +16,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('{reservation}/edit', 'edit')->name('edit');
         Route::get('{reservation}/confirmation', 'confirmation')->name('confirmation')->middleware('adminReservationConfirmed');
         Route::get('{reservation}/devis', 'devis')->name('devis');
-        Route::get('{reservation}/document/{document}/send', 'reservationDocumentSend')->name('reservationDocumentSend');
+        Route::get('{reservation}/document/{document}/{id?}/send', 'reservationDocumentSend')->name('reservationDocumentSend');
         Route::post('document/send', 'documentSend')->name('documentSend');
         Route::get('{reservation}/contrat', 'contrat')->name('contrat')->middleware('adminReservationConfirmed');
         Route::get('{reservation}/contrat-signe', 'contratSigne')->name('contratSigne')->middleware('adminReservationConfirmed');

@@ -23,6 +23,7 @@ use Ipsum\Reservation\app\Location\Location;
 use Ipsum\Reservation\app\Location\Prestation;
 use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Mail\Devis;
+use Ipsum\Reservation\app\Mail\Document;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Client;
@@ -454,16 +455,20 @@ class ReservationController extends AdminController
         return view(config('ipsum.reservation.confirmation.view'), compact('reservation'));
     }
 
-    public function documentSend(SendDocumentEmail $request)
+    public function documentSend(SendDocumentEmail $request, string $id = null)
     {
         try {
             $reservation = Reservation::findOrFail( $request->reservation_id );
             if( $request->document == 'confirmation' ) {
-                Mail::send(new Confirmation($reservation, $request->email, false));
+                Mail::send(new Confirmation($reservation, $request->email, false, $request->objet));
                 Alert::success("L'email de confirmation a bien été envoyé")->flash();
-            } else if ( $request->document == 'devis' ) {
-                Mail::send(new Devis($reservation, $request->email ));
+            } elseif ( $request->document == 'devis' ) {
+                Mail::send(new Devis($reservation, $request->email, $request->objet));
                 Alert::success("L'email de devis a bien été envoyé")->flash();
+            } elseif ( $request->document == 'inspection' ) {
+                $inspection = $reservation->inspections()->findOrFail($id);
+                Mail::send(new Document($reservation, $inspection->document_path, $inspection->document_public_file_name, $request->objet, $request->message, $request->email));
+                Alert::success("L'email de l'inspection a bien été envoyé")->flash();
             }
             return redirect()->route('admin.reservation.edit', $reservation);
         } catch (\Exception $exception) {

@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
-class Devis extends Mailable
+class Document extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -17,21 +17,23 @@ class Devis extends Mailable
     public $reservation;
     public $email;
     public $objet;
+    public $message;
+    public $document_file;
+    public $document_name;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Reservation $reservation, string $email = null, string $objet = null)
+    public function __construct(Reservation $reservation, string $document_path, string $document_name, string $objet, string $message, $email = null)
     {
         $this->reservation = $reservation;
+        $this->document_file = file_get_contents($document_path);
+        $this->document_name = $document_name;
+        $this->objet = $objet;
+        $this->message = $message;
         $this->email = $email ?: $this->reservation->email;
-        $this->objet = $objet ?: 'Devis réservation ' . $this->reservation->reference;
-        $pdf = Pdf::loadView(config('ipsum.reservation.devis.view'), compact('reservation'));
-        $pdf->render();
-        $this->file = $pdf->output();
-        App::setLocale($reservation->locale);
     }
 
     /**
@@ -42,14 +44,13 @@ class Devis extends Mailable
     public function build()
     {
         return $this->markdown('IpsumReservation::reservation.emails.devis')
-            ->attachData($this->file, 'devis.pdf', [
+            ->attachData($this->document_file, $this->document_name, [
                 'mime' => 'application/pdf',
             ])
             ->from(config('mail.from.address'), config('mail.from.name'))
             ->replyTo($this->reservation->lieuDebut->email_first, config('settings.nom_site'))
             ->to($this->email, $this->reservation->prenom.' '.$this->reservation->nom)
-            ->cc($this->reservation->lieuDebut->email_reservation_first, config('settings.nom_site'))
-            ->subject($this->objet);
+            ->subject('Devis réservation ' . $this->reservation->reference);
 
     }
 }

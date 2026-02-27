@@ -341,7 +341,7 @@ class EtatDesLieuxController extends AdminController
             return back();
         }
 
-        try{
+        try {
             /**
              * Création du dossier inspections s’il n’existe pas
              */
@@ -436,16 +436,14 @@ class EtatDesLieuxController extends AdminController
 
     public function pdf(Inspection $inspection)
     {
-        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$inspection->id}.pdf");
-
-        if (!file_exists($pdfPath)) {
+        if (!file_exists($inspection->document_path)) {
             Alert::error('Fichier introuvable')->flash();
             return back();
         }
 
-        return response()->file($pdfPath, [
+        return response()->file($inspection->document_path, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="etat-des-lieux-'.$inspection->reservation_id.'-'.Str::slug($inspection->type->nom).'.pdf"',
+            'Content-Disposition' => 'inline; filename="'.$inspection->document_public_file_name.'"',
         ]);
     }
 

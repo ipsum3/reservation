@@ -265,7 +265,7 @@
                                             <tr>
                                                 <td>Contrat de location {{ $reservation->contrat }} signé</td>
                                                 <td class="text-right">
-                                                    {{--<a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'contrat']) }}" ><i class="fas fa-envelope"></i></a>--}}
+                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'contrat']) }}" ><i class="fas fa-envelope"></i></a>
                                                     <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
                                                 </td>
                                             </tr>
@@ -284,7 +284,7 @@
                                                 <tr>
                                                     <td>État des lieux {{ strtolower($inspection->type->nom) }} #{{ $inspection->id }}</td>
                                                     <td class="text-right">
-                                                        {{--<a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'inspectionTodo']) }}" ><i class="fas fa-envelope"></i></a>--}}
+                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'inspection', $inspection->id]) }}" ><i class="fas fa-envelope"></i></a>
                                                         <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.show', [$inspection]) }}"><i class="fa fa-file-download"></i></a>&nbsp;
                                                     </td>
                                                 </tr>

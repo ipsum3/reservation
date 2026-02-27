@@ -7,6 +7,7 @@ use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Media\Concerns\Mediable;
 use Ipsum\Reservation\app\Models\Dommage\Dommage;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Str;
 
 
 /**
@@ -51,7 +52,10 @@ class Inspection extends BaseModel
 
     protected $guarded = ['id'];
 
-    protected $htmlable = ['observations'];
+
+    /*
+     * Scopes
+     */
 
     public function reservation()
     {
@@ -80,9 +84,14 @@ class Inspection extends BaseModel
             ->withTimestamps();
     }
 
+
+    /*
+     * Functions
+     */
+
     public function isSigned(): bool
     {
-        return (bool) ($this->locataire_signature && $this->agent_signature);
+        return $this->isLocataireSigned() && $this->isAgentSigned();
     }
 
     public function isLocataireSigned(): bool
@@ -93,6 +102,22 @@ class Inspection extends BaseModel
     public function isAgentSigned(): bool
     {
         return !empty($this->agent_signature);
+    }
+
+
+
+    /*
+     * Accessors & Mutators
+     */
+
+    public function getDocumentPathAttribute(): string
+    {
+        return storage_path("app/inspections/etat_des_lieux-{$this->id}.pdf");
+    }
+
+    public function getDocumentPublicFileNameAttribute(): string
+    {
+        return 'etat-des-lieux-'.$this->reservation_id.'-'.Str::slug($this->type->nom).'.pdf';
     }
 
 }

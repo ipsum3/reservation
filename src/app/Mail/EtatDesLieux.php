@@ -35,13 +35,10 @@ class EtatDesLieux extends Mailable
         /**
          * ÉTAT DES LIEUX
          */
-        $pdfPath = storage_path("app/inspections/etat_des_lieux-{$inspection->id}.pdf");
-
-        if (!file_exists($pdfPath)) {
+        if (!file_exists($inspection->document_path)) {
             throw new \Exception("Le fichier PDF de l’état des lieux est introuvable pour la réservation #{$inspection->reservation->id}");
         }
-
-        $this->file = file_get_contents($pdfPath);
+        $this->file = file_get_contents($inspection->document_path);
 
         /**
          * CONTRAT SIGNÉ
@@ -69,7 +66,7 @@ class EtatDesLieux extends Mailable
     public function build()
     {
         $this->markdown('IpsumReservation::reservation.emails.etat_des_lieux')
-            ->attachData($this->file, 'etat-des-lieux-'.$this->inspection->reservation->id.'-'.Str::slug($this->inspection->type->nom).'.pdf', [
+            ->attachData($this->file, $this->inspection->document_public_file_name, [
                 'mime' => 'application/pdf',
             ])
             ->from(config('mail.from.address'), config('mail.from.name'))
