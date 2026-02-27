@@ -75,9 +75,9 @@
             {{ Aire::open()->class('form-inline mt-4 mb-1')->route('admin.reservation.index') }}
             <label class="sr-only" for="search">Recherche</label>
             {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->style('width: 180px')->withoutGroup() }}
-            <label class="sr-only" for="type_id">Catégorie</label>
+            <label class="sr-only" for="categorie_id">Catégorie</label>
             {{ Aire::select(collect(['' => '---- Catégories -----'])->union($categories), 'categorie_id')->value(request()->get('categorie_id'))->id('categorie_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
-            <label class="sr-only" for="type_id">Etat</label>
+            <label class="sr-only" for="etat_id">Etat</label>
             {{ Aire::select(collect(['' => '---- Etats -----'])->union($etats), 'etat_id')->value(request()->get('etat_id'))->id('etat_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
             <label class="sr-only" for="condition_paiement_id">Condition</label>
             {{ Aire::select(collect(['' => '---- Conditions -----'])->union($conditions), 'condition_paiement_id')->value(request()->get('condition_paiement_id'))->id('condition_paiement_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
@@ -144,9 +144,9 @@
                             <td class="text-right">
                                 <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
                                     @if($reservation->is_confirmed)
-                                        <a class="btn btn-primary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}"><i class="fa fa-eye"></i> Voir</a>
+                                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}">Voir</a>
                                     @endif
-                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$reservation]) }}"><i class="fa fa-edit"></i></a>
+                                    <a class="btn btn-outline-primary" href="{{ route('admin.reservation.edit', [$reservation]) }}"><i class="fa fa-edit"></i></a>
                                     @can('delete', $reservation)
                                         @csrf
                                         @method('DELETE')

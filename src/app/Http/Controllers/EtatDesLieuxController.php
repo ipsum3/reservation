@@ -42,6 +42,10 @@ class EtatDesLieuxController extends AdminController
             ->withCount(['dommages'])
             ->whereHas('reservation');
 
+        if ($request->filled('type_id')) {
+            $query->where('type_id', $request->get('type_id'));
+        }
+
         if ($request->filled('date_debut')) {
             try {
                 $date = explode(' - ', $request->get('date_debut'));
@@ -90,7 +94,9 @@ class EtatDesLieuxController extends AdminController
 
         $inspections = $query->paginate();
 
-        return view('IpsumReservation::reservation.etat_des_lieux.index', compact('inspections'));
+        $types = Type::all()->pluck('nom', 'id');
+
+        return view('IpsumReservation::reservation.etat_des_lieux.index', compact('inspections', 'types'));
     }
 
     /** Récupère l’inspection selon le type */
