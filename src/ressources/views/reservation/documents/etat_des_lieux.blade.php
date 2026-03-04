@@ -223,7 +223,7 @@
                     <tr>
                         <th style="width: 49%">Initial</th>
                         <th style="width: 49%">
-                            @if(!$inspection->type->is_initial )
+                            @if($inspection->type->is_final )
                             Final
                             @endif
                         </th>
@@ -253,31 +253,31 @@
                             </table>
                         </td>
                         <td>
-                            @if(!$inspection->type->is_initial)
+                            @if($inspection->type->is_final)
                             <table class="tableau3">
                                 <tr>
                                     <td>Km compteur</td>
-                                    <td>{{ $reservation->inspectionFinale?->kilometrage }} km</td>
+                                    <td>{{ $inspection->kilometrage }} km</td>
                                 </tr>
                                 <tr>
                                     <td>Carburant</td>
-                                    <td>{{ $reservation->inspectionFinale?->carburant }}/8</td>
+                                    <td>{{ $inspection->carburant }}/8</td>
                                 </tr>
                                 @foreach($checklists as $item)
                                     <tr>
                                         <td>{{ $item->nom }}</td>
                                         <td>
-                                            {{ in_array($item->id, ($reservation->inspectionFinale ? $reservation->inspectionFinale->checklists->pluck('id')->toArray() : [])) ? 'ok' : '-' }}
+                                            {{ in_array($item->id, $inspection->checklists->pluck('id')->toArray()) ? 'ok' : '-' }}
                                         </td>
                                     </tr>
                                 @endforeach
                                 <tr>
-                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspectionFinale?->observations)) !!}</td>
+                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($inspection->observations)) !!}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
                                         @php
-                                            $count = $reservation->inspectionFinale?->dommages->count() ?? 0;
+                                            $count = $inspection->dommages->count() ?? 0;
                                         @endphp
                                         <strong>{{ $count }} dommage{{ $count > 1 ? 's' : '' }} déclaré{{ $count > 1 ? 's' : '' }}</strong>
                                     </td>
@@ -296,7 +296,7 @@
     @php
         $allDommages = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation) {
             return !$dommage->inspection_id or $dommage->inspection_id != $reservation->inspectionFinale?->id;
-        });
+        })->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; });
     @endphp
     <div style="page-break-inside: avoid;">
         <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">
@@ -336,9 +336,9 @@
         </table>
     </div>
 
-    @if(!$inspection->type->is_initial)
+    @if($inspection->type->is_final)
         @php
-            $allDommages = $reservation->inspectionFinale?->dommages;
+            $allDommages = $inspection->dommages->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; });
         @endphp
         <div style="page-break-inside: avoid;">
             <table class="tableau2" style="margin-top:10px;margin-bottom:10px;">

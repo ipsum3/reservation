@@ -27,7 +27,7 @@
                         @php
                             $dommages_initial = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation) {
                                 return !$dommage->inspection_id or $dommage->inspection_id != $reservation->inspectionFinale?->id;
-                            });
+                            })->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; });
                         @endphp
 
                         @if (!$inspection->type->is_initial)
@@ -59,7 +59,7 @@
                         @php
                             $dommages_new = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation, $inspection) {
                                 return $inspection->type->is_initial or $dommage->inspection_id == $reservation->inspectionFinale?->id;
-                            });
+                            })->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; });
                         @endphp
 
                         <h3>Nouveaux dommages</h3>

@@ -67,6 +67,7 @@
         @php
             // TODO pour la page show, impossible de connaitre les dommages de l'inspection iitiale après qu'une autre inspection soit faite. Il faudrait ajouter une table dommage_inspections
              $dommages = $inspection->type->is_initial ? $reservation->vehicule->dommages : $inspection->dommages;
+             $dommages = $dommages->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; })
         @endphp
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Dommage{{ $dommages->count() > 1 ? 's' : '' }} constaté{{ $dommages->count() > 1 ? 's' : '' }}</div>
