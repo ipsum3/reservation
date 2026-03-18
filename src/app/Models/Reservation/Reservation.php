@@ -116,7 +116,7 @@ class Reservation extends BaseModel
 {
     use HasFactory;
 
-    protected $guarded = ['id', 'reference', 'pays_nom', 'categorie_nom', 'debut_lieu_nom', 'fin_lieu_nom'];
+    protected $guarded = ['id', 'pays_nom', 'categorie_nom', 'debut_lieu_nom', 'fin_lieu_nom'];
 
 
 
@@ -151,8 +151,10 @@ class Reservation extends BaseModel
 
         self::created(function (self $reservation) {
             // Génération de la référence
-            $reservation->reference = $reservation->generationReference($reservation->id);
-            $reservation->saveQuietly(); // quietly sinon cela retoune dans l'event saving et cela enléve le véhicule
+            if ($reservation->reference === null) {
+                $reservation->reference = $reservation->generationReference($reservation->id);
+                $reservation->saveQuietly(); // quietly sinon cela retoune dans l'event saving et cela enléve le véhicule
+            }
         });
 
         self::saving(function (self $reservation) {
