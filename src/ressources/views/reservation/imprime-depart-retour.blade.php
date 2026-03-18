@@ -118,7 +118,8 @@
                         @if ($reservation->custom_fields->vol)
                             vol : {{ $reservation->custom_fields->vol }}<br>
                         @endif
-                        {!! nl2br(e($reservation->observation)) !!}
+                        {!! nl2br(e($reservation->observation)) !!}<br>
+                        {!! nl2br(e($reservation->note)) !!}
                     </td>
                     <td>
                         @if ($reservation->prestations->count())
@@ -156,6 +157,7 @@
                 <td>Lieu</td>
                 <td>Client</td>
                 <td>Contrat</td>
+                <td>Info.</td>
                 <td>Prestation</td>
             </tr>
             @foreach($reservations['retour'] as $reservation)
@@ -185,6 +187,9 @@
                         Réf : {{ $reservation->reference }}<br/>
                         <x-reservation::reste_a_payer total="{{ $reservation->total }}"  montant_paye="{{ $reservation->montant_paye }}" /><br>
                         {{ $reservation->condition ? $reservation->condition->nom : '' }}
+                    </td>
+                    <td>
+                        {!! nl2br(e($reservation->note)) !!}
                     </td>
                     <td>
                         @if ($reservation->prestations->count())
