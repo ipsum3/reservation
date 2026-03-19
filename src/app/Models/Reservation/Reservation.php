@@ -392,25 +392,25 @@ class Reservation extends BaseModel
     public function setPaysIdAttribute($value)
     {
         $this->attributes['pays_id'] = $value;
-        $this->attributes['pays_nom'] = $this->pays ? $this->pays->nom : '';
+        $this->attributes['pays_nom'] = $this->pays?->nom;
     }
     
     public function setCategorieIdAttribute($value)
     {
         $this->attributes['categorie_id'] = $value;
-        $this->attributes['categorie_nom'] = $this->categorie ? $this->categorie->nom : '';
+        $this->attributes['categorie_nom'] = $this->categorie?->nom;
     }
     
     public function setDebutLieuIdAttribute($value)
     {
         $this->attributes['debut_lieu_id'] = $value;
-        $this->attributes['debut_lieu_nom'] = $this->lieuDebut ? $this->lieuDebut->nom : '';
+        $this->attributes['debut_lieu_nom'] = $this->lieuDebut?->nom;
     }
 
     public function setFinLieuIdAttribute($value)
     {
         $this->attributes['fin_lieu_id'] = $value;
-        $this->attributes['fin_lieu_nom'] = $this->lieuFin ? $this->lieuFin->nom : '';
+        $this->attributes['fin_lieu_nom'] = $this->lieuFin?->nom;
     }
 
     public function getContratPathAttribute(): string
