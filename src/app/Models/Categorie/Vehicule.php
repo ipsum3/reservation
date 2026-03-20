@@ -132,7 +132,10 @@ class Vehicule extends BaseModel
         return $this->inspections()->whereNotNull('agent_signature_at')->latest()->first();
     }
 
-
+    public function getIsHorsParcAttribute()
+    {
+        return static::whereKey($this->id)->sortie()->exists();
+    }
 
 
     /*

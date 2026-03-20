@@ -29,6 +29,18 @@ class VehiculeController extends AdminController
             $query->where('categorie_id', $request->get('categorie_id'));
         }
 
+        if ($request->filled('etat')) {
+
+            if ($request->etat === 'hors_parc') {
+                $query->sortie();
+            }
+
+            if ($request->etat === 'parc') {
+                $query->duParc(Carbon::now()->startOfDay(), Carbon::now()->endOfDay());
+            }
+
+        }
+
         if ($request->filled('search')) {
             $query->where(function($query) use ($request) {
                 foreach (['id', 'marque_modele', 'immatriculation'] as $colonne) {
