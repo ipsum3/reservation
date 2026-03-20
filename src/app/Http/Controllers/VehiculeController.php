@@ -32,7 +32,7 @@ class VehiculeController extends AdminController
         if ($request->filled('etat')) {
 
             if ($request->etat === 'hors_parc') {
-                $query->sortie();
+                $query->horsParc(Carbon::now()->startOfDay(), Carbon::now()->endOfDay());
             }
 
             if ($request->etat === 'parc') {

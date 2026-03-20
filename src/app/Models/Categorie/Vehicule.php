@@ -124,19 +124,6 @@ class Vehicule extends BaseModel
         );
     }
 
-    /**
-     * Dernière inspection (méthode pratique)
-     */
-    public function getLastInspectionAttribute()
-    {
-        return $this->inspections()->whereNotNull('agent_signature_at')->latest()->first();
-    }
-
-    public function getIsHorsParcAttribute()
-    {
-        return static::whereKey($this->id)->sortie()->exists();
-    }
-
 
     /*
      * Scopes
@@ -172,6 +159,15 @@ class Vehicule extends BaseModel
         });
     }
 
+    public function scopeHorsParc(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    {
+        $query->where(function (Builder $query) use ($date_fin) {
+            $query->where('sortie_at', '<=', $date_fin);
+        })->where(function (Builder $query) use ($date_debut) {
+            $query->where('entree_at', '>=', $date_debut->copy()->startOfDay());
+        });
+    }
+
     public function scopeEnService(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
         $query->duParc($date_debut, $date_fin);
@@ -189,6 +185,21 @@ class Vehicule extends BaseModel
     /*
      * Accessors & Mutators
      */
+
+    public function getIsHorsParcAttribute(): bool
+    {
+        $now = now();
+
+        if ($this->sortie_at && $this->sortie_at <= $now) {
+            return true;
+        }
+
+        if ($this->entree_at && $this->entree_at >= $now->copy()->startOfDay()) {
+            return true;
+        }
+
+        return false;
+    }
 
     public function getTagTitleAttribute()
     {
