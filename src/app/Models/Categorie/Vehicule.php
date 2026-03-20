@@ -125,7 +125,7 @@ class Vehicule extends BaseModel
     }
 
     /**
-     * Dernière inspection (méthode pratique)
+     * Dernière inspection
      */
     public function getLastInspectionAttribute()
     {
