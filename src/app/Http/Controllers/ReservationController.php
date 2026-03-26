@@ -606,7 +606,7 @@ class ReservationController extends AdminController
         // Regroupement par dates
         $jours = $reservations->groupBy(function (Reservation $reservation) {
             return  $reservation->is_depart ? $reservation->debut_at->format('Y-m-d') : $reservation->fin_at->format('Y-m-d');
-        });
+        })->sortKeys();
 
         //dd($resas_depart, $resas_retour, $reservations, $jours);
 
