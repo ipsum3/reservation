@@ -24,6 +24,7 @@ class Moyen extends BaseModel
     public $timestamps = false;
 
     const CB_SITE_ID = 1;
+    const CB_ID = 2;
 
     protected $guarded = ['id'];
 

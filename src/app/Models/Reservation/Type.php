@@ -26,6 +26,8 @@ class Type extends BaseModel
 
     protected $guarded = ['id'];
 
+    const PAIEMENT_ID = 1;
+    const ACOMPTE_ID = 2;
 
 
     /*
