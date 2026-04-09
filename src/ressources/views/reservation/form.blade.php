@@ -227,7 +227,7 @@
                     <div class="box-header">
                         <h2 class="box-title">Documents</h2>
 
-                        @if($reservation->is_confirmed)
+                        @if($reservation->is_confirmed and config('ipsum.reservation.etat_des_lieux.enable'))
                             <div class="btn-toolbar">
                                 @if(!$reservation->inspectionInitiale?->isSigned())
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux initial</a>&nbsp;
@@ -279,7 +279,7 @@
                                     @endif
 
                                     @if($reservation->is_confirmed)
-                                        @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
+                                        @if(config('ipsum.reservation.etat_des_lieux.enable'))
                                             @foreach($reservation->inspections->filter(fn($inspection) => $inspection->isSigned())->sortKeysDesc() as $inspection)
                                                 <tr>
                                                     <td>État des lieux {{ strtolower($inspection->type->nom) }} #{{ $inspection->id }}</td>
