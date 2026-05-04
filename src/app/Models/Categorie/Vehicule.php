@@ -152,19 +152,28 @@ class Vehicule extends BaseModel
 
     public function scopeDuParc(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
-        $query->where(function (Builder $query) use ($date_fin) {
-            $query->where('sortie_at', '>', $date_fin)->orWhereNull('sortie_at');
+        return $query->where(function (Builder $query) use ($date_fin) {
+            $query->whereNull('sortie_at')
+                ->orWhere('sortie_at', '>', $date_fin->copy()->endOfDay());
         })->where(function (Builder $query) use ($date_debut) {
-            $query->where('entree_at', '<', $date_debut->copy()->startOfDay())->orWhereNull('entree_at');
+            $query->whereNull('entree_at')
+                ->orWhere('entree_at', '<', $date_debut->copy()->endOfDay());
         });
     }
 
     public function scopeHorsParc(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
-        $query->where(function (Builder $query) use ($date_fin) {
-            $query->where('sortie_at', '<=', $date_fin);
-        })->where(function (Builder $query) use ($date_debut) {
-            $query->where('entree_at', '>=', $date_debut->copy()->startOfDay());
+        return $query->where(function (Builder $query) use ($date_debut, $date_fin) {
+
+            $query->where(function (Builder $query) use ($date_fin) {
+                $query->whereNotNull('sortie_at')
+                    ->where('sortie_at', '<=', $date_fin->copy()->endOfDay());
+            })
+
+                ->orWhere(function (Builder $query) use ($date_debut) {
+                    $query->whereNotNull('entree_at')
+                        ->where('entree_at', '>=', $date_debut->copy()->endOfDay());
+                });
         });
     }
 
@@ -194,7 +203,7 @@ class Vehicule extends BaseModel
             return true;
         }
 
-        if ($this->entree_at && $this->entree_at >= $now->copy()->startOfDay()) {
+        if ($this->entree_at && $this->entree_at >= $now->copy()->endOfDay()) {
             return true;
         }
 
