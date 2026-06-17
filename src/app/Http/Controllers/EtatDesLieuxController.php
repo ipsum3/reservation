@@ -258,11 +258,7 @@ class EtatDesLieuxController extends AdminController
 
     public function updateDommage(StoreInspectionDommage $request, Reservation $reservation, Type $type, Dommage $dommage)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         $dommageData = $request->validated();
-        $dommageData['inspection_id'] = $inspection->id;
-        $dommageData['vehicule_id']   = $reservation->vehicule_id;
 
         $dommage->update($dommageData);
 
