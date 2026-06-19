@@ -25,6 +25,11 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingsTableSeeder::class);
         $this->call(SourcesTableSeeder::class);
         $this->call(TarificationSeeder::class);
+        $this->call(ChecklistSeeder::class);
+        $this->call(InspectionTypeSeeder::class);
+        $this->call(DommageTypeSeeder::class);
+        $this->call(DommageElementSeeder::class);
+        $this->call(DommageEmplacementSeeder::class);
     }
 
 
