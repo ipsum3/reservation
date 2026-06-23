@@ -28,10 +28,14 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property int|null $quantite_gratuite
  * @property int|null $jour_fact_max
  * @property int|null $age_max
- * @property string|null $heure_max
- * @property string|null $heure_min
- * @property int|null $jour
+ * @property string|null $heure_max_depart
+ * @property string|null $heure_max_retour
+ * @property string|null $heure_min_depart
+ * @property string|null $heure_min_retour
+ * @property int|null $jour_depart
+ * @property int|null $jour_retour
  * @property string|null $condition
+ * @property int $is_cumulable
  * @property int|null $duree_min
  * @property int|null $duree_max
  * @property int|null $categorie_type_id
@@ -66,7 +70,7 @@ class Prestation extends BaseModel
 
     public $timestamps = false;
 
-    public static $LISTE_CONDITION = array('depart' => 'Uniquement sur le départ', 'retour' => 'Uniquement sur le retour', 'lieu_different' => 'Uniquement si le départ et le retour sont différent', 'non_cumulable' => 'Valable sur le départ et/ou retour non cumulable');
+    public static $LISTE_CONDITION = array('depart' => 'Condition par lieu sur le départ uniquement', 'retour' => 'Condition par lieu sur le retour uniquement', 'lieu_different' => 'Uniquement si le lieu départ et le lieu de retour sont différents');
 
     protected $guarded = ['id'];
 
@@ -169,28 +173,17 @@ class Prestation extends BaseModel
         })
 
         // Horaires
-        ->where(function (Builder $query) use ($debut_at, $fin_at) {
-            $query->where(function (Builder $query) use ($debut_at) {
-                $query->where('heure_max', '>', $debut_at->toTimeString())->whereNull('heure_min');
-            })
-            ->orWhere(function (Builder $query) use ($fin_at) {
-                $query->where('heure_max', '>', $fin_at->toTimeString())->whereNull('heure_min');
-            })
-            ->orWhere(function (Builder $query) use ($debut_at) {
-                $query->where('heure_min', '<', $debut_at->toTimeString())->whereNull('heure_max');
-            })
-            ->orWhere(function (Builder $query) use ($fin_at) {
-                $query->where('heure_min', '<', $fin_at->toTimeString())->whereNull('heure_max');
-            })
-            ->orWhere(function (Builder $query) use ($fin_at) {
-                $query->where('heure_min', '<', $fin_at->toTimeString())->where('heure_max', '>', $fin_at->toTimeString());
-            })
-            ->orWhere(function (Builder $query) use ($debut_at) {
-                $query->where('heure_min', '<', $debut_at->toTimeString())->where('heure_max', '>', $debut_at->toTimeString());
-            })
-            ->orWhere(function (Builder $query) {
-                $query->whereNull('heure_max')->whereNull('heure_min');
-            });
+        ->where(function (Builder $query) use ($debut_at) {
+            $query->where('heure_max_depart', '>', $debut_at->toTimeString())->orWhereNull('heure_max_depart');
+        })
+        ->where(function (Builder $query) use ($debut_at) {
+            $query->where('heure_min_depart', '<', $debut_at->toTimeString())->orWhereNull('heure_min_depart');
+        })
+        ->where(function (Builder $query) use ($fin_at) {
+            $query->where('heure_max_retour', '>', $fin_at->toTimeString())->orWhereNull('heure_max_retour');
+        })
+        ->where(function (Builder $query) use ($fin_at) {
+            $query->where('heure_min_retour', '<', $fin_at->toTimeString())->orWhereNull('heure_min_retour');
         })
 
         // Durée de réservation
@@ -203,7 +196,12 @@ class Prestation extends BaseModel
 
         // Jour de la semaine
         ->where(function (Builder $query) use ($debut_at, $fin_at, $lieu_debut, $lieu_fin) {
-            $query->where('jour', $debut_at->dayOfWeekWithFerie($lieu_debut))->orWhere('jour', $fin_at->dayOfWeekWithFerie($lieu_fin))->orWhereNull('jour');
+            $query->where(function (Builder $query) use ($debut_at, $lieu_debut) {
+                $query->where('jour_depart', $debut_at->dayOfWeekWithFerie($lieu_debut))->orWhereNull('jour_depart');
+            })
+            ->where(function (Builder $query) use ($fin_at, $lieu_fin) {
+                $query->where('jour_retour', $fin_at->dayOfWeekWithFerie($lieu_fin))->orWhereNull('jour_retour');
+            });
         });
 
         // Age
@@ -211,8 +209,11 @@ class Prestation extends BaseModel
             $query->where(function (Builder $query) use ($age) {
                 $query->where('age_max', '>', $age)->orWhereNull('age_max');
             });
+            $query->where(function (Builder $query) use ($age) {
+                $query->where('age_min', '<', $age)->orWhereNull('age_min');
+            });
         } else {
-            $query->whereNull('age_max');
+            $query->whereNull('age_max')->whereNull('age_min');
         }
 
         //Lieu différent
@@ -252,14 +253,24 @@ class Prestation extends BaseModel
         return !$this->is_optionnelle;
     }
 
-    public function getHeureMaxAttribute()
+    public function getHeureMaxDepartAttribute(): string|null
     {
-        return (isset($this->attributes['heure_max']) and $this->attributes['heure_max'] !== null) ? substr($this->attributes['heure_max'], 0, -3) : null;
+        return (isset($this->attributes['heure_max_depart']) and $this->attributes['heure_max_depart'] !== null) ? substr($this->attributes['heure_max_depart'], 0, -3) : null;
     }
 
-    public function getHeureMinAttribute()
+    public function getHeureMinDepartAttribute(): string|null
     {
-        return (isset($this->attributes['heure_min']) and $this->attributes['heure_min'] !== null)  ? substr($this->attributes['heure_min'], 0, -3) : null;
+        return (isset($this->attributes['heure_min_depart']) and $this->attributes['heure_min_depart'] !== null)  ? substr($this->attributes['heure_min_depart'], 0, -3) : null;
+    }
+
+    public function getHeureMaxRetourAttribute(): string|null
+    {
+        return (isset($this->attributes['heure_max_retour']) and $this->attributes['heure_max_retour'] !== null) ? substr($this->attributes['heure_max_retour'], 0, -3) : null;
+    }
+
+    public function getHeureMinRetourAttribute(): string|null
+    {
+        return (isset($this->attributes['heure_min_retour']) and $this->attributes['heure_min_retour'] !== null)  ? substr($this->attributes['heure_min_retour'], 0, -3) : null;
     }
 
 

@@ -65,38 +65,73 @@
         </div>
     @endif
 
-    <div class="box">
-        <div class="box-header">
-            <h2 class="box-title">Conditions</h2>
-        </div>
-        <div class="box-body">
-            <div class="form-row">
-                {{ Aire::number('age_max', 'Age inférieur à')->groupAddClass('col-md-6') }}
-                <div class="form-group col-md-6" data-aire-component="group" data-aire-for="jour">
-                    <label class=" cursor-pointer" data-aire-component="label" for="jour">
-                        Jour
-                    </label>
-                    <select name="jour" class="form-control" id="jour">
-                        <option value="">----- Jours -----</option>
-                        @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
-                            <option value="{{ $key }}" @selected(old('jour', $prestation->jour) === $key) >{{ $jour }}</option>
-                        @endforeach
-                    </select>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">Conditions globales</h2>
+                </div>
+                <div class="box-body">
+                    <div class="form-row">
+                        {{ Aire::number('age_max', 'Âge inférieur à')->groupAddClass('col-md-6') }}
+                        {{ Aire::number('age_min', 'Âge supérieur à')->groupAddClass('col-md-6') }}
+                    </div>
+                    <div class="form-row">
+                        {{ Aire::number('duree_min', 'Durée minimum de réservation')->groupAddClass('col-md-6') }}
+                        {{ Aire::number('duree_max', 'Durée maximum de réservation')->groupAddClass('col-md-6') }}
+                    </div>
+                    <div class="row">
+                        @if ($categorie_types->count() > 1)
+                            {{ Aire::select(collect(['' => '---- Types de catégorie -----'])->union($categorie_types), 'categorie_type_id', 'Type de catégorie')->groupAddClass('col-md-6') }}
+                        @endif
+                    </div>
                 </div>
             </div>
-            <div class="form-row">
-                {{ Aire::time('heure_max', 'Heure inférieur à')->groupAddClass('col-md-6') }}
-                {{ Aire::time('heure_min', 'Heure supérieur à')->groupAddClass('col-md-6') }}
-            </div>
-            <div class="form-row">
-                {{ Aire::number('duree_min', 'Durée minimum de réservation')->groupAddClass('col-md-6') }}
-                {{ Aire::number('duree_max', 'Durée maximum de réservation')->groupAddClass('col-md-6') }}
-            </div>
-            <div class="form-row">
-                {{ Aire::select(collect(['' => '---- Conditions -----'])->union(\Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_CONDITION), 'condition', 'Condition')->groupAddClass('col-md-6') }}
-                @if ($categorie_types->count() > 1)
-                    {{ Aire::select(collect(['' => '---- Types de catégorie -----'])->union($categorie_types), 'categorie_type_id', 'Type de catégorie')->groupAddClass('col-md-6') }}
-                @endif
+        </div>
+        <div class="col-sm-6">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="box-title">Conditions sur le départ et le retour</h2>
+                </div>
+                <div class="box-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6" data-aire-component="group" data-aire-for="jour_depart">
+                            <label class=" cursor-pointer" data-aire-component="label" for="jour">
+                                Jour du départ
+                            </label>
+                            <select name="jour_depart" class="form-control" id="jour_depart">
+                                <option value="">----- Jours -----</option>
+                                @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
+                                    <option value="{{ $key }}" @selected(old('jour_depart', $prestation->jour_depart) === $key) >{{ $jour }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6" data-aire-component="group" data-aire-for="jour_retour">
+                            <label class=" cursor-pointer" data-aire-component="label" for="jour_retour">
+                                Jour du retour
+                            </label>
+                            <select name="jour_retour" class="form-control" id="jour">
+                                <option value="">----- Jours -----</option>
+                                @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
+                                    <option value="{{ $key }}" @selected(old('jour_retour', $prestation->jour_retour) === $key) >{{ $jour }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ Aire::time('heure_max_depart', 'Heure de départ inférieur à')->groupAddClass('col-md-6') }}
+                        {{ Aire::time('heure_max_retour', 'Heure de retour inférieur à')->groupAddClass('col-md-6') }}
+                    </div>
+                    <div class="form-row">
+                        {{ Aire::time('heure_min_depart', 'Heure de départ supérieur à')->groupAddClass('col-md-6') }}
+                        {{ Aire::time('heure_min_retour', 'Heure de retour supérieur à')->groupAddClass('col-md-6') }}
+                    </div>
+                    <div class="form-row">
+                        {{ Aire::select(collect(['' => '---- Conditions -----'])->union(\Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_CONDITION), 'condition', 'Condition')->groupAddClass('col-md-6') }}
+                        <input type="hidden" name="is_cumulable" value="0">
+                        {{ Aire::checkbox('is_cumulable', 'Cumulable sur le départ et le retour')->groupAddClass('col-md-6') }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -76,13 +76,12 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
             $non_cumulable = 0;
 
             if (
-                $this->condition != 'retour' and
-                ($this->jour === null or $this->jour == $debut_at->dayOfWeekWithFerie($lieu_debut)) and
-                ($this->heure_min === null or $this->heure_min < $debut_at->toTimeString()) and
-                ($this->heure_max === null or $this->heure_max > $debut_at->toTimeString()) and
+                $this->condition !== 'retour' and
+                ($this->jour_depart === null or $this->jour_depart == $debut_at->dayOfWeekWithFerie($lieu_debut)) and
+                ($this->heure_min_depart === null or $this->heure_min_depart < $debut_at->toTimeString()) and
+                ($this->heure_max_depart === null or $this->heure_max_depart > $debut_at->toTimeString()) and
                 (!$this->lieux->count() or $this->lieux->contains($lieu_debut->id))
             ) {
-
                 $prestation_lieu_debut = $this->lieux->find($lieu_debut->id);
                 if ($prestation_lieu_debut) {
                     $value += $montant + $prestation_lieu_debut->pivot->montant;
@@ -90,18 +89,18 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
                     $value += $montant;
                 }
 
-                if($this->condition == 'non_cumulable') {
+                if(!$this->is_cumulable) {
                     $non_cumulable = 1;
                 }
 
             }
 
             if (
-                $this->condition != 'depart' and
+                $this->condition !== 'depart' and
                 !$non_cumulable and
-                ($this->jour === null or $this->jour == $fin_at->dayOfWeekWithFerie($lieu_fin)) and
-                ($this->heure_min === null or $this->heure_min < $fin_at->toTimeString()) and
-                ($this->heure_max === null or $this->heure_max > $fin_at->toTimeString()) and
+                ($this->jour_retour === null or $this->jour_retour == $fin_at->dayOfWeekWithFerie($lieu_fin)) and
+                ($this->heure_min_retour === null or $this->heure_min_retour < $fin_at->toTimeString()) and
+                ($this->heure_max_retour === null or $this->heure_max_retour > $fin_at->toTimeString()) and
                 (!$this->lieux->count() or $this->lieux->contains($lieu_fin->id))
             ) {
 

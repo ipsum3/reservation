@@ -30,7 +30,7 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Dommage> $dommages
  * @property-read int|null $dommages_count
  * @property-read bool $has_no_blocage
- * @property-read mixed $last_inspection
+ * @property-read bool $is_hors_parc
  * @property-read mixed $tag_meta_description
  * @property-read mixed $tag_title
  * @property-read mixed $tarif_a_partir
@@ -43,6 +43,7 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @method static Builder|Vehicule duParc(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @method static Builder|Vehicule enService(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @method static \Ipsum\Reservation\database\factories\VehiculeFactory factory($count = null, $state = [])
+ * @method static Builder|Vehicule horsParc(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @method static Builder|Vehicule newModelQuery()
  * @method static Builder|Vehicule newQuery()
  * @method static Builder|Vehicule query()
