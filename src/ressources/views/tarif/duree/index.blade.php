@@ -16,17 +16,19 @@
                 <table class="table table-hover table-striped">
                     <thead>
                     <tr>
-                        <th>Mini</th>
-                        <th>Maxi</th>
+                        <th>Nom</th>
+                        <th>Mini (inclus)</th>
+                        <th>Maxi (inclus)</th>
                         <th width="240px">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach ($durees as $duree)
                         <tr>
-                            <td>{{ $duree->min }} jour{{ $duree->min > 1 ? 's' : '' }}</td>
+                            <td>{{ $duree->nom }}</td>
+                            <td>@duration($duree->min_display)</td>
                             <td>
-                                {{ $duree->max ? $duree->max.' jours' : '-' }}
+                                @duration($duree->max)
                             </td>
                             <td class="text-right">
                                 <form action="{{ route('admin.duree.destroy', $duree) }}" method="POST">
@@ -49,10 +51,7 @@
                     <h2 class="box-title">Ajouter une tranche de durée</h2>
                 </div>
                 <div class="box-body">
-                    <div class="form-row">
-                        {{ Aire::input('min', 'Durée minimum (jour)*')->required()->groupAddClass('col-md-6') }}
-                        {{ Aire::input('max', 'Durée maximum (jour)')->groupAddClass('col-md-6') }}
-                    </div>
+                    @include('IpsumReservation::tarif.duree._form')
                 </div>
                 <div class="box-footer">
                     <div><button class="btn btn-outline-secondary" type="reset">Annuler</button></div>
@@ -77,8 +76,8 @@
                     <thead>
                     <tr>
                         <th>Nom</th>
-                        <th>Mini</th>
-                        <th>Maxi</th>
+                        <th>Mini (inclus)</th>
+                        <th>Maxi (inclus)</th>
                         <th width="240px">Actions</th>
                     </tr>
                     </thead>
@@ -86,9 +85,9 @@
                     @foreach ($tarifs_speciaux as $duree)
                         <tr>
                             <td>{{ $duree->nom }}</td>
-                            <td>{{ $duree->min }} jour{{ $duree->min > 1 ? 's' : '' }}</td>
+                            <td>@duration($duree->min_display)</td>
                             <td>
-                                {{ $duree->max ? $duree->max.' jours' : '-' }}
+                                @duration($duree->max)
                             </td>
                             <td class="text-right">
                                 <form action="{{ route('admin.duree.destroy', $duree) }}" method="POST">

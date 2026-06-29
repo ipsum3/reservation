@@ -23,23 +23,13 @@
                 </div>
             </div>
             <div class="box-body">
-                <div class="form-row">
-                    {{ Aire::input('min', 'Mini (jour)*')->groupAddClass('col-md-6') }}
-                    {{ Aire::input('max', 'Maxi (jour)')->groupAddClass('col-md-6') }}
-                </div>
-
-                @if ($duree->is_special)
-                    <div class="form-row">
-                        {{ Aire::hidden('is_special', 1) }}
-                        {{ Aire::input('nom', 'Nom')->groupAddClass('col-md-6') }}
-                        {{ Aire::select(array_combine(\Ipsum\Reservation\app\Models\Tarif\Duree::TARIFICATION, Ipsum\Reservation\app\Models\Tarif\Duree::TARIFICATION), 'tarification', 'Tarification')->groupAddClass('col-md-6') }}
-                    </div>
-                @endif
+                @include('IpsumReservation::tarif.duree._form')
             </div>
         </div>
 
 
         @if ($duree->is_special)
+            {{ Aire::hidden('is_special', 1) }}
             <div class="row">
                 <div class="col-sm-6">
                     <div class="box">
@@ -82,7 +72,7 @@
                                     </div>
                                     <div class="col-sm-8">
                                         <input type="time" class="form-control" name="jours_fin[{{ $key }}][heure]" value="{{ old('jours_fin.'.$key.'.heure', $duree->jours->where('is_debut', 0)->where('value', $key)->count() ? $duree->jours->where('is_debut', 0)->where('value', $key)->first()->heure : null) }}">
-                                        <span class="form-text text-muted">Heure minimum (inclus)</span>
+                                        <span class="form-text text-muted">Heure maximum (inclus)</span>
                                     </div>
                                 </div>
                             @endforeach
