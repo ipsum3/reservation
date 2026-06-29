@@ -105,68 +105,36 @@ class ReservationCheck extends Command
         return $messages;
     }
 
-
-    public function tranche()
+    // TODO A CORRIGER
+    public function tranche(): array
     {
         $messages = [];
 
-        $dureesParType = Duree::orderBy('min', 'asc')
-            ->get()
-            ->groupBy('is_special');
+        $min = 120;
 
-        foreach ($dureesParType as $isSpecial => $durees) {
-            // Vérifier les trous entre les tranches
-            foreach ($durees as $key => $duree) {
-                if (isset($durees[$key + 1])
-                    && $durees[$key + 1]->max !== null
-                    && $duree->max + 1 != $durees[$key + 1]->min) {
-                    $messages[] = "Il existe des durées sans tranche pour " . ($isSpecial ? "les week-ends" : "les jours normaux") . ".";
-                }
+        $durees = Duree::query()
+            ->orderBy('min')
+            ->orderByDesc('max')
+            ->get();
+
+        if ($durees->isEmpty()) {
+            return ['Aucune durée configurée.'];
+        }
+
+        $current = $min;
+
+        foreach ($durees as $duree) {
+
+            // trou avant cette tranche
+            if ($duree->min > $current) {
+                $messages[] = sprintf(
+                    'Trou entre %s et %s',
+                    duration($current),
+                    duration($duree->min - 1)
+                );
             }
-        }
 
-        $chevauchements = DB::select(DB::raw('
-            SELECT t.id,
-                   t.min,
-                   t.max
-            FROM   durees AS t,
-                   durees AS t2
-            WHERE  t.is_special = 0
-                   AND t2.is_special = 0
-                   AND t.id <> t2.id
-                   AND
-                   t.min <= t2.max
-                   AND
-                   t.max >= t2.min
-            GROUP BY t.id,
-                     t.min,
-                     t.max
-        '));
-
-        if (!empty($chevauchements)) {
-            $messages[] = "Des chevauchements de tranche existe";
-        }
-
-        $chevauchements = DB::select(DB::raw('
-            SELECT t.id,
-                   t.min,
-                   t.max
-            FROM   durees AS t,
-                   durees AS t2
-            WHERE  t.is_special = 1
-                   AND t2.is_special = 1
-                   AND t.id <> t2.id
-                   AND
-                   t.min <= t2.max
-                   AND
-                   t.max >= t2.min
-            GROUP BY t.id,
-                     t.min,
-                     t.max
-        '));
-
-        if (!empty($chevauchements)) {
-            $messages[] = "Des chevauchements de tranche existe";
+            $current = max($current, $duree->max + 1);
         }
 
         return $messages;

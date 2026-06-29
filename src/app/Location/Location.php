@@ -121,7 +121,7 @@ class Location
     public function loadTarifs(): self
     {
         $this->saisons = Saison::getByDates($this->debut_at, $this->fin_at);
-        $this->duree = Duree::findByNbJours($this->getNbJours(), $this->debut_at, $this->fin_at);
+        $this->duree = Duree::findApplicable($this->debut_at, $this->fin_at);
 
         return $this;
     }
@@ -184,10 +184,34 @@ class Location
         return new PrestationCollection($prestation_collection);
     }
 
+    public function getDisplayDuration(): string
+    {
+        $duree = $this->getDuree();
+
+        switch ($duree->tarification) {
+
+            case 'heure':
+                $hours = $this->getNbHeures();
+                return $hours . ' heure' . ($hours > 1 ? 's' : '');
+
+            case 'jour':
+            default:
+                $nbJours = $this->getNbJours();
+                return $nbJours . ' jour' . ($nbJours > 1 ? 's' : '');
+        }
+    }
+
 
     public function getNbJours(): int
     {
         return Reservation::calculDuree($this->debut_at, $this->fin_at);
+    }
+
+    public function getNbHeures(): int
+    {
+        return ceil(
+            $this->getDebutAt()->diffInMinutes($this->getFinAt()) / 60
+        );
     }
 
     public function getDebutAt(): Carbon

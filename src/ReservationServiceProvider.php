@@ -66,6 +66,8 @@ class ReservationServiceProvider extends ServiceProvider
 
         $this->publishFiles();
 
+        $this->bladeDirectives();
+
         $this->registerMiddlewareGroup($this->app->router);
 
         //$this->addPolicies();
@@ -86,6 +88,13 @@ class ReservationServiceProvider extends ServiceProvider
 
         Blade::anonymousComponentNamespace('IpsumReservation::components', 'reservation');
 
+    }
+
+    public function bladeDirectives()
+    {
+        Blade::directive('duration', function ($expression) {
+            return "<?php echo duration($expression); ?>";
+        });
     }
 
 

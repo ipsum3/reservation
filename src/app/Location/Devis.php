@@ -61,7 +61,8 @@ class Devis
      */
     protected function _calculerTarif(): float
     {
-        $total = $duree_total = 0;
+        $total = 0;
+
         foreach ($this->location->getSaisons() as $saison) {
             /* @var $saison Saison */
 
@@ -73,16 +74,23 @@ class Devis
                 })
                 ->first();
 
-
             if ($tarif === null or $tarif->montant === null) {
                 throw new PrixInvalide(_('Aucun montant trouvé pour la catégorie : ').$this->location->getCategorie()->nom);
             }
 
-            if ($this->location->getDuree()->is_forfait) {
-                $total = $tarif->montant;
-                break;
-            } else {
-                $total += $tarif->montant * $saison->getDuree($this->location->getDebutAt(), $this->location->getFinAt());
+            switch ($this->location->getDuree()->tarification) {
+
+                case 'heure':
+                    $total += $tarif->montant * $this->location->getNbHeures();
+                    break 2; // Pas de proratisation du tarif sur plusieurs saisons
+
+                case 'forfait':
+                    $total = $tarif->montant;
+                    break 2;
+
+                default:
+                    $total += $tarif->montant * $saison->getDuree($this->location->getDebutAt(), $this->location->getFinAt());
+                    break;
             }
         }
 

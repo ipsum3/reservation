@@ -2,8 +2,10 @@
 
 namespace Ipsum\Reservation\app\Models\Tarif;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
 /**
  * Ipsum\Reservation\app\Models\Tarif\Duree
@@ -36,7 +38,7 @@ class Duree extends BaseModel
 
     protected $guarded = ['id'];
 
-    const TARIFICATION = ['jour', 'forfait'];
+    const TARIFICATION = ['jour', 'heure', 'forfait'];
 
 
 
@@ -77,19 +79,26 @@ class Duree extends BaseModel
      * Forfait weekend, forfait semaine, forfait 1/2 journée, forfait noctambule, forfait kilométrique : 100km/jour, kilométrage illimité...
      */
 
-    public function scopeDuree($query, int $nb_jours)
+    public function scopeDuree($query, int $nb_minutes)
     {
-        $query->where('min', '<=', $nb_jours)
-            ->where(function ($query) use ($nb_jours) {
-                $query->where('max', '>=', $nb_jours)->orWhereNull('max');
+        $query->where('min', '<', $nb_minutes)
+            ->where(function ($query) use ($nb_minutes) {
+                $query->where('max', '>=', $nb_minutes)->orWhereNull('max');
             });
     }
 
-    public function scopeConditions($query, int $nb_jours, CarbonInterface $date_debut, CarbonInterface $date_fin)
+    public function scopeConditions($query, int $nb_minutes, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
-            // Durée
-        $query->duree($nb_jours)
+        $delai = Carbon::now()->diffInMinutes($date_debut, false);
 
+        // Durée
+        $query->duree($nb_minutes)
+
+            // Délais
+            ->where(function ($query) use ($delai) {
+                $query->whereNull('delai_maximum')
+                    ->orWhere('delai_maximum', '>=', $delai);
+            })
             // Jour de la semaine et heures
             ->where(function ($query) use ($date_debut) {
                 $query->whereDoesntHave('jours', function ($query) {
@@ -117,15 +126,23 @@ class Duree extends BaseModel
      * Functions
      */
 
-    public static function findByNbJours(int $nb_jours, CarbonInterface $date_depart, CarbonInterface $date_fin, ?string $type = null)
+    public static function findApplicable(CarbonInterface $date_depart, CarbonInterface $date_fin, ?string $type = null ) : self
     {
-        $duree = self::conditions($nb_jours, $date_depart, $date_fin)
+        $nb_minutes = $date_depart->diffInMinutes($date_fin);
+        if($nb_minutes >= (60 * 24)) {
+            // Pas de marge pour les durées inférieurs a un jour car il y a un risque de ne pas trouver de tranche
+            $marge = config('settings.reservation.marge_courtoisie');
+            $nb_minutes -= $marge;
+        }
+
+        $duree = self::conditions($nb_minutes, $date_depart, $date_fin)
             ->where('type', $type)
-            ->orderBy('is_special', 'desc')
+            ->orderByDesc('priorite')
+            ->orderByDesc('min') // Pour récupérer le tarif normalement le moins cher
             ->first();
 
         if ($duree === null) {
-            throw new TarifException('Aucune tranche pour '.$nb_jours.' jours.');
+            throw new TarifException('Aucune tranche pour '.$nb_minutes.' minutes.');
         }
 
         return $duree;
@@ -140,6 +157,11 @@ class Duree extends BaseModel
     public function getIsForfaitAttribute()
     {
         return $this->tarification == 'forfait';
+    }
+
+    public function getMinDisplayAttribute()
+    {
+        return $this->min >= 1440 ?  $this->min + 1440 :  $this->min + 1;
     }
 
 }
