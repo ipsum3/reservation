@@ -7,7 +7,7 @@
 
     <div class="row">
         @if (auth()->user()->can('admin-acces', 'statistique') and $vehicule->exists)
-            <div class="col-6 col-md-4">
+            <div class="col-6 col-md-3">
                 <div class="box">
                     <div class="box-body">
                         <div class="stat-description">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-4">
+            <div class="col-6 col-md-3">
                 <div class="box">
                     <div class="box-body">
                         <div class="stat-description">
@@ -31,7 +31,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-4">
+            <div class="col-6 col-md-3">
                 <div class="box">
                     <div class="box-body">
                         <div class="stat-description">
@@ -43,6 +43,20 @@
                     </div>
                 </div>
             </div>
+            @if(config('ipsum.reservation.etat_des_lieux.enable') && $vehicule->exists)
+            <div class="col-6 col-md-3">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="stat-description">
+                            Kilométrage
+                        </div>
+                        <div class="stat-number lead">
+                            <strong>{{ $vehicule->last_inspection->kilometrage ?? 'Non renseigné' }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
         @endif
         <div class="col-md-6">
             {{ Aire::open()->route($vehicule->exists ? 'admin.vehicule.update' : 'admin.vehicule.store', $vehicule->exists ? [$vehicule] : '')->bind($vehicule)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreVehicule::class) }}

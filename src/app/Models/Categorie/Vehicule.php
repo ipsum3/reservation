@@ -211,6 +211,16 @@ class Vehicule extends BaseModel
         return false;
     }
 
+
+
+    /**
+     * Dernière inspection (méthode pratique)
+     */
+    public function getLastInspectionAttribute()
+    {
+        return $this->inspections()->whereNotNull('agent_signature_at')->latest()->first();
+    }
+
     public function getTagTitleAttribute()
     {
         return $this->attributes['seo_title'] == '' ? $this->titre : $this->attributes['seo_title'];
