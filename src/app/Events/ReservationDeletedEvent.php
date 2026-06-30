@@ -8,7 +8,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
-class ReservationCreateEvent
+class ReservationDeletedEvent
 {
     use Dispatchable, SerializesModels;
 

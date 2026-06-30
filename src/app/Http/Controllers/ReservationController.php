@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Events\ReservationConfirmedEvent;
-use Ipsum\Reservation\app\Events\ReservationCreateEvent;
+use Ipsum\Reservation\app\Events\ReservationCreatedEvent;
+use Ipsum\Reservation\app\Events\ReservationDeletedEvent;
+use Ipsum\Reservation\app\Events\ReservationUpdatedEvent;
 use Ipsum\Reservation\app\Http\Requests\GetReservationVehiculeSelect;
 use Ipsum\Reservation\app\Http\Requests\SendDocumentEmail;
 use Ipsum\Reservation\app\Http\Requests\ShowDepartRetour;
@@ -277,8 +279,7 @@ class ReservationController extends AdminController
             $reservation->paiements()->saveMany($datas);
         }
 
-
-        ReservationCreateEvent::dispatch($reservation);
+        ReservationCreatedEvent::dispatch($reservation);
 
         if ($reservation->is_confirmed) {
             ReservationConfirmedEvent::dispatch($reservation);
@@ -363,6 +364,8 @@ class ReservationController extends AdminController
 
         $reservation->updateMontantPaye()->save();
 
+        ReservationUpdatedEvent::dispatch($reservation);
+
         if ($reservation->is_confirmed and !$is_confirmed_old) {
             ReservationConfirmedEvent::dispatch($reservation);
         }
@@ -438,6 +441,8 @@ class ReservationController extends AdminController
     public function destroy(Reservation $reservation)
     {
         $reservation->delete();
+
+        ReservationDeletedEvent::dispatch($reservation);
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();
         return redirect()->route('admin.reservation.index');
