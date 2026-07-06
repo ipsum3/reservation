@@ -45,7 +45,6 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\PaiementController::cl
     }
 );
 
-
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\CategorieController::class)->prefix('categorie')->name('admin.categorie.')->group(
     function () {
         Route::get('', 'index')->name('index');

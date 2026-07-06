@@ -127,4 +127,6 @@ return [
     'depart_retour_date_range' => false,
     'depart_retour_affichage_complet' => false,
 
+    'module_de_paiement' => false,
+
 ];

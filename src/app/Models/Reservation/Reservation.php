@@ -74,6 +74,7 @@ use Carbon\Carbon;
  * @property string|null $total
  * @property string|null $montant_paye
  * @property string|null $note
+ * @property \Illuminate\Support\Carbon|null $devis_expiration_at
  * @property int $saved
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -90,6 +91,7 @@ use Carbon\Carbon;
  * @property-read bool $is_confirmed
  * @property-read bool $is_payed
  * @property-read int $nb_jours
+ * @property-read float $reste_a_paye
  * @property-read mixed $tarif_journalier
  * @property-read Inspection|null $inspectionFinale
  * @property-read Inspection|null $inspectionInitiale
@@ -127,6 +129,7 @@ class Reservation extends BaseModel
         'echeancier' => EcheancierCollection::class,
         'debut_at' => 'datetime:Y-m-d\TH:i',
         'fin_at' => 'datetime:Y-m-d\TH:i',
+        'devis_expiration_at' => 'datetime:Y-m-d\TH:i',
         'naissance_at' => 'date:Y-m-d',
         'permis_at' => 'date:Y-m-d',
         'conducteurs' => ConducteurCollection::class,
@@ -147,6 +150,9 @@ class Reservation extends BaseModel
 
         self::creating(function ($reservation) {
             $reservation->locale = app()->getLocale();
+            if (config('settings.reservation.date_expiration')) {
+                $reservation->devis_expiration_at = Carbon::now()->addDays(config('settings.reservation.date_expiration'));
+            }
         });
 
         self::created(function (self $reservation) {
@@ -378,6 +384,11 @@ class Reservation extends BaseModel
     public function getTarifJournalierAttribute()
     {
         return $this->total / $this->nb_jours;
+    }
+
+    public function getResteAPayeAttribute(): float
+    {
+        return $this->total - $this->montant_paye;
     }
 
     public function getAcompteAttribute(): ?float

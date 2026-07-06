@@ -72,7 +72,7 @@
                     <p>
                         {{ _('Date de création') }} : {{ \Carbon\Carbon::now()->format('d/m/Y') }}<br/>
                         @if( config('settings.reservation.date_expiration') )
-                            {{ _('Date d\'expiration') }} : {{ \Carbon\Carbon::now()->addDays(config('settings.reservation.date_expiration'))->format('d/m/Y') }}
+                            {{ _('Date d\'expiration') }} : {{ $reservation->devis_expiration_at->format('d/m/Y') }}
                         @endif
                     </p>
                     <div style="border: 1px solid #acacac; padding: 10px 20px;font-size: 14px; font-family: Verdana, 'Bitstream Vera Sans', 'Lucida Grande', sans-serif">

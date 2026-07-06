@@ -31,6 +31,7 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @property-read int|null $dommages_count
  * @property-read bool $has_no_blocage
  * @property-read bool $is_hors_parc
+ * @property-read mixed $last_inspection
  * @property-read mixed $tag_meta_description
  * @property-read mixed $tag_title
  * @property-read mixed $tarif_a_partir

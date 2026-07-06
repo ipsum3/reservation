@@ -244,8 +244,11 @@
                                 <tbody>
                                     @if($reservation->etat_id == \Ipsum\Reservation\app\Models\Reservation\Etat::NON_VALIDEE_ID)
                                         <tr>
-                                            <td>Devis</td>
+                                            <td>Devis {{ $reservation->devis_expiration_at ? '(expire le : '. $reservation->devis_expiration_at->format('d/m/Y H:i:s') .')': '' }}</td>
                                             <td class="text-right">
+                                                @if (config('ipsum.reservation.module_de_paiement'))
+                                                    <a class="btn btn-outline-secondary" href="{{ URL::signedRoute('devis.show', $reservation) }}" target="_blank"><i class="fa fa-link"></i></a>
+                                                @endif
                                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>
                                                 <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'devis', 'objet' => 'Devis de location']) }}" ><i class="fas fa-envelope"></i></a>
                                             </td>

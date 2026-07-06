@@ -463,14 +463,18 @@ class ReservationController extends AdminController
     public function documentSend(SendDocumentEmail $request, Reservation $reservation)
     {
         try {
-            if( $request->document == 'confirmation' ) {
+            if( $request->document === 'confirmation' ) {
                 Mail::send(new Confirmation($reservation, $request->email, false, $request->objet));
-            } elseif ( $request->document == 'devis' ) {
+            } elseif ( $request->document === 'devis' ) {
                 Mail::send(new Devis($reservation, $request->email, $request->objet));
-            } elseif ( $request->document == 'inspection' ) {
+                if (config('settings.reservation.date_expiration')) {
+                    $reservation->devis_expiration_at = Carbon::now()->addDays(config('settings.reservation.date_expiration'));
+                    $reservation->save();
+                }
+            } elseif ( $request->document === 'inspection' ) {
                 $inspection = $reservation->inspections()->findOrFail($request->id);
                 Mail::send(new Document($reservation, $inspection->document_path, $inspection->document_public_file_name, $request->objet, $request->message, $request->email));
-            } elseif ( $request->document == 'contrat' ) {
+            } elseif ( $request->document === 'contrat' ) {
                 Mail::send(new Document($reservation, $reservation->contrat_path, $reservation->contrat_public_file_name, $request->objet, $request->message, $request->email));
             }
             Alert::success("Le document a bien été envoyé")->flash();

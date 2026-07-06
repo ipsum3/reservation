@@ -28,6 +28,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property int|null $quantite_gratuite
  * @property int|null $jour_fact_max
  * @property int|null $age_max
+ * @property int|null $age_min
  * @property string|null $heure_max_depart
  * @property string|null $heure_max_retour
  * @property string|null $heure_min_depart

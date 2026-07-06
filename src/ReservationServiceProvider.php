@@ -12,6 +12,7 @@ use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
 use Ipsum\Reservation\app\Console\Commands\ReservationCheck;
 use Ipsum\Reservation\app\Http\Middleware\CheckEtatDesLieuxEnabled;
+use Ipsum\Reservation\app\Http\Middleware\DevisCheck;
 use Ipsum\Reservation\app\Http\Middleware\RedirectIfInspectionSigned;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
 use Ipsum\Reservation\app\Http\Middleware\ReservationEmail;
@@ -55,6 +56,9 @@ class ReservationServiceProvider extends ServiceProvider
         Route::middleware(['web'])
             ->prefix(config('ipsum.admin.route_prefix'))
             ->group(__DIR__.'/routes/admin.php');
+
+        Route::middleware(['web'])
+            ->group(__DIR__.'/routes/web.php');
         
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
         $this->loadViews();
@@ -130,6 +134,7 @@ class ReservationServiceProvider extends ServiceProvider
         $router->aliasMiddleware('adminRedirectIfInspectionSigned', RedirectIfInspectionSigned::class);
         $router->aliasMiddleware('adminCheckEtatDesLieuxEnabled', CheckEtatDesLieuxEnabled::class);
         $router->aliasMiddleware('adminReservationEmail', ReservationEmail::class);
+        $router->aliasMiddleware('adminDevisCheck', DevisCheck::class);
         $this->app->booted(function () use($router) {
             $router->pushMiddlewareToGroup('web', ReservationTracking::class);
         });
