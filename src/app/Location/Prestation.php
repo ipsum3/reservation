@@ -140,7 +140,11 @@ class Prestation extends \Ipsum\Reservation\app\Models\Prestation\Prestation
                 break;
 
             case Tarification::JOUR_ID:
-                $tarif = $montant * $quantite_calcul * $duree_pour_calcul;
+                $tarif = $montant * $duree_pour_calcul;
+                if ($this->montant_max !== null && $tarif > $this->montant_max) {
+                    $tarif = $this->montant_max;
+                }
+                $tarif *= $quantite_calcul;
                 break;
 
             case Tarification::AGENCE_ID:

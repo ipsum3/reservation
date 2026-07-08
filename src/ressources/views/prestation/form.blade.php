@@ -38,10 +38,11 @@
                 {{ Aire::select(collect(['' => '---- Tarifications -----'])->union($tarifications), 'tarification_id', 'Tarification*')->groupAddClass('col-md-6') }}
                 {{ Aire::textArea('description', 'Description')->groupAddClass('col-md-6') }}
                 {{ Aire::number('montant', 'Montant')->step(.01)->groupAddClass('col-md-6') }}
-                {{ Aire::number('quantite_max', 'Quantité max*')->required()->defaultValue(1)->groupAddClass('col-md-6') }}
+                {{ Aire::number('montant_max', 'Montant maximum')->groupAddClass('col-md-6') }}
                 {{ Aire::number('gratuit_apres', 'Gratuit après x jours')->groupAddClass('col-md-6') }}
-                {{ Aire::number('jour_fact_max', 'Nombre de jour maximum facturé')->groupAddClass('col-md-6') }}
+                {{ Aire::number('quantite_max', 'Quantité max*')->required()->defaultValue(1)->groupAddClass('col-md-6') }}
                 {{ Aire::number('quantite_gratuite', 'Gratuit pour x quantité')->groupAddClass('col-md-6') }}
+                {{ Aire::number('jour_fact_max', 'Nombre de jour maximum facturé')->groupAddClass('col-md-6') }}
             </div>
         </div>
     </div>
