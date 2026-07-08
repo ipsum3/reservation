@@ -71,7 +71,7 @@
                     <h2>Devis</h2>
                     <p>
                         {{ _('Date de création') }} : {{ \Carbon\Carbon::now()->format('d/m/Y') }}<br/>
-                        @if( config('settings.reservation.date_expiration') )
+                        @if( config('settings.reservation.date_expiration') and $reservation->devis_expiration_at )
                             {{ _('Date d\'expiration') }} : {{ $reservation->devis_expiration_at->format('d/m/Y') }}
                         @endif
                     </p>

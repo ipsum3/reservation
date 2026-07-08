@@ -6,6 +6,6 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\DevisController::class
     function () {
         Route::any('{reservation}', 'show')->name('show')->middleware('signed')->middleware('adminDevisCheck');
         Route::get('{reservation}/banque', 'redirectBanque')->name('redirectBanque')->middleware('signed')->middleware('adminDevisCheck');
-        Route::any('{reservation}/confirmation', 'confirmation')->name('confirmation')->middleware('signed');
+        Route::any('{reservation}/confirmation', 'confirmation')->name('confirmation')->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
     }
 );
