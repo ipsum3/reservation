@@ -292,8 +292,8 @@ class Reservation extends BaseModel
 
     public function scopeConfirmedBetweenDates(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
-        $debut_at = $date_debut->copy()->subHours(config('settings.reservation.battement_entre_reservations'));
-        $fin_at = $date_fin->copy()->addHours(config('settings.reservation.battement_entre_reservations'));
+        $debut_at = $date_debut->copy()->subRealHours(config('settings.reservation.battement_entre_reservations'));
+        $fin_at = $date_fin->copy()->addRealHours(config('settings.reservation.battement_entre_reservations'));
 
         return $query->confirmed()->where(function (Builder $query) use ($debut_at, $fin_at) {
             return $query->where(function (Builder $query) use ($debut_at, $fin_at) {
