@@ -66,6 +66,7 @@ class StorePrestation extends FormRequest
             "nom" => "required|max:255",
             "description" => "nullable",
             "montant" => "nullable|numeric",
+            "montant_max" => "nullable|numeric",
             "quantite_max" => "required|numeric",
             "gratuit_apres" => "nullable|numeric",
             "quantite_gratuite" => "nullable|numeric",
