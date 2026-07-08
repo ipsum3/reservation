@@ -70,9 +70,11 @@ class Location
 
     public function __construct()
     {
+        $heures_debut = explode(':', config('ipsum.reservation.recherche.heure_debut', '16:00'));
+        $heures_fin = explode(':', config('ipsum.reservation.recherche.heure_debut', '16:00'));
         $this->prestations = new PrestationCollection();
-        $this->debut_at = Carbon::now()->addDays(config('ipsum.reservation.recherche.date_debut') ?? 7)->hour(config('ipsum.reservation.recherche.heure_debut') ?? 16)->minute(0)->second(0)->micro(0);
-        $this->fin_at = Carbon::now()->addDays(config('ipsum.reservation.recherche.date_fin') ?? 14)->hour(config('ipsum.reservation.recherche.heure_fin') ?? 16)->minute(0)->second(0)->micro(0);
+        $this->debut_at = Carbon::now()->addDays(config('ipsum.reservation.recherche.date_debut', 7))->hour($heures_debut[0])->minute($heures_debut[1])->second(0)->micro(0);
+        $this->fin_at = Carbon::now()->addDays(config('ipsum.reservation.recherche.date_fin', 14))->hour($heures_fin[0])->minute($heures_fin[1])->second(0)->micro(0);
 
     }
 
