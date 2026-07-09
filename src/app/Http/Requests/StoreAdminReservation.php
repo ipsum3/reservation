@@ -90,7 +90,7 @@ class StoreAdminReservation extends FormRequest
             "vehicule_blocage" => "nullable|boolean",
             "caution" => "nullable|numeric",
             "franchise" => "nullable|numeric",
-            "debut_at" => "required|date_format:Y-m-d\TH:i|before-or-equal:fin_at",
+            "debut_at" => "required|date_format:Y-m-d\TH:i|before:fin_at",
             "fin_at" => "required|date_format:Y-m-d\TH:i",
             "debut_lieu_id" => "required|integer|exists:lieux,id",
             "fin_lieu_id" => "required|integer|exists:lieux,id",
@@ -127,6 +127,18 @@ class StoreAdminReservation extends FormRequest
             "conducteurs.*.permis_at" => "nullable|date_format:Y-m-d",
             "conducteurs.*.permis_delivre" => "nullable|max:255",
         ] + $rules;
+    }
+
+
+
+    public function attributes()
+    {
+        return [
+            'debut_at' => 'date de départ',
+            'fin_at' => 'date de retour',
+            'debut_lieu_id' => 'lieu de départ',
+            'fin_lieu_id' => 'lieu de retour',
+        ];
     }
 
 }
