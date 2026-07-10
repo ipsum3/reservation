@@ -3,6 +3,8 @@
 namespace Ipsum\Reservation\app\Models\Categorie;
 
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Admin\Concerns\Sortable;
+use Ipsum\Core\Concerns\Slug;
 
 /**
  * Ipsum\Reservation\app\Models\Categorie\Type
@@ -19,10 +21,13 @@ use Ipsum\Core\app\Models\BaseModel;
  */
 class Type extends BaseModel
 {
+    use Slug, Sortable;
 
     protected $table = 'categorie_types';
     
     public $timestamps = false;
+
+    protected $slugBase = 'nom';
 
     /*
      * Relations
@@ -32,4 +37,15 @@ class Type extends BaseModel
     {
         return $this->hasMany(Categorie::class);
     }
+
+    public function getTagTitleAttribute()
+    {
+        return $this->attributes['seo_title'] == '' ? $this->titre : $this->attributes['seo_title'];
+    }
+
+    public function getTagMetaDescriptionAttribute()
+    {
+        return $this->attributes['seo_description'] == '' ? $this->extrait : $this->attributes['seo_description'];
+    }
+
 }
