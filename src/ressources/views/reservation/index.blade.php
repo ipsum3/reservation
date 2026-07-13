@@ -89,6 +89,7 @@
             {{ Aire::input('date_debut')->value(request()->get('date_debut'))->id('date_debut')->placeholder('Date de début')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
             <label class="sr-only" for="date_fin">Date de fin</label>
             {{ Aire::input('date_fin')->value(request()->get('date_fin'))->id('date_fin')->placeholder('Date de fin')->style('width: 200px')->class('form-control mb-2 mr-sm-2 datepicker-range')->withoutGroup() }}
+            {{ Aire::hidden('promotion_id')->value(request()->get('promotion_id'))->id('promotion_id')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
 
             <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}

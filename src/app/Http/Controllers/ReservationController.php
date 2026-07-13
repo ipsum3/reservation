@@ -93,6 +93,11 @@ class ReservationController extends AdminController
                 $query->whereBetween('fin_at', [$date1, $date2]);
             } catch (\Exception $e) {}
         }
+        if ($request->filled('promotion_id')) {
+            $query->whereJsonContains('promotions', [
+                'id' => (int) $request->promotion_id,
+            ]);
+        }
         if ($request->filled('search')) {
             $query->where(function($query) use ($request) {
                 foreach (['reference', 'contrat', 'nom', 'prenom', 'email', 'telephone'] as $colonne) {
@@ -171,6 +176,7 @@ class ReservationController extends AdminController
             'Début',
             'Fin',
             'Montant de base',
+            'Code promo',
             'Total',
             'Montant payé',
             'Note',
@@ -217,6 +223,7 @@ class ReservationController extends AdminController
                 $reservation->debut_lieu_nom,
                 $reservation->fin_lieu_nom,
                 $reservation->montant_base,
+                $reservation->code_promo,
                 $reservation->total,
                 $reservation->montant_paye,
                 $reservation->note,

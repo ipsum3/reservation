@@ -11,6 +11,7 @@ use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Condition;
+use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
 /**
  * Ipsum\Reservation\app\Models\Promotion\Promotion
@@ -116,6 +117,15 @@ class Promotion extends BaseModel
     public function condition()
     {
         return $this->belongsTo(Condition::class, 'condition_paiement_id');
+    }
+
+
+    public function reservations()
+    {
+        return Reservation::query()->confirmed()
+            ->whereJsonContains('promotions', [
+                'id' => $this->id,
+            ]);
     }
 
 

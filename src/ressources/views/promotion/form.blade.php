@@ -35,7 +35,12 @@
             <div class="form-row">
                 {{ Aire::hidden('type', 'reduction')->required() }}
                 {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-6') }}
-                {{ Aire::input('reference', 'Réfèrence')->groupAddClass('col-md-6') }}
+                {{--La référence ne sert à rien donc on cache en attendant de supprimer--}}
+                @if($promotion->reference)
+                    {{ Aire::input('reference', 'Réfèrence')->groupAddClass('col-md-6') }}
+                @else
+                    <div class="col-md-6"></div>
+                @endif
 
                 {{ Aire::select(\Ipsum\Reservation\app\Models\Promotion\Promotion::REDUCTION_TYPES, 'reduction_type', 'Type de réduction')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::number('reduction_valeur', 'Valeur de réduction')->step(.01)->groupAddClass('col-md-6') }}
