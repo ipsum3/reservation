@@ -206,6 +206,11 @@ class Categorie extends BaseModel
         $query->withCount(['vehicules' => function (Builder $query) use ($date_debut, $date_fin) {
             $query->whereDoesntHaveReservationConfirmed($date_debut, $date_fin);
         }]);
+
+        // Une seule réservation sans véhicule, bloque la dispo
+        $query->withCount(['reservations' => function (Builder $query) use ($date_debut, $date_fin) {
+            $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin);
+        }]);
     }
 
 
@@ -249,12 +254,14 @@ class Categorie extends BaseModel
         if ($date_debut !== null) {
             $this->loadCount(['vehicules' => function (Builder $query) use ($date_debut, $date_fin) {
                 $query->whereDoesntHaveReservationConfirmed($date_debut, $date_fin);
+            }])->withCount(['reservations' => function (Builder $query) use ($date_debut, $date_fin) {
+                $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin);
             }]);
-        } elseif ($this->vehicules_count === null) {
+        } elseif ($this->vehicules_count === null or $this->reservations_count === null) {
             throw new \Exception('A utiliser avec scopeWithCountVehiculeDispo');
         }
 
-        return $this->vehicules_count !== 0;
+        return $this->vehicules_count !== 0 and $this->reservations_count === 0;
     }
 
     public function getHasVehiculeAttribute(): bool
