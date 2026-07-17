@@ -101,7 +101,7 @@
                 });
 
                 function resizeCanvas() {
-                    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                    const ratio = 1;
                     const width = 330;
                     const height = 200;
 
