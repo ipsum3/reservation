@@ -254,7 +254,7 @@ class Categorie extends BaseModel
         if ($date_debut !== null) {
             $this->loadCount(['vehicules' => function (Builder $query) use ($date_debut, $date_fin) {
                 $query->whereDoesntHaveReservationConfirmed($date_debut, $date_fin);
-            }])->withCount(['reservations' => function (Builder $query) use ($date_debut, $date_fin) {
+            }])->loadCount(['reservations' => function (Builder $query) use ($date_debut, $date_fin) {
                 $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin);
             }]);
         } elseif ($this->vehicules_count === null or $this->reservations_count === null) {
