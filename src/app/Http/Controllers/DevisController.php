@@ -53,7 +53,8 @@ class DevisController extends Controller
                     'vads_url_cancel' => URL::signedRoute('devis.show', $reservation),
                     'vads_url_error' => URL::signedRoute('devis.show', $reservation),
                     'vads_url_refused' => URL::signedRoute('devis.show', $reservation),
-                    'vads_url_success' => URL::route('devis.confirmation', $reservation)
+                    'vads_url_success' => URL::route('devis.confirmation', $reservation),
+                    'vads_return_mode' => 'POST',
                 ];
 
                 $systempay = new \PixellWeb\Systempay\app\PaymentRequest(
