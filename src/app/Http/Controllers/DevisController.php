@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Http\Controllers;
 
+use App\Services\StripeService;
 use Illuminate\Routing\Controller;
 use App\Sherlocks\Sherlocks;
 use Illuminate\Http\Request;
@@ -32,6 +33,12 @@ class DevisController extends Controller
 
         switch (config('ipsum.reservation.module_de_paiement')) {
             case 'monetico':
+
+                // TODO
+                // Monético indique "La date de validité de votre commande est dépassée.", si le paiement as duré trop longtemps.
+                // Piste, mettre un suffixe à la réfèrence qui change à chaque accés à redirectbanque. Par contre, il faut changer l'ipn Ne pas faire comme sur le front
+                // problème dans monetico la ref va changer ??
+
                 $billing = new OrderContextBilling($reservation->adresse ?? 'rue des champs', $reservation->ville ?? 'Pointe-à-Pitre', $reservation->cp ?? '97100', $reservation->pays->alpha2 ?? 'GP');
                 $context = new OrderContext($billing);
                 $payment_request = new PaymentRequest($reservation->reference, $montant, $context, $reservation->email);
@@ -42,17 +49,18 @@ class DevisController extends Controller
                 break;
 
             case 'systempay':
-                config()->set([
-                    'systempay.url_annule' => URL::signedRoute('devis.show', $reservation),
-                    'systempay.url_effectue' => URL::route('devis.confirmation', $reservation),
-                    'systempay.url_attente' => URL::route('devis.confirmation', $reservation),
-                    'systempay.url_refuse' => URL::signedRoute('devis.show', $reservation),
-                ]);
+                $systempay_params = [
+                    'vads_url_cancel' => URL::signedRoute('devis.show', $reservation),
+                    'vads_url_error' => URL::signedRoute('devis.show', $reservation),
+                    'vads_url_refused' => URL::signedRoute('devis.show', $reservation),
+                    'vads_url_success' => URL::route('devis.confirmation', $reservation)
+                ];
 
                 $systempay = new \PixellWeb\Systempay\app\PaymentRequest(
                     $reservation->reference,
                     $montant,
                     $reservation->email,
+                    $systempay_params
                 );
 
                 return redirect()->away($systempay->link());
@@ -61,6 +69,20 @@ class DevisController extends Controller
             case 'sherlocksSite':
 
                 return Sherlocks::formPaiement($reservation, URL::route('devis.confirmation', $reservation));
+
+                break;
+
+            case 'stripeSite':
+
+                $stripe_service = new StripeService(
+                    [
+                        'success_url' => URL::route('devis.confirmation', $reservation),
+                        'cancel_url' => URL::signedRoute('devis.show', $reservation),
+                    ]
+                );
+                $session = $stripe_service->createCheckoutSession($reservation);
+
+                return redirect()->away($session->url);
 
                 break;
         }
