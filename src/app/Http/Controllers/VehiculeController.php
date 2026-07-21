@@ -180,7 +180,7 @@ class VehiculeController extends AdminController
             'Catégorie',
             'Réservations futures',
             'État',
-            'Date de mise en circulation*',
+            'Date de mise en circulation',
             'Date d\'entrée',
             'Date sortie',
             'Kilométrage',
