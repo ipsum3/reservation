@@ -68,6 +68,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\CategorieBlocageContro
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\VehiculeController::class)->prefix('vehicule')->name('admin.vehicule.')->group(
     function () {
         Route::get('', 'index')->name('index');
+        Route::get('export', 'export')->name('export');
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
         Route::any('{vehicule}/destroy', 'destroy')->name('destroy');
