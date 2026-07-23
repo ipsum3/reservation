@@ -174,17 +174,23 @@ class Prestation extends BaseModel
         })
 
         // Horaires
-        ->where(function (Builder $query) use ($debut_at) {
-            $query->where('heure_max_depart', '>', $debut_at->toTimeString())->orWhereNull('heure_max_depart');
+        ->where(function (Builder $query) use ($debut_at, $fin_at) {
+            $query->where(function (Builder $query) use ($debut_at) {
+                $query->where('heure_max_depart', '>', $debut_at->toTimeString())->orWhereNull('heure_max_depart');
+            })
+            ->orWhere(function (Builder $query) use ($fin_at) {
+                $query->where('heure_max_retour', '>', $fin_at->toTimeString())->orWhereNull('heure_max_retour');
+            });
         })
-        ->where(function (Builder $query) use ($debut_at) {
-            $query->where('heure_min_depart', '<', $debut_at->toTimeString())->orWhereNull('heure_min_depart');
-        })
-        ->where(function (Builder $query) use ($fin_at) {
-            $query->where('heure_max_retour', '>', $fin_at->toTimeString())->orWhereNull('heure_max_retour');
-        })
-        ->where(function (Builder $query) use ($fin_at) {
-            $query->where('heure_min_retour', '<', $fin_at->toTimeString())->orWhereNull('heure_min_retour');
+
+        ->where(function (Builder $query) use ($debut_at, $fin_at) {
+            $query->where(function (Builder $query) use ($debut_at) {
+                $query->where('heure_min_depart', '<', $debut_at->toTimeString())->orWhereNull('heure_min_depart');
+            })
+
+            ->orWhere(function (Builder $query) use ($fin_at) {
+                $query->where('heure_min_retour', '<', $fin_at->toTimeString())->orWhereNull('heure_min_retour');
+            });
         })
 
         // Durée de réservation
