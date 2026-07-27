@@ -16,8 +16,11 @@ class PaiementTypeSeeder extends Seeder
      */
     public function run()
     {
-        foreach ($this->getTypes() as $data) {
-            Type::create($data);
+        $types = Type::all()->pluck('id')->toArray();
+        foreach ($this->getTypes() as $type) {
+            if (!in_array($type['id'], $types)) {
+                Type::create($type);
+            }
         }
     }
 
@@ -31,6 +34,18 @@ class PaiementTypeSeeder extends Seeder
             array(
                 'id' => 2,
                 'nom' => 'Acompte',
+            ),
+            array(
+                'id' => 3,
+                'nom' => 'Avoir',
+            ),
+            array(
+                'id' => 4,
+                'nom' => 'Remboursement',
+            ),
+            array(
+                'id' => 5,
+                'nom' => 'Caution',
             ),
         );
     }

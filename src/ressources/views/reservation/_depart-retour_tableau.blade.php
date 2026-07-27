@@ -77,33 +77,52 @@
                             @endif
                         </td>
                         <td>
-                            <x-reservation::reste_a_payer total="{{ $reservation->total }}"  montant_paye="{{ $reservation->montant_paye }}" />
+                            <x-reservation::reste_a_payer total="{{ $reservation->total }}" montant_paye="{{ $reservation->montant_paye }}" />
+
+                            @if(config('ipsum.reservation.caution_provider') && $reservation->caution)
+                                <div class="mt-2">
+                                    @if($reservation->paiementCaution)
+                                        <span class="badge badge-success" data-toggle="tooltip" title="Caution sécurisée">
+                                            <i class="fas fa-shield-alt mr-1"></i>Caution : @prix($reservation->paiementCaution->montant) €
+                                        </span>
+                                    @elseif($reservation->caution_send_at)
+                                        <span class="badge badge-warning text-dark" data-toggle="tooltip" title="Demande envoyée le {{ $reservation->caution_send_at?->format('d/m H:i') ?? 'N/C' }}">
+                                            <i class="fas fa-hourglass-half mr-1"></i>Caution envoyée le {{ $reservation->caution_send_at->format('d/m/Y H:i') }}
+                                        </span>
+                                    @endif
+                                </div>
+                            @endif
                         </td>
+
                         <td>{{ $reservation->condition ? $reservation->condition->nom : '' }}</td>
+
                         <td class="text-right">
                             <form action="{{ route('admin.reservation.destroy', $reservation) }}" method="POST">
+
                                 @if ($reservation->is_depart)
                                     @if(config('ipsum.reservation.etat_des_lieux.enable') === true)
                                         @if($reservation->inspectionInitiale?->isSigned())
-                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionInitiale]) }}" title="Voir l'état des lieux"><i class="fa fa-car-crash"></i></a>
+                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionInitiale]) }}" data-toggle="tooltip" title="Voir l'état des lieux"><i class="fa fa-car-crash"></i></a>
                                         @else
-                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" title="État des lieux initial"><i class="fa fa-car"></i></a>
+                                            <a class="btn btn-outline-primary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}" data-toggle="tooltip" title="État des lieux initial"><i class="fa fa-car"></i></a>
                                         @endif
                                     @else
-                                        <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" title="contrat"><i class="fa fa-file-signature"></i></a>
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" data-toggle="tooltip" title="Contrat"><i class="fa fa-file-signature"></i></a>
                                     @endif
                                 @elseif(config('ipsum.reservation.etat_des_lieux.enable') === true)
                                     @if($reservation->inspectionFinale?->isSigned())
-                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionFinale]) }}" target="_blank" title="Voir l'état des lieux"><i class="fa fa-car-crash"></i></a>
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.show', [$reservation->inspectionFinale]) }}" target="_blank" data-toggle="tooltip" title="Voir l'état des lieux"><i class="fa fa-car-crash"></i></a>
                                     @else
-                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}" title="État des lieux final"><i class="fa fa-car"></i></a>
+                                        <a class="btn btn-outline-primary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}" data-toggle="tooltip" title="État des lieux final"><i class="fa fa-car"></i></a>
                                     @endif
                                 @endif
-                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$reservation]) }}"><i class="fa fa-edit"></i></a>
+
+                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.edit', [$reservation]) }}" data-toggle="tooltip" title="Éditer la réservation"><i class="fa fa-edit"></i></a>
+
                                 @can('delete', $reservation)
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
+                                    <button type="submit" class="btn btn-outline-danger" data-toggle="tooltip" title="Supprimer"><i class="fa fa-trash-alt"></i></button>
                                 @endcan
                             </form>
                         </td>
@@ -170,6 +189,21 @@
                                 <i class="fa fa-phone"></i> <a href="tel:{{ $reservation->telephone }}">{{ $reservation->telephone }}</a><br>
                             @endif
                         </p>
+                        @if(config('ipsum.reservation.caution_provider') && $reservation->caution)
+                            <p class="mb-1">
+                                @if($reservation->paiementCaution)
+                                    <i class="fas fa-shield-alt mr-1"></i>
+                                    <span class="badge badge-success" data-toggle="tooltip" title="Caution sécurisée">
+                                        Caution : @prix($reservation->paiementCaution->montant) €
+                                    </span>
+                                @elseif($reservation->caution_send_at)
+                                    <i class="fas fa-hourglass-half mr-1"></i>
+                                    <span class="badge badge-warning text-dark" data-toggle="tooltip" title="Demande envoyée le {{ $reservation->caution_send_at?->format('d/m H:i') ?? 'N/C' }}">
+                                        Caution envoyée le {{ $reservation->caution_send_at->format('d/m/Y H:i') }}
+                                    </span>
+                                @endif
+                            </p>
+                        @endif
                         <p class="mb-3">
                             <i class="fa fa-money-check-alt"></i>
                             <x-reservation::reste_a_payer total="{{ $reservation->total }}" montant_paye="{{ $reservation->montant_paye }}" />

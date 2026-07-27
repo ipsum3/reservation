@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Models\Reservation;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Admin\app\Models\Admin;
 use Ipsum\Core\app\Models\BaseModel;
@@ -129,6 +130,7 @@ class Reservation extends BaseModel
         'echeancier' => EcheancierCollection::class,
         'debut_at' => 'datetime:Y-m-d\TH:i',
         'fin_at' => 'datetime:Y-m-d\TH:i',
+        'caution_send_at' => 'datetime:Y-m-d\TH:i',
         'devis_expiration_at' => 'datetime:Y-m-d\TH:i',
         'naissance_at' => 'date:Y-m-d',
         'permis_at' => 'date:Y-m-d',
@@ -208,6 +210,13 @@ class Reservation extends BaseModel
     public function paiements()
     {
         return $this->hasMany(Paiement::class);
+    }
+
+    public function paiementCaution()
+    {
+        return $this->hasOne(Paiement::class)
+            ->where('paiement_type_id', Type::CAUTION_ID)
+            ->ok();
     }
 
     public function etat()
@@ -347,7 +356,7 @@ class Reservation extends BaseModel
 
     public function updateMontantPaye()
     {
-        $this->montant_paye = $this->paiements()->ok()->sum('montant');
+        $this->montant_paye = $this->paiements()->ok()->whereNot('paiement_type_id', Type::CAUTION_ID)->sum('montant');
         return $this;
     }
 

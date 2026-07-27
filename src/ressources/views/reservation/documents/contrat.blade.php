@@ -281,11 +281,11 @@
                                         </td>
                                     </tr>
                                 @endif
-                                @if ($reservation->caution)
+                                @if ($reservation->caution || $reservation->paiementCaution?->montant)
                                     <tr>
                                         <td>{{ _('Caution') }}</td>
                                         <td align="right">
-                                            @prix($reservation->caution)&nbsp;€
+                                            @prix($reservation->paiementCaution?->montant ?? $reservation->caution)&nbsp;€
                                         </td>
                                     </tr>
                                 @endif
