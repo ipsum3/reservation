@@ -473,7 +473,7 @@ class ReservationController extends AdminController
             if( $request->document === 'confirmation' ) {
                 Mail::send(new Confirmation($reservation, $request->email, false, $request->objet));
             } elseif ( $request->document === 'devis' ) {
-                Mail::send(new Devis($reservation, $request->email, $request->objet));
+                Mail::send(new Devis($reservation, $request->email, $request->objet, $request->message));
                 if (config('settings.reservation.date_expiration')) {
                     $reservation->devis_expiration_at = Carbon::now()->addDays(config('settings.reservation.date_expiration'));
                     $reservation->save();

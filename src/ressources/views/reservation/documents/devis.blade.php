@@ -68,7 +68,7 @@
                             {{ config('settings.nom_site') }}
                         @endif
                     </h1>
-                    <h2>Devis</h2>
+                    <h2>Devis {{ $reservation->reference }}</h2>
                     <p>
                         {{ _('Date de création') }} : {{ \Carbon\Carbon::now()->format('d/m/Y') }}<br/>
                         @if( config('settings.reservation.date_expiration') and $reservation->devis_expiration_at )
@@ -116,7 +116,6 @@
     <table>
         <thead>
         <tr>
-            <th style="width: 15%;text-align: center;">{{ _('Référence') }}</th>
             <th style="width: 45%;text-align: center;">{{ _('Désignation') }}</th>
             <th style="width: 15%;text-align: center;">{{ _('Total TTC') }}</th>
         </tr>
@@ -124,13 +123,33 @@
 
         <tbody>
         <tr>
-            <td>{{ $reservation->reference }}</td>
             <td>
-                {{ _('Location du ') }} {{ $reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->debut_at->format('H\hi') }} {{ _('au') }} {{ $reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->fin_at->format('H\hi') }}<br />
-                Catégorie de véhicule : {{ $reservation->categorie_nom }}
+                {{ _('Location de la catégorie de véhicule') }} {{ $reservation->categorie_nom }} <br />
+                {{ _('Début') }} : {{ $reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->debut_at->format('H\hi') }} | {{ $reservation->debut_lieu_nom }} <br />
+                {{ _('Fin') }} : {{ $reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->fin_at->format('H\hi') }} | {{ $reservation->fin_lieu_nom }}<br />
             </td>
             <td style="text-align: right;">@prix($reservation->total)€</td>
         </tr>
+        @if ($reservation->prestations->count())
+            @foreach ($reservation->prestations as $prestation)
+                <tr>
+                    <td>{{ $prestation->quantite }} {{ strtolower($prestation->nom) }} {{ !empty($prestation->choix) ? '('.$prestation->choix.')' : '' }}</td>
+                    <td align="right">
+                        {{ $prestation->tarif_libelle }}
+                    </td>
+                </tr>
+            @endforeach
+        @endif
+        @if ($reservation->promotions->count())
+            @foreach ($reservation->promotions as $promotion)
+                <tr>
+                    <td>{{ _('Offre') }} {{ strtolower($promotion->nom) }}</td>
+                    <td align="right">
+                        -@prix($promotion->reduction)&nbsp;€
+                    </td>
+                </tr>
+            @endforeach
+        @endif
         </tbody>
     </table>
 
@@ -140,6 +159,12 @@
 
                 <table style="margin-top: 5mm;">
                     <tbody>
+                    @if ($reservation->caution || $reservation->paiementCaution?->montant)
+                        <tr>
+                            <th style="width: 35%; text-align: right;">{{ _('Caution') }}</th>
+                            <td style="width: 65%;">@prix($reservation->paiementCaution?->montant ?? $reservation->caution)&nbsp;€</td>
+                        </tr>
+                    @endif
                     <tr>
                         <th style="width: 35%; text-align: right;">{{ _('Condition de paiement') }}</th>
                         <td style="width: 65%;">{{ $reservation->condition->nom }}</td>
@@ -153,6 +178,14 @@
                 <table>
 
                     <tbody>
+                    @if ($reservation->remise)
+                        <tr>
+                            <td style="text-align: right;">{{ _('Remise') }}</td>
+                            <td style="text-align: right;">
+                                -@prix($reservation->remise)&nbsp;€
+                            </td>
+                        </tr>
+                    @endif
                     <tr>
                         <td style="text-align: right;" class="total">{{ _('Total TTC') }}</td>
                         <td style="text-align: right;" class="total">@prix($reservation->total)€</td>
@@ -163,7 +196,7 @@
         </tr>
     </table>
 
-    <table style="padding-top: 5mm;">
+    <table style="margin-top: 5mm;">
         <tr>
             <td style="width:50%; padding: 0 5mm 0 0; border: none;">
                 <p style="text-align: center">
@@ -174,13 +207,15 @@
     </table>
 
 </div>
-<div id="footer">
-    <table>
-        <tr>
-            <td>{{{ Config::get('settings.nom_site') }}}</td>
-            <td style="text-align: right; width: 10%"><div class="page-number"></div></td>
-        </tr>
-    </table>
-</div>
+@if(!request()->routeIs('devis.show'))
+    <div id="footer">
+        <table>
+            <tr>
+                <td>{{{ Config::get('settings.nom_site') }}}</td>
+                <td style="text-align: right; width: 10%"><div class="page-number"></div></td>
+            </tr>
+        </table>
+    </div>
+@endif
 </body>
 </html>

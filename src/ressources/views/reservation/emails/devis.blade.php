@@ -8,5 +8,7 @@ Retrouvez votre devis en pièce jointe de ce mail
 et le lien de paiement ci-contre : [{{ URL::signedRoute('devis.show', $reservation) }}]({{ URL::signedRoute('devis.redirectBanque', $reservation) }})
 @endif
 
+{{ $message }}
+
 Bonne réception.
 @endcomponent

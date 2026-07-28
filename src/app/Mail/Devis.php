@@ -17,17 +17,19 @@ class Devis extends Mailable
     public $reservation;
     public $email;
     public $objet;
+    public $message;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Reservation $reservation, string $email = null, string $objet = null)
+    public function __construct(Reservation $reservation, string $email = null, string $objet = null, string $message = '')
     {
         $this->reservation = $reservation;
         $this->email = $email ?: $this->reservation->email;
         $this->objet = $objet ?: 'Devis réservation ' . $this->reservation->reference;
+        $this->message = $message;
         $pdf = Pdf::loadView(config('ipsum.reservation.devis.view'), compact('reservation'));
         $pdf->render();
         $this->file = $pdf->output();

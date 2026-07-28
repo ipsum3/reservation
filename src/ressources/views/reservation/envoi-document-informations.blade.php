@@ -20,8 +20,8 @@
             <div class="form-row">
                 {{ Aire::input('email', 'Email*')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::input('objet', 'Objet*')->required()->defaultValue(request('objet'))->groupAddClass('col-md-6') }}
-                @if ($document !== 'confirmation' and $document !== 'devis')
-                    {{ Aire::textArea('message', 'Message*')->required()->defaultValue('Veuillez trouver ci-joint votre document.')->groupAddClass('col-md-6') }}
+                @if ($document !== 'confirmation'  and $document !== 'caution')
+                    {{ Aire::textArea('message', 'Message*')->required()->defaultValue(  $document !== 'devis' ? 'Veuillez trouver ci-joint votre document.' : '')->groupAddClass('col-md-6') }}
                 @endif
             </div>
         </div>
