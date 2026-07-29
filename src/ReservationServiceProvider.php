@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
+use Ipsum\Reservation\app\Console\Commands\CautionSend;
 use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
@@ -30,6 +31,7 @@ class ReservationServiceProvider extends ServiceProvider
         JoursFeries::class,
         PlanningOptimiser::class,
         ReservationCheck::class,
+        CautionSend::class,
     ];
 
     /**

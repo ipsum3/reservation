@@ -33,6 +33,7 @@ class CautionSend extends Command
         Reservation::confirmed()
             ->whereBetween('debut_at', [$start, $end])
             ->wherenull('caution_url')
+            ->whereNotNull('caution')
             ->chunkById(100, function ($reservations) use ($swiklyService) {
 
                 foreach ($reservations as $reservation) {
