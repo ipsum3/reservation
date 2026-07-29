@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <h1 class="main-title">Envoie de document par email</h1>
+    <h1 class="main-title">Envoyer un document par email</h1>
 
     {{ Aire::open()->id('reservation')->route( 'admin.reservation.documentSend', $reservation)->bind($reservation)->formRequest(\Ipsum\Reservation\app\Http\Requests\SendDocumentEmail::class) }}
     <div class="box">
@@ -20,8 +20,20 @@
             <div class="form-row">
                 {{ Aire::input('email', 'Email*')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::input('objet', 'Objet*')->required()->defaultValue(request('objet'))->groupAddClass('col-md-6') }}
-                @if ($document !== 'confirmation'  and $document !== 'caution')
-                    {{ Aire::textArea('message', 'Message*')->required()->defaultValue(  $document !== 'devis' ? 'Veuillez trouver ci-joint votre document.' : '')->groupAddClass('col-md-6') }}
+                @if (!in_array($document, ['caution', 'confirmation']))
+                    @php
+                    switch ($document){
+                        case 'devis' :
+                            $message = 'Veuillez trouver votre devis '.config('settings.nom_site').', en pièce jointe de ce mail.';
+                            break;
+                        case 'caution':
+                            $message = 'Veuillez trouver ci-joint votre document.';
+                            break;
+                        default:
+                            $message = null;
+                    }
+                     @endphp
+                    {{ Aire::textArea('message', 'Message*')->required()->defaultValue($message)->groupAddClass('col-md-6') }}
                 @endif
             </div>
         </div>
