@@ -16,7 +16,8 @@ return new class extends Migration
     {
         Schema::table('reservations', function (Blueprint $table) {
             $table->string('caution_url')->nullable()->after('caution');
-            $table->timestamp('caution_send_at')->nullable()->after('caution_url');
+            $table->integer('caution_frais')->nullable()->after('caution_url');
+            $table->timestamp('caution_send_at')->nullable()->after('caution_frais');
         });
 
         Artisan::call('db:seed', ['--class' => PaiementTypeSeeder::class, '--force' => true]);

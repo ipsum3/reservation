@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Reservation\app\Mail\CautionRequestMail;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\app\Services\GandoService;
 use Ipsum\Reservation\app\Services\SwiklyService;
 
 class CautionSend extends Command
@@ -21,7 +22,7 @@ class CautionSend extends Command
      */
     protected $description = 'Envoie les demandes de caution aux réservations concernées';
 
-    public function handle(SwiklyService $swiklyService): int
+    public function handle(): int
     {
         $days = config('ipsum.reservation.caution_days_before_departure');
 
@@ -34,12 +35,22 @@ class CautionSend extends Command
             ->whereBetween('debut_at', [$start, $end])
             ->wherenull('caution_url')
             ->whereNotNull('caution')
-            ->chunkById(100, function ($reservations) use ($swiklyService) {
+            ->chunkById(100, function ($reservations) {
 
                 foreach ($reservations as $reservation) {
                     try {
-                        // 1. Génération de la caution via le SwiklyService
-                        $reservation = $swiklyService->createDepositLink($reservation);
+                        switch (config('ipsum.reservation.caution_provider')) {
+                            case 'swikly':
+                                $service = new SwiklyService();
+                                $reservation = $service->createDepositLink($reservation);
+                                break;
+                            case 'gando':
+                                $service = new GandoService();
+                                $reservation = $service->createDepositLink($reservation);
+                                break;
+                            default:
+                                throw new \Exception('Provider not found');
+                        }
 
                         if ($reservation->email) {
                              Mail::send(new CautionRequestMail($reservation));

@@ -34,11 +34,6 @@ class Paiement extends BaseModel
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
     protected static function booted()
     {
         self::saved(function (self $paiement) {

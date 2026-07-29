@@ -80,7 +80,7 @@ class SettingsTableSeeder extends Seeder
                 'key' => 'settings.reservation.date_expiration',
                 'name' => 'Date d\'expiration du devis (en jour)',
                 'description' => 'Durée (en jour) pour l\'expiration d\'un devis',
-                'value' => '30',
+                'value' => '5',
                 'type' => 'number',
                 'rules' => 'nullable|numeric',
             ),

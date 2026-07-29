@@ -10,5 +10,9 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\DevisController::class
     }
 );
 
-Route::post('webhooks/caution/swikly', [\Ipsum\Reservation\app\Http\Controllers\CautionController::class, 'swikly'])
-    ->name('caution.webhooks.swikly')->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class); // TODO ACTIVER ET VERIFIER
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\CautionController::class)->prefix('webhooks/caution')->name('caution.webhooks.')->group(
+    function () {
+        Route::post('swikly', 'swikly')->name('swikly')->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+        Route::post('gando', 'gando')->name('gando')->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+    }
+);

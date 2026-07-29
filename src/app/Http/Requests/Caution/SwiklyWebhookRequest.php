@@ -1,12 +1,12 @@
 <?php
 
-namespace Ipsum\Reservation\app\Http\Requests;
+namespace Ipsum\Reservation\app\Http\Requests\Caution;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Ipsum\Reservation\app\Services\SwiklyService;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class SwiklyWebhookRequest extends FormRequest
 {
@@ -17,7 +17,7 @@ class SwiklyWebhookRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        Log::channel('paiement')->info('Webhook swikly', $this->all());
+        Log::channel('caution')->info('Webhook swikly', $this->all());
     }
 
     public function rules(): array
@@ -96,7 +96,7 @@ class SwiklyWebhookRequest extends FormRequest
 
         if (!$swiklyService->verifyWebhookSignature($this->getContent(), $signature)) {
 
-            Log::channel('paiement')->warning('Signature Swikly invalide', [
+            Log::channel('caution')->warning('Signature Swikly invalide', [
                 'signature_header' => $signature,
                 'body' => $this->getContent()
             ]);
@@ -110,6 +110,6 @@ class SwiklyWebhookRequest extends FormRequest
 
     protected function failedValidation(\Illuminate\Validation\Validator|\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        Log::channel('paiement')->critical($validator->messages());
+        Log::channel('caution')->critical($validator->messages());
     }
 }

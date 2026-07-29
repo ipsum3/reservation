@@ -10,6 +10,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
 class SwiklyService
 {
+    protected string $accountId;
     protected string $apiToken;
     protected string $secret;
     protected string $baseUrl;
@@ -68,7 +69,6 @@ class SwiklyService
                 'amount'    => (int) round($depositAmount * 100),
             ],
             'callbacks' => [
-                //'requestSecured' => "https://www.carmenlocation.com/swikly",
                 'requestSecured' => $callbackUrl,
             ],
         ];
@@ -82,7 +82,7 @@ class SwiklyService
             $body = (string) $response->getBody();
 
             if ($statusCode < 200 || $statusCode >= 300) {
-                Log::channel('paiement')->error('Erreur API Swikly (Guzzle)', [
+                Log::channel('caution')->error('Erreur API Swikly (Guzzle)', [
                     'reservation_id' => $reservation->id,
                     'status'         => $statusCode,
                     'body'           => $body,
@@ -105,10 +105,10 @@ class SwiklyService
             return $reservation;
 
         } catch (GuzzleException $e) {
-            Log::channel('paiement')->error('SwiklyService GuzzleException: ' . $e->getMessage());
+            Log::channel('caution')->error('SwiklyService GuzzleException: ' . $e->getMessage());
             throw new Exception("Erreur de communication avec Swikly : " . $e->getMessage(), 0, $e);
         } catch (Exception $e) {
-            Log::channel('paiement')->error('SwiklyService Exception: ' . $e->getMessage());
+            Log::channel('caution')->error('SwiklyService Exception: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -128,7 +128,7 @@ class SwiklyService
 
         // 1. Vérifie si les clés requises sont présentes dans le header
         if (!isset($headerValues['t'], $headerValues['sha256'])) {
-            Log::channel('paiement')->warning('Swikly : Clés "t" ou "sha256" manquantes dans l\'en-tête de signature.');
+            Log::channel('caution')->warning('Swikly : Clés "t" ou "sha256" manquantes dans l\'en-tête de signature.');
             return false;
         }
 
@@ -137,7 +137,7 @@ class SwiklyService
 
         // 2. Anti-replay attack (optionnel mais recommandé : vérifie que la requête a < 10 min)
         if (abs(time() - (int)$signatureTimestamp) > 600) {
-            Log::channel('paiement')->warning('Swikly : Signature expirée (timestamp trop ancien).');
+            Log::channel('caution')->warning('Swikly : Signature expirée (timestamp trop ancien).');
             return false;
         }
 
@@ -145,26 +145,13 @@ class SwiklyService
         $toBeSignedPayload = sprintf("%s.%s", $signatureTimestamp, $body);
         $computedSignature = hash_hmac('sha256', $toBeSignedPayload, $this->secret);
 
-        Log::channel('paiement')->info('Vérification signature Swikly', [
+        Log::channel('caution')->info('Vérification signature Swikly', [
             'calculee' => $computedSignature,
             'recue'    => $signatureHash,
         ]);
 
         // 4. Comparaison sécurisée entre le calcul et le hash extrait
         return hash_equals($computedSignature, $signatureHash);
-    }
-
-    // TODO A TESTER
-    function verifyGandoWebhook(string $rawBody, string $signature, string $timestamp, string $secret): bool
-    {
-        if ($signature === '' || strncmp($signature, 'sha256=', 7) !== 0) {
-            return false;
-        }
-
-        $signedPayload = $timestamp . '.' . $rawBody;
-        $expected = 'sha256=' . hash_hmac('sha256', $signedPayload, $secret);
-
-        return hash_equals($expected, $signature);
     }
 
     /**

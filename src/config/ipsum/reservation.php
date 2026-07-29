@@ -132,9 +132,9 @@ return [
     'caution_provider' => env('CAUTION_PROVIDER'),
     'caution_days_before_departure' => 5,
     'caution_paiement_moyen_id' => env('CAUTION_PAIEMENT_MOYEN_ID'),
-    'caution_token'      => env('SWIKLY_API_TOKEN'),
-    'caution_secret'    => env('SWIKLY_SECRET'),
-    'caution_account_id' => env('SWIKLY_ACCOUNT_ID'),
-    'caution_base_url'   => env('SWIKLY_BASE_URL', 'https://api.sandbox.swikly.com'),
+    'caution_token'      => env('CAUTION_API_TOKEN'),
+    'caution_secret'    => env('CAUTION_SECRET'),
+    'caution_account_id' => env('CAUTION_ACCOUNT_ID'),
+    'caution_base_url'   => env('CAUTION_BASE_URL'),
 
 ];

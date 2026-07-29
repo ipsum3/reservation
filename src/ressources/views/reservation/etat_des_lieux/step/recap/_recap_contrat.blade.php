@@ -93,19 +93,6 @@
                         <tr>
                             <td>
                                 {{ _('Caution') }}
-                                @if($reservation->caution_url)
-                                    {{--<a class="btn btn-outline-secondary" href="{{ $reservation->caution_url }}" target="_blank" data-toggle="tooltip" title="Voir le lien de paiement de la caution">
-                                        <i class="fa fa-credit-card"></i>
-                                    </a>&nbsp;--}}
-
-                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'caution', 'objet' => 'Dépôt de caution - Réservation '.$reservation->reference]) }}" data-toggle="tooltip" title="Envoyer l'email de demande de caution">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
-                                @else
-                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.cautionGeneration', $reservation) }}" data-toggle="tooltip" title="Générer le lien de paiement de la caution">
-                                        <i class="fa fa-link"></i>
-                                    </a>&nbsp;
-                                @endif
 
                                 @if($reservation->paiementCaution)
                                     <span class="badge badge-success ml-1">Sécurisée (@prix($reservation->paiementCaution->montant) €)</span>

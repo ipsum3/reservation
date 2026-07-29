@@ -90,16 +90,19 @@
             </div>
         </div>
         <div class="col-sm-6">
-            <div class="box">
-                <div class="box-header">
-                    <h2 class="box-title">Conditions sur le départ et le retour</h2>
+            <div class="card box">
+                <div class="card-header box-header">
+                    <h3 class="card-title box-title">Conditions sur le départ et le retour</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body box-body">
+
+                    {{-- Section Départ --}}
+                    <h5 class="text-primary border-bottom pb-2 mb-3">
+                        Conditions au départ
+                    </h5>
                     <div class="form-row">
-                        <div class="form-group col-md-6" data-aire-component="group" data-aire-for="jour_depart">
-                            <label class=" cursor-pointer" data-aire-component="label" for="jour">
-                                Jour du départ
-                            </label>
+                        <div class="form-group col-md-4" data-aire-component="group" data-aire-for="jour_depart">
+                            <label for="jour_depart" class="cursor-pointer">Jour de départ</label>
                             <select name="jour_depart" class="form-control" id="jour_depart">
                                 <option value="">----- Jours -----</option>
                                 @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
@@ -107,31 +110,56 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group col-md-6" data-aire-component="group" data-aire-for="jour_retour">
-                            <label class=" cursor-pointer" data-aire-component="label" for="jour_retour">
-                                Jour du retour
-                            </label>
-                            <select name="jour_retour" class="form-control" id="jour">
+                        <div class="col-md-4">
+                            {{ Aire::time('heure_min_depart', 'Heure de départ supérieur à') }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ Aire::time('heure_max_depart', 'Heure de départ inférieur à') }}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    {{-- Section Retour --}}
+                    <h5 class="text-primary border-bottom pb-2 mb-3">
+                        Conditions au retour
+                    </h5>
+                    <div class="form-row">
+                        <div class="form-group col-md-4" data-aire-component="group" data-aire-for="jour_retour">
+                            <label for="jour_retour" class="cursor-pointer">Jour du retour</label>
+                            <select name="jour_retour" class="form-control" id="jour_retour">
                                 <option value="">----- Jours -----</option>
                                 @foreach(\Ipsum\Reservation\app\Models\Lieu\Horaire::JOURS as $key => $jour)
                                     <option value="{{ $key }}" @selected(old('jour_retour', $prestation->jour_retour) === $key) >{{ $jour }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-md-4">
+                            {{ Aire::time('heure_min_retour', 'Heure de retour supérieur à') }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ Aire::time('heure_max_retour', 'Heure de retour inférieur à') }}
+                        </div>
                     </div>
-                    <div class="form-row">
-                        {{ Aire::time('heure_max_depart', 'Heure de départ inférieur à')->groupAddClass('col-md-6') }}
-                        {{ Aire::time('heure_max_retour', 'Heure de retour inférieur à')->groupAddClass('col-md-6') }}
+
+                    <hr class="my-4">
+
+                    {{-- Section Règles spécifiques --}}
+                    <h5 class="text-primary border-bottom pb-2 mb-3">
+                        Règles de tarification & restrictions
+                    </h5>
+                    <div class="form-row align-items-center">
+                        <div class="col-md-6">
+                            {{ Aire::select(collect(['' => '---- Conditions -----'])->union(\Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_CONDITION), 'condition', 'Condition')->groupAddClass('col-md-12') }}
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-0 mt-3">
+                                <input type="hidden" name="is_cumulable" value="0">
+                                {{ Aire::checkbox('is_cumulable', 'Cumulable sur le départ et le retour') }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-row">
-                        {{ Aire::time('heure_min_depart', 'Heure de départ supérieur à')->groupAddClass('col-md-6') }}
-                        {{ Aire::time('heure_min_retour', 'Heure de retour supérieur à')->groupAddClass('col-md-6') }}
-                    </div>
-                    <div class="form-row">
-                        {{ Aire::select(collect(['' => '---- Conditions -----'])->union(\Ipsum\Reservation\app\Models\Prestation\Prestation::$LISTE_CONDITION), 'condition', 'Condition')->groupAddClass('col-md-6') }}
-                        <input type="hidden" name="is_cumulable" value="0">
-                        {{ Aire::checkbox('is_cumulable', 'Cumulable sur le départ et le retour')->groupAddClass('col-md-6') }}
-                    </div>
+
                 </div>
             </div>
         </div>

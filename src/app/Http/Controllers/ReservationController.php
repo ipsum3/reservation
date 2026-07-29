@@ -39,6 +39,7 @@ use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Reservation\Type;
 use Ipsum\Reservation\app\Models\Source\Source;
+use Ipsum\Reservation\app\Services\GandoService;
 use Ipsum\Reservation\app\Services\SwiklyService;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\CSV\Options;
@@ -466,13 +467,24 @@ class ReservationController extends AdminController
 
     public function cautionGeneration(Reservation $reservation)
     {
-        try{
-            $swiklyService = new SwiklyService();
-            $reservation = $swiklyService->createDepositLink($reservation);
+        try {
+            switch (config('ipsum.reservation.caution_provider')) {
+                case 'swikly':
+                    $service = new SwiklyService();
+                    $reservation = $service->createDepositLink($reservation);
+                    break;
+                case 'gando':
+                    $service = new GandoService();
+                    $reservation = $service->createDepositLink($reservation);
+                    break;
+                default:
+                    throw new \Exception('Provider not found');
+            }
+
 
             Alert::success("Votre lien de caution a bien été généré")->flash();
 
-        }catch(\Exception $e){
+        } catch(\Exception $e) {
             Alert::error("Impossible de générer le lien de caution")->flash();
         }
 
