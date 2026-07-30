@@ -10,7 +10,7 @@ Déposer ma caution en ligne
 Important : Le dépôt est à réaliser avant le **{{ $reservation->debut_at->format('d/m/Y') }}**.
 
 @if($reservation->caution_frais)
-Frais additionnels : **@prix($reservation->caution_frais) €**
+Frais additionnels : **@prix($reservation->caution_frais) €**<br>
 @endif
 Montant de la caution : **@prix($reservation->caution) €**
 

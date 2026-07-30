@@ -179,7 +179,7 @@ class GandoService
 
             $data = json_decode($body, true)['data'];
             $url = $data['depositUrl'] ??  null;
-            $securingFeeCents = $data['securingFeeCents'] ?? null;
+            $securingFee = isset($data['securingFeeCents']) ? $data['securingFeeCents'] / 100 : null;
 
             if (!$url) {
                 Log::channel('caution')->error('Réponse Gando sans URL de caution', ['response' => $data]);
@@ -188,7 +188,7 @@ class GandoService
 
             // Récupération ou création de l'enregistrement Paiement pour la caution
             $reservation->caution_url = $url;
-            $reservation->caution_frais = $securingFeeCents;
+            $reservation->caution_frais = $securingFee;
             $reservation->save();
 
             return $reservation;

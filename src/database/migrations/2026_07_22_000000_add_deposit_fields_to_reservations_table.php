@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::table('reservations', function (Blueprint $table) {
             $table->string('caution_url')->nullable()->after('caution');
-            $table->integer('caution_frais')->nullable()->after('caution_url');
+            $table->decimal('caution_frais',10, 2)->nullable()->after('caution_url');
             $table->timestamp('caution_send_at')->nullable()->after('caution_frais');
         });
 
