@@ -4,6 +4,7 @@ namespace Ipsum\Reservation\app\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Ipsum\Reservation\app\Events\CautionSecuredEvent;
 use Ipsum\Reservation\app\Http\Requests\Caution\GandoWebhookRequest;
 use Ipsum\Reservation\app\Http\Requests\Caution\SwiklyWebhookRequest;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
@@ -23,7 +24,7 @@ class CautionController extends Controller
 
         $reservation = Reservation::findOrFail($reservationId);
 
-        $reservation->paiements()->create(
+        $paiement = $reservation->paiements()->create(
             [
                 'paiement_type_id'  => Type::CAUTION_ID,
                 'paiement_moyen_id' => config('ipsum.reservation.caution_paiement_moyen_id'),
@@ -34,6 +35,7 @@ class CautionController extends Controller
 
          Log::channel('caution')->info("Caution sécurisée pour la réservation {$reservation->id}");
 
+        CautionSecuredEvent::dispatch($reservation, $paiement);
 
         return response()->json([
             'status' => 'success',
@@ -47,7 +49,7 @@ class CautionController extends Controller
     {
         $reservation = Reservation::findOrFail($request->getReservationId());
 
-        $reservation->paiements()->create([
+        $paiement = $reservation->paiements()->create([
             'paiement_type_id'  => Type::CAUTION_ID,
             'paiement_moyen_id' => config('ipsum.reservation.caution_paiement_moyen_id'),
             'montant'           => $request->getAmount(),
@@ -55,6 +57,8 @@ class CautionController extends Controller
         ]);
 
         Log::channel('caution')->info("Caution sécurisée pour la réservation {$reservation->id}");
+
+        CautionSecuredEvent::dispatch($reservation, $paiement);
 
         return response()->json([
             'status' => 'success',
