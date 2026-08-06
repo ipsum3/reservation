@@ -40,6 +40,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Reservation\Type;
 use Ipsum\Reservation\app\Models\Source\Source;
 use Ipsum\Reservation\app\Services\GandoService;
+use Ipsum\Reservation\app\Services\StripeService;
 use Ipsum\Reservation\app\Services\SwiklyService;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\CSV\Options;
@@ -475,6 +476,10 @@ class ReservationController extends AdminController
                     break;
                 case 'gando':
                     $service = new GandoService();
+                    $reservation = $service->createDepositLink($reservation);
+                    break;
+                case 'stripe':
+                    $service = new stripeService();
                     $reservation = $service->createDepositLink($reservation);
                     break;
                 default:
