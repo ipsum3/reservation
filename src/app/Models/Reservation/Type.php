@@ -28,6 +28,8 @@ class Type extends BaseModel
 
     const PAIEMENT_ID = 1;
     const ACOMPTE_ID = 2;
+    const CAUTION_ID = 5;
+
 
 
     /*

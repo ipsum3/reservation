@@ -31,7 +31,7 @@ class SendDocumentEmail extends FormRequest
             'document' => 'required',
             'email' => 'required|email',
             'objet' => 'required',
-            'message' => 'required_unless:document,confirmation,devis',
+            'message' => 'required_unless:document,confirmation,devis,caution',
             'id' => 'nullable'
         ];
     }

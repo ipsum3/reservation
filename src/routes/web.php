@@ -9,3 +9,17 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\DevisController::class
         Route::any('{reservation}/confirmation', 'confirmation')->name('confirmation')->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
     }
 );
+
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\CautionController::class)->prefix('webhooks/caution')->name('caution.webhooks.')->group(
+    function () {
+        Route::post('swikly', 'swikly')->name('swikly')->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+        Route::post('gando', 'gando')->name('gando')->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+        Route::post('stripe', 'stripe')->name('stripe')->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+    }
+);
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\CautionController::class)->prefix('checkout/caution')->name('caution.checkout.')->group(
+    function () {
+        //Route::get('stripe/{reservation}/{intentId}', 'stripe_checkout')->name('stripe');
+        Route::get('stripe/{reservation}', 'stripe_success')->name('stripe_success');
+    }
+);

@@ -89,10 +89,21 @@
                             <td class="text-right">-@prix($reservation->remise)&nbsp;€</td>
                         </tr>
                     @endif
-                    @if ($reservation->caution)
+                    @if ($reservation->caution || $reservation->paiementCaution?->montant)
                         <tr>
-                            <td>{{ _('Caution') }}</td>
-                            <td class="text-right">@prix($reservation->caution)&nbsp;€</td>
+                            <td>
+                                {{ _('Caution') }}
+
+                                @if($reservation->paiementCaution)
+                                    <span class="badge badge-success ml-1">Sécurisée (@prix($reservation->paiementCaution->montant) €)</span>
+                                @elseif($reservation->caution_send_at)
+                                    <span class="badge badge-info ml-1">Envoyée le {{ $reservation->caution_send_at->format('d/m/Y H:i') }}</span>
+                                @endif
+
+                            </td>
+                            <td class="text-right">
+                                @prix($reservation->caution)&nbsp;€
+                            </td>
                         </tr>
                     @endif
                     @if ($reservation->franchise)

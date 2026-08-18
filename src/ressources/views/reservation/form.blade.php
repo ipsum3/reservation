@@ -242,59 +242,89 @@
                         <div class="table-wrapper">
                             <table class="table table-hover table-striped">
                                 <tbody>
-                                    @if($reservation->etat_id == \Ipsum\Reservation\app\Models\Reservation\Etat::NON_VALIDEE_ID)
+                                @if($reservation->etat_id == \Ipsum\Reservation\app\Models\Reservation\Etat::NON_VALIDEE_ID)
+                                    <tr>
+                                        <td>Devis {!! $reservation->devis_expiration_at ? '<span class="small">(expire le : '. $reservation->devis_expiration_at->format('d/m/Y H:i:s') .')</span>': '' !!}</td>
+                                        <td class="text-right">
+                                            @if (config('ipsum.reservation.module_de_paiement'))
+                                                <a class="btn btn-outline-secondary" href="{{ URL::signedRoute('devis.show', $reservation) }}" target="_blank" data-toggle="tooltip" title="Lien de paiement du devis"><i class="fa fa-credit-card"></i></a>
+                                            @endif
+                                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}" target="_blank" data-toggle="tooltip" title="Télécharger le devis (PDF)"><i class="fa fa-file-download"></i></a>
+                                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'devis', 'objet' => 'Devis de location']) }}" data-toggle="tooltip" title="Envoyer le devis par email"><i class="fas fa-envelope"></i></a>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if($reservation->is_confirmed)
+                                    <tr>
+                                        <td>Confirmation de réservation</td>
+                                        <td class="text-right">
+                                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}" target="_blank" data-toggle="tooltip" title="Télécharger la confirmation (PDF)"><i class="fa fa-file-download"></i></a>&nbsp;
+                                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation', 'objet' => 'Confirmation de réservation '.$reservation->reference]) }}" data-toggle="tooltip" title="Envoyer la confirmation par email"><i class="fas fa-envelope"></i></a>
+                                        </td>
+                                    </tr>
+                                @endif
+
+                                @if($reservation->is_confirmed && (config('ipsum.reservation.caution_provider')) && $reservation->caution)
+                                    <tr>
+                                        <td>
+                                            Caution
+                                            @if($reservation->paiementCaution)
+                                                <span class="badge badge-success ml-1">Sécurisée (@prix($reservation->paiementCaution->montant) €)</span>
+                                            @elseif($reservation->caution_send_at)
+                                                <span class="badge badge-info ml-1">Envoyée le {{ $reservation->caution_send_at->format('d/m/Y H:i') }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-right">
+                                            @if($reservation->caution_url)
+                                                <a class="btn btn-outline-secondary" href="{{ $reservation->caution_url }}" target="_blank" data-toggle="tooltip" title="Voir le lien de paiement de la caution">
+                                                    <i class="fa fa-credit-card"></i>
+                                                </a>&nbsp;
+
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'caution', 'objet' => 'Dépôt de caution - Réservation '.$reservation->reference]) }}" data-toggle="tooltip" title="Envoyer l'email de demande de caution">
+                                                    <i class="fas fa-envelope"></i>
+                                                </a>
+                                            @else
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.cautionGeneration', $reservation) }}" data-toggle="tooltip" title="Générer le lien de paiement de la caution">
+                                                    <i class="fa fa-link"></i>
+                                                </a>&nbsp;
+                                            @endif
+
+                                        </td>
+                                    </tr>
+                                @endif
+
+                                @if($reservation->contrat && !config('ipsum.reservation.contrat.disable'))
+                                    @if($reservation->inspectionInitiale?->isSigned())
                                         <tr>
-                                            <td>Devis {!! $reservation->devis_expiration_at ? '<span class="small">(expire le : '. $reservation->devis_expiration_at->format('d/m/Y H:i:s') .')</span>': '' !!}</td>
+                                            <td>Contrat de location {{ $reservation->contrat }} signé</td>
                                             <td class="text-right">
-                                                @if (config('ipsum.reservation.module_de_paiement'))
-                                                    <a class="btn btn-outline-secondary" href="{{ URL::signedRoute('devis.show', $reservation) }}" target="_blank"><i class="fa fa-credit-card"></i></a>
-                                                @endif
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.devis', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'devis', 'objet' => 'Devis de location']) }}" ><i class="fas fa-envelope"></i></a>
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$reservation]) }}" target="_blank" data-toggle="tooltip" title="Télécharger le contrat signé (PDF)"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'contrat', 'objet' => 'Contrat de location '.$reservation->contrat]) }}" data-toggle="tooltip" title="Envoyer le contrat signé par email"><i class="fas fa-envelope"></i></a>
                                             </td>
                                         </tr>
                                     @endif
-                                    @if($reservation->is_confirmed)
-                                        <tr>
-                                            <td>Confirmation de réservation</td>
-                                            <td class="text-right">
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.confirmation', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'confirmation', 'objet' => 'Confirmation de réservation '.$reservation->reference]) }}" ><i class="fas fa-envelope"></i></a>
-                                            </td>
-                                        </tr>
-                                    @endif
-                                    @if($reservation->contrat && !config('ipsum.reservation.contrat.disable'))
-                                        @if($reservation->inspectionInitiale?->isSigned())
+                                    <tr>
+                                        <td>Contrat papier</td>
+                                        <td class="text-right">
+                                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" target="_blank" data-toggle="tooltip" title="Télécharger le contrat papier (PDF)"><i class="fa fa-file-download"></i></a>&nbsp;
+                                        </td>
+                                    </tr>
+                                @endif
+
+                                @if($reservation->is_confirmed)
+                                    @if(config('ipsum.reservation.etat_des_lieux.enable'))
+                                        @foreach($reservation->inspections->filter(fn($inspection) => $inspection->isSigned())->sortKeysDesc() as $inspection)
                                             <tr>
-                                                <td>Contrat de location {{ $reservation->contrat }} signé</td>
+                                                <td>État des lieux {{ strtolower($inspection->type->nom) }} #{{ $inspection->id }}</td>
                                                 <td class="text-right">
-                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contratSigne', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
-                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'contrat', 'objet' => 'Contrat de location '.$reservation->contrat]) }}" ><i class="fas fa-envelope"></i></a>
+                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.show', [$inspection]) }}" data-toggle="tooltip" title="Consulter l'état des lieux"><i class="fa fa-car-crash"></i></a>&nbsp;
+                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank" data-toggle="tooltip" title="Télécharger l'état des lieux (PDF)"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'inspection', 'id' => $inspection->id, 'objet' => 'État des lieux '.strtolower($inspection->type->nom).' #'.$inspection->id]) }}" data-toggle="tooltip" title="Envoyer l'état des lieux par email"><i class="fas fa-envelope"></i></a>
                                                 </td>
                                             </tr>
-                                        @endif
-                                        <tr>
-                                            <td>Contrat papier</td>
-                                            <td class="text-right">
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.contrat', [$reservation]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
-                                            </td>
-                                        </tr>
+                                        @endforeach
                                     @endif
-
-                                    @if($reservation->is_confirmed)
-                                        @if(config('ipsum.reservation.etat_des_lieux.enable'))
-                                            @foreach($reservation->inspections->filter(fn($inspection) => $inspection->isSigned())->sortKeysDesc() as $inspection)
-                                                <tr>
-                                                    <td>État des lieux {{ strtolower($inspection->type->nom) }} #{{ $inspection->id }}</td>
-                                                    <td class="text-right">
-                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.show', [$inspection]) }}"><i class="fa fa-car-crash"></i></a>&nbsp;
-                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-download"></i></a>&nbsp;
-                                                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'inspection', 'id' => $inspection->id, 'objet' => 'État des lieux '.strtolower($inspection->type->nom).' #'.$inspection->id]) }}" ><i class="fas fa-envelope"></i></a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @endif
-                                    @endif
+                                @endif
 
                                 </tbody>
                             </table>

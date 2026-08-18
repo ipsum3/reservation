@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
+use Ipsum\Reservation\app\Console\Commands\CautionSend;
 use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
@@ -30,6 +31,7 @@ class ReservationServiceProvider extends ServiceProvider
         JoursFeries::class,
         PlanningOptimiser::class,
         ReservationCheck::class,
+        CautionSend::class,
     ];
 
     /**
@@ -77,8 +79,22 @@ class ReservationServiceProvider extends ServiceProvider
             \Ipsum\Reservation\app\Models\Promotion\Promotion::class => \Ipsum\Reservation\app\Location\Promotion::class,
         ]);
 
+        $this->addCustomConfigurationValues();
         // Merge conf acces pour l'admin
         \Config::set('ipsum.admin.acces', array_merge( config('ipsum.admin.acces'), config('ipsum.reservation.acces') ));
+    }
+
+    public function addCustomConfigurationValues()
+    {
+        // add filesystems.disks for the log viewer
+        config([
+            'logging.channels.caution' => [
+                'driver' => 'single',
+                'path' => storage_path('logs/caution.log'),
+                'level' => 'debug',
+            ]
+        ]);
+
     }
 
 

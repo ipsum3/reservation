@@ -34,8 +34,6 @@ class Paiement extends BaseModel
 
     protected $guarded = ['id'];
 
-
-
     protected static function booted()
     {
         self::saved(function (self $paiement) {

@@ -23,6 +23,7 @@ use Ipsum\Reservation\app\Http\Requests\ShowPlanning;
 use Ipsum\Reservation\app\Http\Requests\StoreAdminReservation;
 use Ipsum\Reservation\app\Location\Location;
 use Ipsum\Reservation\app\Location\Prestation;
+use Ipsum\Reservation\app\Mail\CautionRequestMail;
 use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Mail\Devis;
 use Ipsum\Reservation\app\Mail\Document;
@@ -38,6 +39,9 @@ use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Reservation\Type;
 use Ipsum\Reservation\app\Models\Source\Source;
+use Ipsum\Reservation\app\Services\GandoService;
+use Ipsum\Reservation\app\Services\StripeService;
+use Ipsum\Reservation\app\Services\SwiklyService;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\CSV\Options;
 use OpenSpout\Writer\CSV\Writer;
@@ -462,6 +466,36 @@ class ReservationController extends AdminController
         return $pdf->stream();
     }
 
+    public function cautionGeneration(Reservation $reservation)
+    {
+        try {
+            switch (config('ipsum.reservation.caution_provider')) {
+                case 'swikly':
+                    $service = new SwiklyService();
+                    $reservation = $service->createDepositLink($reservation);
+                    break;
+                case 'gando':
+                    $service = new GandoService();
+                    $reservation = $service->createDepositLink($reservation);
+                    break;
+                case 'stripe':
+                    $service = new stripeService();
+                    $reservation = $service->createDepositLink($reservation);
+                    break;
+                default:
+                    throw new \Exception('Provider not found');
+            }
+
+
+            Alert::success("Votre lien de caution a bien été généré")->flash();
+
+        } catch(\Exception $e) {
+            Alert::error("Impossible de générer le lien de caution")->flash();
+        }
+
+        return redirect()->route('admin.reservation.edit', $reservation);
+    }
+
     public function confirmation(Reservation $reservation)
     {
         return view(config('ipsum.reservation.confirmation.view'), compact('reservation'));
@@ -483,6 +517,11 @@ class ReservationController extends AdminController
                 Mail::send(new Document($reservation, $inspection->document_path, $inspection->document_public_file_name, $request->objet, $request->message, $request->email));
             } elseif ( $request->document === 'contrat' ) {
                 Mail::send(new Document($reservation, $reservation->contrat_path, $reservation->contrat_public_file_name, $request->objet, $request->message, $request->email));
+            } elseif ( $request->document === 'caution' ) {
+                Mail::send(new CautionRequestMail($reservation, $request->email, $request->objet));
+                $reservation->update([
+                    'caution_send_at' => now(),
+                ]);
             }
             Alert::success("Le document a bien été envoyé")->flash();
             return redirect()->route('admin.reservation.edit', $reservation);
@@ -595,7 +634,7 @@ class ReservationController extends AdminController
     {
         // Requete départ
         $resas_depart = Reservation::confirmed()
-            ->with(['categorie', 'vehicule', 'client', 'condition', 'inspectionInitiale'])
+            ->with(['categorie', 'vehicule', 'client', 'condition', 'inspectionInitiale', 'paiementCaution'])
             ->whereBetween('debut_at', [$request->debut_at, $request->fin_at])
             ->when($request->filled('lieu_id'), function ($query) use ($request) {
                 $query->where( 'debut_lieu_id', $request->lieu_id );
@@ -607,7 +646,7 @@ class ReservationController extends AdminController
 
         // Requete retour
         $resas_retour = Reservation::confirmed()
-            ->with(['categorie', 'vehicule', 'client', 'condition', 'inspectionFinale'])
+            ->with(['categorie', 'vehicule', 'client', 'condition', 'inspectionFinale', 'paiementCaution'])
             ->whereBetween('fin_at', [$request->debut_at, $request->fin_at])
             ->when($request->filled('lieu_id'), function ($query) use ($request) {
                 $query->where( 'fin_lieu_id', $request->lieu_id );
