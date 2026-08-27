@@ -87,7 +87,7 @@
                                         </span>
                                     @elseif($reservation->caution_send_at)
                                         <span class="badge badge-warning text-dark" data-toggle="tooltip" title="Demande envoyée le {{ $reservation->caution_send_at?->format('d/m H:i') ?? 'N/C' }}">
-                                            <i class="fas fa-hourglass-half mr-1"></i>Caution envoyée le {{ $reservation->caution_send_at->format('d/m/Y H:i') }}
+                                            <i class="fas fa-hourglass-half mr-1"></i>Caution envoyée
                                         </span>
                                     @endif
                                 </div>
