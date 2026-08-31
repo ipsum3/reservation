@@ -45,6 +45,7 @@ class InterventionUnique implements Rule
         return !Intervention::where('vehicule_id', $this->vehicule_id)
             ->where('id', '!=', $this->intervention_id)
             ->betweenDates($this->debut_at, $this->fin_at)
+            ->where('has_blocage', 1)
             ->exists();
     }
 

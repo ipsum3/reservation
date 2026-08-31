@@ -10,10 +10,14 @@ use Ipsum\Core\Concerns\Slug;
  * Ipsum\Reservation\app\Models\Categorie\Type
  *
  * @property int $id
+ * @property string $slug
  * @property string $nom
  * @property int $order
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Categorie> $categories
  * @property-read int|null $categories_count
+ * @property-read mixed $tag_meta_description
+ * @property-read mixed $tag_title
+ * @method static \Illuminate\Database\Eloquent\Builder|Type filtreSortable($objet)
  * @method static \Illuminate\Database\Eloquent\Builder|Type newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Type newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Type query()

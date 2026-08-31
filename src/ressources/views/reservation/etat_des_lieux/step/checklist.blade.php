@@ -20,10 +20,10 @@
                 <div class="box-body">
 
                     <div class="row">
-                        {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->value(old('kilometrage', $inspection->kilometrage ?? ($reservation->vehicule->last_inspection->kilometrage ?? '') ))
+                        {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->value(old('kilometrage', $inspection->kilometrage ?? ($reservation->vehicule->lastInspection?->kilometrage ?? '') ))
                             ->helpText(( !$type->is_initial && $reservation->inspectionInitiale) ? 'Kilométrage initial : '.$reservation->inspectionInitiale?->kilometrage.' km' : '')
                             ->groupAddClass('col-md-12') }}
-                        {{ Aire::range('carburant', 'Niveau de carburant* : ')->step('1')->min(0)->max(8)->value(old('carburant', $inspection->carburant ?? ($reservation->vehicule->last_inspection->carburant ?? 8) ))
+                        {{ Aire::range('carburant', 'Niveau de carburant* : ')->step('1')->min(0)->max(8)->value(old('carburant', $inspection->carburant ?? ($reservation->vehicule->lastInspection?->carburant ?? 8) ))
                             ->list('markers')
                             ->id('carburant')
                             ->helpText((!$type->is_initial && $reservation->inspectionInitiale) ? 'Niveau de carburant initial : '.$reservation->inspectionInitiale?->carburant.'/8' : '')

@@ -210,7 +210,7 @@ class VehiculeController extends AdminController
                 $vehicule->mise_en_circualtion_at ? Carbon::parse($vehicule->mise_en_circualtion_at)->format('d/m/Y') : null,
                 $vehicule->entree_at ? Carbon::parse($vehicule->entree_at)->format('d/m/Y') : null,
                 $vehicule->sortie_at ? Carbon::parse($vehicule->sortie_at)->format('d/m/Y') : null,
-                config('ipsum.reservation.etat_des_lieux.enable') && $vehicule->last_inspection ? $vehicule->last_inspection->kilometrage ?? '' : '',
+                config('ipsum.reservation.etat_des_lieux.enable') && $vehicule->lastInspection ? $vehicule->lastInspection->kilometrage ?? '' : '',
             ];
 
             $writer->addRow(Row::fromValues($data));

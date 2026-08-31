@@ -29,9 +29,12 @@ class StoreIntervention extends FormRequest
     {
         return [
             "type_id" => ["required", Rule::exists(InterventionType::class, 'id')],
+            // Rule unique car cela créé un bug graphique au niveau du calendrier => https://trello.com/c/YPLlrTKN/908-bug-reservation-v%C3%A9hicule
             "vehicule_id" => ["required", Rule::exists(Vehicule::class, 'id'), new InterventionUnique($this->vehicule_id, $this->debut_at, $this->fin_at, $this->intervention?->id)],
             "intervenant" => "nullable|max:255",
             "information" => "nullable|max:255",
+            "km" => "nullable|numeric",
+            "has_blocage" => "required|boolean",
             "debut_at" => "required|date_format:Y-m-d\TH:i|before-or-equal:fin_at",
             "fin_at" => "required|date_format:Y-m-d\TH:i"
         ];

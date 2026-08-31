@@ -59,6 +59,9 @@ use Carbon\Carbon;
  * @property int $vehicule_blocage
  * @property string $categorie_nom
  * @property string|null $caution
+ * @property string|null $caution_url
+ * @property string|null $caution_frais
+ * @property \Illuminate\Support\Carbon|null $caution_send_at
  * @property string|null $franchise
  * @property \Illuminate\Support\Carbon $debut_at
  * @property \Illuminate\Support\Carbon $fin_at
@@ -100,6 +103,7 @@ use Carbon\Carbon;
  * @property-read int|null $inspections_count
  * @property-read Lieu|null $lieuDebut
  * @property-read Lieu|null $lieuFin
+ * @property-read \Ipsum\Reservation\app\Models\Reservation\Paiement|null $paiementCaution
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Paiement> $paiements
  * @property-read int|null $paiements_count
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Pays|null $pays

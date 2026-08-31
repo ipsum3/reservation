@@ -12,6 +12,10 @@
                     <i class="fas fa-plus"></i>
                     Ajouter
                 </a>
+                <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.export', request()->all()) }}">
+                    <i class="fas fa-upload"></i>
+                    Export
+                </a>
             </div>
         </div>
         <div class="box-body">
@@ -48,10 +52,10 @@
                             <td>{{ $intervention->id }}</td>
                             <td>
                                 <a class="badge badge-secondary" href="{{ $intervention->vehicule ? route('admin.vehicule.edit', $intervention->vehicule) : '#' }}">
-                                    {{ $intervention->vehicule ? $intervention->vehicule->immatriculation : '' }}
+                                    {{ $intervention->vehicule?->immatriculation }}
                                 </a>
                             </td>
-                            <td>{{ $intervention->type ? $intervention->type->nom : '' }}</td>
+                            <td>{{ $intervention->type?->nom }}</td>
                             <td>{{ $intervention->debut_at->format('d/m/Y H:i') }}</td>
                             <td>{{ $intervention->fin_at->format('d/m/Y H:i') }}</td>
                             <td>{{ $intervention->intervenant }}</td>

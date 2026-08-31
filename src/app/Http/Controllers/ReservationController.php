@@ -605,7 +605,7 @@ class ReservationController extends AdminController
             }])->orderBy('mise_en_circualtion_at', 'desc');
 
             $query->with(['interventions' => function ($query) use ($date_debut, $date_fin) {
-                $query->with('type')->betweenDates($date_debut, $date_fin)->orderBy('debut_at');
+                $query->with('type')->betweenDates($date_debut, $date_fin)->where('has_blocage', 1)->orderBy('debut_at');
             }])->orderBy('mise_en_circualtion_at', 'desc');
         }])->with(['reservations' => function ($query) use ($date_debut, $date_fin) {
             $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');

@@ -17,6 +17,7 @@ use Str;
  * @property int $reservation_id
  * @property int $admin_id
  * @property int $type_id
+ * @property string|null $immatriculation
  * @property int|null $kilometrage
  * @property int|null $carburant
  * @property string|null $locataire_signature

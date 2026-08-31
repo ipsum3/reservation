@@ -30,6 +30,24 @@
                 {{ Aire::dateTimeLocal('fin_at', 'Fin*')->defaultValue(\Carbon\Carbon::now()->startOfHour())->required()->groupAddClass('col-md-6')->helpText('Date incluse') }}
                 {{ Aire::input('intervenant', 'Intervenant')->groupAddClass('col-md-6') }}
                 {{ Aire::textArea('information', 'Information')->groupAddClass('col-md-6') }}
+                @php
+                $kilometrage = null;
+                if (!$intervention->exists and request('vehicule_id')) {
+                    $vehicule = \Ipsum\Reservation\app\Models\Categorie\Vehicule::find(request('vehicule_id'));
+                    $kilometrage = $vehicule?->lastInspection?->kilometrage;
+                }
+                @endphp
+                {{ Aire::input('km', 'Kilométrage')->value(old('km', $kilometrage ?? $intervention->km))->groupAddClass('col-md-6') }}
+                {{ Aire::hidden('has_blocage')->value(0) }}
+                <div class="form-group col-md-6">
+                    <label for="has_blocage">Calendrier</label>
+                    <div class="custom-control custom-switch form-check">
+                        <input name="has_blocage" value="1" type="checkbox" class="custom-control-input" id="has_blocage" {{ old('has_blocage', $intervention->has_blocage or !$intervention->exists) == 1 ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="has_blocage">
+                            Bloquer le véhicule
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -17,6 +17,8 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property string|null $intervenant
  * @property string|null $information
  * @property string|null $cout
+ * @property int|null $km
+ * @property int $has_blocage
  * @property AsCustomFieldsObject|null $custom_fields
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

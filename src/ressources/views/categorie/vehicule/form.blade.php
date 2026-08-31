@@ -51,7 +51,7 @@
                             Kilométrage
                         </div>
                         <div class="stat-number lead">
-                            <strong>{{ $vehicule->last_inspection->kilometrage ?? 'Non renseigné' }}</strong>
+                            <strong>{{ $vehicule->lastInspection?->kilometrage ?? 'Non renseigné' }}</strong>
                         </div>
                     </div>
                 </div>

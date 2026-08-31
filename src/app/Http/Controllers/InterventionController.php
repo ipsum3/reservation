@@ -9,13 +9,16 @@ use Ipsum\Reservation\app\Http\Requests\StoreIntervention;
 use Ipsum\Reservation\app\Models\Categorie\Intervention;
 use Ipsum\Reservation\app\Models\Categorie\InterventionType;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\CSV\Options;
+use OpenSpout\Writer\CSV\Writer;
 use Prologue\Alerts\Facades\Alert;
 
 class InterventionController extends AdminController
 {
     protected $acces = 'vehicule';
 
-    public function index(Request $request)
+    protected function query(Request $request)
     {
         $query = Intervention::with(['vehicule', 'type']);
 
@@ -49,11 +52,77 @@ class InterventionController extends AdminController
         if ($request->filled('tri')) {
             $query->orderBy($request->tri, $request->order);
         }
-        $interventions = $query->orderBy('created_at', 'desc')->paginate();
+
+        return $query->orderBy('created_at', 'desc');
+    }
+
+    public function index(Request $request)
+    {
+
+        $interventions = $this->query($request)->paginate();
 
         $types = InterventionType::orderBy('order')->get()->pluck('nom', 'id');
 
         return view('IpsumReservation::categorie.intervention.index', compact('interventions', 'types'));
+    }
+
+    public function export(Request $request)
+    {
+
+        $interventions = $this->query($request)->get();
+
+        $entete = [
+            '#',
+            'Véhicule',
+            'Type',
+            'Début',
+            'Fin',
+            'Intervenant',
+            'Information',
+            'Kilométrage',
+        ];
+
+        if (config('ipsum.reservation.client.custom_fields')) {
+            foreach (config('ipsum.reservation.client.custom_fields') as $field) {
+                $entete[] = $field['label'];
+            }
+        }
+
+        $fileName = "export-intervention-" . date('d-m-Y_H-i-s') . ".csv";
+
+        $options = new Options();
+        $options->FIELD_DELIMITER = ';';
+        $options->FIELD_ENCLOSURE = '"';
+        $writer = new Writer($options);
+        $writer->openToBrowser($fileName);
+        $row = Row::fromValues($entete);
+        $writer->addRow($row);
+
+        foreach ($interventions as $intervention) {
+
+            $data = [
+                $intervention->id,
+                $intervention->vehicule?->immatriculation,
+                $intervention->type?->nom,
+                $intervention->debut_at->format('Y-m-d H:i'),
+                $intervention->fin_at->format('Y-m-d H:i'),
+                $intervention->intervenant,
+                $intervention->information,
+                $intervention->km,
+
+            ];
+            if (config('ipsum.reservation.client.custom_fields')) {
+                foreach (config('ipsum.reservation.client.custom_fields') as $field) {
+                    $data[] = $intervention->custom_fields->{$field['name']};
+                }
+            }
+
+            $row = Row::fromValues($data);
+            $writer->addRow($row);
+        }
+        $writer->close();
+
+        return null;
     }
 
     public function create()

@@ -81,6 +81,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\VehiculeController::cl
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\InterventionController::class)->prefix('intervention')->name('admin.intervention.')->group(
     function () {
         Route::get('', 'index')->name('index');
+        Route::get('export', 'export')->name('export');
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
         Route::any('{intervention}/destroy', 'destroy')->name('destroy');

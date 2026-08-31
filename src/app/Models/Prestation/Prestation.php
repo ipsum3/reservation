@@ -23,6 +23,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property string $nom
  * @property string|null $description
  * @property string|null $montant
+ * @property string|null $montant_max
  * @property int $quantite_max
  * @property int|null $gratuit_apres
  * @property int|null $quantite_gratuite

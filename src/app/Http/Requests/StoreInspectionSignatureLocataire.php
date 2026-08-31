@@ -4,9 +4,7 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
-use Ipsum\Reservation\app\Rules\InterventionUnique;
-use Ipsum\Reservation\app\Models\Categorie\InterventionType;
-use Ipsum\Reservation\app\Models\Categorie\Vehicule;
+
 
 class StoreInspectionSignatureLocataire extends FormRequest
 {

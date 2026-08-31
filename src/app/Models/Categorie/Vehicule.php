@@ -126,6 +126,16 @@ class Vehicule extends BaseModel
         );
     }
 
+    public function lastInspection()
+    {
+        return $this->hasOneThrough(
+            Inspection::class,
+            Reservation::class,
+            'vehicule_id',
+            'reservation_id'
+        )->whereNotNull('agent_signature_at')->latest();
+    }
+
 
     /*
      * Scopes
@@ -148,7 +158,7 @@ class Vehicule extends BaseModel
     public function scopeWithCountIntervention(Builder $query, CarbonInterface $date_debut, CarbonInterface $date_fin)
     {
         $query->withCount(['interventions' => function (Builder $query) use ($date_debut, $date_fin) {
-            $query->betweenDates($date_debut, $date_fin);
+            $query->betweenDates($date_debut, $date_fin)->where('has_blocage', 1);
         }]);
     }
 
@@ -184,7 +194,7 @@ class Vehicule extends BaseModel
         $query->duParc($date_debut, $date_fin);
 
         $query->whereDoesntHave('interventions', function (Builder $query) use ($date_debut, $date_fin) {
-            $query->betweenDates($date_debut, $date_fin);
+            $query->betweenDates($date_debut, $date_fin)->where('has_blocage', 1);
         });
     }
 
@@ -213,14 +223,6 @@ class Vehicule extends BaseModel
     }
 
 
-
-    /**
-     * Dernière inspection (méthode pratique)
-     */
-    public function getLastInspectionAttribute()
-    {
-        return $this->inspections()->whereNotNull('agent_signature_at')->latest()->first();
-    }
 
     public function getTagTitleAttribute()
     {
@@ -275,6 +277,7 @@ class Vehicule extends BaseModel
         $interventions = $this->interventions()
             ->betweenDates($reservation->debut_at, $reservation->fin_at)
             ->where('fin_at', '>', Carbon::now()->startOfDay())
+            ->where('has_blocage', 1)
             ->get();
 
         return $reservations->merge($interventions);
