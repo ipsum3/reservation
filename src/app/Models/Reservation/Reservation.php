@@ -360,7 +360,7 @@ class Reservation extends BaseModel
 
     public function updateMontantPaye()
     {
-        $this->montant_paye = $this->paiements()->ok()->whereNot('paiement_type_id', Type::CAUTION_ID)->sum('montant');
+        $this->montant_paye = $this->paiements()->ok()->whereNot('paiement_type_id', '<=>', Type::CAUTION_ID)->sum('montant');
         return $this;
     }
 
