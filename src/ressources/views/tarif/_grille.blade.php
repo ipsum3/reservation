@@ -25,7 +25,7 @@
                 <th></th>
                 @foreach ($durees as $duree)
                     <th style="width: 150px;">
-                        <x-reservation::tranche_de_duree :min="$duree->min_display" :max="$duree->max"/>
+                        <x-reservation::tranche_de_duree :min="$duree->min_display" :max="$duree->max_display"/>
                         @if ($duree->nom)
                             <br>{{ $duree->nom }}
                         @endif

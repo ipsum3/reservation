@@ -23,6 +23,7 @@ class StoreDuree extends FormRequest
 
     protected function prepareForValidation()
     {
+
         $jours_fin = collect($this->jours_fin);
         $jours_fin = $jours_fin->filter(function ($value, $key) {
             return isset($value['value']);
@@ -37,24 +38,31 @@ class StoreDuree extends FormRequest
             'jours_fin' => $jours_fin,
         ]);
 
-        $min = $this->durationToMinutes(
-            $this->min_jours,
-            $this->min_heures,
-            $this->min_minutes
-        );
+        if ($this->min_format === 'jour') {
+            $min_jours = $this->min_jours == 0 ? 0 : $this->min_jours - 1;
+            $min = $this->durationToMinutes($min_jours) + 1;
+        } else {
+            $min = $this->durationToMinutes(
+                $this->min_jours,
+                $this->min_heures,
+                $this->min_minutes
+            );
+        }
 
-        $this->merge([
-
-            'min' => $min >= 1440 ?  $min - 1440 :  $min - 1,
-
-            'max' => $this->durationToMinutes(
+        if ($this->max_format === 'jour') {
+            $max = $this->durationToMinutes($this->max_jours);
+        } else {
+            $max = $this->durationToMinutes(
                 $this->max_jours,
                 $this->max_heures,
                 $this->max_minutes
-            ),
+            );
+        }
 
+        $this->merge([
+            'min' => $min,
+            'max' => $max,
         ]);
-
     }
 
     /**
@@ -72,12 +80,17 @@ class StoreDuree extends FormRequest
             'tarification' => ['nullable', Rule::in(Duree::TARIFICATION)],
             'min' => 'required|integer|min:0',
             'max' => 'nullable|integer|gte:min',
+
+            'min_format' => 'required|in:jour,minute',
             'min_jours' => 'required|integer|min:0',
-            'min_heures' => 'required|integer|between:0,23',
-            'min_minutes' => 'required|integer|between:0,59',
+            'min_heures' => 'nullable|required_if:min_format,minute|integer|between:0,23',
+            'min_minutes' => 'nullable|required_if:min_format,minute|integer|between:0,59',
+
+            'max_format' => 'required|in:jour,minute',
             'max_jours' => 'nullable|integer|min:0',
             'max_heures' => 'nullable|integer|between:0,23',
             'max_minutes' => 'nullable|integer|between:0,59',
+
             'jours_debut.*' => 'nullable|array',
             'jours_debut.*.value' => ['required', Rule::in(array_keys(Jour::VALEURS))],
             'jours_debut.*.heure' => 'nullable|date_format:H:i',
@@ -87,9 +100,9 @@ class StoreDuree extends FormRequest
         ];
     }
 
-    protected function durationToMinutes($days, $hours, $minutes): ?int
+    protected function durationToMinutes($days, $hours = 0, $minutes = 0): ?int
     {
-        if ($days === null && $hours === null && $minutes === null) {
+        if ($days === null) {
             return null;
         }
 

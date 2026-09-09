@@ -59,17 +59,17 @@ class TarifSeeder extends Seeder
         return array(
             array(
                 'id' => 1,
-                'min' => '1',
-                'max' => '7',
+                'min' => 1,
+                'max' => 6 * 60 * 24,
             ),
             array(
                 'id' => 2,
-                'min' => '8',
-                'max' => '14',
+                'min' => (6 * 60 * 24) + 1,
+                'max' => 14 * 60 * 24,
             ),
             array(
                 'id' => 3,
-                'min' => '15',
+                'min' => (14 * 60 * 24) + 1,
                 'max' => null,
             ),
         );

@@ -4,8 +4,9 @@ namespace Ipsum\Reservation\app\Models\Tarif;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ipsum\Core\app\Models\BaseModel;
-use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\database\factories\DureeFactory;
 
 /**
  * Ipsum\Reservation\app\Models\Tarif\Duree
@@ -36,7 +37,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  */
 class Duree extends BaseModel
 {
-    use Tranche;
+    use Tranche, HasFactory;
 
 
     protected $guarded = ['id'];
@@ -44,6 +45,10 @@ class Duree extends BaseModel
     const TARIFICATION = ['jour', 'heure', 'forfait'];
 
 
+    protected static function newFactory()
+    {
+        return DureeFactory::new();
+    }
 
     protected static function booted()
     {
@@ -84,7 +89,7 @@ class Duree extends BaseModel
 
     public function scopeDuree($query, int $nb_minutes)
     {
-        $query->where('min', '<', $nb_minutes)
+        $query->where('min', '<=', $nb_minutes)
             ->where(function ($query) use ($nb_minutes) {
                 $query->where('max', '>=', $nb_minutes)->orWhereNull('max');
             });
@@ -164,7 +169,12 @@ class Duree extends BaseModel
 
     public function getMinDisplayAttribute()
     {
-        return $this->min >= 1440 ?  $this->min + 1440 :  $this->min + 1;
+        return ($this->min_format === 'jour' and $this->min !== 0) ? $this->min + (60 * 24) - 1 : $this->min;
+    }
+
+    public function getMaxDisplayAttribute()
+    {
+        return ($this->max_format === 'jour' and $this->max !== null) ? $this->max : $this->max;
     }
 
 }

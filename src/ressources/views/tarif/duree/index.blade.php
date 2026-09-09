@@ -28,7 +28,7 @@
                             <td>{{ $duree->nom }}</td>
                             <td>@duration($duree->min_display)</td>
                             <td>
-                                @duration($duree->max)
+                                @duration($duree->max_display)
                             </td>
                             <td class="text-right">
                                 <form action="{{ route('admin.duree.destroy', $duree) }}" method="POST">
@@ -87,7 +87,7 @@
                             <td>{{ $duree->nom }}</td>
                             <td>@duration($duree->min_display)</td>
                             <td>
-                                @duration($duree->max)
+                                @duration($duree->max_display)
                             </td>
                             <td class="text-right">
                                 <form action="{{ route('admin.duree.destroy', $duree) }}" method="POST">
