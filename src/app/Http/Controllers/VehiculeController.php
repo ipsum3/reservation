@@ -105,8 +105,9 @@ class VehiculeController extends AdminController
         $stats['montants'] = $reservations->sum('total');
 
         $conflicts = $vehicule->getConflicts();
+        $interventions = $vehicule->interventions()->orderBy('fin_at','desc')->limit(10)->get();
 
-        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories', 'stats', 'conflicts'));
+        return view('IpsumReservation::categorie.vehicule.form', compact('vehicule', 'types', 'categories', 'stats', 'conflicts', 'interventions'));
     }
 
     public function update(StoreVehicule $request, Vehicule $vehicule)

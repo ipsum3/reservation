@@ -161,9 +161,12 @@
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header">
-                    <h2 class="box-title">Prochaines interventions</h2>
+                    <h2 class="box-title">Dernières interventions</h2>
                     <div class="btn-toolbar">
                         @if ($vehicule->exists)
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.export', ['immatriculation' => $vehicule->immatriculation]) }}">
+                                <i class="fas fa-tools"></i>
+                            </a>
                             <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.index') }}?immatriculation={{ $vehicule->immatriculation }}" data-toggle="tooltip" title="Voir toutes les interventions">
                                 <i class="fas fa-eye"></i>
                             </a>&nbsp;
@@ -183,16 +186,18 @@
                                 <th scope="col">Début</th>
                                 <th scope="col">Fin</th>
                                 <th scope="col">Intervenant</th>
+                                <th scope="col">Information</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($vehicule->interventions as $intervention)
+                            @foreach($interventions as $intervention)
                                 <tr>
                                     <td><a href="{{ route('admin.intervention.edit', $intervention) }}">{{ $intervention->id }}</a></td>
                                     <td>{{ $intervention->type ? $intervention->type->nom : '' }}</td>
                                     <td>{{ $intervention->debut_at->format('d/m/Y H:i') }}</td>
                                     <td>{{ $intervention->fin_at->format('d/m/Y H:i') }}</td>
                                     <td>{{ $intervention->intervenant }}</td>
+                                    <td>{!! nl2br(e($intervention->information)) !!}</td>
                                 </tr>
                             @endforeach
                             </tbody>
