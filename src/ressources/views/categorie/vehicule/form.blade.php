@@ -164,7 +164,7 @@
                     <h2 class="box-title">Dernières interventions</h2>
                     <div class="btn-toolbar">
                         @if ($vehicule->exists)
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.export', ['immatriculation' => $vehicule->immatriculation]) }}">
+                            <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.export', ['immatriculation' => $vehicule->immatriculation]) }}" data-toggle="tooltip" title="Carnet d'entretien">
                                 <i class="fas fa-tools"></i>
                             </a>
                             <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.index') }}?immatriculation={{ $vehicule->immatriculation }}" data-toggle="tooltip" title="Voir toutes les interventions">
