@@ -12,6 +12,10 @@
                     <i class="fas fa-upload"></i>
                     Export
                 </a>
+                <a class="btn btn-outline-secondary" href="{{ route('admin.client.create') }}">
+                    <i class="fas fa-plus"></i>
+                    Ajouter
+                </a>&nbsp;
             </div>
         </div>
         <div class="box-body">

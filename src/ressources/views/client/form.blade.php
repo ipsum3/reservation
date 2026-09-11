@@ -7,7 +7,10 @@
 
     <div class="row">
         <div class="col-md-6">
-            {{ Aire::open()->route('admin.client.update', [$client->id])->bind($client)->formRequest(\Ipsum\Reservation\app\Http\Requests\UpdateClient::class) }}
+            {{ Aire::open()->route($client->exists ? 'admin.client.update' : 'admin.client.store', $client->exists ? $client : null)->bind($client)->formRequest(\Ipsum\Reservation\app\Http\Requests\UpdateClient::class) }}
+            @if(!$client->exists)
+                <input type="hidden" name="has_login" value="0">
+            @endif
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Information</h2>
@@ -23,11 +26,11 @@
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::input('nom', 'Nom*')->groupAddClass('col-md-6') }}
-                        {{ Aire::input('prenom', 'Prénom*')->groupAddClass('col-md-6') }}
+                        {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-6') }}
+                        {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-6') }}
                     </div>
                     <div class="form-row">
-                        {{ Aire::input('email', 'Email*')->groupAddClass('col-md-6') }}
+                        {{ Aire::input('email', 'Email*')->required()->groupAddClass('col-md-6') }}
                         {{ Aire::input('telephone', 'Téléphone')->groupAddClass('col-md-6') }}
                     </div>
                     <div class="form-row">

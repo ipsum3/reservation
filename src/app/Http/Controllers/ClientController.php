@@ -107,6 +107,23 @@ class ClientController extends AdminController
         return null;
     }
 
+    public function create()
+    {
+        $client = new Client();
+
+        $pays = Pays::orderBy('nom')->get()->pluck('nom', 'id');
+        return view('IpsumReservation::client.form', compact('client', 'pays'));
+    }
+
+
+    public function store(UpdateClient $request)
+    {
+        $client = Client::create($request->validated());
+
+        Alert::success("L'enregistrement a bien été créé")->flash();
+        return redirect()->route('admin.client.edit', $client);
+    }
+
     public function edit(Client $client)
     {
         $pays = Pays::orderBy('nom')->get()->pluck('nom', 'id');
