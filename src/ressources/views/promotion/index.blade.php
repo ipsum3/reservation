@@ -53,7 +53,7 @@
                                     $reservations_count = $promotion->reservations()->count();
                                 @endphp
 
-                                <a href="{{ route('admin.reservation.index', ['promotion_id' => $promotion->id]) }}"
+                                <a href="{{ route('admin.reservation.index', ['promotion_id' => $promotion->id, 'etat_id' => \Ipsum\Reservation\app\Models\Reservation\Etat::VALIDEE_ID] )}}"
                                    class="badge badge-info">
                                     {{ $reservations_count }} Réservation{{ $reservations_count > 1 ? 's' : '' }}
                                 </a>
