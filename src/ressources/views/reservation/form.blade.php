@@ -335,9 +335,17 @@
             @include('IpsumReservation::reservation._actions')
             <div class="box">
                 <div class="box-header">
-                    <h2 class="box-title">Locataire / Conducteur</h2>
-                    <div class="btn-toolbar" style="width: 400px">
-                        <select id="client-search" class="form-group" style="width: 100%">
+                    <h2 class="box-title">
+                        Locataire / Conducteur
+                        @if ($reservation->client)
+                            &nbsp;<a href="{{ route('admin.client.edit', $reservation->client) }}" class="btn btn-outline-gray compte-info" data-toggle="tooltip" title="Voir la fiche client"><small class="text-muted"><i class="fa fa-user"></i> {{ $reservation->client->code }}</small></a>
+                            &nbsp;<button type="button" id="client-update-locataire" class="btn btn-outline-gray compte-info" data-ajax-url="{{ route('admin.client.detail', $reservation->client) }}" data-toggle="tooltip" title="Mettre à jour les informations du locataire à partir des données du compte client"><small class="text-muted"><i class="fa fa-sync"></i></small></button>
+                        @elseif($reservation->exists)
+                            <small class="text-muted compte-info"><i class="fa fa-user-slash"></i> Locataire sans compte client</small>
+                        @endif
+                    </h2>
+                    <div class="btn-toolbar">
+                        <select id="client-search" class="form-group" style="width: 400px">
                             <option value="">Rechercher un client</option>
                         </select>
                     </div>
@@ -345,7 +353,7 @@
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::hidden('client_id', request()->client_id) }}
+                        {{ Aire::hidden('client_id', old('client_id', request()->client_id)) }}
                         {{ Aire::select(collect(['' => '---- Civilité -----', 'M.' => 'Monsieur', 'Mme' => 'Madame']), 'civilite', 'Civilité')->groupAddClass('col-md-2') }}
                         {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-5') }}
                         {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-5') }}
@@ -360,10 +368,38 @@
                         {{ Aire::input('permis_numero', 'Numéro de permis')->groupAddClass('col-md-6') }}
                         {{ Aire::date('permis_at', 'Permis délivré le')->groupAddClass('col-md-6') }}
                         {{ Aire::input('permis_delivre', 'Permis délivré par')->groupAddClass('col-md-6') }}
-                        <div id="create-user-field" class="{{ ($reservation->client_id == NULL) ? 'col-md-12': 'col-md-12 d-none' }}">
-                            {{ Aire::checkbox("create_user", "Créer le compte client")->value(1)->helpText((string) "Ce client n'a pas de compte") }}
-                        </div>
                     </div>
+                    @if (!$reservation->client and !request()->has('client_id'))
+                        @if($reservation->exists and $clients_proposition->count())
+                            <div>
+                                <h3>Client{{ $clients_proposition->count() > 1 ? 's' : '' }} suggéré{{ $clients_proposition->count() > 1 ? 's' : '' }}</h3>
+                                @foreach($clients_proposition as $client)
+                                    <div class=" alert alert-info">
+                                        <div><a href="{{ route('admin.reservation.associationClient', [$reservation, $client]) }}" class="btn btn-outline-secondary" title="Associer ce client à cette réservation"> <i class="fa fa-user-check"></i> Associer</a></div>
+                                        <div>
+                                            <a href="{{ route('admin.client.edit', $reservation) }}">Client {{ $client->code }}</a> ({{ $client->reservations_count }} réservation{{ $client->reservations_count > 1 ? 's' : '' }}) :<br>
+                                            {{ $client->civilite }} {{ $client->prenom }} {{ $client->nom }}<br>
+                                            Email : {{ $client->email }}<br>
+                                            @if ($client->telephone)
+                                                Tél : {{ $client->telephone }}<br>
+                                            @endif
+                                            @if ($client->pays)
+                                                Adresse : {{ $client->adresse }} {{ $client->cp }} {{ $client->ville }} {{ $client->pays->nom }}
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                @endforeach
+                            </div>
+                        @endif
+                        <div class="compte-info">
+                            {{ Aire::checkbox("create_user", "Créer un compte client")->value(1) }}
+                        </div>
+                    @elseif(!request()->has('client_id') and !$reservation->client->has_login)
+                        <div>
+                            {{ Aire::checkbox("update_user", "Mettre à jour le compte client")->value(1)->checked($reservation->debut_at->addDay()->gt(now())) }}
+                        </div>
+                    @endif
                 </div>
             </div>
 

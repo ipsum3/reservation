@@ -40,61 +40,71 @@ $('#tarification-load, #tarification-undo').click(function () {
     }
 })
 
-$(document).ready(function () {
-    $('#client-search').select2({
-        minimumInputLength: 3, // Nombre minimal de caractères pour déclencher la recherche
-        placeholder: 'Rechercher un client',
-        ajax: {
-            url: '/administration/reservation/search-clients', // Endpoint côté serveur
-            dataType: 'json',
-            delay: 250, // Délai avant d'effectuer la recherche après la saisie
-            data: function (params) {
-                return {
-                    client_search: params.term // Terme de recherche saisi par l'utilisateur
-                }
-            },
-            processResults: function (data) {
-                return {
-                    results: data // Résultats reçus depuis le serveur
-                }
-            },
-            cache: true
+$('#client-update-locataire').click(function () {
+    $.ajax({
+        method: 'GET',
+        url: $(this).data('ajax-url'),
+        data: $('#reservation').serialize(),
+        success: function (data) {
+            console.log(data)
+            updateClientInfo(data)
         }
     })
+})
 
-    $('#client-search').on('select2:select', function (e) {
-        updateClientInfo(e.params.data)
-    })
+$('#client-search').select2({
+    minimumInputLength: 3, // Nombre minimal de caractères pour déclencher la recherche
+    placeholder: 'Rechercher un client',
+    ajax: {
+        url: '/administration/reservation/search-clients', // Endpoint côté serveur
+        dataType: 'json',
+        delay: 250, // Délai avant d'effectuer la recherche après la saisie
+        data: function (params) {
+            return {
+                client_search: params.term // Terme de recherche saisi par l'utilisateur
+            }
+        },
+        processResults: function (data) {
+            return {
+                results: data // Résultats reçus depuis le serveur
+            }
+        },
+        cache: true
+    }
+})
 
-    function updateClientInfo (client) {
-        if (client.is_client) {
-            client.client_id = client.id
-            $('#create-user-field').addClass('d-none')
-        } else {
-            $('#create-user-field').removeClass('d-none')
-        }
+$('#client-search').on('select2:select', function (e) {
+    updateClientInfo(e.params.data)
+})
 
-        for (var key in client) {
-            if (client.hasOwnProperty(key)) {
-                var input = document.querySelector('[name="' + key + '"]')
-                if (input) {
-                    if (input.type === 'date') {
-                        // Pour les inputs de type "date", formatez la valeur en utilisant Carbon
-                        input.value = formatDate(client[key])
-                    } else {
-                        input.value = client[key]
-                    }
+function updateClientInfo (client) {
+    if (client.is_client) {
+        client.client_id = client.id
+        $('.compte-info').addClass('d-none')
+    } else {
+        $('.compte-info').removeClass('d-none')
+    }
+
+    for (var key in client) {
+        if (client.hasOwnProperty(key)) {
+            var input = document.querySelector('[name="' + key + '"]')
+            if (input) {
+                if (input.type === 'date') {
+                    // Pour les inputs de type "date", formatez la valeur en utilisant Carbon
+                    input.value = formatDate(client[key])
+                } else {
+                    input.value = client[key]
                 }
             }
         }
     }
+}
 
-    function formatDate (dateString) {
-        // Utilisez Carbon pour formater la date
-        var formattedDate = new Date(dateString).toISOString().slice(0, 10)
-        return formattedDate
-    }
-})
+function formatDate (dateString) {
+    // Utilisez Carbon pour formater la date
+    var formattedDate = new Date(dateString).toISOString().slice(0, 10)
+    return formattedDate
+}
 
 $('.ajust-button').click(function () {
     let valeur = parseFloat($(this).parents('.box').find('.ajust-valeur').val())

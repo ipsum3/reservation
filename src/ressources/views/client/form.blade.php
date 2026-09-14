@@ -26,8 +26,9 @@
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-6') }}
-                        {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-6') }}
+                        {{ Aire::select(collect(['' => '---- Civilité -----', 'M.' => 'Monsieur', 'Mme' => 'Madame']), 'civilite', 'Civilité')->groupAddClass('col-md-2') }}
+                        {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-5') }}
+                        {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-5') }}
                     </div>
                     <div class="form-row">
                         {{ Aire::input('email', 'Email*')->required()->groupAddClass('col-md-6') }}
@@ -90,6 +91,10 @@
             <div class="box" id="demandes">
                 <div class="box-header">
                     <h2 class="box-title">Réservations</h2>
+                    @if ($client->exists)
+                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.create', ['client_id' => $client->id]) }}"><i class="fa fa-plus"></i></a>
+                    @endif
+
                 </div>
                 <div class="box-body">
                     <div class="table-wrapper">

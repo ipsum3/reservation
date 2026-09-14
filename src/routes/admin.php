@@ -15,6 +15,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::any('tarifs/{reservation?}', 'updateTarifs')->name('updateTarifs');
         Route::get('{reservation}/edit', 'edit')->name('edit');
         Route::get('{reservation}/confirmation', 'confirmation')->name('confirmation')->middleware('adminReservationConfirmed');
+        Route::get('{reservation}/client/{client}/associer', 'associationClient')->name('associationClient');
         Route::get('{reservation}/devis', 'devis')->name('devis');
         Route::get('{reservation}/caution/generate', 'cautionGeneration')->name('cautionGeneration');
         Route::get('{reservation}/document/{document}/send', 'reservationDocumentSend')->name('reservationDocumentSend');
@@ -208,6 +209,7 @@ Route::controller(ClientController::class)->prefix('client')->name('admin.client
         Route::any('{client}/destroy', 'destroy')->name('destroy');
         Route::put('{client}', 'update')->name('update');
         Route::get('{client}/edit', 'edit')->name('edit');
+        Route::get('{client}', 'detail')->name('detail');
     }
 );
 

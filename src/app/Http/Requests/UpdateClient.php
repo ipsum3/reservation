@@ -41,6 +41,7 @@ class UpdateClient extends FormRequest
             //Rule::excludeIf($this->password === null),
             'has_login' => 'nullable|boolean',
             'password' => ['nullable', 'max:255', Password::default()],
+            "civilite" => "nullable|in:M.,Mme",
             'nom' => 'required|max:255',
             'prenom' => 'nullable|max:255',
             'email' => [

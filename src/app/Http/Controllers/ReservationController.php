@@ -246,11 +246,9 @@ class ReservationController extends AdminController
     {
         $reservation = new Reservation;
 
-
         if ($request->filled('client_id')) {
             $client = Client::findOrFail($request->client_id);
             $reservation->fill($client->toArray()); // TODO pas terrible... Trouver autre chose pour peupler les données
-            $reservation->client_id = $client->id;
         }
 
         $etats = Etat::all()->pluck('nom', 'id');
@@ -271,13 +269,11 @@ class ReservationController extends AdminController
     {
         $reservation = new Reservation($request->validated());
         $reservation->admin_id = auth()->user()->id;
-        if($request->get('create_user') == 1 && $reservation->client_id == NULL){
+        if(!request()->filled('client_id') and $request->filled('create_user')){
             $clientData = array_merge($request->validated(), ['has_login' => 0]);
             // Créer un nouveau client en base de données
             $newClient = Client::create($clientData);
-
-            // Associer le client nouvellement créé à la réservation
-            $reservation->client_id = $newClient->id;
+            $reservation->client()->associate($newClient);
         }
         $reservation->save();
 
@@ -323,11 +319,32 @@ class ReservationController extends AdminController
             ? $reservation->vehicule->getConflicts($reservation)
             : collect();
 
-        if($reservation->client_id == null) {
-            $client = Client::where('email', $reservation->email)->where('has_login', '0')->get();
-            if (count($client)) {
-                $reservation->client_id = $client->first()->id;
-            }
+        $clients_proposition = collect();
+        if(!$reservation->client) {
+            // Proposition d'association de clients
+            $clients_proposition = Client::where(function($query) use ($reservation) {
+                $query->where('email', $reservation->email)->
+                orWhere(function($query) use ($reservation) {
+                    $query->where('nom', $reservation->nom)->where('prenom', $reservation->prenom);
+                })->when($reservation->telephone, function($query) use ($reservation) {
+                    $query->orWhere(function($query) use ($reservation) {
+                        $query->where('telephone', $reservation->telephone);
+                    });
+                });
+            })
+            ->when($reservation->naissance_at, function($query) use ($reservation) {
+                $query->where(function($query) use ($reservation) {
+                    $query->where('naissance_at', $reservation->naissance_at)->orWhereNull('naissance_at');
+                });
+            })
+            ->when($reservation->permis_at, function($query) use ($reservation) {
+                $query->where(function($query) use ($reservation) {
+                    $query->where('permis_at', $reservation->permis_at)->orWhereNull('permis_at');
+                });
+            })
+            ->withCount('reservations')
+            ->orderBy('reservations_count', 'desc')
+            ->get();
         }
 
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
@@ -337,23 +354,25 @@ class ReservationController extends AdminController
 
         $sources = Source::all()->pluck('nom', 'id');
 
-        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens', 'types', 'sources', 'conflicts'));
+        return view('IpsumReservation::reservation.form', compact('reservation', 'etats', 'conditions', 'pays', 'categories', 'lieux', 'vehicules', 'prestations', 'moyens', 'types', 'sources', 'conflicts', 'clients_proposition'));
     }
 
     public function update(StoreAdminReservation $request, Reservation $reservation)
     {
         $data = $request->validated();
         $is_confirmed_old = $reservation->is_confirmed;
-        if($request->get('create_user') == 1 && $reservation->client_id == NULL){
+
+        $reservation->update($data);
+
+        if(!request()->filled('client_id') and $request->filled('create_user')){
             $clientData = array_merge($request->validated(), ['has_login' => 0]);
             // Créer un nouveau client en base de données
             $newClient = Client::create($clientData);
-
-            // Associer le client nouvellement créé à la réservation
-            $data['client_id'] = $newClient->id;
+            $reservation->client()->associate($newClient);
         }
-
-        $reservation->update($data);
+        if($reservation->client and $request->filled('update_user')){
+            $reservation->client->update($request->validated());
+        }
 
         if ($request->validated('paiements')) {
 
@@ -447,6 +466,15 @@ class ReservationController extends AdminController
         return response()->json([
             'select' => view('IpsumReservation::reservation._vehicules_select', compact('vehicules', 'vehicule_id'))->render(),
         ]);
+    }
+
+    public function associationClient(Reservation $reservation, Client $client)
+    {
+        $reservation->client()->associate($client);
+        $reservation->save();
+
+        Alert::info("Le client a bien été associé à la réservation")->flash();
+        return back();
     }
 
     public function destroy(Reservation $reservation)

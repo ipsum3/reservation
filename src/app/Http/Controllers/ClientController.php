@@ -107,6 +107,11 @@ class ClientController extends AdminController
         return null;
     }
 
+    public function detail(Client $client)
+    {
+        return $client;
+    }
+
     public function create()
     {
         $client = new Client();
