@@ -62,10 +62,13 @@ Modéle
 : Marque et modéle d'un véhicule
 
 Franchise
-: Participation financière aux réparations. Cette somme n’est pas remboursée par l’assureur.
+: Participation financière aux réparations (reste à charge en cas de sinistre couvert). Cette somme n’est pas remboursée par l’assureur.
 
 Caution
-: La caution ou dépot de garantie est la garantie pour le loueur que le locataire est apte à payer la franchise s’il y avait un sinistre.
+: La caution ou dépot de garantie est la garantie pour le loueur que le locataire est apte à payer la franchise s’il y avait un sinistre et permet aussi de couvrir d’éventuels frais après retour (nettoyage, carburant, retard...).
+
+Rachat de franchise
+: Réduire ou supprimer tout ou partie de la franchise
 
 Saison
 :
