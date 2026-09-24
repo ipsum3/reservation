@@ -227,16 +227,21 @@
                     <div class="box-header">
                         <h2 class="box-title">Documents</h2>
 
-                        @if($reservation->is_confirmed and config('ipsum.reservation.etat_des_lieux.enable'))
-                            <div class="btn-toolbar">
+                        <div class="btn-toolbar">
+                            @if($reservation->is_confirmed and config('ipsum.reservation.etat_des_lieux.enable'))
                                 @if(!$reservation->inspectionInitiale?->isSigned())
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux initial</a>&nbsp;
                                 @endif
                                 @if(!$reservation->inspectionFinale?->isSigned())
                                     <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux final</a>&nbsp;
                                 @endif
-                            </div>
-                        @endif
+                            @endif
+
+                            @if($reservation->is_confirmed) {{-- TODO : and config('ipsum.reservation.facture.enable')--}}
+                                <a class="btn btn-outline-secondary" href="{{ route('admin.facture.create', [$reservation]) }}"><i class="fa fa-file-invoice-dollar"></i> Créer la facture de location</a>&nbsp;
+                                <a class="btn btn-outline-secondary" href="{{ route('admin.facture.additionnel', [$reservation]) }}"><i class="fa fa-file-invoice-dollar"></i> Créer une facture additionnel</a>&nbsp;
+                            @endif
+                        </div>
                     </div>
                     <div class="box-body">
                         <div class="table-wrapper">
@@ -324,6 +329,17 @@
                                             </tr>
                                         @endforeach
                                     @endif
+                                @endif
+                                @if($reservation->factures->count())
+                                    @foreach($reservation->factures as $facture)
+                                        <tr>
+                                            <td>Facture {{ $facture->type->label() }} {{ $facture->numero }} TODO boutons</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.facture.pdf', [$facture]) }}" target="_blank" data-toggle="tooltip" title="Télécharger la facture (PDF)"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'facture', 'id' => $facture->id, 'objet' => 'Facture '.$facture->numero]) }}" data-toggle="tooltip" title="Envoyer la facture par email"><i class="fas fa-envelope"></i></a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 @endif
 
                                 </tbody>

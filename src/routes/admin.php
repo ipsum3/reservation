@@ -31,6 +31,18 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
     }
 );
 
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\FactureController::class)->prefix('facture')->name('admin.facture.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::post('{reservation}', 'store')->name('store');
+        Route::get('create/{reservation}', 'create')->name('create');
+        Route::get('additionnel/{reservation}', 'additionnel')->name('additionnel');
+        Route::get('{facture}/pdf', 'pdf')->name('pdf');
+        /*Route::put('{facture}', 'update')->name('update');
+        Route::get('{facture}/edit', 'edit')->name('edit');*/
+    }
+);
+
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\StatistiqueController::class)->prefix('statistique')->name('admin.statistique.')->group(
     function () {
         Route::get('', 'index')->name('index');

@@ -79,7 +79,6 @@ use Carbon\Carbon;
  * @property string|null $montant_paye
  * @property string|null $note
  * @property \Illuminate\Support\Carbon|null $devis_expiration_at
- * @property int $saved
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Admin|null $admin
@@ -87,6 +86,8 @@ use Carbon\Carbon;
  * @property-read Client|null $client
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Condition|null $condition
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Etat|null $etat
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Facture> $factures
+ * @property-read int|null $factures_count
  * @property-read float|null $acompte
  * @property-read string $contrat_path
  * @property-read string $contrat_public_file_name
@@ -221,6 +222,11 @@ class Reservation extends BaseModel
         return $this->hasOne(Paiement::class)
             ->where('paiement_type_id', Type::CAUTION_ID)
             ->ok();
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(Facture::class);
     }
 
     public function etat()

@@ -19,7 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $code
  * @property string|null $civilite
  * @property string $nom
- * @property string $prenom
+ * @property string|null $prenom
  * @property string $email
  * @property int $has_login
  * @property string|null $telephone
