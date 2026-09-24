@@ -371,7 +371,7 @@ class ReservationController extends AdminController
             $reservation->client()->associate($newClient);
         }
         if($reservation->client and $request->filled('update_user')){
-            $reservation->client->update($request->validated());
+            $reservation->client->update(collect($request->validated())->except('custom_fields')->toArray());
         }
 
         if ($request->validated('paiements')) {
