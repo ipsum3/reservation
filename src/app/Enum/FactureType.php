@@ -5,13 +5,13 @@ namespace Ipsum\Reservation\app\Enum;
 enum FactureType: string
 {
     case LOCATION = 'location';
-    case ADDITIONNEL = 'additionnel';
+    case ADDITIONNELLE = 'additionnelle';
 
     public function label(): string
     {
         return match($this) {
             self::LOCATION => 'location',
-            self::ADDITIONNEL => 'additionnel',
+            self::ADDITIONNELLE => 'additionnelle',
         };
     }
 

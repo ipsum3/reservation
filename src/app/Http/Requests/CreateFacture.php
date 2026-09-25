@@ -5,7 +5,7 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 use Ipsum\Admin\app\Http\Requests\FormRequest;
 
-class StoreFacture extends FormRequest
+class CreateFacture extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,10 @@ class StoreFacture extends FormRequest
      */
     public function rules()
     {
+        // TODO check produits : required
         return [
+            /*"nom" => "required|max:255",
+            "type_id" => "required|exists:source_types,id"*/
 
             "paiements.*.id" => "nullable|exists:paiements,id",
             "paiements.*.created_at" => "required|date_format:Y-m-d\TH:i",

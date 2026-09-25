@@ -38,8 +38,8 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\FactureController::cla
         Route::get('create/{reservation}', 'create')->name('create');
         Route::get('additionnel/{reservation}', 'additionnel')->name('additionnel');
         Route::get('{facture}/pdf', 'pdf')->name('pdf');
-        /*Route::put('{facture}', 'update')->name('update');
-        Route::get('{facture}/edit', 'edit')->name('edit');*/
+        Route::put('{facture}', 'update')->name('update');
+        Route::get('{facture}/edit', 'edit')->name('edit');
     }
 );
 

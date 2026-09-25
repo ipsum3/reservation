@@ -14,6 +14,11 @@ class ConducteurCollection  extends Collection implements Castable
         return $this->map(fn ($value) => $value->toArray())->all();
     }
 
+    public function getArrayCopy(): ?array
+    {
+        return $this->toArray();
+    }
+
 
 
 

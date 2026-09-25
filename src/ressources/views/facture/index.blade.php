@@ -44,16 +44,9 @@
                             <td>
                                 <a href="{{ route('admin.facture.pdf', [$facture]) }}" target="_blank">Télécharger</a>
                             </td>
-                            {{--<td class="text-right">
-                                <form action="{{ route('admin.facture.destroy', $facture) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <a class="btn btn-primary" href="{{ route('admin.facture.edit', [$facture]) }}"><i class="fa fa-edit"></i> Modifier</a>
-                                    @if( $facture->id != $facture::FACTURE_SITE_INTERNET and $facture->id != $facture::FACTURE_AGENCE )
-                                        <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
-                                    @endif
-                                </form>
-                            </td>--}}
+                            <td class="text-right">
+                                <a class="btn btn-primary" href="{{ route('admin.facture.edit', [$facture]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                            </td>
                         </tr>
                     @endforeach
                     </tbody>

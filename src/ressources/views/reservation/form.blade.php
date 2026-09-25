@@ -238,8 +238,7 @@
                             @endif
 
                             @if($reservation->is_confirmed) {{-- TODO : and config('ipsum.reservation.facture.enable')--}}
-                                <a class="btn btn-outline-secondary" href="{{ route('admin.facture.create', [$reservation]) }}"><i class="fa fa-file-invoice-dollar"></i> Créer la facture de location</a>&nbsp;
-                                <a class="btn btn-outline-secondary" href="{{ route('admin.facture.additionnel', [$reservation]) }}"><i class="fa fa-file-invoice-dollar"></i> Créer une facture additionnel</a>&nbsp;
+                                <a class="btn btn-outline-secondary" href="{{ route('admin.facture.create', [$reservation]) }}"><i class="fa fa-file-invoice-dollar"></i> Créer une facture</a>&nbsp;
                             @endif
                         </div>
                     </div>

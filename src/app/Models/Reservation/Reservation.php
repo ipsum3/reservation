@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Admin\app\Models\Admin;
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Reservation\app\Enum\FactureType;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Client;
@@ -86,8 +87,11 @@ use Carbon\Carbon;
  * @property-read Client|null $client
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Condition|null $condition
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Etat|null $etat
+ * @property-read \Ipsum\Reservation\app\Models\Reservation\Facture|null $factureLocation
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Facture> $factures
  * @property-read int|null $factures_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Facture> $facturesAdditionnelles
+ * @property-read int|null $factures_additionnelles_count
  * @property-read float|null $acompte
  * @property-read string $contrat_path
  * @property-read string $contrat_public_file_name
@@ -227,6 +231,16 @@ class Reservation extends BaseModel
     public function factures()
     {
         return $this->hasMany(Facture::class);
+    }
+
+    public function factureLocation()
+    {
+        return $this->hasOne(Facture::class)->where('type', FactureType::LOCATION);
+    }
+
+    public function facturesAdditionnelles()
+    {
+        return $this->hasMany(Facture::class)->where('type', FactureType::ADDITIONNELLE);
     }
 
     public function etat()
