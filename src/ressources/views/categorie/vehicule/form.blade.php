@@ -158,22 +158,21 @@
             @endif
         </div>
 
+        @if ($vehicule->exists)
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Dernières interventions</h2>
                     <div class="btn-toolbar">
-                        @if ($vehicule->exists)
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.export', ['immatriculation' => $vehicule->immatriculation]) }}" data-toggle="tooltip" title="Carnet d'entretien">
-                                <i class="fas fa-tools"></i>
-                            </a>
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.index') }}?immatriculation={{ $vehicule->immatriculation }}" data-toggle="tooltip" title="Voir toutes les interventions">
-                                <i class="fas fa-eye"></i>
-                            </a>&nbsp;
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.create', ['vehicule_id' => $vehicule]) }}" data-toggle="tooltip" title="Ajouter">
-                                <i class="fas fa-plus"></i>
-                            </a>&nbsp;
-                        @endif
+                        <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.export', ['immatriculation' => $vehicule->immatriculation]) }}" data-toggle="tooltip" title="Carnet d'entretien">
+                            <i class="fas fa-tools"></i>
+                        </a>
+                        <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.index') }}?immatriculation={{ $vehicule->immatriculation }}" data-toggle="tooltip" title="Voir toutes les interventions">
+                            <i class="fas fa-eye"></i>
+                        </a>&nbsp;
+                        <a class="btn btn-outline-secondary" href="{{ route('admin.intervention.create', ['vehicule_id' => $vehicule]) }}" data-toggle="tooltip" title="Ajouter">
+                            <i class="fas fa-plus"></i>
+                        </a>&nbsp;
                     </div>
                 </div>
                 <div class="box-body">
@@ -209,16 +208,14 @@
                 <div class="box-header">
                     <h2 class="box-title">Prochaines réservations</h2>
                     <div class="btn-toolbar">
-                        @if ($vehicule->exists)
-                            <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.index') }}?vehicule_id={{ $vehicule->id }}" data-toggle="tooltip" title="Voir toutes les réservations">
-                                <i class="fas fa-eye"></i>
-                            </a>&nbsp;
-                        @endif
+                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.index') }}?vehicule_id={{ $vehicule->id }}" data-toggle="tooltip" title="Voir toutes les réservations">
+                            <i class="fas fa-eye"></i>
+                        </a>&nbsp;
                     </div>
                 </div>
                 <div class="box-body">
 
-                    @if($vehicule->exists && $conflicts->count())
+                    @if($conflicts->count())
                         <div class="alert alert-danger">
                             <p><strong><i class="fas fa-exclamation-triangle"></i> Conflits potentiels :</strong></p>
                             <ul>
@@ -273,6 +270,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 
 
