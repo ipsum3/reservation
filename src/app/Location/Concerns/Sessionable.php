@@ -27,9 +27,11 @@ trait Sessionable
         }
     }
 
-    public function saveToSession()
+    public function saveToSession(): self
     {
         Session::put(self::class, serialize($this));
+
+        return $this;
     }
 
     public function forget()

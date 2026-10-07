@@ -78,6 +78,70 @@ class Location
 
     }
 
+    /**
+     * Reconstruit le tunnel Location depuis une réservation persistée (reprise sans session active).
+     *
+     * Usage : Location::fromReservation($reservation)->saveToSession();
+     * 
+     */
+    public static function fromReservation(Reservation $reservation): self
+    {
+        $location = new self();
+
+        $location->setLieuDebut($reservation->debut_lieu_id);
+        $location->setLieuFin($reservation->fin_lieu_id);
+        $location->setAgeRecherche($reservation->naissance_at?->age);
+
+        $dateFormat = config('ipsum.reservation.recherche.date_format');
+
+        $location->setDebutAt($reservation->debut_at->format($dateFormat));
+        $location->setFinAt($reservation->fin_at->format($dateFormat));
+
+        $location->setCategorie(Categorie::findOrFail($reservation->categorie_id));
+        $location->setCondition(
+            $reservation->condition ?? Condition::findOrFail($reservation->condition_paiement_id)
+        );
+
+        $prestations = null;
+
+        if ($reservation->prestations !== null && $reservation->prestations->isNotEmpty()) {
+            $prestations = $reservation->prestations
+                ->map(fn ($prestation) => [
+                    'id' => $prestation->id,
+                    'quantite' => (int) $prestation->quantite,
+                ])
+                ->all();
+        }
+
+        $location->setPrestations($prestations);
+        $location->setCodePromo($reservation->code_promo);
+
+        $jourFormat = config('ipsum.reservation.recherche.jour_format');
+
+        $location->setInformations([
+            'civilite' => $reservation->civilite,
+            'nom' => $reservation->nom,
+            'prenom' => $reservation->prenom,
+            'email' => $reservation->email,
+            'telephone' => $reservation->telephone,
+            'adresse' => $reservation->adresse,
+            'cp' => $reservation->cp,
+            'ville' => $reservation->ville,
+            'pays_id' => $reservation->pays_id,
+            'naissance_at' => $reservation->naissance_at?->format($jourFormat),
+            'naissance_lieu' => $reservation->naissance_lieu,
+            'permis_numero' => $reservation->permis_numero,
+            'permis_at' => $reservation->permis_at?->format($jourFormat),
+            'permis_delivre' => $reservation->permis_delivre,
+            'observation' => $reservation->observation,
+            'custom_fields' => $reservation->custom_fields->getArrayCopy(),
+        ]);
+
+        $location->setReservationId($reservation->id);
+
+        return $location;
+    }
+
 
     public function setRecherche(array $inputs): self
     {
