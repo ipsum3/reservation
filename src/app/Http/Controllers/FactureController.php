@@ -184,6 +184,13 @@ class FactureController extends AdminController
         $facture->paiements()->whereDoesntHave('reservation')->whereNotIn('id', collect($request->validated('paiements'))->pluck('id'))->delete();
         $facture->updateMontantPaye()->save();
 
+        try {
+            $this->service->syncToProvider($facture);
+        } catch (\Exception $e) {
+            Alert::error($e->getMessage())->flash();
+            return back();
+        }
+
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
     }

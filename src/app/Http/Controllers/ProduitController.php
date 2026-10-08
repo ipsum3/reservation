@@ -6,6 +6,9 @@ use Ipsum\Reservation\app\Classes\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
+use Ipsum\Reservation\app\Events\PrestationCreatedEvent;
+use Ipsum\Reservation\app\Events\PrestationUpdatedEvent;
+use Ipsum\Reservation\app\Events\ReservationCreatedEvent;
 use Ipsum\Reservation\app\Http\Requests\StorePrestation;
 use Ipsum\Reservation\app\Http\Requests\StoreProduit;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
@@ -49,7 +52,7 @@ class ProduitController extends AdminController
     public function create()
     {
         $produit = new Prestation;
-        $produit->taxe_id = Taxe::where('default', 1)->first()->id;
+        $produit->taxe_id = Taxe::where('defaut', 1)->first()->id;
 
         $types = Type::all()->pluck('nom', 'id');
         $taxes = Taxe::orderBy('taux')->get()->pluck('nom', 'id');
@@ -60,6 +63,8 @@ class ProduitController extends AdminController
     public function store(StoreProduit $request)
     {
         $produit = Prestation::create($request->validated() + ['tarification_id' => Tarification::FORFAIT_ID]);
+
+        PrestationCreatedEvent::dispatch($produit);
 
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.produit.edit', [$produit->id]);
@@ -76,6 +81,8 @@ class ProduitController extends AdminController
     public function update(StoreProduit $request, Prestation $produit)
     {
         $produit->update($request->validated());
+
+        PrestationUpdatedEvent::dispatch($produit);
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();

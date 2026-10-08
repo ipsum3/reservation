@@ -98,6 +98,7 @@ class Prestation extends BaseModel
             $prestation->blocages()->delete();
             $prestation->categories()->detach();
             $prestation->lieux()->detach();
+            $prestation->factures()->detach();
         });
     }
 

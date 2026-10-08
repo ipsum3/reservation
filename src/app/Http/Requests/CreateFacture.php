@@ -20,6 +20,7 @@ class CreateFacture extends FormRequest
 
     protected function prepareForValidation()
     {
+        $this->reservation->loadMissing('entreprise');
         $this->replace($this->reservation->toArray());
     }
 

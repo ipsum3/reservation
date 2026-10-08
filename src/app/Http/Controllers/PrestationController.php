@@ -6,11 +6,14 @@ use Ipsum\Reservation\app\Classes\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
+use Ipsum\Reservation\app\Events\PrestationCreatedEvent;
+use Ipsum\Reservation\app\Events\PrestationUpdatedEvent;
 use Ipsum\Reservation\app\Http\Requests\StorePrestation;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Prestation\Tarification;
+use Ipsum\Reservation\app\Models\Prestation\Taxe;
 use Ipsum\Reservation\app\Models\Prestation\Type;
 use Ipsum\Reservation\app\Models\Categorie\Type as CategorieType;
 use Prologue\Alerts\Facades\Alert;
@@ -60,10 +63,13 @@ class PrestationController extends AdminController
 
     public function store(StorePrestation $request)
     {
-        $prestation = Prestation::create($request->validated());
+        $defaut_taxe = Taxe::where('defaut', true)->first();
+        $prestation = Prestation::create($request->validated() + ['taxe_id' => $defaut_taxe?->id]);
 
         $prestation->categories()->sync($request->categories);
         $prestation->lieux()->sync($request->lieux);
+
+        PrestationCreatedEvent::dispatch($prestation);
 
         Alert::success("L'enregistrement a bien été ajouté")->flash();
         return redirect()->route('admin.prestation.edit', [$prestation->id]);
@@ -87,6 +93,8 @@ class PrestationController extends AdminController
         $prestation->categories()->sync($request->categories);
         $prestation->lieux()->sync($request->lieux);
 
+        PrestationUpdatedEvent::dispatch($prestation);
+
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
     }
@@ -100,7 +108,7 @@ class PrestationController extends AdminController
 
     }
 
-    public function changeOrder(Request $request)
+    public function changeOrder(Request $request): void
     {
         foreach ($request->get('ids') as $key => $id) {
             $prestation = Prestation::find($id);
@@ -109,7 +117,5 @@ class PrestationController extends AdminController
                 $prestation->save();
             }
         }
-
-        return;
     }
 }

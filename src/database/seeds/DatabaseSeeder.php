@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ReservationSeeder::class);
         $this->call(PaiementSeeder::class);
         $this->call(PaiementTypeSeeder::class);
+        $this->call(TaxesTableSeeder::class);
         $this->call(PrestationSeeder::class);
         $this->call(PrestationTypeSeeder::class);
         $this->call(TarifSeeder::class);
@@ -31,7 +32,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DommageTypeSeeder::class);
         $this->call(DommageElementSeeder::class);
         $this->call(DommageEmplacementSeeder::class);
-        $this->call(TaxesTableSeeder::class);
     }
 
 

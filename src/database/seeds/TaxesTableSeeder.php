@@ -25,22 +25,22 @@ class TaxesTableSeeder extends Seeder
             array(
                 'nom' => '20%',
                 'taux' => 20,
-                'default' => 1,
+                'defaut' => 1,
             ),
             array(
                 'nom' => '8.5%',
                 'taux' => 8.5,
-                'default' => 0,
+                'defaut' => 0,
             ),
             array(
                 'nom' => '2.1%',
                 'taux' => 2.1,
-                'default' => 0,
+                'defaut' => 0,
             ),
             array(
                 'nom' => 'Aucune',
                 'taux' => 0,
-                'default' => 0,
+                'defaut' => 0,
             ),
         );
     }

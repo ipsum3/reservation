@@ -211,8 +211,16 @@
                             <tbody id="paiement-lignes">
                             @php
                                 $i = 1;
+                                $paiements = $reservation->paiements()->ok()
+                                    ->whereDoesntHave('facture', function (\Illuminate\Database\Eloquent\Builder $query) use ($facture) {
+                                        $query->where('id', '!=', $facture->id);
+                                    })
+                                    ->whereNot('paiement_type_id', '<=>', \Ipsum\Reservation\app\Models\Reservation\Type::CAUTION_ID)
+                                    ->with(['moyen', 'type'])
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
                             @endphp
-                            @foreach($reservation->paiements()->ok()->whereNot('paiement_type_id', '<=>', \Ipsum\Reservation\app\Models\Reservation\Type::CAUTION_ID)->with(['moyen', 'type'])->orderBy('created_at', 'desc')->get() as $paiement)
+                            @foreach($paiements as $paiement)
                                 <tr>
                                     <td>{{ $paiement->id }}</td>
                                     <td>{{ $paiement->created_at->format('d/m/Y') }}</td>

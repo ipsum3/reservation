@@ -62,7 +62,7 @@ class Facture extends BaseModel
         static::deleting(function (self $facture) {
             $facture->paiements()->whereHas('reservation')->update(['facture_id' => null]);
             $facture->paiements()->delete();
-            $facture->produits()->sync([]);
+            $facture->produits()->detach();
         });
     }
 
@@ -125,5 +125,10 @@ class Facture extends BaseModel
     public function getIsBrouillonAttribute()
     {
         return $this->etat === FactureEtat::BROUILLON;
+    }
+
+    public function getIsPayeeAttribute()
+    {
+        return $this->montant_paye >= $this->total;
     }
 }

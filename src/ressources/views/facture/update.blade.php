@@ -63,6 +63,28 @@
                             @php
                                 $i = 1;
                             @endphp
+                            @foreach($facture->paiements()->ok()->has('reservation')->whereNot('paiement_type_id', '<=>', \Ipsum\Reservation\app\Models\Reservation\Type::CAUTION_ID)->with(['moyen', 'type'])->orderBy('created_at', 'desc')->get() as $paiement)
+                                <tr>
+                                    <td>{{ $paiement->id }}</td>
+                                    <td>{{ $paiement->created_at->format('d/m/Y') }}</td>
+                                    <td>{{ $paiement->moyen->nom }}</td>
+                                    <td>{{ $paiement->type->nom }}</td>
+                                    <td>@prix($paiement->montant)&nbsp;€</td>
+                                    <td>{!! nl2br(e($paiement->note )) !!}</td>
+                                    <td>
+                                        <input type="hidden" name="paiements[{{ $i }}][id]" value="{{ $paiement->id }}">
+                                        <input type="hidden" name="paiements[{{ $i }}][reservation_id]" value="{{ $paiement->reservation_id }}">
+                                        <input type="hidden" name="paiements[{{ $i }}][created_at]" value="{{ $paiement->created_at->format('Y-m-d\TH:i') }}">
+                                        <input type="hidden" name="paiements[{{ $i }}][paiement_moyen_id]" value="{{ $paiement->paiement_moyen_id }}">
+                                        <input type="hidden" name="paiements[{{ $i }}][paiement_type_id]" value="{{ $paiement->paiement_type_id }}">
+                                        <input type="hidden" name="paiements[{{ $i }}][montant]" value="{{ $paiement->montant }}">
+                                        <input type="hidden" name="paiements[{{ $i }}][note]" value="{{ $paiement->note }}">
+                                    </td>
+                                </tr>
+                                @php
+                                    $i++;
+                                @endphp
+                            @endforeach
                             @foreach($facture->paiements()->doesntHave('reservation')->orderBy('created_at', 'desc')->get() as $paiement)
                                 <tr>
                                     <td>{{ $paiement->id }}<input type="hidden" name="paiements[{{ $i }}][id]" value="{{ $paiement->id }}" /></td>
