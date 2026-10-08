@@ -5,7 +5,7 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 use Ipsum\Admin\app\Http\Requests\FormRequest;
 
-class StoreFacture extends FormRequest
+class BrouillonFacture extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,19 @@ class StoreFacture extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return !$this->facture or $this->facture->is_brouillon;
+    }
+
+    protected function prepareForValidation()
+    {
+
+        $produits = collect($this->produits)->mapWithKeys(function ($value) {
+            return [$value['prestation_id'] => $value];
+        })->toArray();
+
+        $this->merge([
+            'produits' => $produits,
+        ]);
     }
 
     /**
@@ -24,7 +36,16 @@ class StoreFacture extends FormRequest
      */
     public function rules()
     {
+
         return [
+            "echeance_at" => "required|date_format:Y-m-d",
+
+            "produits" => "required|array",
+            "produits.*.prestation_id" => "required|integer|exists:prestations,id|distinct",
+            "produits.*.quantite" => "required|integer",
+            "produits.*.montant" => "required|numeric",
+            "produits.*.description" => "nullable",
+            "produits.*.remise" => "nullable|numeric",
 
             "paiements.*.id" => "nullable|exists:paiements,id",
             "paiements.*.reservation_id" => "nullable|exists:reservations,id",

@@ -99,13 +99,18 @@
                     </tr>
                     <tr>
                         <td>
-                            {{ $reservation->nom }} {{ $reservation->prenom }}<br/>
-                            @if( $reservation->adresse )
-                                {{ $reservation->adresse }}<br/>
+                            @if (!$reservation->entreprise)
+                                {{ $reservation->civilite }} {{ $reservation->nom }} {{ $reservation->prenom }}<br/>
+                                {{ $reservation->adresse }}<br />
+                                {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }}<br />
+                                {{ $reservation->telephone }}<br />
+                            @else
+                                {{ $reservation->entreprise->nom }}<br />
+                                {{ $reservation->entreprise->adresse }}<br />
+                                {{ $reservation->entreprise->cp }} {{ $reservation->entreprise->ville }} {{ $reservation->entreprise->pays?->nom }}<br />
+                                {{ $reservation->entreprise->telephone }}<br />
+                                {{ $reservation->entreprise->siren }}<br />
                             @endif
-                            @if( $reservation->cp ){{ $reservation->cp }}@endif
-                            @if( $reservation->ville ){{ $reservation->ville }}@endif<br/>
-                            {{ $reservation->email }}
                         </td>
                     </tr>
                 </table>

@@ -16,10 +16,6 @@ class PrestationSeeder extends Seeder
         foreach ($this->getPrestations() as $data) {
             Prestation::create($data);
         }
-
-        foreach ($this->getTypes() as $data) {
-            Type::create($data);
-        }
     }
 
 
@@ -28,10 +24,17 @@ class PrestationSeeder extends Seeder
     {
         return array(
             array(
+                'nom' => 'Location',
+                'type_id' => Type::LOCATION_ID,
+                'tarification_id' => '1',
+                'taxe_id' => '1',
+            ),
+            array(
                 'nom' => 'Conducteurs supplémentaires',
                 'description' => '',
                 'type_id' => 1,
                 'tarification_id' => '1',
+                'taxe_id' => '1',
                 'montant' => 5,
                 'quantite_max' => 4,
                 'order' => 1,
@@ -41,6 +44,7 @@ class PrestationSeeder extends Seeder
                 'description' => '',
                 'type_id' => 2,
                 'tarification_id' => '1',
+                'taxe_id' => '1',
                 'montant' => null,
                 'quantite_max' => 1,
                 'order' => 5,
@@ -50,6 +54,7 @@ class PrestationSeeder extends Seeder
                 'description' => '',
                 'type_id' => 1,
                 'tarification_id' => '1',
+                'taxe_id' => '1',
                 'montant' => 6,
                 'quantite_max' => 3,
                 'order' => 2,
@@ -59,6 +64,7 @@ class PrestationSeeder extends Seeder
                 'description' => '',
                 'type_id' => 1,
                 'tarification_id' => '1',
+                'taxe_id' => '1',
                 'montant' => 3,
                 'quantite_max' => 3,
                 'order' => 3,
@@ -68,6 +74,7 @@ class PrestationSeeder extends Seeder
                 'description' => '',
                 'type_id' => 1,
                 'tarification_id' => '1',
+                'taxe_id' => '1',
                 'montant' => 7,
                 'quantite_max' => 1,
                 'order' => 4,
@@ -77,27 +84,10 @@ class PrestationSeeder extends Seeder
                 'description' => '',
                 'type_id' => 3,
                 'tarification_id' => '1',
+                'taxe_id' => '1',
                 'montant' => 7,
                 'quantite_max' => 1,
                 'order' => 6,
-            ),
-        );
-    }
-
-    private function getTypes()
-    {
-        return array(
-            array(
-                'id' => 1,
-                'nom' => 'Option',
-            ),
-            array(
-                'id' => 2,
-                'nom' => 'Assurance',
-            ),
-            array(
-                'id' => 3,
-                'nom' => 'Frais',
             ),
         );
     }

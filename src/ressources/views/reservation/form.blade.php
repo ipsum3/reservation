@@ -158,7 +158,7 @@
                         @endphp
                         @foreach($reservation->paiements()->ok()->with('moyen')->orderBy('created_at', 'desc')->get() as $paiement)
                             <tr>
-                                <td>{{ $paiement->id }}<input type="hidden" name="paiements[{{ $i }}][id]" value="{{ $paiement->id }}" /><input type="hidden" name="paiements[{{ $i }}][reservation_id]" value="{{ $reservation->id }}" /></td>
+                                <td>{{ $paiement->id }}<input type="hidden" name="paiements[{{ $i }}][id]" value="{{ $paiement->id }}" /></td>
                                 <td><input type="datetime-local" class="form-control" name="paiements[{{ $i }}][created_at]" value="{{ $paiement->created_at->format('Y-m-d\TH:i') }}" required></td>
                                 <td>
                                     <div class="d-flex">
@@ -191,7 +191,7 @@
                         @endforeach
                         <script id="paiement-add-template" type="x-tmpl-mustache">
                             <tr>
-                                <td><input type="hidden" name="paiements[@{{ indice }}][id]" value="" /><input type="hidden" name="paiements[@{{ indice }}][reservation_id]" value="{{ $reservation->id }}" /></td>
+                                <td><input type="hidden" name="paiements[@{{ indice }}][id]" value="" /></td>
                                 <td><input type="datetime-local" class="form-control" name="paiements[@{{ indice }}][created_at]" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required></td>
                                 <td>
                                     <select class="form-control" name="paiements[@{{ indice }}][paiement_moyen_id]" required>
@@ -237,7 +237,7 @@
                                 @endif
                             @endif
 
-                            @if($reservation->is_confirmed) {{-- TODO : and config('ipsum.reservation.facture.enable')--}}
+                            @if($reservation->is_confirmed and config('ipsum.reservation.facture_provider'))
                                 <a class="btn btn-outline-secondary" href="{{ route('admin.facture.create', [$reservation]) }}"><i class="fa fa-file-invoice-dollar"></i> Créer une facture</a>&nbsp;
                             @endif
                         </div>
@@ -332,10 +332,13 @@
                                 @if($reservation->factures->count())
                                     @foreach($reservation->factures as $facture)
                                         <tr>
-                                            <td>Facture {{ $facture->type->label() }} {{ $facture->numero }} TODO boutons</td>
+                                            <td>Facture {{ $facture->type->label() }} {{ $facture->numero }} @if($facture->is_brouillon) <span class="badge badge-warning">Brouillon</span>@endif</td>
                                             <td class="text-right">
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.facture.pdf', [$facture]) }}" target="_blank" data-toggle="tooltip" title="Télécharger la facture (PDF)"><i class="fa fa-file-download"></i></a>&nbsp;
-                                                <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'facture', 'id' => $facture->id, 'objet' => 'Facture '.$facture->numero]) }}" data-toggle="tooltip" title="Envoyer la facture par email"><i class="fas fa-envelope"></i></a>
+                                                <a class="btn btn-outline-secondary" href="{{ route($facture->is_brouillon ? 'admin.facture.edit.brouillon' : 'admin.facture.edit', [$facture]) }}" data-toggle="tooltip" title="Consulter la facture"><i class="fa fa-file-invoice-dollar"></i></a>&nbsp;
+                                                @if(!$facture->is_brouillon)
+                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.facture.pdf', [$facture]) }}" target="_blank" data-toggle="tooltip" title="Télécharger la facture (PDF)"><i class="fa fa-file-download"></i></a>&nbsp;
+                                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.reservationDocumentSend', [$reservation, 'facture', 'id' => $facture->id, 'objet' => 'Facture '.$facture->numero]) }}" data-toggle="tooltip" title="Envoyer la facture par email"><i class="fas fa-envelope"></i></a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -351,24 +354,24 @@
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">
-                        Locataire / Conducteur
+                        @if (!$reservation->entreprise)Locataire / @endif Conducteur
                         @if ($reservation->client)
-                            &nbsp;<a href="{{ route('admin.client.edit', $reservation->client) }}" class="btn btn-outline-gray compte-info" data-toggle="tooltip" title="Voir la fiche client"><small class="text-muted"><i class="fa fa-user"></i> {{ $reservation->client->code }}</small></a>
-                            &nbsp;<button type="button" id="client-update-locataire" class="btn btn-outline-gray compte-info" data-ajax-url="{{ route('admin.client.detail', $reservation->client) }}" data-toggle="tooltip" title="Mettre à jour les informations du locataire à partir des données du compte client"><small class="text-muted"><i class="fa fa-sync"></i></small></button>
+                            &nbsp;<a href="{{ route('admin.client.edit', $reservation->client) }}" class="btn btn-outline-gray" data-toggle="tooltip" title="Voir la fiche client"><small class="text-muted"><i class="fa fa-user"></i> {{ $reservation->client->code }}</small></a>
+                            &nbsp;<button type="button" id="client-update-locataire" class="btn btn-outline-gray" data-target="#compte-info" data-ajax-url="{{ route('admin.client.detail', $reservation->client) }}" data-toggle="tooltip" title="Mettre à jour les informations du locataire à partir des données du compte client"><small class="text-muted"><i class="fa fa-sync"></i></small></button>
                         @elseif($reservation->exists)
-                            <small class="text-muted compte-info"><i class="fa fa-user-slash"></i> Locataire sans compte client</small>
+                            <small class="text-muted"><i class="fa fa-user-slash"></i> Locataire sans compte client</small>
                         @endif
                     </h2>
                     <div class="btn-toolbar">
-                        <select id="client-search" class="form-group" style="width: 400px">
+                        <select class="form-group client-search" style="width: 400px" data-url="{{ route('admin.reservation.searchClients') }}" data-target="#compte-info" data-placeholder="Rechercher un client">
                             <option value="">Rechercher un client</option>
                         </select>
                     </div>
 
                 </div>
                 <div class="box-body">
-                    <div class="form-row">
-                        {{ Aire::hidden('client_id', old('client_id', request()->client_id)) }}
+                    <div id="compte-info" class="form-row">
+                        {{ Aire::hidden('client_id', old('client_id', request()->client_id)) }} {{--TODO bug changement client si pas résa--}}
                         {{ Aire::select(collect(['' => '---- Civilité -----', 'M.' => 'Monsieur', 'Mme' => 'Madame']), 'civilite', 'Civilité')->groupAddClass('col-md-2') }}
                         {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-5') }}
                         {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-5') }}
@@ -407,7 +410,10 @@
                                 @endforeach
                             </div>
                         @endif
-                        <div class="compte-info">
+                        @error('client_id')
+                        <div class="alert alert-warning">{{ $message }}</div>
+                        @enderror
+                        <div id="compte-creation">
                             {{ Aire::checkbox("create_user", "Créer un compte client")->value(1) }}
                         </div>
                     @elseif(!request()->has('client_id') and !$reservation->client->has_login)
@@ -415,8 +421,48 @@
                             {{ Aire::checkbox("update_user", "Mettre à jour le compte client")->value(1)->checked($reservation->debut_at->addDay()->gt(now())) }}
                         </div>
                     @endif
+
+                    @if($reservation->exists)
+                        <div>
+                            <input type="hidden" name="entreprise[has]" value="0">
+                            {{ Aire::checkbox("entreprise[has]", "Associer à une entreprise")->value(1)->checked(old("entreprise.has", $reservation->entreprise_id))->data('toggle', "collapse")->data("target", "#entreprise-box")->setAttribute("aria-expanded", old("entreprise.has", $reservation->entreprise) ? 'true' : 'false') }}
+                        </div>
+                    @endif
                 </div>
             </div>
+
+            @if($reservation->exists)
+                <div class="box collapse {{ old("entreprise.has", $reservation->entreprise_id) ? 'show' : '' }}" id="entreprise-box">
+                    <div class="box-header">
+                        <h2 class="box-title">
+                            Locataire / Entreprise associée
+                            @if ($reservation->entreprise)
+                                &nbsp;<a href="{{ route('admin.client.edit', $reservation->entreprise) }}" class="btn btn-outline-gray" data-toggle="tooltip" title="Voir la fiche entreprise"><small class="text-muted"><i class="fa fa-building"></i> {{ $reservation->entreprise->code }}</small></a>
+                            @endif
+                        </h2>
+                        <div class="btn-toolbar">
+                            <select class="form-group client-search" style="width: 400px" data-url="{{ route('admin.reservation.searchEntreprises') }}" data-target="#entreprise-info" data-placeholder="Rechercher une entreprise">
+                                <option value="">Rechercher une entreprise</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="box-body">
+                        <div id="entreprise-info" class="form-row">
+                            {{ Aire::hidden('entreprise[id]', old('entreprise_id', $reservation->entreprise_id)) }}
+                            {{ Aire::input('entreprise[nom]', 'Nom*')->value(old('entreprise.nom', $reservation->entreprise?->nom))->groupAddClass('col-md-4') }}
+                            {{ Aire::input('entreprise[siren]', 'Siren')->value(old('entreprise.siren', $reservation->entreprise?->siren))->groupAddClass('col-md-4') }}
+                            {{ Aire::input('entreprise[vat_numero]', 'Numéro Tva')->value(old('entreprise.vat_numero', $reservation->entreprise?->vat_numero))->groupAddClass('col-md-4') }}
+                            {{ Aire::input('entreprise[email]', 'Email*')->value(old('entreprise.email', $reservation->entreprise?->email))->groupAddClass('col-md-6') }}
+                            {{ Aire::input('entreprise[telephone]', 'Téléphone')->value(old('entreprise.telephone', $reservation->entreprise?->telephone))->groupAddClass('col-md-6') }}
+                            {{ Aire::input('entreprise[adresse]', 'Adresse')->value(old('entreprise.adresse', $reservation->entreprise?->adresse))->groupAddClass('col-md-6') }}
+                            {{ Aire::input('entreprise[cp]', 'Code postal')->value(old('entreprise.cp', $reservation->entreprise?->cp))->groupAddClass('col-md-6') }}
+                            {{ Aire::input('entreprise[ville]', 'Ville')->value(old('entreprise.ville', $reservation->entreprise?->ville))->groupAddClass('col-md-6') }}
+                            {{ Aire::select(collect(['' => '---- Pays -----'])->union($pays), 'entreprise[pays_id]', 'Pays')->value(old('entreprise.pays_id', $reservation->entreprise?->pays_id))->groupAddClass('col-md-6') }}
+                        </div>
+                    </div>
+                </div>
+            @endif
 
             @if (config('ipsum.reservation.conducteurs_additionnels'))
             <div class="box">

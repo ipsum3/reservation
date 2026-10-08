@@ -3,13 +3,14 @@
 
 @section('content')
 
-    <h1 class="main-title">Client <small>({{ $client->exists ? 'Modification' : 'Ajout' }})</small></h1>
+    <h1 class="main-title">Client {{ $client->is_entreprise ? 'entreprise' : 'particulier' }} <small>({{ $client->exists ? 'Modification' : 'Ajout' }})</small></h1>
 
     <div class="row">
         <div class="col-md-6">
             {{ Aire::open()->route($client->exists ? 'admin.client.update' : 'admin.client.store', $client->exists ? $client : null)->bind($client)->formRequest(\Ipsum\Reservation\app\Http\Requests\UpdateClient::class) }}
             @if(!$client->exists)
                 <input type="hidden" name="has_login" value="0">
+                <input type="hidden" name="is_entreprise" value="{{ $client->is_entreprise }}">
             @endif
             <div class="box">
                 <div class="box-header">
@@ -26,9 +27,15 @@
                 </div>
                 <div class="box-body">
                     <div class="form-row">
-                        {{ Aire::select(collect(['' => '---- Civilité -----', 'M.' => 'Monsieur', 'Mme' => 'Madame']), 'civilite', 'Civilité')->groupAddClass('col-md-2') }}
-                        {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-5') }}
-                        {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-5') }}
+                        @if (!$client->is_entreprise)
+                            {{ Aire::select(collect(['' => '---- Civilité -----', 'M.' => 'Monsieur', 'Mme' => 'Madame']), 'civilite', 'Civilité')->groupAddClass('col-md-2') }}
+                            {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-5') }}
+                            {{ Aire::input('prenom', 'Prénom')->groupAddClass('col-md-5') }}
+                        @else
+                            {{ Aire::input('nom', 'Nom*')->required()->groupAddClass('col-md-5') }}
+                            {{ Aire::input('siren', 'Siren')->groupAddClass('col-md-5') }}
+                            {{ Aire::input('vat_numero', 'Numéro Tva')->groupAddClass('col-md-5') }}
+                        @endif
                     </div>
                     <div class="form-row">
                         {{ Aire::input('email', 'Email*')->required()->groupAddClass('col-md-6') }}
@@ -54,19 +61,21 @@
                     </div>
                 </div>
             @endif
-            <div class="box">
-                <div class="box-header">
-                    <h2 class="box-title">Permis</h2>
-                </div>
-                <div class="box-body">
-                    <div class="form-row">
-                        {{ Aire::date('naissance_at', 'Date de naissance')->groupAddClass('col-md-3') }}
-                        {{ Aire::input('permis_numero', 'N° du permis')->groupAddClass('col-md-3') }}
-                        {{ Aire::date('permis_at', 'Permis délivré le')->groupAddClass('col-md-3') }}
-                        {{ Aire::input('permis_delivre', 'Permis délivré par')->groupAddClass('col-md-3') }}
+            @if (!$client->is_entreprise)
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="box-title">Permis</h2>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-row">
+                            {{ Aire::date('naissance_at', 'Date de naissance')->groupAddClass('col-md-3') }}
+                            {{ Aire::input('permis_numero', 'N° du permis')->groupAddClass('col-md-3') }}
+                            {{ Aire::date('permis_at', 'Permis délivré le')->groupAddClass('col-md-3') }}
+                            {{ Aire::input('permis_delivre', 'Permis délivré par')->groupAddClass('col-md-3') }}
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
             @if (config('ipsum.reservation.client.custom_fields'))
                 <div class="box">
                     <div class="box-header">
@@ -91,7 +100,7 @@
             <div class="box" id="demandes">
                 <div class="box-header">
                     <h2 class="box-title">Réservations</h2>
-                    @if ($client->exists)
+                    @if ($client->exists and !$client->is_entreprise)
                         <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.create', ['client_id' => $client->id]) }}"><i class="fa fa-plus"></i></a>
                     @endif
 
@@ -109,7 +118,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($client->reservations->sortByDesc('created_at') as $reservation)
+                            @foreach($client->is_entreprise ? $client->entrepriseReservations->sortByDesc('created_at') : $client->reservations->sortByDesc('created_at') as $reservation)
                                 <tr>
                                     <td><a href="{{ route('admin.reservation.edit', [$reservation]) }}">{{ $reservation->reference }}</a></td>
                                     <td>{{ $reservation->categorie_nom }}</td>

@@ -9,7 +9,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('export', 'export')->name('export');
         Route::post('', 'store')->name('store');
         Route::get('create', 'create')->name('create');
-        Route::any('{reservation}/destroy', 'destroy')->name('destroy');
+        Route::any('{reservation}/destroy', 'destroy')->name('destroy')->can('delete', 'reservation');
         Route::put('{reservation}', 'update')->name('update');
         Route::any('vehicule-select', 'vehiculeSelect')->name('vehiculeSelect');
         Route::any('tarifs/{reservation?}', 'updateTarifs')->name('updateTarifs');
@@ -28,15 +28,19 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('depart-retour/imprimer', 'imprimerDepartEtRetour')->name('imprimerDepartEtRetour');
         Route::get('depart-retour/contrat-depart', 'contratDepart')->name('contratDepart');
         Route::get('search-clients', 'searchClients')->name('searchClients');
+        Route::get('search-entreprises', 'searchEntreprises')->name('searchEntreprises');
     }
 );
 
-Route::controller(\Ipsum\Reservation\app\Http\Controllers\FactureController::class)->prefix('facture')->name('admin.facture.')->group(
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\FactureController::class)->prefix('facture')->name('admin.facture.')->middleware(\Ipsum\Reservation\app\Http\Middleware\CheckFactureEnabled::class)->group(
     function () {
         Route::get('', 'index')->name('index');
-        Route::post('{reservation}', 'store')->name('store');
-        Route::get('create/{reservation}', 'create')->name('create');
-        Route::get('additionnel/{reservation}', 'additionnel')->name('additionnel');
+
+        Route::post('{reservation}/brouillon', 'storeBrouillon')->name('store.brouillon');
+        Route::get('create/{reservation}/brouillon', 'create')->name('create');
+        Route::any('{facture}/destroy', 'destroy')->name('destroy')->can('delete', 'facture');
+        Route::put('{facture}/brouillon', 'updateBrouillon')->name('update.brouillon');
+        Route::get('{facture}/edit/brouillon', 'editBrouillon')->name('edit.brouillon');
         Route::get('{facture}/pdf', 'pdf')->name('pdf');
         Route::put('{facture}', 'update')->name('update');
         Route::get('{facture}/edit', 'edit')->name('edit');
@@ -187,6 +191,16 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\PrestationController::
         Route::put('{prestation}/{locale?}', 'update')->name('update');
         Route::get('{prestation}/edit/{locale?}', 'edit')->name('edit');
         Route::any('changeOrder', 'changeOrder')->name('changeOrder');
+    }
+);
+Route::controller(\Ipsum\Reservation\app\Http\Controllers\ProduitController::class)->prefix('produit')->name('admin.produit.')->group(
+    function () {
+        Route::get('', 'index')->name('index');
+        Route::post('', 'store')->name('store');
+        Route::get('create', 'create')->name('create');
+        Route::any('{produit}/destroy', 'destroy')->name('destroy');
+        Route::put('{produit}/{locale?}', 'update')->name('update');
+        Route::get('{produit}/edit/{locale?}', 'edit')->name('edit');
     }
 );
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\PrestationBlocageController::class)->prefix('prestation-blocage')->name('admin.prestationBlocage.')->group(

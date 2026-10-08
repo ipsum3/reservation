@@ -5,13 +5,13 @@ namespace Ipsum\Reservation\app\Http\Controllers;
 use Artisan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
+use Ipsum\Reservation\app\Contracts\FactureContract;
 use Ipsum\Reservation\app\Events\ReservationConfirmedEvent;
 use Ipsum\Reservation\app\Events\ReservationCreatedEvent;
 use Ipsum\Reservation\app\Events\ReservationDeletedEvent;
@@ -28,16 +28,16 @@ use Ipsum\Reservation\app\Mail\Confirmation;
 use Ipsum\Reservation\app\Mail\Devis;
 use Ipsum\Reservation\app\Mail\Document;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
-use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Client;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
-use Ipsum\Reservation\app\Models\Reservation\Etat;
 use Ipsum\Reservation\app\Models\Reservation\Condition;
+use Ipsum\Reservation\app\Models\Reservation\Etat;
+use Ipsum\Reservation\app\Models\Reservation\Facture;
 use Ipsum\Reservation\app\Models\Reservation\Moyen;
-use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Pays;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Reservation\Type;
+use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Source\Source;
 use Ipsum\Reservation\app\Services\GandoService;
 use Ipsum\Reservation\app\Services\StripeService;
@@ -248,7 +248,8 @@ class ReservationController extends AdminController
 
         if ($request->filled('client_id')) {
             $client = Client::findOrFail($request->client_id);
-            $reservation->fill($client->toArray()); // TODO pas terrible... Trouver autre chose pour peupler les données
+            $reservation->fill($client->toArray()); // pas terrible... Trouver autre chose pour peupler les données
+            $reservation->client_id = $client->id;
         }
 
         $etats = Etat::all()->pluck('nom', 'id');
@@ -256,7 +257,7 @@ class ReservationController extends AdminController
         $pays = Pays::all()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
-        $prestations = Prestation::orderBy('order', 'asc')->get();
+        $prestations = Prestation::prestation()->orderBy('order', 'asc')->get();
         $moyens = Moyen::all();
         $types = Type::all();
 
@@ -275,16 +276,17 @@ class ReservationController extends AdminController
             $newClient = Client::create($clientData);
             $reservation->client()->associate($newClient);
         }
+
         $reservation->save();
 
-        if ($request->validated('paiements')) {
-            // Pas de mass assignment pour déclencher les événements
-            $datas = [];
+        if ($request->has('paiements')) {
             foreach ($request->validated('paiements') as $paiement) {
-                $datas[] = new Paiement($paiement);
+                Paiement::updateOrCreate([
+                    'id' => $paiement['id'],
+                ], $paiement + ['reservation_id' => $reservation->id]);
             }
-            $reservation->paiements()->saveMany($datas);
         }
+        $reservation->updateMontantPaye()->save();
 
         ReservationCreatedEvent::dispatch($reservation);
 
@@ -348,7 +350,7 @@ class ReservationController extends AdminController
         }
 
         $lieux = Lieu::orderBy('order')->get()->pluck('nom', 'id');
-        $prestations = Prestation::orderBy('order', 'asc')->get();
+        $prestations = Prestation::prestation()->orderBy('order', 'asc')->get();
         $moyens = Moyen::all();
         $types = Type::all();
 
@@ -359,12 +361,13 @@ class ReservationController extends AdminController
 
     public function update(StoreAdminReservation $request, Reservation $reservation)
     {
+
         $data = $request->validated();
         $is_confirmed_old = $reservation->is_confirmed;
 
         $reservation->update($data);
 
-        if(!request()->filled('client_id') and $request->filled('create_user')){
+        if(!$request->filled('client_id') and $request->filled('create_user')){
             $clientData = array_merge($request->validated(), ['has_login' => 0]);
             // Créer un nouveau client en base de données
             $newClient = Client::create($clientData);
@@ -374,25 +377,27 @@ class ReservationController extends AdminController
             $reservation->client->update(collect($request->validated())->except('custom_fields')->toArray());
         }
 
-        if ($request->validated('paiements')) {
-
-            $paiementsIds = collect($request->validated('paiements'))
-                ->pluck('id')
-                ->toArray();
-
-            // Supprimer les paiements qui ne sont pas dans la liste validée
-            $reservation->paiements()->whereNotIn('id', $paiementsIds)->delete();
-
-            $reservation->paiements()->upsert(
-                $request->validated('paiements'),
-                ['id']
+        if($request->input('entreprise.has')){
+            $clientData = array_merge($request->validated('entreprise'), ['has_login' => 0, 'is_entreprise' => 1]);
+            $client = Client::updateOrCreate(
+                ['id' => $request->input('entreprise.id')],
+                $clientData
             );
-
+            $reservation->entreprise()->associate($client);
         } else {
-            $reservation->paiements()->delete();
+            $reservation->entreprise()->disassociate();
         }
 
+        if ($request->has('paiements')) {
+            foreach ($request->validated('paiements') as $paiement) {
+                Paiement::updateOrCreate([
+                    'id' => $paiement['id'],
+                ], $paiement + ['reservation_id' => $reservation->id]);
+            }
+        }
+        $reservation->paiements()->whereNotIn('id', collect($request->validated('paiements'))->pluck('id'))->delete();
         $reservation->updateMontantPaye()->save();
+
 
         ReservationUpdatedEvent::dispatch($reservation);
 
@@ -408,7 +413,7 @@ class ReservationController extends AdminController
     {
 
         try {
-            $prestations = Prestation::orderBy('order', 'asc')->get();
+            $prestations = Prestation::prestation()->orderBy('order', 'asc')->get();
 
             if ($request->undo) {
                 return response()->json([
@@ -479,6 +484,11 @@ class ReservationController extends AdminController
 
     public function destroy(Reservation $reservation)
     {
+        if ($reservation->factures()->count()) {
+            Alert::warning("Impossible de supprimer la réservation car il existe une facture associée.")->flash();
+            return back();
+        }
+
         $reservation->delete();
 
         ReservationDeletedEvent::dispatch($reservation);
@@ -529,7 +539,7 @@ class ReservationController extends AdminController
         return view(config('ipsum.reservation.confirmation.view'), compact('reservation'));
     }
 
-    public function documentSend(SendDocumentEmail $request, Reservation $reservation)
+    public function documentSend(FactureContract $serviceFacture, SendDocumentEmail $request, Reservation $reservation)
     {
         try {
             if( $request->document === 'confirmation' ) {
@@ -550,6 +560,9 @@ class ReservationController extends AdminController
                 $reservation->update([
                     'caution_send_at' => now(),
                 ]);
+            } elseif ( $request->document === 'facture' ) {
+                $facture = $reservation->factures()->findOrFail($request->id);
+                $serviceFacture->sendToCustomer($facture, $request->email);
             }
             Alert::success("Le document a bien été envoyé")->flash();
             return redirect()->route('admin.reservation.edit', $reservation);
@@ -737,26 +750,17 @@ class ReservationController extends AdminController
             'permis_delivre'
         ];
 
-        $clients = Client::where('email', 'like', '%' . $search . '%')
-            ->where('has_login', 1)
+        $clients = Client::where('is_entreprise', 0)
             ->where(function($query) use ($search) {
-                $query->orWhere('code', 'like', '%' . $search . '%')
+                $query->where('email', 'like', '%' . $search . '%')
+                ->orWhere('code', 'like', '%' . $search . '%')
                 ->orWhere('prenom', 'like', '%' . $search . '%')
                 ->orWhere('nom', 'like', '%' . $search . '%')
                 ->orWhere('permis_numero', 'like', '%' . $search . '%');
             })
             ->limit(25)
+            ->orderBy('has_login', 'desc')
             ->get();
-
-        if(!$clients->count()){
-            $clients = Client::where('email', 'like', '%' . $search . '%')
-                ->orWhere('prenom', 'like', '%' . $search . '%')
-                ->orWhere('code', 'like', '%' . $search . '%')
-                ->orWhere('nom', 'like', '%' . $search . '%')
-                ->orWhere('permis_numero', 'like', '%' . $search . '%')
-                ->limit(25)
-                ->get();
-        }
 
         if(!$clients->count()){
             $clients = Reservation::whereNull('client_id')
@@ -772,6 +776,27 @@ class ReservationController extends AdminController
         foreach ($clients as $client) {
             $client->text = $client->prenom . ' ' . $client->nom. ' - ' . $client->email;
             $client->is_client = get_class($client) == Client::class;
+        }
+
+        return json_encode($clients);
+    }
+
+    public function searchEntreprises(Request $request) {
+        $search = $request->input('client_search');
+
+        $clients = Client::where('is_entreprise', 1)
+            ->where(function($query) use ($search) {
+                $query->where('email', 'like', '%' . $search . '%')
+                ->orWhere('code', 'like', '%' . $search . '%')
+                ->orWhere('nom', 'like', '%' . $search . '%');
+            })
+            ->limit(25)
+            ->orderBy('has_login', 'desc')
+            ->get();
+
+
+        foreach ($clients as $client) {
+            $client->text = $client->nom. ' - ' . $client->email;
         }
 
         return json_encode($clients);

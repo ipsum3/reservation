@@ -16,11 +16,15 @@ use Laravel\Sanctum\HasApiTokens;
  * App\Models\Client
  *
  * @property int $id
+ * @property string|null $reference_externe
  * @property string|null $code
+ * @property int $is_entreprise
  * @property string|null $civilite
  * @property string $nom
  * @property string|null $prenom
  * @property string $email
+ * @property string|null $siren
+ * @property string|null $vat_numero
  * @property int $has_login
  * @property string|null $telephone
  * @property string|null $adresse
@@ -37,6 +41,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Reservation> $entrepriseReservations
+ * @property-read int|null $entreprise_reservations_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Pays|null $pays
@@ -110,6 +116,11 @@ class Client extends Authenticatable
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function entrepriseReservations()
+    {
+        return $this->hasMany(Reservation::class, 'entreprise_id');
     }
 
     public function pays()

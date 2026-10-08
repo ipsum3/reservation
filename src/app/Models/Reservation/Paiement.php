@@ -39,10 +39,20 @@ class Paiement extends BaseModel
     protected static function booted()
     {
         self::saved(function (self $paiement) {
-            $paiement->reservation->updateMontantPaye()->save();
+            if ($paiement->reservation) {
+                $paiement->reservation->updateMontantPaye()->save();
+            }
+            if ($paiement->facture) {
+                $paiement->facture->updateMontantPaye()->save();
+            }
         });
         self::deleted(function (self $paiement) {
-            $paiement->reservation->updateMontantPaye()->save();
+            if ($paiement->reservation) {
+                $paiement->reservation->updateMontantPaye()->save();
+            }
+            if ($paiement->facture) {
+                $paiement->facture->updateMontantPaye()->save();
+            }
         });
     }
 

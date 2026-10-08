@@ -4,8 +4,8 @@ namespace Ipsum\Reservation\app\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\app\Models\Reservation\Paiement;
 
 class CautionSecuredEvent
 {

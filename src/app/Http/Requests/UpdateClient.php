@@ -19,6 +19,7 @@ class UpdateClient extends FormRequest
         return true;
     }
 
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -36,19 +37,31 @@ class UpdateClient extends FormRequest
         }
 
         $current_params = \Route::current()->parameters();
+        $current_id = isset($current_params['client']) ? $current_params['client']->id : null;
 
         return [
             //Rule::excludeIf($this->password === null),
             'has_login' => 'nullable|boolean',
+            'is_entreprise' => 'nullable|boolean',
             'password' => ['nullable', 'max:255', Password::default()],
             "civilite" => "nullable|in:M.,Mme",
             'nom' => 'required|max:255',
             'prenom' => 'nullable|max:255',
+            'siren' => [
+                'nullable',
+                'max:15',
+                Rule::unique(Client::class)->ignore($current_id)
+            ],
+            'vat_numero' => [
+                'nullable',
+                'max:20',
+                Rule::unique(Client::class)->ignore($current_id)
+            ],
             'email' => [
                 'required',
                 'email',
                 Rule::unique(Client::class)
-                    ->ignore(isset($current_params['client']) ? $current_params['client']->id : null)
+                    ->ignore($current_id)
                     ->where('has_login', isset($current_params['client']) ? $current_params['client']->has_login : false)
             ],
             'telephone' => 'nullable|min:10',

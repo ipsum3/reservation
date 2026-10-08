@@ -18,6 +18,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * Ipsum\Reservation\app\Models\Lieu\Lieu
  *
  * @property int $id
+ * @property string|null $reference_externe
  * @property string $slug
  * @property int $type_id
  * @property int $is_actif

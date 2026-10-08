@@ -31,7 +31,6 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @property-read int|null $dommages_count
  * @property-read bool $has_no_blocage
  * @property-read bool $is_hors_parc
- * @property-read mixed $last_inspection
  * @property-read mixed $tag_meta_description
  * @property-read mixed $tag_title
  * @property-read mixed $tarif_a_partir
@@ -39,6 +38,7 @@ use Ipsum\Reservation\database\factories\VehiculeFactory;
  * @property-read int|null $inspections_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Intervention> $interventions
  * @property-read int|null $interventions_count
+ * @property-read Inspection|null $lastInspection
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Reservation> $reservations
  * @property-read int|null $reservations_count
  * @method static Builder|Vehicule duParc(\Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)

@@ -18,10 +18,11 @@ use Ipsum\Reservation\app\Http\Middleware\RedirectIfInspectionSigned;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
 use Ipsum\Reservation\app\Http\Middleware\ReservationEmail;
 use Ipsum\Reservation\app\Http\Middleware\ReservationTracking;
-use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
+use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Policies\PaiementPolicy;
 use Ipsum\Reservation\app\Policies\ReservationPolicy;
+use Ipsum\Reservation\app\View\Components\Facture;
 
 class ReservationServiceProvider extends ServiceProvider
 {
@@ -104,6 +105,7 @@ class ReservationServiceProvider extends ServiceProvider
 
         Blade::anonymousComponentNamespace('IpsumReservation::components', 'reservation');
 
+        Blade::component('facture', Facture::class);
     }
 
     public function bladeDirectives()

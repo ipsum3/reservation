@@ -21,7 +21,7 @@ class PrestationController extends AdminController
 
     public function index(Request $request)
     {
-        $query = Prestation::with(['type'])->withCount(['blocages' => function (Builder $query) {
+        $query = Prestation::with(['type'])->prestation()->withCount(['blocages' => function (Builder $query) {
             $query->where('fin_at', '>', Carbon::now());
         }]);
 
@@ -41,7 +41,7 @@ class PrestationController extends AdminController
         }
         $prestations = $query->orderBy('order')->paginate();
 
-        $types = Type::all()->pluck('nom', 'id');
+        $types = Type::prestas()->get()->pluck('nom', 'id');
 
         return view('IpsumReservation::prestation.index', compact('prestations', 'types'));
     }
@@ -49,7 +49,7 @@ class PrestationController extends AdminController
     public function create()
     {
         $prestation = new Prestation;
-        $types = Type::all()->pluck('nom', 'id');
+        $types = Type::prestas()->get()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get();
         $lieux = Lieu::orderBy('order')->get();
         $categorie_types = CategorieType::get();
@@ -71,7 +71,7 @@ class PrestationController extends AdminController
 
     public function edit(Prestation $prestation)
     {
-        $types = Type::all()->pluck('nom', 'id');
+        $types = Type::prestas()->get()->pluck('nom', 'id');
         $categories = Categorie::orderBy('nom')->get();
         $lieux = Lieu::orderBy('order')->get();
         $categorie_types = CategorieType::get()->pluck('nom', 'id');

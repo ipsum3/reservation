@@ -2,10 +2,10 @@
 
 namespace Ipsum\Reservation\app\Models\Reservation;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Ipsum\Admin\app\Casts\AsCustomFieldsObject;
 use Ipsum\Admin\app\Models\Admin;
 use Ipsum\Core\app\Models\BaseModel;
@@ -19,9 +19,9 @@ use Ipsum\Reservation\app\Models\Reservation\Casts\ConducteurCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\EcheancierCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\PrestationCollection;
 use Ipsum\Reservation\app\Models\Reservation\Casts\PromotionCollection;
+use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Source\Source;
 use Ipsum\Reservation\database\factories\ReservationFactory;
-use Carbon\Carbon;
 
 
 /**
@@ -29,6 +29,7 @@ use Carbon\Carbon;
  *
  * @property int $id
  * @property string|null $reference
+ * @property string|null $reference_externe
  * @property string|null $contrat
  * @property string $locale
  * @property int $etat_id
@@ -36,6 +37,7 @@ use Carbon\Carbon;
  * @property int|null $admin_id
  * @property int|null $source_id
  * @property int|null $client_id
+ * @property int|null $entreprise_id
  * @property string|null $civilite
  * @property string $nom
  * @property string|null $prenom
@@ -86,6 +88,7 @@ use Carbon\Carbon;
  * @property-read Categorie|null $categorie
  * @property-read Client|null $client
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Condition|null $condition
+ * @property-read Client|null $entreprise
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Etat|null $etat
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Facture|null $factureLocation
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Facture> $factures
@@ -108,8 +111,8 @@ use Carbon\Carbon;
  * @property-read int|null $inspections_count
  * @property-read Lieu|null $lieuDebut
  * @property-read Lieu|null $lieuFin
- * @property-read \Ipsum\Reservation\app\Models\Reservation\Paiement|null $paiementCaution
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Paiement> $paiements
+ * @property-read Paiement|null $paiementCaution
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Paiement> $paiements
  * @property-read int|null $paiements_count
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Pays|null $pays
  * @property-read Source|null $source
@@ -271,6 +274,11 @@ class Reservation extends BaseModel
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function entreprise()
+    {
+        return $this->belongsTo(Client::class, 'entreprise_id');
     }
 
     public function admin()

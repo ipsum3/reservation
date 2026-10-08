@@ -26,26 +26,36 @@
                         <th>Résa.</th>
                         <th>Client</th>
                         <th>@include('IpsumAdmin::partials.tri', ['label' => 'Type', 'champ' => 'type'])</th>
+                        <th>@include('IpsumAdmin::partials.tri', ['label' => 'Etat', 'champ' => 'etat'])</th>
+                        <th>Montant</th>
+                        <th>Reste à payer</th>
                         <th>Envoyé au client</th>
-                        <th>pdf</th>
-                        {{--<th width="240px">Actions</th>--}}
+                        <th width="240px">Actions</th>
                     </tr>
                     </thead>
                     <tbody class="sortable">
                     @foreach ($factures as $facture)
                         <tr class="sortable-item" data-sortable="{{ $facture->id }}">
                             <td>{{ $facture->id }}</td>
-                            <td>TODO</td>
+                            <td>{{ $facture->emission_at?->format('d/m/Y') }}</td>
                             <td>{{ $facture->numero }}</td>
                             <td><a href="{{ route('admin.reservation.edit', $facture->reservation) }}">{{ $facture->reservation?->reference }}</a></td>
-                            <td>{{ $facture->reservation?->prenom }} {{ $facture->reservation?->nom }} TODO rajouter un champ name dans la table facture ?</td>
+                            <td><a href="{{ route('admin.client.edit', $facture->client) }}">{{ $facture->client->prenom }} {{ $facture->client->nom }}</a></td>
                             <td>{{ $facture->type->label() }}</td>
+                            <td><span class="badge {{ $facture->etat->badge() }}">{{ $facture->etat->label() }}</span></td>
+                            <td>@prix($facture->total)&nbsp;€</td>
+                            <td><x-reservation::reste_a_payer total="{{ $facture->total }}"  montant_paye="{{ $facture->montant_paye }}" /></td>
                             <td>{{ $facture->send_at?->format('d/m/Y') }}</td>
-                            <td>
-                                <a href="{{ route('admin.facture.pdf', [$facture]) }}" target="_blank">Télécharger</a>
-                            </td>
                             <td class="text-right">
-                                <a class="btn btn-primary" href="{{ route('admin.facture.edit', [$facture]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                @if(!$facture->is_brouillon)
+                                    <a class="btn btn-outline-secondary" href="{{ route('admin.facture.pdf', [$facture]) }}" target="_blank"><i class="fa fa-file-pdf"></i></a>
+                                @endif
+                                <a class="btn btn-primary" href="{{ route($facture->is_brouillon ? 'admin.facture.edit.brouillon' : 'admin.facture.edit', [$facture]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                @can('delete', $facture)
+                                    <a class="btn btn-outline-danger" href="{{ route('admin.facture.destroy', $facture) }}" data-toggle="tooltip" title="Supprimer">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach

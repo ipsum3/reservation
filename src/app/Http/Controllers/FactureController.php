@@ -6,13 +6,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
+use Ipsum\Reservation\app\Contracts\FactureContract;
+use Ipsum\Reservation\app\Enum\FactureEtat;
 use Ipsum\Reservation\app\Enum\FactureType;
-use Ipsum\Reservation\app\Http\Requests\Caution\PreCreateFacture;
+use Ipsum\Reservation\app\Http\Requests\BrouillonFacture;
 use Ipsum\Reservation\app\Http\Requests\CreateFacture;
 use Ipsum\Reservation\app\Http\Requests\StoreFacture;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
 use Ipsum\Reservation\app\Models\Reservation\Facture;
 use Ipsum\Reservation\app\Models\Reservation\Moyen;
+use Ipsum\Reservation\app\Models\Reservation\Paiement;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Reservation\Type;
 use PixellWeb\Pennylane\app\Actions\IpsumCustomerAction;
@@ -23,6 +26,12 @@ use Str;
 class FactureController extends AdminController
 {
     protected $acces = 'reservation';
+
+    public function __construct(private FactureContract $service)
+    {
+        parent::__construct();
+    }
+
 
     public function index(Request $request)
     {
@@ -49,92 +58,148 @@ class FactureController extends AdminController
         return view('IpsumReservation::facture.index', compact('factures'));
     }
 
-    public function create(Reservation $reservation, IpsumCustomerAction $ipsumCustomerAction, IpsumInvoiceAction $ipsumInvoiceAction)
+    public function create(CreateFacture $request, Reservation $reservation)
     {
-
-        $validator = Validator::make($reservation->toArray(), [
-            "prenom" => "required",
-            "telephone" => "required",
-            "adresse" => "required",
-            "cp" => "required",
-            "ville" => "required",
-            "pays_id" => "required",
-
-            "montant_base" => "required",
-            "total" => "required",
-        ]);
-
-        if ($validator->fails()) {
-            return back()->withErrors($validator);
-        }
-
         $moyens = Moyen::all();
         $types = Type::all();
         $prestations = Prestation::orderBy('order')->get();
-        $facture = new Facture();
 
-        return view('IpsumReservation::facture.create', compact('facture', 'reservation','moyens', 'types', 'prestations'));
+        $facture = new Facture();
+        $facture->echeance_at = now()->addMonth();
+        $facture->client()->associate($reservation->entreprise_id ?? $reservation->client_id);
+
+        return view('IpsumReservation::facture.brouillon', compact('facture', 'reservation','moyens', 'types', 'prestations'));
     }
 
-    public function store(CreateFacture $request, Reservation $reservation, IpsumCustomerAction $ipsumCustomerAction, IpsumInvoiceAction $ipsumInvoiceAction)
+    public function storeBrouillon(BrouillonFacture $request, Reservation $reservation)
     {
+        $factureType = $reservation->factureLocation ? FactureType::ADDITIONNELLE : FactureType::LOCATION;
 
-        // TODO enregistrement produit
+        $facture = Facture::create($request->validated() + [
+                'reservation_id' => $reservation->id,
+                'client_id' => $reservation->entreprise_id ?? $reservation->client_id,
+                'type' => $factureType,
+                'etat' => FactureEtat::BROUILLON,
+            ]);
+        $facture->produits()->sync($request->validated('produits'));
+        $facture->updateTotal()->save();
+
+
+        if ($request->has('paiements')) {
+            foreach ($request->validated('paiements') as $paiement) {
+                Paiement::updateOrCreate([
+                    'id' => $paiement['id'],
+                ], $paiement + ['facture_id' => $facture->id]);
+            }
+        }
+        $facture->updateMontantPaye()->save();
 
         try {
-            $ipsumCustomerAction->syncToProvider($reservation);
-            $facture = $ipsumInvoiceAction->syncToProvider($reservation);
+            $this->service->syncToProvider($facture);
+        } catch (\Exception $e) {
+            Alert::error($e->getMessage())->flash();
+            return redirect()->route('admin.facture.edit.brouillon', $facture);
+        }
+
+        Alert::success("Le brouillon a été enregistré.")->flash();
+        return redirect()->route('admin.facture.edit.brouillon', $facture);
+    }
+
+    public function editBrouillon(Facture $facture)
+    {
+        $moyens = Moyen::all();
+        $types = Type::all();
+        $prestations = Prestation::orderBy('order')->get();
+
+        $reservation = $facture->reservation;
+
+        return view('IpsumReservation::facture.brouillon', compact('facture', 'reservation', 'moyens', 'types', 'prestations'));
+    }
+
+    public function updateBrouillon(BrouillonFacture $request, Facture $facture)
+    {
+        $facture->update($request->validated() + [
+                'client_id' => $facture->reservation->entreprise_id ?? $facture->reservation->client_id,
+            ]);
+        $facture->produits()->sync($request->validated('produits'));
+        $facture->updateTotal()->save();
+
+
+        if ($request->has('paiements')) {
+            foreach ($request->validated('paiements') as $paiement) {
+                Paiement::updateOrCreate([
+                    'id' => $paiement['id'],
+                ], $paiement + ['facture_id' => $facture->id]);
+            }
+        }
+        $facture->paiements()->whereDoesntHave('reservation')->whereNotIn('id', collect($request->validated('paiements'))->pluck('id'))->delete();
+        $facture->updateMontantPaye()->save();
+
+        try {
+            $this->service->syncToProvider($facture);
         } catch (\Exception $e) {
             Alert::error($e->getMessage())->flash();
             return back();
         }
 
-        if ($request->has('paiements')) {
-            $reservation->paiements()->insert(
-                $request->validated('paiements')
-            );
+        if ($request->has('brouillon')) {
+            Alert::success("Le brouillon a été enregistré.")->flash();
+            return redirect()->route('admin.facture.edit.brouillon', $facture);
         }
-        $reservation->updateMontantPaye()->save();
 
-        $reservation->paiements()->doesntHave('facture')->update([
-            'facture_id' => $facture->id,
-        ]);
+        try {
+            $this->service->emmission($facture);
+        } catch (\Exception $e) {
+            Alert::error($e->getMessage())->flash();
+            return back();
+        }
 
-        Alert::success("La facture a bien été générée.")->flash();
-        return redirect()->route('admin.reservation.edit', $reservation);
+        Alert::success("La facture a bien été générée. Elle sera envoyée au client dans quelques instants.")->flash();
+        return redirect()->route('admin.reservation.edit', $facture->reservation);
+
     }
 
-    public function edit(IpsumInvoiceAction $ipsumInvoiceAction, Facture $facture)
+
+    public function edit(Facture $facture)
     {
         $reservation = $facture->reservation;
         $moyens = Moyen::all();
         $types = Type::all();
 
-        $url_pdf = Cache::remember('facture-'.$facture->numero, 5 * 60, function () use ($facture, $ipsumInvoiceAction) {
-            return $ipsumInvoiceAction->getUrlPdf($facture);
-        });
+        $url_pdf = $this->service->getUrlPdf($facture, false);
 
         return view('IpsumReservation::facture.update', compact('facture', 'reservation', 'moyens', 'types', 'url_pdf'));
     }
 
     public function update(StoreFacture $request, Facture $facture)
     {
-        // TODO bug à l'enregistrement facture_id n'est pas bon
-        //dd($request->validated('paiements'));
-        //dd($request->validated('paiements') + ['reservation_id' => $facture->reservation_id]);
+
         if ($request->has('paiements')) {
-            $facture->paiements()->createMany(
-                $request->validated('paiements')
-            );
+            foreach ($request->validated('paiements') as $paiement) {
+                Paiement::updateOrCreate([
+                    'id' => $paiement['id'],
+                ], $paiement + ['facture_id' => $facture->id]);
+            }
         }
-        $facture->reservation->updateMontantPaye()->save();
+        $facture->paiements()->whereDoesntHave('reservation')->whereNotIn('id', collect($request->validated('paiements'))->pluck('id'))->delete();
+        $facture->updateMontantPaye()->save();
 
         Alert::success("L'enregistrement a bien été modifié")->flash();
         return back();
     }
 
-    public function pdf(IpsumInvoiceAction $ipsumInvoiceAction, Facture $facture)
+    public function pdf(Facture $facture)
     {
-        return redirect()->away($ipsumInvoiceAction->getUrlPdf($facture));
+        return redirect()->away($this->service->getUrlPdf($facture));
+    }
+
+    public function destroy(Facture $facture)
+    {
+        $this->service->delete($facture);
+        $facture->delete();
+
+        Alert::warning("L'enregistrement a bien été supprimé")->flash();
+        return redirect()->route('admin.reservation.index');
+
     }
 }

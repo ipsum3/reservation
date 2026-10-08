@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Models\Reservation;
 
 use Ipsum\Core\app\Models\BaseModel;
+use Ipsum\Reservation\app\Models\Reservation\Paiement;
 
 
 /**
@@ -10,7 +11,7 @@ use Ipsum\Core\app\Models\BaseModel;
  *
  * @property int $id
  * @property string $nom
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Reservation\Paiement> $paiements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Paiement> $paiements
  * @property-read int|null $paiements_count
  * @method static \Illuminate\Database\Eloquent\Builder|Type newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Type newQuery()

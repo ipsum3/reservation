@@ -1,5 +1,5 @@
 @extends('IpsumAdmin::layouts.app')
-@section('title', 'Réservation')
+@section('title', 'Réglement')
 
 @section('content')
 
@@ -57,12 +57,12 @@
                                 @endif
                             </td>
                             <td>
-                                @if ($paiement->reservation)
-                                    @if ($paiement->reservation->client)
-                                        <a href="{{ route('admin.client.edit', $paiement->reservation->client) }}">{{ $paiement->reservation->prenom }} {{ $paiement->nom }}</a>
-                                    @else
-                                        {{ $paiement->reservation->civilite }} {{ $paiement->reservation->prenom }} {{ $paiement->reservation->nom }}
-                                    @endif
+                                @if ($paiement->reservation?->client)
+                                    <a href="{{ route('admin.client.edit', $paiement->reservation->client) }}">{{ $paiement->reservation->civilite }} {{ $paiement->reservation->prenom }} {{ $paiement->reservation->nom }}</a>
+                                @elseif ($paiement->facture?->client)
+                                    <a href="{{ route('admin.client.edit', $paiement->facture->client) }}">{{ $paiement->facture->client->civilite }} {{ $paiement->facture->client->prenom }} {{ $paiement->facture->client->nom }}</a>
+                                @elseif($paiement->reservation)
+                                    {{ $paiement->reservation->civilite }} {{ $paiement->reservation->prenom }} {{ $paiement->reservation->nom }}
                                 @endif
                             </td>
                             <td>

@@ -11,20 +11,23 @@ use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Core\Concerns\Translatable;
 use Ipsum\Reservation\app\Models\Categorie\Categorie;
 use Ipsum\Reservation\app\Models\Lieu\Lieu;
+use Ipsum\Reservation\app\Models\Reservation\Facture;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 
 /**
  * Ipsum\Reservation\app\Models\Prestation\Prestation
  *
  * @property int $id
+ * @property string|null $reference_externe
  * @property int $type_id
  * @property int $tarification_id
+ * @property int|null $taxe_id
  * @property string|null $class
  * @property string $nom
  * @property string|null $description
  * @property string|null $montant
  * @property string|null $montant_max
- * @property int $quantite_max
+ * @property int|null $quantite_max
  * @property int|null $gratuit_apres
  * @property int|null $quantite_gratuite
  * @property int|null $jour_fact_max
@@ -42,17 +45,20 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @property int|null $duree_max
  * @property int|null $categorie_type_id
  * @property AsCustomFieldsObject|null $custom_fields
- * @property int $order
+ * @property int|null $order
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Prestation\Blocage> $blocages
  * @property-read int|null $blocages_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Categorie> $categories
  * @property-read int|null $categories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Facture> $factures
+ * @property-read int|null $factures_count
  * @property-read bool $is_obligatoire
  * @property-read bool $is_optionnelle
  * @property-read bool $is_tarification_agence
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Lieu> $lieux
  * @property-read int|null $lieux_count
  * @property-read \Ipsum\Reservation\app\Models\Prestation\Tarification|null $tarification
+ * @property-read \Ipsum\Reservation\app\Models\Prestation\Taxe|null $taxe
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Core\app\Models\Translate> $translates
  * @property-read int|null $translates_count
  * @property-read \Ipsum\Reservation\app\Models\Prestation\Type|null $type
@@ -62,6 +68,7 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
  * @method static Builder|Prestation newQuery()
  * @method static Builder|Prestation obligatoire()
  * @method static Builder|Prestation optionnelle()
+ * @method static Builder|Prestation prestation()
  * @method static Builder|Prestation query()
  * @method static Builder|Prestation withoutBlocage(\Carbon\CarbonInterface $debut_at, \Carbon\CarbonInterface $fin_at)
  * @mixin \Eloquent
@@ -123,10 +130,26 @@ class Prestation extends BaseModel
         return $this->morphedByMany(Lieu::class, 'prestable')->withPivot('montant');
     }
 
+    public function factures()
+    {
+        return $this->morphedByMany(Facture::class, 'prestable')->withPivot(['montant', 'quantite']);
+    }
+
+    public function taxe()
+    {
+        return $this->belongsTo(Taxe::class);
+    }
+
+
 
     /*
      * Scopes
      */
+
+    public function scopePrestation(Builder $query)
+    {
+        $query->whereIn('type_id', Type::PRESTATION_IDS);
+    }
 
     public function scopeWithoutBlocage(Builder $query, CarbonInterface $debut_at, CarbonInterface $fin_at)
     {

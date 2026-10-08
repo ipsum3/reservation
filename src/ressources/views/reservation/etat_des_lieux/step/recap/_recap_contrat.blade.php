@@ -4,10 +4,18 @@
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Informations locataire</div>
             <div class="card-body p-2">
-                <strong>{{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}</strong><br/>
-                {{ $reservation->adresse }}<br />
-                {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }}<br />
-                {{ $reservation->telephone }}<br />
+                @if (!$reservation->entreprise)
+                    <strong>{{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}</strong><br/>
+                    {{ $reservation->adresse }}<br />
+                    {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }}<br />
+                    {{ $reservation->telephone }}<br />
+                @else
+                    <strong>{{ $reservation->entreprise->nom }}</strong><br />
+                    {{ $reservation->entreprise->adresse }}<br />
+                    {{ $reservation->entreprise->cp }} {{ $reservation->entreprise->ville }} {{ $reservation->entreprise->pays?->nom }}<br />
+                    {{ $reservation->entreprise->telephone }}<br />
+                    {{ $reservation->entreprise->siren }}<br />
+                @endif
             </div>
         </div>
 
@@ -15,6 +23,11 @@
             <div class="card-header bg-secondary text-white p-1">Conducteur{{ $reservation->conducteurs->count() ? 's' : '' }}</div>
             <div class="card-body p-2">
                 <strong>{{ $reservation->prenom }} {{ $reservation->nom }}</strong><br/>
+                @if ($reservation->entreprise)
+                    {{ $reservation->adresse }}<br />
+                    {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }}<br />
+                    {{ $reservation->telephone }}<br />
+                @endif
                 @if ($reservation->naissance_at)
                     {{ _('Né le') }} {{ $reservation->naissance_at->format('d/m/Y') }}
                     @if ($reservation->naissance_lieu)
