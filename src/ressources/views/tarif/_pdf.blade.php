@@ -74,11 +74,7 @@
             <th style="width: 100px;"></th>
             @foreach ($durees as $duree)
                 <th>
-                    @if ($duree->max)
-                        {{ $duree->min }} à {{ $duree->max }} jours
-                    @else
-                        {{ $duree->min }} jours et plus
-                    @endif
+                    <x-reservation::tranche_de_duree :min="$duree->min_display" :max="$duree->max_display"/>
                     @if ($duree->nom)
                         <br>{{ $duree->nom }}
                     @endif
