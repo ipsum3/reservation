@@ -14,7 +14,7 @@ class PrestationSeeder extends Seeder
 
     public function run()
     {
-        $taxe = Taxe::where('default', true)->first();
+        $taxe = Taxe::where('defaut', true)->first();
         foreach ($this->getPrestations() as $data) {
             $data['taxe_id'] = $taxe?->id;
             Prestation::create($data);

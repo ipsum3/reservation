@@ -12,7 +12,7 @@ interface FactureContract
 
     public function emmission(Facture $facture): void;
 
-    public function sendToCustomer(Facture $facture, bool|string|array $emails = null): void;
+    public function sendToCustomer(Facture $facture, bool|string $email = null): void;
 
     public function delete(Facture $facture): void;
 
