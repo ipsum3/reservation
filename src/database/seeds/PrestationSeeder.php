@@ -4,21 +4,20 @@ namespace Ipsum\Reservation\database\seeds;
 
 use Illuminate\Database\Seeder;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
+use Ipsum\Reservation\app\Models\Prestation\Taxe;
 use Ipsum\Reservation\app\Models\Prestation\Type;
 
 
 class PrestationSeeder extends Seeder
 {
 
+
     public function run()
     {
-
+        $taxe = Taxe::where('defaut', true)->first();
         foreach ($this->getPrestations() as $data) {
+            $data['taxe_id'] = $taxe?->id;
             Prestation::create($data);
-        }
-
-        foreach ($this->getTypes() as $data) {
-            Type::create($data);
         }
     }
 
@@ -27,6 +26,11 @@ class PrestationSeeder extends Seeder
     private function getPrestations()
     {
         return array(
+            array(
+                'nom' => 'Location',
+                'type_id' => Type::LOCATION_ID,
+                'tarification_id' => '1',
+            ),
             array(
                 'nom' => 'Conducteurs supplémentaires',
                 'description' => '',
@@ -80,24 +84,6 @@ class PrestationSeeder extends Seeder
                 'montant' => 7,
                 'quantite_max' => 1,
                 'order' => 6,
-            ),
-        );
-    }
-
-    private function getTypes()
-    {
-        return array(
-            array(
-                'id' => 1,
-                'nom' => 'Option',
-            ),
-            array(
-                'id' => 2,
-                'nom' => 'Assurance',
-            ),
-            array(
-                'id' => 3,
-                'nom' => 'Frais',
             ),
         );
     }

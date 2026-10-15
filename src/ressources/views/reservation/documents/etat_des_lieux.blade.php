@@ -172,9 +172,15 @@
                     </tr>
                     <tr>
                         <td>
-                            <strong>Nom :</strong> {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br>
-                            <strong>Téléphone :</strong> {{ $reservation->telephone }}<br><br>
-                            <strong>Adresse :</strong> {{ $reservation->adresse }} {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }} <br>
+                            @if (!$reservation->entreprise)
+                                <strong>Nom :</strong> {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br>
+                                <strong>Téléphone :</strong> {{ $reservation->telephone }}<br><br>
+                                <strong>Adresse :</strong> {{ $reservation->adresse }} {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }} <br>
+                            @else
+                                <strong>Entreprise :</strong> {{ $reservation->entreprise->nom }}<br>
+                                <strong>Téléphone :</strong> {{ $reservation->entreprise->telephone }}<br><br>
+                                <strong>Adresse :</strong> {{ $reservation->entreprise->adresse }} {{ $reservation->entreprise->cp }} {{ $reservation->entreprise->ville }} {{ $reservation->entreprise->pays?->nom }} <br>
+                            @endif
                             @if ($reservation->naissance_at)
                                 <strong>{{ _('Né le') }} :</strong> {{ $reservation->naissance_at->format('d/m/Y') }}
                                 @if ($reservation->naissance_lieu)

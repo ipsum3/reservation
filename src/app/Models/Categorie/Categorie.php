@@ -22,6 +22,7 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * Ipsum\Reservation\app\Models\Categorie\Categorie
  *
  * @property int $id
+ * @property string|null $reference_externe
  * @property int $type_id
  * @property string $nom
  * @property string $modeles
@@ -35,6 +36,7 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property int $climatisation
  * @property int $transmission_id
  * @property int $motorisation_id
+ * @property string|null $reservoir_capacite
  * @property string|null $caution
  * @property string|null $franchise
  * @property int $age_minimum
@@ -44,7 +46,6 @@ use Ipsum\Reservation\database\factories\CategorieFactory;
  * @property string|null $seo_description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $reservoir_capacite
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Blocage> $blocages
  * @property-read int|null $blocages_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Categorie\Carrosserie> $carrosseries

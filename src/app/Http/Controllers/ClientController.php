@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Reservation\app\Http\Requests\UpdateClient;
@@ -19,7 +20,9 @@ class ClientController extends AdminController
 
     protected function query(Request $request)
     {
-        $query = Client::query()->withCount('reservations');
+        $query = Client::query()->withCount(['reservations' => function (Builder $query) {
+            $query->confirmed();
+        }]);
 
         if ($request->filled('search')) {
             $query->where(function($query) use ($request) {
@@ -27,6 +30,9 @@ class ClientController extends AdminController
                     $query->orWhere($colonne, 'like', '%'.$request->get('search').'%');
                 }
             });
+        }
+        if ($request->filled('is_entreprise')) {
+            $query->where('is_entreprise', $request->get('is_entreprise'));
         }
         if ($request->filled('tri')) {
             $query->orderBy($request->tri, $request->order);
@@ -112,9 +118,10 @@ class ClientController extends AdminController
         return $client;
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $client = new Client();
+        $client->is_entreprise = $request->has('is_entreprise');
 
         $pays = Pays::orderBy('nom')->get()->pluck('nom', 'id');
         return view('IpsumReservation::client.form', compact('client', 'pays'));

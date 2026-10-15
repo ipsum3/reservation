@@ -14,7 +14,11 @@
                 </a>
                 <a class="btn btn-outline-secondary" href="{{ route('admin.client.create') }}">
                     <i class="fas fa-plus"></i>
-                    Ajouter
+                    Ajouter un particulier
+                </a>&nbsp;
+                <a class="btn btn-outline-secondary" href="{{ route('admin.client.create', ['is_entreprise']) }}">
+                    <i class="fas fa-plus"></i>
+                    Ajouter une entreprise
                 </a>&nbsp;
             </div>
         </div>
@@ -23,6 +27,12 @@
             {{ Aire::open()->class('form-inline mt-4 mb-1')->route('admin.client.index') }}
                 <label class="sr-only" for="search">Recherche</label>
                 {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
+                <label class="sr-only" for="is_entreprise">Type</label>
+                <select class="form-control mb-2 mr-sm-2 " data-aire-component="select" name="is_entreprise" id="is_entreprise" data-aire-for="is_entreprise">
+                    <option value="">---- Type -----</option>
+                    <option value="0" @selected(request()->get('is_entreprise') === '0')>Particulier</option>
+                    <option value="1" @selected(request()->get('is_entreprise') === '1')>Entreprise</option>
+                </select>
 
                 <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
@@ -42,14 +52,19 @@
                     @foreach ($clients as $client)
                         <tr>
                             <td>{{ $client->code }}</td>
-                            <td>{{ $client->prenom }} {{ $client->nom }}</td>
+                            <td>
+                                <i class="fa {{ $client->is_entreprise ? 'fa-building' : '' }}"></i>
+                                {{ $client->prenom }} {{ $client->nom }}
+                            </td>
                             <td>{{ $client->email }}</td>
                             <th><a class="badge badge-info" href="{{ route('admin.reservation.index', ['client_id' => $client->id]) }}">{{ $client->reservations_count }} réservation{{ $client->reservations_count > 1 ? 's' : '' }}</a></th>
                             <td class="text-right">
                                 <form action="{{ route('admin.client.destroy', $client->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.create', ['client_id' => $client->id]) }}"><i class="fa fa-plus"></i> Résa.</a>
+                                    @if (!$client->is_entreprise)
+                                        <a class="btn btn-outline-secondary" href="{{ route('admin.reservation.create', ['client_id' => $client->id]) }}"><i class="fa fa-plus"></i> Résa.</a>
+                                    @endif
                                     <a class="btn btn-primary" href="{{ route('admin.client.edit', [$client->id]) }}"><i class="fa fa-edit"></i> Modifier</a>
                                     <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
                                 </form>

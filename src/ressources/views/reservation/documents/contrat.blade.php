@@ -130,10 +130,18 @@
 
                     <tr>
                         <td style="text-transform: uppercase;">
-                            {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br />
-                            {{ $reservation->adresse }}<br />
-                            {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }}<br />
-                            {{ $reservation->telephone }}<br />
+                            @if (!$reservation->entreprise)
+                                {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br />
+                                {{ $reservation->adresse }}<br />
+                                {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }}<br />
+                                {{ $reservation->telephone }}<br />
+                            @else
+                                {{ $reservation->entreprise->nom }}<br />
+                                {{ $reservation->entreprise->adresse }}<br />
+                                {{ $reservation->entreprise->cp }} {{ $reservation->entreprise->ville }} {{ $reservation->entreprise->pays?->nom }}<br />
+                                {{ $reservation->entreprise->telephone }}<br />
+                                {{ $reservation->entreprise->siren }}<br />
+                            @endif
                         </td>
                     </tr>
                 </table>

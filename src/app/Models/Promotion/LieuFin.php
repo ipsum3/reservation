@@ -9,6 +9,7 @@ use Ipsum\Reservation\app\Models\Lieu\Lieu;
  * Ipsum\Reservation\app\Models\Promotion\LieuFin
  *
  * @property int $id
+ * @property string|null $reference_externe
  * @property string $slug
  * @property int $type_id
  * @property int $is_actif

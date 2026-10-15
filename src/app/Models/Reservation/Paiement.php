@@ -9,6 +9,7 @@ use Ipsum\Core\app\Models\BaseModel;
  *
  * @property int $id
  * @property int|null $reservation_id
+ * @property int|null $facture_id
  * @property int $paiement_moyen_id
  * @property int|null $paiement_type_id
  * @property string $montant
@@ -18,6 +19,7 @@ use Ipsum\Core\app\Models\BaseModel;
  * @property string|null $erreur
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Ipsum\Reservation\app\Models\Reservation\Facture|null $facture
  * @property-read mixed $is_o_k
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Moyen|null $moyen
  * @property-read \Ipsum\Reservation\app\Models\Reservation\Reservation|null $reservation
@@ -37,10 +39,20 @@ class Paiement extends BaseModel
     protected static function booted()
     {
         self::saved(function (self $paiement) {
-            $paiement->reservation->updateMontantPaye()->save();
+            if ($paiement->reservation) {
+                $paiement->reservation->updateMontantPaye()->save();
+            }
+            if ($paiement->facture) {
+                $paiement->facture->updateMontantPaye()->save();
+            }
         });
         self::deleted(function (self $paiement) {
-            $paiement->reservation->updateMontantPaye()->save();
+            if ($paiement->reservation) {
+                $paiement->reservation->updateMontantPaye()->save();
+            }
+            if ($paiement->facture) {
+                $paiement->facture->updateMontantPaye()->save();
+            }
         });
     }
 
@@ -54,6 +66,11 @@ class Paiement extends BaseModel
     public function reservation()
     {
         return $this->belongsTo(Reservation::class, 'reservation_id');
+    }
+
+    public function facture()
+    {
+        return $this->belongsTo(Facture::class, 'facture_id');
     }
 
     public function moyen()

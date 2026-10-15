@@ -126,7 +126,7 @@
                             <td>{{ $reservation->debut_lieu_nom }}</td>
                             <td>
                                 @if ($reservation->client)
-                                    <a href="{{ route('admin.client.edit', $reservation->client) }}">{{ $reservation->prenom }} {{ $reservation->nom }}</a>
+                                    <a href="{{ route('admin.client.edit', $reservation->client) }}">{{ $reservation->civilite }}  {{ $reservation->prenom }} {{ $reservation->nom }}</a>
                                 @else
                                     {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}
                                 @endif

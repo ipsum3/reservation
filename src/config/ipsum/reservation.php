@@ -137,4 +137,8 @@ return [
     'caution_account_id' => env('CAUTION_ACCOUNT_ID'),
     'caution_base_url'   => env('CAUTION_BASE_URL'),
 
+
+
+    'facture_provider' => env('FACTURE_PROVIDER'),
+
 ];

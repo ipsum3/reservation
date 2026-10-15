@@ -41,53 +41,62 @@ $('#tarification-load, #tarification-undo').click(function () {
 })
 
 $('#client-update-locataire').click(function () {
+    let target = $(this).data('target')
     $.ajax({
         method: 'GET',
         url: $(this).data('ajax-url'),
         data: $('#reservation').serialize(),
         success: function (data) {
-            console.log(data)
-            updateClientInfo(data)
+            updateClientInfo(data, target)
         }
     })
 })
 
-$('#client-search').select2({
-    minimumInputLength: 3, // Nombre minimal de caractères pour déclencher la recherche
-    placeholder: 'Rechercher un client',
-    ajax: {
-        url: '/administration/reservation/search-clients', // Endpoint côté serveur
-        dataType: 'json',
-        delay: 250, // Délai avant d'effectuer la recherche après la saisie
-        data: function (params) {
-            return {
-                client_search: params.term // Terme de recherche saisi par l'utilisateur
-            }
-        },
-        processResults: function (data) {
-            return {
-                results: data // Résultats reçus depuis le serveur
-            }
-        },
-        cache: true
-    }
+$('.client-search').each(function () {
+    $(this).select2({
+        minimumInputLength: 3, // Nombre minimal de caractères pour déclencher la recherche
+        ajax: {
+            url: $(this).data('url'), // Endpoint côté serveur
+            dataType: 'json',
+            delay: 250, // Délai avant d'effectuer la recherche après la saisie
+            data: function (params) {
+                return {
+                    client_search: params.term // Terme de recherche saisi par l'utilisateur
+                }
+            },
+            processResults: function (data) {
+                return {
+                    results: data // Résultats reçus depuis le serveur
+                }
+            },
+            cache: true
+        }
+    })
+
+    $(this).on('select2:select', function (e) {
+        let target = $(this).data('target')
+        updateClientInfo(e.params.data, target)
+    })
 })
 
-$('#client-search').on('select2:select', function (e) {
-    updateClientInfo(e.params.data)
-})
-
-function updateClientInfo (client) {
-    if (client.is_client) {
-        client.client_id = client.id
-        $('.compte-info').addClass('d-none')
-    } else {
-        $('.compte-info').removeClass('d-none')
+function updateClientInfo (client, target) {
+    if (target === '#compte-info') {
+        if (client.is_client) {
+            client.client_id = client.id
+            $('#compte-creation').addClass('d-none')
+        } else {
+            $('#compte-creation').removeClass('d-none')
+        }
     }
 
     for (var key in client) {
         if (client.hasOwnProperty(key)) {
-            var input = document.querySelector('[name="' + key + '"]')
+            let name = key
+            console.log(key)
+            if (target === '#entreprise-info') {
+                name = 'entreprise[' + key + ']'
+            }
+            var input = document.querySelector(target + ' [name="' + name + '"]')
             if (input) {
                 if (input.type === 'date') {
                     // Pour les inputs de type "date", formatez la valeur en utilisant Carbon

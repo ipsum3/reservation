@@ -22,6 +22,18 @@ class StoreAdminReservation extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+
+        if (!$this->input('entreprise.has')) {
+            $this->merge([
+                'entreprise' => [],
+            ]);
+        }
+
+
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -47,6 +59,8 @@ class StoreAdminReservation extends FormRequest
             ] + $rules;
         }
 
+
+
         return [
             "client_id" => "nullable|integer|exists:clients,id",
             "etat_id" => "required|integer|exists:reservation_etats,id",
@@ -61,11 +75,12 @@ class StoreAdminReservation extends FormRequest
                 "max:255",
                 Rule::when(function(Fluent $data) {
                     return $data->create_user;
-                }, Rule::unique(Client::class)->where(function ($query) {
+                }, Rule::unique(Client::class)
+                    ->ignore($this->client_id)
+                    ->where(function ($query) {
                     return $query->where('has_login',  0);
                 })
                 )],
-            "has_login" => "boolean",
             "telephone" => "nullable|max:255",
             "adresse" => "nullable|max:255",
             "cp" => "nullable|max:255",
@@ -78,6 +93,34 @@ class StoreAdminReservation extends FormRequest
             "permis_delivre" => "nullable|max:255",
             "observation" => "nullable",
             "datas" => "nullable|array",
+
+            "entreprise.has" => "nullable|boolean",
+            "entreprise.id" => "nullable||exists:clients,id",
+            "entreprise.nom" => "nullable|required_if:entreprise.has,1|max:255",
+            "entreprise.prenom" => "nullable|max:255",
+            'entreprise.siren' => [
+                'nullable',
+                'max:15',
+                Rule::unique(Client::class, 'siren')->ignore($this->input('entreprise.id'))
+            ],
+            'entreprise.vat_numero' => [
+                'nullable',
+                'max:20',
+                Rule::unique(Client::class, 'vat_numero')->ignore($this->input('entreprise.id'))
+            ],
+            "entreprise.email" => [
+                "nullable",
+                "required_if:entreprise.has,1",
+                "email",
+                Rule::unique(Client::class, 'email')
+                    ->ignore($this->input('entreprise.id'))
+                    ->where("has_login", 0)
+            ],
+            "entreprise.telephone" => "nullable|min:10",
+            "entreprise.adresse" => "nullable",
+            "entreprise.cp" => "nullable|max:255",
+            "entreprise.ville" => "nullable|max:255",
+            "entreprise.pays_id" => "nullable|exists:pays,id",
 
             "categorie_id" => "required|integer|exists:categories,id",
             "vehicule_id" => [
@@ -114,7 +157,6 @@ class StoreAdminReservation extends FormRequest
             "paiements.*.created_at" => "required|date_format:Y-m-d\TH:i",
             "paiements.*.paiement_moyen_id" => "required|integer|exists:paiement_moyens,id",
             "paiements.*.paiement_type_id" => "required|integer|exists:paiement_types,id",
-            "paiements.*.reservation_id" => "required|integer|exists:reservations,id",
             "paiements.*.montant" => "required|numeric",
             "paiements.*.note" => "nullable",
 

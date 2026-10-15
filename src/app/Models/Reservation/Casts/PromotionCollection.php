@@ -29,6 +29,11 @@ class PromotionCollection  extends Collection implements Castable
         return $this->map(fn ($value) => $value->toArray())->all();
     }
 
+    public function getArrayCopy(): ?array
+    {
+        return $this->toArray();
+    }
+
 
     /**
      * Get the caster class to use when casting from / to this cast target.

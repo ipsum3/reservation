@@ -101,7 +101,7 @@
                     </td>
                     <td>
                         @if ($reservation->client)
-                            {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
+                            {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
                         @else
                             {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br/>
                         @endif

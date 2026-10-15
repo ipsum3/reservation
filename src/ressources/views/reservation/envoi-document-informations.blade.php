@@ -20,7 +20,7 @@
             <div class="form-row">
                 {{ Aire::input('email', 'Email*')->required()->groupAddClass('col-md-6') }}
                 {{ Aire::input('objet', 'Objet*')->required()->defaultValue(request('objet'))->groupAddClass('col-md-6') }}
-                @if (!in_array($document, ['caution', 'confirmation']))
+                @if (!in_array($document, ['caution', 'confirmation', 'facture']))
                     @php
                     switch ($document){
                         case 'devis' :

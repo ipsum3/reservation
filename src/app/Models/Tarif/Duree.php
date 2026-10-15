@@ -18,11 +18,14 @@ use Ipsum\Reservation\database\factories\DureeFactory;
  * @property string $tarification
  * @property int $priorite
  * @property int $min
+ * @property string $min_format
  * @property int|null $max
+ * @property string $max_format
  * @property int|null $delai_maximum
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $is_forfait
+ * @property-read mixed $max_display
  * @property-read mixed $min_display
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ipsum\Reservation\app\Models\Tarif\Jour> $jours
  * @property-read int|null $jours_count
@@ -30,6 +33,7 @@ use Ipsum\Reservation\database\factories\DureeFactory;
  * @property-read int|null $tarifs_count
  * @method static \Illuminate\Database\Eloquent\Builder|Duree conditions(int $nb_minutes, \Carbon\CarbonInterface $date_debut, \Carbon\CarbonInterface $date_fin)
  * @method static \Illuminate\Database\Eloquent\Builder|Duree duree(int $nb_minutes)
+ * @method static \Ipsum\Reservation\database\factories\DureeFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Duree newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Duree newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Duree query()
