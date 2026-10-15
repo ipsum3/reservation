@@ -540,7 +540,7 @@ class ReservationController extends AdminController
         return view(config('ipsum.reservation.confirmation.view'), compact('reservation'));
     }
 
-    public function documentSend(FactureContract $serviceFacture, SendDocumentEmail $request, Reservation $reservation)
+    public function documentSend(SendDocumentEmail $request, Reservation $reservation)
     {
         try {
             if( $request->document === 'confirmation' ) {
@@ -563,6 +563,7 @@ class ReservationController extends AdminController
                 ]);
             } elseif ( $request->document === 'facture' ) {
                 $facture = $reservation->factures()->findOrFail($request->id);
+                $serviceFacture = app()->make(FactureContract::class);
                 $serviceFacture->sendToCustomer($facture, $request->email);
             }
             Alert::success("Le document a bien été envoyé")->flash();
