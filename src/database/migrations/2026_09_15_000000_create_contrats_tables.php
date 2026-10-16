@@ -38,7 +38,7 @@ return new class extends Migration
         });
 
         Schema::table('prestations', function (Blueprint $table) {
-            $table->string('reference_externe')->nullable()->after('id');
+            $table->string('reference_externe')->nullable()->unique()->after('id');
             $table->smallInteger('quantite_max')->nullable()->unsigned()->change();
             $table->smallInteger('order')->nullable()->unsigned()->change();
         });
@@ -50,23 +50,23 @@ return new class extends Migration
         });
 
         Schema::table('clients', function (Blueprint $table) {
-            $table->string('reference_externe')->nullable()->after('id');
+            $table->string('reference_externe')->nullable()->unique()->after('id');
             $table->boolean('is_entreprise')->default(false)->after('code');
             $table->string('vat_numero')->nullable()->after('email');
             $table->string('siren')->nullable()->after('email');
         });
 
         Schema::table('reservations', function (Blueprint $table) {
-            $table->string('reference_externe')->nullable()->after('reference');
+            $table->string('reference_externe')->nullable()->unique()->after('reference');
             $table->bigInteger('entreprise_id')->index()->nullable()->after('client_id');
         });
 
         Schema::table('categories', function (Blueprint $table) {
-            $table->string('reference_externe')->nullable()->after('id');
+            $table->string('reference_externe')->nullable()->unique()->after('id');
         });
 
         Schema::table('lieux', function (Blueprint $table) {
-            $table->string('reference_externe')->nullable()->after('id');
+            $table->string('reference_externe')->nullable()->unique()->after('id');
         });
 
         if (\Ipsum\Core\app\Models\Setting::count()) {
