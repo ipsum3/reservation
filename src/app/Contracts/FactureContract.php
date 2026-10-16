@@ -18,5 +18,5 @@ interface FactureContract
 
     public function getUrlPdf(Facture $facture, $cache = true): string;
 
-    public function iframe(): View;
+    public function iframe(): string|View;
 }

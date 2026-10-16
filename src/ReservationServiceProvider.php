@@ -12,6 +12,10 @@ use Ipsum\Reservation\app\Console\Commands\Install;
 use Ipsum\Reservation\app\Console\Commands\JoursFeries;
 use Ipsum\Reservation\app\Console\Commands\PlanningOptimiser;
 use Ipsum\Reservation\app\Console\Commands\ReservationCheck;
+use Ipsum\Reservation\app\Contracts\ModulePaiementContract;
+use Ipsum\Reservation\app\Contracts\Nones\FactureNoneProvider;
+use Ipsum\Reservation\app\Contracts\Nones\ModulePaiementNoneProvider;
+use Ipsum\Reservation\app\Contracts\FactureContract;
 use Ipsum\Reservation\app\Http\Middleware\CheckEtatDesLieuxEnabled;
 use Ipsum\Reservation\app\Http\Middleware\DevisCheck;
 use Ipsum\Reservation\app\Http\Middleware\RedirectIfInspectionSigned;
@@ -152,6 +156,14 @@ class ReservationServiceProvider extends ServiceProvider
 
         // register the artisan commands
         $this->commands($this->commands);
+
+
+        if (config('ipsum.reservation.facture_provider', 'none') === 'none') {
+            $this->app->bind(FactureContract::class, FactureNoneProvider::class);
+        }
+        if (config('ipsum.reservation.module_de_paiement', 'none') === 'none') {
+            $this->app->bind(ModulePaiementContract::class, ModulePaiementNoneProvider::class);
+        }
     }
 
 

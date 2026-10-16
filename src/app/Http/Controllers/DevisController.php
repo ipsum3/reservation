@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use App\Sherlocks\Sherlocks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
+use Ipsum\Reservation\app\Contracts\ModulePaiementContract;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use PixellWeb\Monetico\app\PaymentRequest;
 use PixellWeb\Monetico\Kit\Request\OrderContext;
@@ -25,11 +26,12 @@ class DevisController extends Controller
 
     }
 
-    public function redirectBanque(Request $request, Reservation $reservation)
+    public function redirectBanque(ModulePaiementContract $service, Request $request, Reservation $reservation)
     {
         $request->session()->put('reservation_devis', $reservation->id);
 
         $montant =  $reservation->condition->has_acompte ? $reservation->acompte : $reservation->total;
+
 
         switch (config('ipsum.reservation.module_de_paiement')) {
             case 'monetico':
@@ -88,6 +90,7 @@ class DevisController extends Controller
                 break;
         }
 
+        return $service->goToFormPay($reservation, $montant);
     }
 
     public function confirmation(Reservation $reservation)
