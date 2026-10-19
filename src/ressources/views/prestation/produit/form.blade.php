@@ -59,6 +59,7 @@
                 @endforeach
             </div>
         </div>
+        <script src="{{ asset('ipsum/admin/dist/tinymce.js') }}"></script>
     @endif
 
     

@@ -5,21 +5,24 @@ namespace Ipsum\Reservation\app\Enum;
 enum FactureEtat: string
 {
     case BROUILLON = 'brouillon';
-    case VALIDEE = 'validee';
+    case ENCOURS = 'en_cours';
+    case PAYEE = 'payee';
 
     public function label(): string
     {
         return match($this) {
-            self::BROUILLON => 'brouillon',
-            self::VALIDEE => 'validée',
+            self::BROUILLON => 'Brouillon',
+            self::ENCOURS => 'En cours',
+            self::PAYEE => 'Payée',
         };
     }
 
     public function badge(): string
     {
         return match($this) {
-            self::BROUILLON => 'badge-warning',
-            self::VALIDEE => 'badge-success',
+            self::BROUILLON => 'badge-light',
+            self::ENCOURS => 'badge-info',
+            self::PAYEE => 'badge-success',
         };
     }
 

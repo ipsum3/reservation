@@ -13,6 +13,7 @@ use Ipsum\Reservation\app\Http\Requests\BrouillonFacture;
 use Ipsum\Reservation\app\Http\Requests\CreateFacture;
 use Ipsum\Reservation\app\Http\Requests\StoreFacture;
 use Ipsum\Reservation\app\Models\Prestation\Prestation;
+use Ipsum\Reservation\app\Models\Reservation\Etat;
 use Ipsum\Reservation\app\Models\Reservation\Facture;
 use Ipsum\Reservation\app\Models\Reservation\Moyen;
 use Ipsum\Reservation\app\Models\Reservation\Paiement;
@@ -46,6 +47,13 @@ class FactureController extends AdminController
         }
         if ($request->filled('type')) {
             $query->where('type', $request->get('type'));
+        }
+        if ($request->filled('etat')) {
+            if ($request->etat === 'en_retard') {
+                $query->enRetard();
+            } else {
+                $query->where('etat', $request->get('etat'));
+            }
         }
         if ($request->filled('tri')) {
             $query->orderBy($request->tri, $request->order);
