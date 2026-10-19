@@ -29,6 +29,7 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\ReservationController:
         Route::get('depart-retour/contrat-depart', 'contratDepart')->name('contratDepart');
         Route::get('search-clients', 'searchClients')->name('searchClients');
         Route::get('search-entreprises', 'searchEntreprises')->name('searchEntreprises');
+        Route::get('a-facturer', 'aFacturer')->name('aFacturer')->middleware(\Ipsum\Reservation\app\Http\Middleware\CheckFactureEnabled::class);
     }
 );
 

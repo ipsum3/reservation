@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Ipsum\Admin\app\Http\Controllers\AdminController;
 use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Contracts\FactureContract;
+use Ipsum\Reservation\app\Enum\FactureEtat;
 use Ipsum\Reservation\app\Events\ReservationConfirmedEvent;
 use Ipsum\Reservation\app\Events\ReservationCreatedEvent;
 use Ipsum\Reservation\app\Events\ReservationDeletedEvent;
@@ -800,5 +801,42 @@ class ReservationController extends AdminController
         }
 
         return json_encode($clients);
+    }
+
+    public function aFacturer(Request $request)
+    {
+        if ($request->filled('recemment')) {
+            $request->merge([
+                'date_fin' => now()->subMonths(3)->format('d/m/Y') . ' - ' .now()->format('d/m/Y'),
+            ]);
+        }
+
+
+        $reservations = Reservation::with(['client'])
+            ->confirmed()
+            ->where('fin_at', '<=', now())
+            ->whereDoesntHave('factures', function (Builder $query) {
+                $query->where('etat', '!=', FactureEtat::BROUILLON);
+            })
+            ->when($request->filled('search'), function (Builder $query) use ($request) {
+                $query->where(function($query) use ($request) {
+                    foreach (['reference', 'contrat', 'nom', 'prenom', 'email', 'telephone'] as $colonne) {
+                        $query->orWhere($colonne, 'like', '%'.$request->get('search').'%');
+                    }
+                });
+            })
+            ->when($request->filled('date_fin'), function (Builder $query) use ($request) {
+                try {
+                    $date = explode(' - ', $request->get('date_fin'));
+                    $date1 = Carbon::createFromFormat('d/m/Y', $date[0])->startOfDay();
+                    $date2 = Carbon::createFromFormat('d/m/Y', $date[1])->endOfDay();
+                    $query->whereBetween('fin_at', [$date1, $date2]);
+                } catch (\Exception $e) {}
+            })
+            ->orderBy('fin_at', 'desc')
+            ->paginate();
+
+
+        return view('IpsumReservation::reservation.a-facturer', compact('reservations'));
     }
 }

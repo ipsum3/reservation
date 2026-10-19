@@ -3,6 +3,7 @@
 namespace Ipsum\Reservation\app\Http\Requests;
 
 
+use Illuminate\Routing\Redirector;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
 
 class CreateFacture extends FormRequest
@@ -20,6 +21,9 @@ class CreateFacture extends FormRequest
 
     protected function prepareForValidation()
     {
+        $this->redirect = route('admin.reservation.edit', $this->reservation);
+
+
         $this->reservation->loadMissing('entreprise');
         $this->replace($this->reservation->toArray());
     }
