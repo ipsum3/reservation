@@ -2,6 +2,7 @@
 
 namespace Ipsum\Reservation\app\Models\Reservation;
 
+use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Reservation\app\Enum\FactureEtat;
 use Ipsum\Reservation\app\Enum\FactureType;
@@ -98,7 +99,10 @@ class Facture extends BaseModel
     /*
      * Scopes
      */
-
+    public function scopeEnRetard(Builder $query)
+    {
+        $query->where('etat', FactureEtat::ENCOURS)->where('echeance_at', '<=', now())->where('montant_paye', '>=', 'total');
+    }
 
 
     /*
@@ -130,5 +134,10 @@ class Facture extends BaseModel
     public function getIsPayeeAttribute()
     {
         return $this->montant_paye >= $this->total;
+    }
+
+    public function getIsEnRetardAttribute()
+    {
+        return !$this->is_brouillon and !$this->is_payee and $this->echeance_at <= now();
     }
 }

@@ -12,7 +12,10 @@
             {{ Aire::open()->class('form-inline mt-4 mb-1')->route('admin.facture.index') }}
                 <label class="sr-only" for="search">Recherche</label>
                 {{ Aire::input('search')->id('search')->class('form-control mb-2 mr-sm-2')->value(request()->get('search'))->placeholder('Recherche')->withoutGroup() }}
+                <label class="sr-only" for="type">Types</label>
                 {{ Aire::select(collect(['' => '---- Types -----'])->union(collect(\Ipsum\Reservation\app\Enum\FactureType::pluck())), 'type')->value(request()->get('type'))->id('type')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
+                <label class="sr-only" for="etat">États</label>
+                {{ Aire::select(collect(['' => '---- États -----'])->union(collect(\Ipsum\Reservation\app\Enum\FactureEtat::pluck()))->union(['en_retard' => 'En retard']), 'etat')->value(request()->get('etat'))->id('etat')->class('form-control mb-2 mr-sm-2')->withoutGroup() }}
                 <button type="submit" class="btn btn-outline-secondary mb-2">Rechercher</button>
             {{ Aire::close() }}
 
@@ -42,7 +45,12 @@
                             <td><a href="{{ route('admin.reservation.edit', $facture->reservation) }}">{{ $facture->reservation?->reference }}</a></td>
                             <td><a href="{{ route('admin.client.edit', $facture->client) }}">{{ $facture->client->prenom }} {{ $facture->client->nom }}</a></td>
                             <td>{{ $facture->type->label() }}</td>
-                            <td><span class="badge {{ $facture->etat->badge() }}">{{ $facture->etat->label() }}</span></td>
+                            <td>
+                                <span class="badge {{ $facture->etat->badge() }}">{{ $facture->etat->label() }}</span>
+                                @if ($facture->is_en_retard)
+                                    <span class="badge badge-warning">En retard</span>
+                                @endif
+                            </td>
                             <td>@prix($facture->total)&nbsp;€</td>
                             <td><x-reservation::reste_a_payer total="{{ $facture->total }}"  montant_paye="{{ $facture->montant_paye }}" /></td>
                             <td>{{ $facture->send_at?->format('d/m/Y') }}</td>
