@@ -38,11 +38,11 @@ class BrouillonFacture extends FormRequest
     {
 
         return [
-            "echeance_at" => "required|date_format:Y-m-d",
+            "echeance_at" => "required|date_format:Y-m-d|after-or-equal:now",
 
             "produits" => "required|array",
             "produits.*.prestation_id" => "required|integer|exists:prestations,id|distinct",
-            "produits.*.quantite" => "required|integer",
+            "produits.*.quantite" => "required|integer|min:1",
             "produits.*.montant" => "required|numeric",
             "produits.*.description" => "nullable",
             "produits.*.remise" => "nullable|numeric",
