@@ -37,7 +37,7 @@
                     <div class="btn-toolbar">
                         <button class="btn btn-outline-secondary" type="submit" name="brouillon" value="1"><i class="fas fa-save"></i> Enregistrer un brouillon</button>&nbsp;
                         @if ($facture->exists)
-                            <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Créer et envoyer la facture</button>&nbsp;
+                            <button class="btn btn-primary" type="button"><i class="fas fa-save"></i> Créer et envoyer la facture</button>&nbsp;
                         @endif
                         @can('delete', $facture)
                             <a class="btn btn-outline-danger" href="{{ route('admin.facture.destroy', $facture) }}" data-toggle="tooltip" title="Supprimer">
