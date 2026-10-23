@@ -161,9 +161,7 @@ class ReservationServiceProvider extends ServiceProvider
         if (config('ipsum.reservation.facture_provider', 'none') === 'none') {
             $this->app->bind(FactureContract::class, FactureNoneProvider::class);
         }
-        if (config('ipsum.reservation.module_de_paiement', 'none') === 'none') {
-            $this->app->bind(ModulePaiementContract::class, ModulePaiementNoneProvider::class);
-        }
+        $this->app->bind(ModulePaiementContract::class, ModulePaiementNoneProvider::class);
     }
 
 
