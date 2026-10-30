@@ -25,7 +25,7 @@
                     @if (!$facture->client->is_entreprise)
                         <i class="fa fa-user"></i> <a href="{{ route('admin.client.edit', $reservation->client) }}">{{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}</a> <br>
                     @else
-                        <i class="fa fa-building"></i> <a href="{{ route('admin.client.edit', $facture->client) }}">{{ $facture->client->nom }}</a>
+                        <i class="fa fa-building"></i> <a href="{{ route('admin.client.edit', $facture->client) }}">{{ $facture->client->nom }}</a><br>
                     @endif
                     @if ($facture->send_at)
                         <i class="fa fa-envelope"></i> Envoyé le {{ $facture->send_at->format('d/m/Y') }}<br>

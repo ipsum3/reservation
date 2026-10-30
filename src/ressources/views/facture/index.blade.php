@@ -43,7 +43,13 @@
                             <td>{{ $facture->emission_at?->format('d/m/Y') }}</td>
                             <td>{{ $facture->numero }}</td>
                             <td><a href="{{ route('admin.reservation.edit', $facture->reservation) }}">{{ $facture->reservation?->reference }}</a></td>
-                            <td><a href="{{ route('admin.client.edit', $facture->client) }}">{{ $facture->client->prenom }} {{ $facture->client->nom }}</a></td>
+                            <td>
+                                @if (!$facture->client->is_entreprise)
+                                    <i class="fa fa-user"></i> <a href="{{ route('admin.client.edit', $facture->client) }}">{{ $facture->client->civilite }} {{ $facture->client->prenom }} {{ $facture->client->nom }}</a>
+                                @else
+                                    <i class="fa fa-building"></i> <a href="{{ route('admin.client.edit', $facture->client) }}">{{ $facture->client->nom }}</a>
+                                @endif
+                            </td>
                             <td>{{ $facture->type->label() }}</td>
                             <td>
                                 <span class="badge {{ $facture->etat->badge() }}">{{ $facture->etat->label() }}</span>

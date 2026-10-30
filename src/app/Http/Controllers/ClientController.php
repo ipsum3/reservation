@@ -162,6 +162,11 @@ class ClientController extends AdminController
             return back();
         }
 
+        if ($client->factures()->count()) {
+            Alert::warning("Impossible de supprimer l'enregistrement, car il existe des factures associées")->flash();
+            return back();
+        }
+
         $client->delete();
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();
