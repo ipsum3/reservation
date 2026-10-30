@@ -163,7 +163,7 @@
                                                 @endforeach
                                             </select>
                                         </td>
-                                        <td><input type="number" class="form-control" value="" name="produits[@{{ indice }}][quantite]" required></td>
+                                        <td><input type="number" class="form-control" value="1" name="produits[@{{ indice }}][quantite]" required></td>
                                         <td><input type="number" class="form-control" step=".01" value="" name="produits[@{{ indice }}][remise]"></td>
                                         <td><input type="number" class="form-control" step=".01" value="" name="produits[@{{ indice }}][montant]" required></td>
                                         <td><button type="button" class="prestation-delete btn btn-outline-danger" data-confirm="false"><i class="fa fa-trash-alt"></i></button></td>

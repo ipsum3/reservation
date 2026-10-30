@@ -43,9 +43,9 @@ class BrouillonFacture extends FormRequest
             "produits" => "required|array",
             "produits.*.prestation_id" => "required|integer|exists:prestations,id|distinct",
             "produits.*.quantite" => "required|integer|min:1",
-            "produits.*.montant" => "required|numeric",
+            "produits.*.montant" => "required|numeric|min:0",
             "produits.*.description" => "nullable",
-            "produits.*.remise" => "nullable|numeric",
+            "produits.*.remise" => "nullable|numeric|min:1",
 
             "paiements.*.id" => "nullable|exists:paiements,id",
             "paiements.*.reservation_id" => "nullable|exists:reservations,id",
