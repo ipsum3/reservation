@@ -224,8 +224,8 @@
                                 <tr>
                                     <td>{{ $paiement->id }}</td>
                                     <td>{{ $paiement->created_at->format('d/m/Y') }}</td>
-                                    <td>{{ $paiement->moyen->nom }}</td>
-                                    <td>{{ $paiement->type->nom }}</td>
+                                    <td>{{ $paiement->moyen?->nom }}</td>
+                                    <td>{{ $paiement->type?->nom }}</td>
                                     <td>@prix($paiement->montant)&nbsp;€</td>
                                     <td>{!! nl2br(e($paiement->note )) !!}</td>
                                     <td>
