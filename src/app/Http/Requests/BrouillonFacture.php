@@ -38,6 +38,7 @@ class BrouillonFacture extends FormRequest
     {
 
         return [
+            "emission_at" => "required|date_format:Y-m-d|before-or-equal:now",
             "echeance_at" => "required|date_format:Y-m-d|after-or-equal:now",
 
             "produits" => "required|array",

@@ -49,6 +49,7 @@
                 <div class="box-body">
 
                     <div class="form-row">
+                        {{ Aire::date('emission_at', "Date d'émission*")->defaultValue(now()->format('Y-m-d'))->required()->groupAddClass('col-md-6') }}
                         {{ Aire::date('echeance_at', "Date d'échéance*")->required()->groupAddClass('col-md-6') }}
                     </div>
                 </div>
