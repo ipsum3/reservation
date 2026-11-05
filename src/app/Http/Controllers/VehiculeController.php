@@ -120,6 +120,14 @@ class VehiculeController extends AdminController
 
     public function destroy(Vehicule $vehicule)
     {
+        $reservation_count = $vehicule->reservations()->confirmed()->where('fin_at', '>', now())->count();
+
+        if($reservation_count) {
+            Alert::error("Impossible de supprimer ce véhicule, car il existe des réservations programmées associées avec ce véhicule.")->flash();
+            return back();
+        }
+
+
         $vehicule->delete();
 
         Alert::warning("L'enregistrement a bien été supprimé")->flash();

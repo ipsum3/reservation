@@ -1,9 +1,9 @@
 @php
     $interventions = [];
-    if ($type == 'vehicule') {
+    if ($type === 'vehicule') {
         list($interventions) = addInfosToReservation($vehicule->interventions, $date_debut, $date_fin);
     }
-    list($resas, $decalage_max) = addInfosToReservation($type == 'vehicule' ? $vehicule->reservations : collect([$reservation]), $date_debut, $date_fin);
+    list($resas, $decalage_max) = addInfosToReservation($type === 'vehicule' ? $vehicule->reservations : collect([$reservation]), $date_debut, $date_fin);
 @endphp
 
 <tr class="planning-ligne">
@@ -12,7 +12,7 @@
             style="height: {{ 10 + (50 * ($decalage_max + 1)) }}px"
         @endif
     >
-        @if ($type == 'vehicule')
+        @if ($type === 'vehicule')
             <a href="{{ route('admin.vehicule.edit', $vehicule) }}">
                 {{ $vehicule->immatriculation }}<br>
                 {{ $vehicule->marque_modele }}
@@ -42,7 +42,7 @@
                 @if (isset($resas[$date->format('Y-m-d')]))
                     @foreach($resas[$date->format('Y-m-d')] as $resa)
                         <a href="{{ route('admin.reservation.edit', $resa) }}" style="width: {{ $resa->width }}px; left: {{ $resa->decalage }}px; top: {{ $resa->top }}px;"
-                           class="planning-reservation {{ ($type == 'vehicule' and !$resa->has_conflit) ? 'bg-success' : 'bg-danger' }}"
+                           class="planning-reservation {{ ($type === 'vehicule' and !$resa->has_conflit) ? 'bg-success' : 'bg-danger' }}"
                            data-toggle="tooltip" data-placement="auto" data-html="true" title="
                                                          <div>Réservation : {{ $resa->reference }}</div>
                                                          <div>

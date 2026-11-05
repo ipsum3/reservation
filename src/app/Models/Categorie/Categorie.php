@@ -210,7 +210,7 @@ class Categorie extends BaseModel
 
         // Une seule réservation sans véhicule, bloque la dispo
         $query->withCount(['reservations' => function (Builder $query) use ($date_debut, $date_fin) {
-            $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin);
+            $query->doesntHave('vehicule')->confirmedBetweenDates($date_debut, $date_fin);
         }]);
     }
 

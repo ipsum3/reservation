@@ -651,7 +651,7 @@ class ReservationController extends AdminController
                 $query->with('type')->betweenDates($date_debut, $date_fin)->where('has_blocage', 1)->orderBy('debut_at');
             }])->orderBy('mise_en_circualtion_at', 'desc');
         }])->with(['reservations' => function ($query) use ($date_debut, $date_fin) {
-            $query->whereNull('vehicule_id')->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
+            $query->doesntHave('vehicule')->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
         }])->where(function ($query) use ($date_debut, $date_fin) {
             $query->whereHas('vehicules', function ($query) use ($date_debut) {
                 $query->where(function (Builder $query) use ($date_debut) {
@@ -660,7 +660,7 @@ class ReservationController extends AdminController
             })->orWhereHas('reservations', function ($query) use ($date_debut, $date_fin) {
                 $query->confirmedBetweenDates($date_debut, $date_fin)->orderBy('debut_at');
             });
-        })->orderBy('nom')->get();
+        })->with('illustration')->orderBy('nom')->get();
 
         $categories_all = Categorie::orderBy('nom')->get()->pluck('nom', 'id');
 

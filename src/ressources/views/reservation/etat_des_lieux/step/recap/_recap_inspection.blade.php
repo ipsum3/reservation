@@ -64,27 +64,30 @@
     <div class="col-md-12">
         <!-- Dommages -->
         {{--TODO mettre les info sur l'inspection initiale si présente pas possible actuelement avec la bdd --}}
-        @php
-            // TODO pour la page show, impossible de connaitre les dommages de l'inspection iitiale après qu'une autre inspection soit faite. Il faudrait ajouter une table dommage_inspections
-             $dommages = $inspection->type->is_initial ? $reservation->vehicule->dommages : $inspection->dommages;
-             $dommages = $dommages->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; })
-        @endphp
-        <div class="card mb-3 shadow-sm">
-            <div class="card-header bg-secondary text-white p-1">Dommage{{ $dommages->count() > 1 ? 's' : '' }} constaté{{ $dommages->count() > 1 ? 's' : '' }}</div>
-            <div class="card-body p-2">
-                <div class="d-flex flex-row flex-wrap">
-                    @if($dommages->count())
-                        @foreach($dommages as $dommage)
-                            <div class="d-flex flex-row flex-wrap justify-content-center">
-                                @include('IpsumReservation::reservation.etat_des_lieux.step._dommage', ['protected' => true])
-                            </div>
-                        @endforeach
-                    @else
-                        <p>Aucun dommage constaté</p>
-                    @endif
+        {{--TODO pour la page show, impossible de connaitre les dommages de l'inspection initiale après qu'une autre inspection soit faite. Il faudrait ajouter une table dommage_inspections--}}
+
+        @if (!($inspection->type->is_initial and ($reservation->inspectionFinale or !$reservation->vehicule))) {{-- pour ne pas afficher tous les dommages s'il y a eu d'autre inspection. Régle aussi le cas de la suppression du véhicule --}}
+            @php
+                $dommages = $inspection->type->is_initial ? $reservation->vehicule->dommages : $inspection->dommages;
+                $dommages = $dommages->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; })
+            @endphp
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header bg-secondary text-white p-1">Dommage{{ $dommages->count() > 1 ? 's' : '' }} constaté{{ $dommages->count() > 1 ? 's' : '' }}</div>
+                <div class="card-body p-2">
+                    <div class="d-flex flex-row flex-wrap">
+                        @if($dommages->count())
+                            @foreach($dommages as $dommage)
+                                <div class="d-flex flex-row flex-wrap justify-content-center">
+                                    @include('IpsumReservation::reservation.etat_des_lieux.step._dommage', ['protected' => true])
+                                </div>
+                            @endforeach
+                        @else
+                            <p>Aucun dommage constaté</p>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 
     @php
