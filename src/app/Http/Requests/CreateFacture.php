@@ -5,6 +5,7 @@ namespace Ipsum\Reservation\app\Http\Requests;
 
 use Illuminate\Routing\Redirector;
 use Ipsum\Admin\app\Http\Requests\FormRequest;
+use Ipsum\Reservation\app\Contracts\FactureContract;
 
 class CreateFacture extends FormRequest
 {
@@ -34,18 +35,16 @@ class CreateFacture extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(FactureContract $service)
     {
+
 
         if (!$this->reservation->entreprise) {
             return [
                 "client_id" => "required",
                 "prenom" => "required",
                 "telephone" => "required",
-                "adresse" => "required",
-                "cp" => "required",
-                "ville" => "required",
-                "pays_id" => "required",
+                ...$service->clientRules(),
 
                 "montant_base" => "required",
                 "total" => "required",
