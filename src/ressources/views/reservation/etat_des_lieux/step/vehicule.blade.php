@@ -36,7 +36,7 @@
                             <div class="form-group col-md-6">
                                 <label for="vehicule_id">Véhicule</label>
                                 <div id="vehicule-select">
-                                    @include('IpsumReservation::reservation._vehicules_select', ['vehicule_id' => old('vehicule_id', $inspection->vehicule_id ?? $reservation->vehicule_id)])
+                                    @include('IpsumReservation::reservation._vehicules_select', ['vehicule_id' => old('vehicule_id', $inspection->vehicule_id ?? $inspection->reservation->vehicule_id)])
                                 </div>
                                 @error('vehicule_id')
                                 <ul class="invalid-feedback d-block">

@@ -22,8 +22,8 @@ return new class extends Migration
 
         if (\Ipsum\Core\app\Models\Setting::count()) {
             \Ipsum\Reservation\app\Models\Inspection\Inspection::with('reservation')->get()->each(function (Inspection $inspection) {
-                $inspection->immatriculation = $inspection->reservation->immatriculation;
-                $inspection->vehicule_id = $inspection->reservation->vehicule_id;
+                $inspection->immatriculation = $inspection->reservation?->immatriculation;
+                $inspection->vehicule_id = $inspection->reservation?->vehicule_id;
                 $inspection->save();
             });
         }
