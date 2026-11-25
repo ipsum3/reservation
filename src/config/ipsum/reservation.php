@@ -53,19 +53,19 @@ return [
         'view' => 'IpsumReservation::reservation.emails.confirmation',
     ],
     'contrat' => [
-        'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
+        'logo' => null, // asset('/theme/logos/logo-header.jpg')
         'couleur' => '#bbb',
         'cgl_nom' => 'Conditions générales de location',
         'view' => 'IpsumReservation::reservation.documents.contrat',
         'disable' => false,
     ],
     'devis' => [
-        'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
+        'logo' => null, // asset('/theme/logos/logo-header.jpg')
         'couleur' => '#bbb',
         'view' => 'IpsumReservation::reservation.documents.devis',
     ],
     'etat_des_lieux' => [
-        'logo' => null, // env('APP_URL').'/theme/logos/logo-header.jpg'
+        'logo' => null, // asset('/theme/logos/logo-header.jpg')
         'couleur' => '#bbb',
         'view' => 'IpsumReservation::reservation.documents.etat_des_lieux',
         'enable' => false,
