@@ -63,7 +63,7 @@
                 <div style="text-align: center; padding-bottom: 10mm;">
                     <h1>
                         @if (config('ipsum.reservation.devis.logo'))
-                            <img src="{{ config('ipsum.reservation.devis.logo') }}" alt="{{ config('settings.nom_site') }}" width="150" style="width: 150px;">
+                            <img src="{{ asset(config('ipsum.reservation.devis.logo')) }}" alt="{{ config('settings.nom_site') }}" width="150" style="width: 150px;">
                         @else
                             {{ config('settings.nom_site') }}
                         @endif

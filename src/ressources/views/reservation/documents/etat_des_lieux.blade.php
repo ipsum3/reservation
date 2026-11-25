@@ -127,7 +127,7 @@
                 <div style="text-align: center; padding-bottom: 0mm;">
                     <h1>
                         @if (config('ipsum.reservation.etat_des_lieux.logo'))
-                            <img src="{{ config('ipsum.reservation.etat_des_lieux.logo') }}" alt="{{ config('settings.nom_site') }}" width="150" style="width: 150px;">
+                            <img src="{{ asset(config('ipsum.reservation.etat_des_lieux.logo')) }}" alt="{{ config('settings.nom_site') }}" width="150" style="width: 150px;">
                         @else
                             {{ config('settings.nom_site') }}
                         @endif

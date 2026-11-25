@@ -94,7 +94,7 @@
                 <div style="text-align: center; padding-bottom: 0mm;">
                     <h1>
                         @if (config('ipsum.reservation.contrat.logo'))
-                            <img src="{{ config('ipsum.reservation.contrat.logo') }}" alt="{{ config('settings.nom_site') }}" width="150" style="width: 150px;">
+                            <img src="{{ asset(config('ipsum.reservation.contrat.logo')) }}" alt="{{ config('settings.nom_site') }}" width="150" style="width: 150px;">
                         @else
                             {{ config('settings.nom_site') }}
                         @endif
