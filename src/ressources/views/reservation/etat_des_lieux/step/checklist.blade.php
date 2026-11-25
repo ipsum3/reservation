@@ -5,9 +5,9 @@
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
+    <h1 class="main-title">État des lieux {{ strtolower($inspection->type->nom) }} <a href="{{ route('admin.reservation.edit', $inspection->reservation) }}"><small class="text-muted">(résa. {{ $inspection->reservation->reference }})</small></a></h1>
 
-    {{ Aire::open()->id('reservation')->route('admin.inspection.checklist.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionChecklist::class) }}
+    {{ Aire::open()->id('reservation')->route('admin.inspection.checklist.store', [$inspection])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionChecklist::class) }}
 
     <div class="row">
 
@@ -20,13 +20,13 @@
                 <div class="box-body">
 
                     <div class="row">
-                        {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->value(old('kilometrage', $inspection->kilometrage ?? ($reservation->vehicule->lastInspection?->kilometrage ?? '') ))
-                            ->helpText(( !$type->is_initial && $reservation->inspectionInitiale) ? 'Kilométrage initial : '.$reservation->inspectionInitiale?->kilometrage.' km' : '')
+                        {{ Aire::number('kilometrage', 'Kilométrage (km)*')->required()->value(old('kilometrage', $inspection->kilometrage ?? ($inspection->vehicule->lastInspection?->kilometrage ?? '') ))
+                            ->helpText(( !$inspection->type->is_initial && $inspection->reservation->inspectionInitiale) ? 'Kilométrage initial : '.$inspection->reservation->inspectionInitiale?->kilometrage.' km' : '')
                             ->groupAddClass('col-md-12') }}
-                        {{ Aire::range('carburant', 'Niveau de carburant* : ')->step('1')->min(0)->max(8)->value(old('carburant', $inspection->carburant ?? ($reservation->vehicule->lastInspection?->carburant ?? 8) ))
+                        {{ Aire::range('carburant', 'Niveau de carburant* : ')->step('1')->min(0)->max(8)->value(old('carburant', $inspection->carburant ?? ($inspection->vehicule->lastInspection?->carburant ?? 8) ))
                             ->list('markers')
                             ->id('carburant')
-                            ->helpText((!$type->is_initial && $reservation->inspectionInitiale) ? 'Niveau de carburant initial : '.$reservation->inspectionInitiale?->carburant.'/8' : '')
+                            ->helpText((!$inspection->type->is_initial && $inspection->reservation->inspectionInitiale) ? 'Niveau de carburant initial : '.$inspection->reservation->inspectionInitiale?->carburant.'/8' : '')
                             ->groupAddClass('col-md-12') }}
                         <datalist id="markers">
                             @for($i=0; $i<=8; $i++)
@@ -55,10 +55,10 @@
                                            id="checklist_{{ $checklist->id }}" {{ in_array($checklist->id, old('checklists', $inspection?->checklists->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
                                     <label class="custom-control-label" for="checklist_{{ $checklist->id }}">
                                         {{ $checklist->nom }}
-                                        @if(!$type->is_initial && $reservation->inspectionInitiale)
+                                        @if(!$inspection->type->is_initial && $inspection->reservation->inspectionInitiale)
                                             <br>
                                             <span class="text-muted">(initial
-                                                @if(in_array($checklist->id, $reservation->inspectionInitiale->checklists->pluck('id')->toArray()))
+                                                @if(in_array($checklist->id, $inspection->reservation->inspectionInitiale->checklists->pluck('id')->toArray()))
                                                     <i class="fa fa-check-square text-success"></i>
                                                 @else
                                                     <i class="fa fa-window-close text-danger"></i>
@@ -72,14 +72,14 @@
                         </div>
 
                         {{ Aire::textArea('observations', 'Observation(s)')->rows(5)->groupAddClass('col-md-6 mt-2 alert')
-                            ->helpText((!$type->is_initial && $reservation->inspectionInitiale) ? 'Observation(s) initiale : '.($reservation->inspectionInitiale->observations ?: '-') : '') }}
+                            ->helpText((!$inspection->type->is_initial && $inspection->reservation->inspectionInitiale) ? 'Observation(s) initiale : '.($inspection->reservation->inspectionInitiale->observations ?: '-') : '') }}
 
                     </div>
 
                 </div>
 
                 <div class="box-footer">
-                    <div><a href="{{ route('admin.inspection.client', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div><a href="{{ route('admin.inspection.client', [$inspection]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
                     <div>
                         <button type="submit" id="nextBtn" class="btn btn-primary">Suivant</button>
                     </div>

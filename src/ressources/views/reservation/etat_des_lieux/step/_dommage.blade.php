@@ -20,12 +20,12 @@
         @if(empty($protected))
         <ul>
             <li>
-                <a href="{{ route('admin.inspection.dommage.edit', [$reservation, $type, $dommage]) }}" title="Modifier">
+                <a href="{{ route('admin.inspection.dommage.edit', [$inspection, $dommage]) }}" title="Modifier">
                     <span class="fa fa-edit"></span>
                 </a>
             </li>
             <li>
-                <form action="{{ route('admin.inspection.dommage.destroy', [$reservation, $type, $dommage]) }}" method="POST" onsubmit="return confirm('Confirmer la suppression de ce dommage ?');">
+                <form action="{{ route('admin.inspection.dommage.destroy', [$inspection, $dommage]) }}" method="POST" onsubmit="return confirm('Confirmer la suppression de ce dommage ?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit">

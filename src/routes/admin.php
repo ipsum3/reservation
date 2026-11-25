@@ -280,40 +280,47 @@ Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController
 );
 
 Route::controller(\Ipsum\Reservation\app\Http\Controllers\EtatDesLieuxController::class)
-    ->prefix('etat-des-lieux/{reservation}/{type}')
+    ->prefix('etat-des-lieux')
     ->name('admin.inspection.')
     ->middleware('adminCheckEtatDesLieuxEnabled')
     ->group(function () {
 
-        Route::get('vehicule', 'vehicule')->name('vehicule')->middleware('adminRedirectIfInspectionSigned');
-        Route::post('vehicule', 'storeVehicule')->name('vehicule.store')->middleware('adminRedirectIfInspectionSigned');
-        Route::get('client', 'client')->name('client')->middleware('adminRedirectIfInspectionSigned');
+        Route::get('start/{reservation}/{type}', 'start')->name('start');
 
-        Route::middleware(['adminRedirectIfInspectionSigned', 'adminReservationEmail'])->group(function () {
+        Route::prefix('{inspection}')->group(function () {
+                Route::get('vehicule', 'vehicule')->name('vehicule')->middleware('adminRedirectIfInspectionSigned');
+                Route::post('vehicule', 'storeVehicule')->name('vehicule.store')->middleware('adminRedirectIfInspectionSigned');
+                Route::get('client', 'client')->name('client')->middleware('adminRedirectIfInspectionSigned');
 
-            // Checklist
-            Route::get('checklist', 'checklist')->name('checklist');
-            Route::post('checklist', 'storeChecklist')->name('checklist.store');
+                Route::middleware(['adminRedirectIfInspectionSigned', 'adminRedirectIfInspectionEmailEmpty'])->group(function () {
 
-            // Dommages
-            Route::get('dommages', 'dommages')->name('dommages');
-            Route::prefix('dommage')->name('dommage.')->group(function () {
-                Route::get('create', 'createDommage')->name('create');
-                Route::post('/', 'storeDommage')->name('store');
-                Route::get('{dommage}/edit', 'editDommage')->name('edit');
-                Route::put('{dommage}', 'updateDommage')->name('update');
-                Route::delete('{dommage}', 'destroyDommage')->name('destroy');
-            });
+                    // Checklist
+                    Route::get('checklist', 'checklist')->name('checklist');
+                    Route::post('checklist', 'storeChecklist')->name('checklist.store');
 
-            // Photos
-            Route::get('photo', 'photo')->name('photo');
+                    // Dommages
+                    Route::get('dommages', 'dommages')->name('dommages');
+                    Route::prefix('dommage')->name('dommage.')->group(function () {
+                        Route::get('create', 'createDommage')->name('create');
+                        Route::post('/', 'storeDommage')->name('store');
+                        Route::get('{dommage}/edit', 'editDommage')->name('edit');
+                        Route::put('{dommage}', 'updateDommage')->name('update');
+                        Route::delete('{dommage}', 'destroyDommage')->name('destroy');
+                    });
 
-            // Signatures
-            Route::prefix('signature')->name('signature.')->group(function () {
-                Route::get('locataire', 'signatureLocataire')->name('locataire');
-                Route::post('locataire', 'storeSignatureLocataire')->name('locataire.store');
-                Route::get('agent', 'signatureAgent')->name('agent');
-                Route::post('agent', 'storeSignatureAgent')->name('agent.store');
-            });
-        });
+                    // Photos
+                    Route::get('photo', 'photo')->name('photo');
+
+                    // Signatures
+                    Route::prefix('signature')->name('signature.')->group(function () {
+                        Route::get('locataire', 'signatureLocataire')->name('locataire');
+                        Route::post('locataire', 'storeSignatureLocataire')->name('locataire.store');
+                        Route::get('agent', 'signatureAgent')->name('agent');
+                        Route::post('agent', 'storeSignatureAgent')->name('agent.store');
+                    });
+                });
+            }
+        );
+
+
     });

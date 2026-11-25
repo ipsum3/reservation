@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Ipsum\Article\app\Models\Article;
 use Ipsum\Reservation\app\Mail\NewDommage;
+use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Dommage\Dommage;
 use Ipsum\Reservation\app\Models\Dommage\Element;
 use Ipsum\Reservation\app\Models\Dommage\Emplacement;
@@ -29,7 +30,6 @@ use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Rules\VehiculeDisponible;
 use Prologue\Alerts\Facades\Alert;
 use ddn\sapp\PDFDoc;
-use Str;
 use Illuminate\Support\Facades\Validator;
 
 class EtatDesLieuxController extends AdminController
@@ -99,68 +99,78 @@ class EtatDesLieuxController extends AdminController
         return view('IpsumReservation::reservation.etat_des_lieux.index', compact('inspections', 'types'));
     }
 
-    /** Récupère l’inspection selon le type */
-    public function getInspection(Reservation $reservation, Type $type)
+
+    public function start(Reservation $reservation, Type $type)
     {
-        return $type->id == Type::FINAL_ID
-            ? $reservation->inspectionFinale
-            : $reservation->inspectionInitiale;
-    }
+        $inspection = $type->is_final ? $reservation->inspectionFinale : $reservation->inspectionInitiale;
 
-    /** Met à jour ou crée une inspection */
-    protected function updateInspection(array $data, Reservation $reservation, Type $type, $inspection)
-    {
-        $data['type_id'] = $type->id;
-        $data['admin_id'] = auth()->id();
+        if ($inspection === null) {
+            $inspection = Inspection::create([
+               'reservation_id' => $reservation->id,
+               'type_id' => $type->id,
+               'vehicule_id' => $reservation->vehicule_id,
+               'immatriculation' => $reservation->vehicule?->immatriculation,
+               'admin_id' => auth()->id(),
+            ]);
+        }
 
+        // Recherche du véhicule à chaque fois dans le cas ou on créé d'abord l'état des lieux final avant l'initial et ensuite on change le véhicule dans l'initial ou dans la résa
 
-        // TODO pas de creation initiale si déjà une autre inspection
+        // Dans le cas d'un changement de véhicule, il faudrait modifier le km et la jauge ainsi que les dommages ? Valable aussi quand on fait la manip manuellement dans etapes vehicules
 
-        return $reservation->inspections()->updateOrCreate(
-            ['id' => $inspection?->id],
-            $data
-        );
+        if ($type->is_final) {
+            $inspection_initial = $reservation->inspectionInitiale()->signed()->first();
+            if ($inspection_initial) {
+                $inspection->vehicule_id = $inspection_initial->vehicule_id;
+                $inspection->immatriculation = $inspection_initial->immatriculation;
+                $inspection->save();
+            }
+        }
+
+        return redirect()->route((!$type->is_final or $inspection->vehicule_id === null) ? 'admin.inspection.vehicule' : 'admin.inspection.checklist', [$inspection]);
     }
 
     /** --------- VÉHICULE --------- */
-    public function vehicule(Reservation $reservation, Type $type)
+    public function vehicule(Inspection $inspection)
     {
-        $vehicules = $reservation->categorie
-            ? $reservation->categorie->vehicules()
+        $vehicules = $inspection->reservation->categorie
+            ? $inspection->reservation->categorie->vehicules()
                 ->with('categorie')
-                ->withCountReservationConfirmed($reservation->debut_at, $reservation->fin_at)
-                ->withCountIntervention($reservation->debut_at, $reservation->fin_at)
-                ->duParc($reservation->debut_at, $reservation->fin_at)
+                ->withCountReservationConfirmed($inspection->reservation->debut_at, $inspection->reservation->fin_at)
+                ->withCountIntervention($inspection->reservation->debut_at, $inspection->reservation->fin_at)
+                ->duParc($inspection->reservation->debut_at, $inspection->reservation->fin_at)
                 ->orderBy('mise_en_circualtion_at', 'desc')
                 ->get()
             : collect();
 
-        $conflicts = $reservation->vehicule
-            ? $reservation->vehicule->getConflicts($reservation)
+        $conflicts = $inspection->reservation->vehicule
+            ? $inspection->reservation->vehicule->getConflicts($inspection->reservation)
             : collect();
 
         $categories = Categorie::orderBy('nom')->pluck('nom', 'id');
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.vehicule', compact(
-            'reservation', 'type', 'vehicules', 'conflicts', 'categories'
+            'inspection', 'vehicules', 'conflicts', 'categories'
         ));
     }
 
-    public function storeVehicule(StoreInspectionVehicule $request, Reservation $reservation, Type $type)
+    public function storeVehicule(StoreInspectionVehicule $request, Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
+        $vehicule = Vehicule::findOrFail($request->vehicule_id);
         $data = $request->validated();
-        $this->updateInspection($data, $reservation, $type, $inspection);
+        $data['immatriculation'] = $vehicule->immatriculation;
 
-        if ($reservation->vehicule_id != $data['vehicule_id']) {
-            $reservation->update([
-                'categorie_id'    => $data['categorie_id'],
-                'vehicule_id'     => $data['vehicule_id']
+        $inspection->update($data);
+
+        if (config('ipsum.reservation.sync_vehicule_entre_reservation_etat_des_lieux') and $inspection->reservation->vehicule_id !== $request->vehicule_id) {
+
+            $inspection->reservation->update([
+                'categorie_id'    => $request->categorie_id,
+                'vehicule_id'     => $vehicule->id
             ]);
 
             $validator = Validator::make($request->all(), [
-                'vehicule_id' => new VehiculeDisponible($reservation)
+                'vehicule_id' => new VehiculeDisponible($inspection->reservation)
             ]);
 
             if ($validator->fails()) {
@@ -168,13 +178,13 @@ class EtatDesLieuxController extends AdminController
             }
         }
 
-        return redirect()->route('admin.inspection.client', [$reservation, $type]);
+        return redirect()->route('admin.inspection.client', [$inspection]);
     }
 
     /** --------- CLIENT --------- */
-    public function client(Reservation $reservation, Type $type)
+    public function client(Inspection $inspection)
     {
-        if (!$reservation->email ) {
+        if (!$inspection->reservation->email ) {
             Alert::error("Email client non renseigné.")->flash();
         }
 
@@ -182,93 +192,77 @@ class EtatDesLieuxController extends AdminController
         $lieux = Lieu::pluck('nom', 'id');
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.client', compact(
-            'reservation', 'type', 'pays', 'lieux'
+            'inspection', 'pays', 'lieux'
         ));
     }
 
     /** --------- CHECKLIST --------- */
-    public function checklist(Reservation $reservation, Type $type)
+    public function checklist(Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         $checklists = Checklist::orderBy('order')->get();
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.checklist', compact(
-            'reservation', 'inspection', 'type', 'checklists'
+            'inspection', 'checklists'
         ));
     }
 
-    public function storeChecklist(StoreInspectionChecklist $request, Reservation $reservation, Type $type)
+    public function storeChecklist(StoreInspectionChecklist $request, Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
-        $data = $request->validated();
-        $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
+        $inspection->update($request->validated());
 
         $inspection->checklists()->sync($data['checklists'] ?? []);
 
-        return redirect()->route('admin.inspection.dommages', [$reservation, $type]);
+        return redirect()->route('admin.inspection.dommages', [$inspection]);
     }
 
     /** --------- DOMMAGE --------- */
-    public function dommages(Reservation $reservation, Type $type)
+    public function dommages(Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         return view('IpsumReservation::reservation.etat_des_lieux.step.dommages', compact(
-            'reservation', 'inspection', 'type'
+            'inspection'
         ));
     }
 
-    public function createDommage(Reservation $reservation, Type $type)
+    public function createDommage(Inspection $inspection)
     {
         $dommage = new Dommage();
-        $inspection = $this->getInspection($reservation, $type);
 
         $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::orderBy('order')->get();
         $dommage_elements    = Element::orderBy('order')->get();
         $dommage_emplacements = Emplacement::orderBy('order')->get();
 
-        return view('IpsumReservation::reservation.etat_des_lieux.step.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
+        return view('IpsumReservation::reservation.etat_des_lieux.step.dommage', compact('inspection', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
     }
 
-    public function storeDommage(StoreInspectionDommage $request, Reservation $reservation, Type $type)
+    public function storeDommage(StoreInspectionDommage $request, Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         $dommageData = $request->validated();
         $dommageData['inspection_id'] = $inspection->id;
-        $dommageData['vehicule_id']   = $reservation->vehicule_id;
+        $dommageData['vehicule_id']   = $inspection->vehicule_id;
 
-        $dommage = Dommage::create($dommageData);
+        Dommage::create($dommageData);
 
-        return redirect()->route('admin.inspection.dommages', [$reservation, $type]);
+        return redirect()->route('admin.inspection.dommages', [$inspection]);
     }
 
-    public function editDommage(Reservation $reservation, Type $type, Dommage $dommage)
+    public function editDommage(Inspection $inspection, Dommage $dommage)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         $dommage_types       = \Ipsum\Reservation\app\Models\Dommage\Type::orderBy('order')->get();
         $dommage_elements    = Element::orderBy('order')->get();
         $dommage_emplacements = Emplacement::orderBy('order')->get();
 
-        return view('IpsumReservation::reservation.etat_des_lieux.step.dommage', compact('reservation', 'inspection', 'type', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
+        return view('IpsumReservation::reservation.etat_des_lieux.step.dommage', compact('inspection', 'dommage_types', 'dommage_emplacements', 'dommage_elements', 'dommage'));
     }
 
-    public function updateDommage(StoreInspectionDommage $request, Reservation $reservation, Type $type, Dommage $dommage)
+    public function updateDommage(StoreInspectionDommage $request, Inspection $inspection, Dommage $dommage)
     {
-        $dommageData = $request->validated();
+        $dommage->update($request->validated());
 
-        $dommage->update($dommageData);
-
-        return redirect()->route('admin.inspection.dommages', [$reservation, $type]);
+        return redirect()->route('admin.inspection.dommages', [$inspection]);
     }
 
-    public function destroyDommage(Reservation $reservation, Type $type, Dommage $dommage)
+    public function destroyDommage(Inspection $inspection, Dommage $dommage)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         if ($inspection && $inspection->isSigned()) {
             $dommage->delete();
         } else {
@@ -277,71 +271,59 @@ class EtatDesLieuxController extends AdminController
 
         Alert::success('Le dommage a été supprimé avec succès.')->flash();
 
-        return redirect()->route('admin.inspection.dommages', [$reservation, $type]);
+        return redirect()->route('admin.inspection.dommages', [$inspection]);
     }
 
 
     /** --------- PHOTOS --------- */
-    public function photo(Reservation $reservation, Type $type)
+    public function photo(Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         return view('IpsumReservation::reservation.etat_des_lieux.step.photos', compact(
-            'reservation', 'inspection', 'type'
+            'inspection'
         ));
     }
 
 
     /** --------- SIGNATURE --------- */
-    public function signatureLocataire(Reservation $reservation, Type $type)
+    public function signatureLocataire(Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         $checklists = Checklist::orderBy('order')->get();
 
         $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->first();
 
         return view('IpsumReservation::reservation.etat_des_lieux.step.signature_locataire', compact(
-            'reservation', 'inspection', 'type', 'checklists', 'cgl'
+            'inspection', 'checklists', 'cgl'
         ));
     }
 
-    public function storeSignatureLocataire(StoreInspectionSignatureLocataire $request, Reservation $reservation, Type $type)
+    public function storeSignatureLocataire(StoreInspectionSignatureLocataire $request, Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         $data = $request->validated();
         $data['locataire_signature_at'] = !empty($data['locataire_signature']) ? Carbon::now() : null;
 
-        $this->updateInspection($data, $reservation, $type, $inspection);
+        $inspection->update($data);
 
-        return redirect()->route('admin.inspection.signature.agent', [$reservation, $type]);
+        return redirect()->route('admin.inspection.signature.agent', [$inspection]);
     }
 
-    public function signatureAgent(Reservation $reservation, Type $type)
+    public function signatureAgent(Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
-
         return view('IpsumReservation::reservation.etat_des_lieux.step.signature_agent', compact(
-            'reservation', 'inspection', 'type'
+            'inspection'
         ));
     }
 
-    public function storeSignatureAgent(StoreInspectionSignatureAgent $request, Reservation $reservation, Type $type)
+    public function storeSignatureAgent(StoreInspectionSignatureAgent $request, Inspection $inspection)
     {
-        $inspection = $this->getInspection($reservation, $type);
+        $reservation = $inspection->reservation;
 
         $data = $request->validated();
         $data['agent_signature_at'] = Carbon::now();
+        $data['admin_id'] = auth()->id();
 
-        $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
+        $inspection->update($data);
+
         $checklists = Checklist::orderBy('order')->get();
-
-        $emailClient = $reservation->email ?? null;
-        if (!$emailClient) {
-            Alert::error("Email client non renseigné.")->flash();
-            return back();
-        }
 
         try {
             /**
@@ -349,14 +331,14 @@ class EtatDesLieuxController extends AdminController
              */
             $directory = storage_path('app/inspections');
             if (!is_dir($directory)) {
-                mkdir($directory, 0775, true);
+                if (!mkdir($directory, 0775, true) && !is_dir($directory)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
+                }
             }
 
             $inspectionPdfPath = $directory . "/etat_des_lieux-{$inspection->id}.pdf";
 
             PDF::loadView(config('ipsum.reservation.etat_des_lieux.view'), [
-                'reservation' => $reservation,
-                'type' => $type,
                 'inspection' => $inspection,
                 'checklists' => $checklists,
             ])->save($inspectionPdfPath);
@@ -372,7 +354,9 @@ class EtatDesLieuxController extends AdminController
 
                 $contratDirectory = storage_path('app/contrats');
                 if (!is_dir($contratDirectory)) {
-                    mkdir($contratDirectory, 0775, true);
+                    if (!mkdir($contratDirectory, 0775, true) && !is_dir($contratDirectory)) {
+                        throw new \RuntimeException(sprintf('Directory "%s" was not created', $contratDirectory));
+                    }
                 }
 
                 $contratPdfPath = $contratDirectory . "/contrat-{$reservation->contrat}.pdf";
@@ -401,7 +385,7 @@ class EtatDesLieuxController extends AdminController
 
             $data['agent_signature'] = null;
             $data['agent_signature_at'] = null;
-            $inspection = $this->updateInspection($data, $reservation, $type, $inspection);
+            $inspection->update($data);
 
             Alert::error("Inspection #".$inspection->id." : ".$exception->getMessage())->flash();
 

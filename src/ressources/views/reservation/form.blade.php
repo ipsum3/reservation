@@ -230,10 +230,10 @@
                         <div class="btn-toolbar">
                             @if($reservation->is_confirmed and config('ipsum.reservation.etat_des_lieux.enable'))
                                 @if(!$reservation->inspectionInitiale?->isSigned())
-                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.vehicule', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux initial</a>&nbsp;
+                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.start', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::INITIAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux initial</a>&nbsp;
                                 @endif
                                 @if(!$reservation->inspectionFinale?->isSigned())
-                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.checklist', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux final</a>&nbsp;
+                                    <a class="btn btn-outline-secondary" href="{{ route('admin.inspection.start', [$reservation, \Ipsum\Reservation\app\Models\Inspection\Type::FINAL_ID ]) }}"><i class="fa fa-car"></i> Faire l'état des lieux final</a>&nbsp;
                                 @endif
                             @endif
 

@@ -5,9 +5,9 @@
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
+    <h1 class="main-title">État des lieux {{ strtolower($inspection->type->nom) }} <a href="{{ route('admin.reservation.edit', $inspection->reservation) }}"><small class="text-muted">(résa. {{ $inspection->reservation->reference }})</small></a></h1>
 
-    {{ Aire::open()->id('reservation')->route('admin.inspection.signature.agent.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureAgent::class) }}
+    {{ Aire::open()->id('reservation')->route('admin.inspection.signature.agent.store', [$inspection])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureAgent::class) }}
 
     <div class="row">
 
@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="box-footer">
-                    <div><a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div><a href="{{ route('admin.inspection.signature.locataire', [$inspection]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
                     <div>
                         <button type="submit" id="nextBtn" class="btn btn-success">Signer et terminer</button>
                     </div>

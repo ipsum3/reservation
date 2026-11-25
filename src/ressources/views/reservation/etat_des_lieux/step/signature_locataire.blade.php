@@ -5,7 +5,7 @@
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
+    <h1 class="main-title">État des lieux {{ strtolower($inspection->type->nom) }} <a href="{{ route('admin.reservation.edit', $inspection->reservation) }}"><small class="text-muted">(résa. {{ $inspection->reservation->reference }})</small></a></h1>
 
     <div class="row">
         <div class="col-md-12">
@@ -16,10 +16,10 @@
                 <div class="box-body">
 
                     <div class="row">
-                        <div class="{{ $type->is_initial ? 'col-md-6' : 'col-md-12' }}">
+                        <div class="{{ $inspection->type->is_initial ? 'col-md-6' : 'col-md-12' }}">
                             @include('IpsumReservation::reservation.etat_des_lieux.step.recap._recap_contrat')
                         </div>
-                        @if ($type->is_initial)
+                        @if ($inspection->type->is_initial)
                             <div class="col-md-6">
                                 @if($cgl)
                                     <h3>{{ $cgl->titre }}</h3>
@@ -47,7 +47,7 @@
         </div>
 
         <div class="col-md-12">
-            {{ Aire::open()->route('admin.inspection.signature.locataire.store', [$reservation, $type])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureLocataire::class) }}
+            {{ Aire::open()->route('admin.inspection.signature.locataire.store', [$inspection])->bind($inspection)->formRequest(\Ipsum\Reservation\app\Http\Requests\StoreInspectionSignatureLocataire::class) }}
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">Signature locataire</h2>
@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    <div><a href="{{ route('admin.inspection.photo', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div><a href="{{ route('admin.inspection.photo', [$inspection]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
                     <div>
                         <button type="submit" id="nextBtn" class="btn btn-primary">Valider la signature</button>
                     </div>

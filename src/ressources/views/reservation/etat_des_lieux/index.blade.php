@@ -48,7 +48,7 @@
                             <td><a href="{{ route('admin.reservation.edit', [$inspection->reservation]) }}">{{ $inspection->reservation->reference }}</a></td>
                             <td><span class="badge badge-{{ $inspection->type->is_initial ? 'success' : 'info' }}">{{ $inspection->type->nom }}</span></td>
                             <td>{{ $inspection->reservation->nom }} {{ $inspection->reservation->prenom }}</td>
-                            <td><a href="{{ $inspection->reservation->vehicule ? route('admin.vehicule.edit', [$inspection->reservation->vehicule]) : '♯' }}">{{ $inspection->reservation->immatriculation }} ({{ $inspection->reservation->vehicule?->marque_modele }})</a></td>
+                            <td><a href="{{ $inspection->vehicule ? route('admin.vehicule.edit', [$inspection->vehicule]) : '♯' }}">{{ $inspection->immatriculation }} ({{ $inspection->vehicule?->marque_modele }})</a></td>
                             <td>{{ $inspection->reservation->debut_at?->format('d/m/Y') }}</td>
                             <td>{{ $inspection->reservation->fin_at?->format('d/m/Y') }}</td>
                             <td>{{ $inspection->admin->name }} {{ $inspection->admin->firstname }}</td>
@@ -59,7 +59,7 @@
                                     @csrf
                                     @method('DELETE')
                                     @if (!$inspection->isSigned())
-                                        <a class="btn btn-primary" href="{{ $inspection->type->is_initial ? route('admin.inspection.vehicule', [$inspection->reservation, $inspection->type]) : route('admin.inspection.checklist', [$inspection->reservation, $inspection->type]) }}"><i class="fa fa-edit"></i> Modifier</a>
+                                        <a class="btn btn-primary" href="{{ route('admin.inspection.start', [$inspection->reservation, $inspection->type]) }}"><i class="fa fa-edit"></i> Modifier</a>
                                         <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>
                                     @else
                                         <a class="btn btn-primary" href="{{ route('admin.inspection.pdf', [$inspection]) }}" target="_blank"><i class="fa fa-file-pdf"></i> Voir le document</a>

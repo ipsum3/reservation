@@ -115,25 +115,12 @@ class Vehicule extends BaseModel
 
     public function inspections()
     {
-        // hasManyThrough(Target, Through, keyOnThrough, keyOnTarget, localKey, secondLocalKey)
-        return $this->hasManyThrough(
-            Inspection::class,
-            Reservation::class,
-            'vehicule_id',   // foreign key on reservations table...
-            'reservation_id',// foreign key on inspections table...
-            'id',            // local key on vehicules
-            'id'             // local key on reservations
-        );
+        return $this->hasMany(Inspection::class);
     }
 
     public function lastInspection()
     {
-        return $this->hasOneThrough(
-            Inspection::class,
-            Reservation::class,
-            'vehicule_id',
-            'reservation_id'
-        )->whereNotNull('agent_signature_at')->latest();
+        return $this->hasOne(Inspection::class)->signed()->latest();
     }
 
 

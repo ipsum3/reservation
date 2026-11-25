@@ -138,10 +138,10 @@
             <td style="width:35%; padding: 0 5mm 0 0; border: none;">
                 <div style="text-align: center; ">
                     <h2>
-                        État des lieux {{ strtolower($type->nom) }}<br>
+                        État des lieux {{ strtolower($inspection->type->nom) }}<br>
                         {{ \Carbon\Carbon::now()->format('d/m/Y') }}
                     </h2>
-                    <p>Annexe au contrat de location {{ $reservation->contrat  }}</p>
+                    <p>Annexe au contrat de location {{ $inspection->reservation->contrat  }}</p>
                 </div>
             </td>
             <td style="width:32%; padding: 0 5mm 0 0; border: none;">
@@ -172,32 +172,32 @@
                     </tr>
                     <tr>
                         <td>
-                            @if (!$reservation->entreprise)
-                                <strong>Nom :</strong> {{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}<br>
-                                <strong>Téléphone :</strong> {{ $reservation->telephone }}<br><br>
-                                <strong>Adresse :</strong> {{ $reservation->adresse }} {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }} <br>
+                            @if (!$inspection->reservation->entreprise)
+                                <strong>Nom :</strong> {{ $inspection->reservation->civilite }} {{ $inspection->reservation->prenom }} {{ $inspection->reservation->nom }}<br>
+                                <strong>Téléphone :</strong> {{ $inspection->reservation->telephone }}<br><br>
+                                <strong>Adresse :</strong> {{ $inspection->reservation->adresse }} {{ $inspection->reservation->cp }} {{ $inspection->reservation->ville }} {{ $inspection->reservation->pays_nom }} <br>
                             @else
-                                <strong>Entreprise :</strong> {{ $reservation->entreprise->nom }}<br>
-                                <strong>Téléphone :</strong> {{ $reservation->entreprise->telephone }}<br><br>
-                                <strong>Adresse :</strong> {{ $reservation->entreprise->adresse }} {{ $reservation->entreprise->cp }} {{ $reservation->entreprise->ville }} {{ $reservation->entreprise->pays?->nom }} <br>
+                                <strong>Entreprise :</strong> {{ $inspection->reservation->entreprise->nom }}<br>
+                                <strong>Téléphone :</strong> {{ $inspection->reservation->entreprise->telephone }}<br><br>
+                                <strong>Adresse :</strong> {{ $inspection->reservation->entreprise->adresse }} {{ $inspection->reservation->entreprise->cp }} {{ $inspection->reservation->entreprise->ville }} {{ $inspection->reservation->entreprise->pays?->nom }} <br>
                             @endif
-                            @if ($reservation->naissance_at)
-                                <strong>{{ _('Né le') }} :</strong> {{ $reservation->naissance_at->format('d/m/Y') }}
-                                @if ($reservation->naissance_lieu)
-                                    à {{ $reservation->naissance_lieu }}
+                            @if ($inspection->reservation->naissance_at)
+                                <strong>{{ _('Né le') }} :</strong> {{ $inspection->reservation->naissance_at->format('d/m/Y') }}
+                                @if ($inspection->reservation->naissance_lieu)
+                                    à {{ $inspection->reservation->naissance_lieu }}
                                 @endif
                                 <br>
                             @endif
-                            @if ($reservation->permis_numero or $reservation->permis_at)
+                            @if ($inspection->reservation->permis_numero or $inspection->reservation->permis_at)
                                 <strong>{{ _('Permis') }} :</strong>
-                                @if ($reservation->permis_numero)
-                                    {{ _('n°') }}{{ $reservation->permis_numero }}
+                                @if ($inspection->reservation->permis_numero)
+                                    {{ _('n°') }}{{ $inspection->reservation->permis_numero }}
                                 @endif
-                                @if ($reservation->permis_at)
-                                    {{ _('délivré le') }} {{ $reservation->permis_at->format('d/m/Y') }}
+                                @if ($inspection->reservation->permis_at)
+                                    {{ _('délivré le') }} {{ $inspection->reservation->permis_at->format('d/m/Y') }}
                                 @endif
-                                @if ($reservation->permis_delivre)
-                                    {{ _('par') }} {{ $reservation->permis_delivre }}
+                                @if ($inspection->reservation->permis_delivre)
+                                    {{ _('par') }} {{ $inspection->reservation->permis_delivre }}
                                 @endif
                             @endif
                         </td>
@@ -210,14 +210,14 @@
                     </tr>
                     <tr>
                         <td>
-                            <strong>{{ _('Catégorie') }} {{ $reservation->categorie_nom }}</strong><br>
-                            @if ($reservation->vehicule)
-                                <strong>{{ _('Marque et modéle') }} :</strong> {{ $reservation->vehicule->marque_modele }}<br>
-                                <strong>{{ _('Immatriculation') }} :</strong> {{ $reservation->vehicule->immatriculation }}<br>
+                            <strong>{{ _('Catégorie') }} {{ $inspection->reservation->categorie_nom }}</strong><br>
+                            @if ($inspection->vehicule)
+                                <strong>{{ _('Marque et modéle') }} :</strong> {{ $inspection->vehicule->marque_modele }}<br>
                             @endif
-                            <strong>Durée :</strong> {{ $reservation->nb_jours }} jour(s)<br>
-                            <strong>Départ :</strong> {{ $reservation->debut_lieu_nom }}, le {{ $reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->debut_at->format('H\hi') }}<br>
-                            <strong>Retour :</strong> {{ $reservation->fin_lieu_nom }}, le {{ $reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->fin_at->format('H\hi') }}<br>
+                            <strong>{{ _('Immatriculation') }} :</strong> {{ $inspection->immatriculation }}<br>
+                            <strong>Durée :</strong> {{ $inspection->reservation->nb_jours }} jour(s)<br>
+                            <strong>Départ :</strong> {{ $inspection->reservation->debut_lieu_nom }}, le {{ $inspection->reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $inspection->reservation->debut_at->format('H\hi') }}<br>
+                            <strong>Retour :</strong> {{ $inspection->reservation->fin_lieu_nom }}, le {{ $inspection->reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $inspection->reservation->fin_at->format('H\hi') }}<br>
                         </td>
                     </tr>
                 </table>
@@ -239,22 +239,22 @@
                             <table class="tableau3">
                                 <tr>
                                     <td>Km compteur</td>
-                                    <td>{{ $reservation->inspectionInitiale?->kilometrage }} km</td>
+                                    <td>{{ $inspection->reservation->inspectionInitiale?->kilometrage }} km</td>
                                 </tr>
                                 <tr>
                                     <td>Carburant</td>
-                                    <td>{{ $reservation->inspectionInitiale?->carburant }}/8</td>
+                                    <td>{{ $inspection->reservation->inspectionInitiale?->carburant }}/8</td>
                                 </tr>
                                 @foreach($checklists as $item)
                                     <tr>
                                         <td>{{ $item->nom }}</td>
                                         <td>
-                                            {{ in_array($item->id, ($reservation->inspectionInitiale ? $reservation->inspectionInitiale->checklists?->pluck('id')->toArray() : [])) ? 'ok' : '-' }}
+                                            {{ in_array($item->id, ($inspection->reservation->inspectionInitiale ? $inspection->reservation->inspectionInitiale->checklists?->pluck('id')->toArray() : [])) ? 'ok' : '-' }}
                                         </td>
                                     </tr>
                                 @endforeach
                                 <tr>
-                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($reservation->inspectionInitiale?->observations)) !!}</td>
+                                    <td colspan="2" style="height: 60px">Observations : {!! nl2br(e($inspection->reservation->inspectionInitiale?->observations)) !!}</td>
                                 </tr>
                             </table>
                         </td>
@@ -300,8 +300,8 @@
     </table>
 
     @php
-        $allDommages = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation) {
-            return !$dommage->inspection_id or $dommage->inspection_id != $reservation->inspectionFinale?->id;
+        $allDommages = $inspection->vehicule->dommages->filter(function ($dommage) use ($inspection) {
+            return !$dommage->inspection_id or $dommage->inspection_id != $inspection->reservation->inspectionFinale?->id;
         })->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; });
     @endphp
     <div style="page-break-inside: avoid;">

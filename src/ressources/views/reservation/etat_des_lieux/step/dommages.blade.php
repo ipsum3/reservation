@@ -5,7 +5,7 @@
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
+    <h1 class="main-title">État des lieux {{ strtolower($inspection->type->nom) }} <a href="{{ route('admin.reservation.edit', $inspection->reservation) }}"><small class="text-muted">(résa. {{ $inspection->reservation->reference }})</small></a></h1>
 
     <div class="row">
 
@@ -15,7 +15,7 @@
                 <div class="box-header">
                     <h2 class="box-title">Dommages</h2>
                     <div class="btn-toolbar">
-                        <a href="{{ route('admin.inspection.dommage.create', [$reservation, $type]) }}" class="btn btn-outline-primary">
+                        <a href="{{ route('admin.inspection.dommage.create', [$inspection]) }}" class="btn btn-outline-primary">
                             <i class="bi bi-plus-circle"></i> <i class="fas fa-plus"></i> Ajouter un dommage
                         </a>
                     </div>
@@ -25,8 +25,8 @@
                     {{-- Dommages précédents (Inspection initiale) --}}
                     <div class="mb-5">
                         @php
-                            $dommages_initial = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation) {
-                                return !$dommage->inspection_id or $dommage->inspection_id != $reservation->inspectionFinale?->id;
+                            $dommages_initial = $inspection->vehicule->dommages->filter(function ($dommage) use ($inspection) {
+                                return !$dommage->inspection_id or $dommage->inspection_id !== $inspection->reservation->inspectionFinale?->id;
                             })->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; });
                         @endphp
 
@@ -57,8 +57,8 @@
                     @if(!$inspection->type->is_initial)
                         {{-- Dommages de l’inspection finale --}}
                         @php
-                            $dommages_new = $reservation->vehicule->dommages->filter(function ($dommage) use ($reservation, $inspection) {
-                                return $inspection->type->is_initial or $dommage->inspection_id == $reservation->inspectionFinale?->id;
+                            $dommages_new = $inspection->vehicule->dommages->filter(function ($dommage) use ($inspection) {
+                                return $inspection->type->is_initial or $dommage->inspection_id === $inspection->reservation->inspectionFinale?->id;
                             })->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; });
                         @endphp
 
@@ -78,8 +78,8 @@
                 </div>
 
                 <div class="box-footer">
-                    <div><a href="{{ route('admin.inspection.checklist', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
-                    <div><a href="{{ route('admin.inspection.photo', [$reservation, $type]) }}" id="nextBtn" class="btn btn-primary">Suivant</a></div>
+                    <div><a href="{{ route('admin.inspection.checklist', [$inspection]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div><a href="{{ route('admin.inspection.photo', [$inspection]) }}" id="nextBtn" class="btn btn-primary">Suivant</a></div>
                 </div>
 
             </div>

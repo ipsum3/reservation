@@ -4,27 +4,27 @@
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Véhicule</div>
             <div class="card-body p-2" id="ajax-vehicule">
-                <strong>{{ _('Catégorie') }} {{ $reservation->categorie_nom }}</strong><br>
-                @if ($reservation->vehicule)
-                    <strong>{{ _('Marque et modéle') }} :</strong> {{ $reservation->vehicule->marque_modele }}<br>
-                    <strong>{{ _('Immatriculation') }} :</strong> {{ $reservation->vehicule->immatriculation }}<br>
+                <strong>{{ _('Catégorie') }} {{ $inspection->reservation->categorie_nom }}</strong><br>
+                @if ($inspection->vehicule)
+                    <strong>{{ _('Marque et modéle') }} :</strong> {{ $inspection->vehicule->marque_modele }}<br>
                 @endif
-                <strong>{{ _('Kilométrage') }} :</strong> {{ $inspection?->kilometrage }} km
-                @if (!$inspection->type->is_initial && $reservation->inspectionInitiale)
-                    <span class="text-muted">(initial : {{ $reservation->inspectionInitiale->kilometrage }} km)</span>
+                <strong>{{ _('Immatriculation') }} :</strong> {{ $inspection->immatriculation }}<br>
+                <strong>{{ _('Kilométrage') }} :</strong> {{ $inspection->kilometrage }} km
+                @if (!$inspection->type->is_initial && $inspection->reservation->inspectionInitiale)
+                    <span class="text-muted">(initial : {{ $inspection->reservation->inspectionInitiale->kilometrage }} km)</span>
                 @endif
                 <br>
-                <strong>{{ _('Carburant') }} :</strong> {{ $inspection?->carburant }}/8
-                @if (!$inspection->type->is_initial && $reservation->inspectionInitiale)
-                    <span class="text-muted">(initial : {{ $reservation->inspectionInitiale->carburant }}/8)</span>
+                <strong>{{ _('Carburant') }} :</strong> {{ $inspection->carburant }}/8
+                @if (!$inspection->type->is_initial && $inspection->reservation->inspectionInitiale)
+                    <span class="text-muted">(initial : {{ $inspection->reservation->inspectionInitiale->carburant }}/8)</span>
                 @endif
                 <br>
                 @if($inspection->observations)
                     <strong>Observations :</strong> {!! nl2br(e($inspection->observations)) !!}
                 @endif
-                @if(!$inspection->type->is_initial && $reservation->inspectionInitiale && $reservation->inspectionInitiale->observations)
+                @if(!$inspection->type->is_initial && $inspection->reservation->inspectionInitiale && $inspection->reservation->inspectionInitiale->observations)
                     <br>
-                    <span class="text-muted">Observations initial : {!! nl2br(e($reservation->inspectionInitiale->observations)) !!}</span>
+                    <span class="text-muted">Observations initial : {!! nl2br(e($inspection->reservation->inspectionInitiale->observations)) !!}</span>
                 @endif
             </div>
         </div>
@@ -44,9 +44,9 @@
                         @endif
                         <label class="form-check-label" for="checklist_{{ $checklist->id }}">
                             {{ $checklist->nom }}
-                            @if(!$type->is_initial && $reservation->inspectionInitiale)
+                            @if(!$inspection->type->is_initial && $inspection->reservation->inspectionInitiale)
                                 <span class="text-muted">(initial
-                                    @if(in_array($checklist->id, $reservation->inspectionInitiale->checklists->pluck('id')->toArray()))
+                                    @if(in_array($checklist->id, $inspection->reservation->inspectionInitiale->checklists->pluck('id')->toArray()))
                                         <i class="fa fa-check-square text-success"></i>
                                     @else
                                         <i class="fa fa-window-close text-danger"></i>
@@ -66,9 +66,9 @@
         {{--TODO mettre les info sur l'inspection initiale si présente pas possible actuelement avec la bdd --}}
         {{--TODO pour la page show, impossible de connaitre les dommages de l'inspection initiale après qu'une autre inspection soit faite. Il faudrait ajouter une table dommage_inspections--}}
 
-        @if (!($inspection->type->is_initial and ($reservation->inspectionFinale or !$reservation->vehicule))) {{-- pour ne pas afficher tous les dommages s'il y a eu d'autre inspection. Régle aussi le cas de la suppression du véhicule --}}
+        @if (!($inspection->type->is_initial and ($inspection->reservation->inspectionFinale or !$inspection->vehicule))) {{-- pour ne pas afficher tous les dommages s'il y a eu d'autre inspection. Régle aussi le cas de la suppression du véhicule --}}
             @php
-                $dommages = $inspection->type->is_initial ? $reservation->vehicule->dommages : $inspection->dommages;
+                $dommages = $inspection->type->is_initial ? $inspection->vehicule->dommages : $inspection->dommages;
                 $dommages = $dommages->loadMissing('emplacement', 'type', 'element', 'illustration')->sortBy(function ($dommage) { return $dommage->emplacement->order; })
             @endphp
             <div class="card mb-3 shadow-sm">

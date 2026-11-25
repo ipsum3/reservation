@@ -18,9 +18,10 @@ use Ipsum\Reservation\app\Contracts\Nones\ModulePaiementNoneProvider;
 use Ipsum\Reservation\app\Contracts\FactureContract;
 use Ipsum\Reservation\app\Http\Middleware\CheckEtatDesLieuxEnabled;
 use Ipsum\Reservation\app\Http\Middleware\DevisCheck;
+use Ipsum\Reservation\app\Http\Middleware\RedirectIfInspectionEmailEmpty;
 use Ipsum\Reservation\app\Http\Middleware\RedirectIfInspectionSigned;
 use Ipsum\Reservation\app\Http\Middleware\ReservationConfirmed;
-use Ipsum\Reservation\app\Http\Middleware\ReservationEmail;
+use Ipsum\Reservation\app\Http\Middleware\RedirectIfInspectionEmailNull;
 use Ipsum\Reservation\app\Http\Middleware\ReservationTracking;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Ipsum\Reservation\app\Models\Reservation\Paiement;
@@ -170,7 +171,7 @@ class ReservationServiceProvider extends ServiceProvider
         $router->aliasMiddleware('adminReservationConfirmed', ReservationConfirmed::class);
         $router->aliasMiddleware('adminRedirectIfInspectionSigned', RedirectIfInspectionSigned::class);
         $router->aliasMiddleware('adminCheckEtatDesLieuxEnabled', CheckEtatDesLieuxEnabled::class);
-        $router->aliasMiddleware('adminReservationEmail', ReservationEmail::class);
+        $router->aliasMiddleware('adminRedirectIfInspectionEmailEmpty', RedirectIfInspectionEmailEmpty::class);
         $router->aliasMiddleware('adminDevisCheck', DevisCheck::class);
         $this->app->booted(function () use($router) {
             $router->pushMiddlewareToGroup('web', ReservationTracking::class);

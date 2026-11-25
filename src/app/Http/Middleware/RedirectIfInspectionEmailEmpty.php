@@ -4,7 +4,7 @@ namespace Ipsum\Reservation\app\Http\Middleware;
 
 use Closure;
 
-class ReservationEmail
+class RedirectIfInspectionEmailEmpty
 {
     /**
      * Handle an incoming request.
@@ -15,12 +15,11 @@ class ReservationEmail
      */
     public function handle($request, Closure $next)
     {
-        $reservation = $request->route('reservation');
-        $type = $request->route('type');
+        $inspection = $request->route('inspection');
 
-        if (!$reservation->email) {
+        if (!$inspection->reservation->email) {
             \Alert::error("Email client non renseigné.")->flash();
-            return redirect()->route('admin.inspection.client', [$reservation, $type]);
+            return redirect()->route('admin.reservation.edit', [$inspection->reservation]);
         }
 
         return $next($request);

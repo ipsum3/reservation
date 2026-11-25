@@ -141,4 +141,7 @@ return [
 
     'facture_provider' => env('FACTURE_PROVIDER'),
 
+
+    'sync_vehicule_entre_reservation_etat_des_lieux' => true,
+
 ];

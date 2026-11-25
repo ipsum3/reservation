@@ -222,9 +222,9 @@
                     <tr>
                         <td>
                             {{ _('Catégorie') }} {{ $reservation->categorie_nom }}<br>
-                            @if ($reservation->vehicule)
-                                {{ _('Marque et modéle') }} : {{ $reservation->vehicule->marque_modele }}<br>
-                                {{ _('Immatriculation') }} : {{ $reservation->vehicule->immatriculation }}<br>
+                            @if ($reservation->inspectionInitiale or $reservation->vehicule)
+                                {{ _('Marque et modéle') }} : {{ $reservation->inspectionInitiale->vehicule->marque_modele ?? $reservation->vehicule->marque_modele }}<br>
+                                {{ _('Immatriculation') }} : {{ $reservation->inspectionInitiale->immatriculation ?? $reservation->vehicule->immatriculation }}<br>
                             @endif
                         </td>
                     </tr>

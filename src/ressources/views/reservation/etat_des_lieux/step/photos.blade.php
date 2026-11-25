@@ -5,7 +5,7 @@
 
     @include('IpsumReservation::reservation.etat_des_lieux.step._progressbar')
 
-    <h1 class="main-title">État des lieux {{ strtolower($type->nom) }} <a href="{{ route('admin.reservation.edit', $reservation) }}"><small class="text-muted">(résa. {{ $reservation->reference }})</small></a></h1>
+    <h1 class="main-title">État des lieux {{ strtolower($inspection->type->nom) }} <a href="{{ route('admin.reservation.edit', $inspection->reservation) }}"><small class="text-muted">(résa. {{ $inspection->reservation->reference }})</small></a></h1>
 
     <div class="row">
 
@@ -29,8 +29,8 @@
                 </div>
 
                 <div class="box-footer">
-                    <div><a href="{{ route('admin.inspection.dommages', [$reservation, $type]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
-                    <div><a href="{{ route('admin.inspection.signature.locataire', [$reservation, $type]) }}" id="nextBtn" class="btn btn-primary">Suivant</a></div>
+                    <div><a href="{{ route('admin.inspection.dommages', [$inspection]) }}" id="prevBtn" class="btn btn-outline-secondary">Retour</a></div>
+                    <div><a href="{{ route('admin.inspection.signature.locataire', [$inspection]) }}" id="nextBtn" class="btn btn-primary">Suivant</a></div>
                 </div>
 
             </div>

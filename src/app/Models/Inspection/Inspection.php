@@ -2,9 +2,11 @@
 
 namespace Ipsum\Reservation\app\Models\Inspection;
 
+use Illuminate\Database\Eloquent\Builder;
 use Ipsum\Admin\app\Models\Admin;
 use Ipsum\Core\app\Models\BaseModel;
 use Ipsum\Media\Concerns\Mediable;
+use Ipsum\Reservation\app\Models\Categorie\Vehicule;
 use Ipsum\Reservation\app\Models\Dommage\Dommage;
 use Ipsum\Reservation\app\Models\Reservation\Reservation;
 use Str;
@@ -55,6 +57,19 @@ class Inspection extends BaseModel
     protected $guarded = ['id'];
 
 
+    /*protected static function booted()
+    {
+        self::saving(function (self $inspection) {
+            if ($inspection->vehicule_id != $inspection->getOriginal('vehicule_id')) {
+                dump($inspection, $inspection->vehicule, $inspection->vehicule?->immatriculation);
+                //dd($inspection->vehicule?->immatriculation, $inspection->vehicule_id);
+                $inspection->immatriculation = $inspection->vehicule?->immatriculation;
+            }
+        });
+
+    }*/
+
+
     /*
      * Scopes
      */
@@ -84,6 +99,21 @@ class Inspection extends BaseModel
         return $this->belongsToMany(Checklist::class, 'checklist-inspections')
             ->withPivot('value')
             ->withTimestamps();
+    }
+
+    public function vehicule()
+    {
+        return $this->belongsTo(Vehicule::class, 'vehicule_id');
+    }
+
+
+    /*
+     * Scopes
+     */
+
+    public function scopeSigned(Builder $query)
+    {
+        $query->whereNotNull('locataire_signature')->whereNotNull('agent_signature');
     }
 
 

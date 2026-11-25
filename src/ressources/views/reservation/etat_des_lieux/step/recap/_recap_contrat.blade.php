@@ -1,54 +1,54 @@
 <div class="row">
 
-    <div class="{{ $type->is_initial ? 'col-xl-6' : 'col-md-6' }}">
+    <div class="{{ $inspection->type->is_initial ? 'col-xl-6' : 'col-md-6' }}">
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Informations locataire</div>
             <div class="card-body p-2">
-                @if (!$reservation->entreprise)
-                    <strong>{{ $reservation->civilite }} {{ $reservation->prenom }} {{ $reservation->nom }}</strong><br/>
-                    {{ $reservation->adresse }}<br />
-                    {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }}<br />
-                    {{ $reservation->telephone }}<br />
+                @if (!$inspection->reservation->entreprise)
+                    <strong>{{ $inspection->reservation->civilite }} {{ $inspection->reservation->prenom }} {{ $inspection->reservation->nom }}</strong><br/>
+                    {{ $inspection->reservation->adresse }}<br />
+                    {{ $inspection->reservation->cp }} {{ $inspection->reservation->ville }} {{ $inspection->reservation->pays_nom }}<br />
+                    {{ $inspection->reservation->telephone }}<br />
                 @else
-                    <strong>{{ $reservation->entreprise->nom }}</strong><br />
-                    {{ $reservation->entreprise->adresse }}<br />
-                    {{ $reservation->entreprise->cp }} {{ $reservation->entreprise->ville }} {{ $reservation->entreprise->pays?->nom }}<br />
-                    {{ $reservation->entreprise->telephone }}<br />
-                    {{ $reservation->entreprise->siren }}<br />
+                    <strong>{{ $inspection->reservation->entreprise->nom }}</strong><br />
+                    {{ $inspection->reservation->entreprise->adresse }}<br />
+                    {{ $inspection->reservation->entreprise->cp }} {{ $inspection->reservation->entreprise->ville }} {{ $inspection->reservation->entreprise->pays?->nom }}<br />
+                    {{ $inspection->reservation->entreprise->telephone }}<br />
+                    {{ $inspection->reservation->entreprise->siren }}<br />
                 @endif
             </div>
         </div>
 
         <div class="card mb-3 shadow-sm">
-            <div class="card-header bg-secondary text-white p-1">Conducteur{{ $reservation->conducteurs->count() ? 's' : '' }}</div>
+            <div class="card-header bg-secondary text-white p-1">Conducteur{{ $inspection->reservation->conducteurs->count() ? 's' : '' }}</div>
             <div class="card-body p-2">
-                <strong>{{ $reservation->prenom }} {{ $reservation->nom }}</strong><br/>
-                @if ($reservation->entreprise)
-                    {{ $reservation->adresse }}<br />
-                    {{ $reservation->cp }} {{ $reservation->ville }} {{ $reservation->pays_nom }}<br />
-                    {{ $reservation->telephone }}<br />
+                <strong>{{ $inspection->reservation->prenom }} {{ $inspection->reservation->nom }}</strong><br/>
+                @if ($inspection->reservation->entreprise)
+                    {{ $inspection->reservation->adresse }}<br />
+                    {{ $inspection->reservation->cp }} {{ $inspection->reservation->ville }} {{ $inspection->reservation->pays_nom }}<br />
+                    {{ $inspection->reservation->telephone }}<br />
                 @endif
-                @if ($reservation->naissance_at)
-                    {{ _('Né le') }} {{ $reservation->naissance_at->format('d/m/Y') }}
-                    @if ($reservation->naissance_lieu)
-                        à {{ $reservation->naissance_lieu }}
+                @if ($inspection->reservation->naissance_at)
+                    {{ _('Né le') }} {{ $inspection->reservation->naissance_at->format('d/m/Y') }}
+                    @if ($inspection->reservation->naissance_lieu)
+                        à {{ $inspection->reservation->naissance_lieu }}
                     @endif
                     <br>
                 @endif
-                @if ($reservation->permis_numero or $reservation->permis_at)
+                @if ($inspection->reservation->permis_numero or $inspection->reservation->permis_at)
                     {{ _('Permis') }}
-                    @if ($reservation->permis_numero)
-                        {{ _('n°') }}{{ $reservation->permis_numero }}
+                    @if ($inspection->reservation->permis_numero)
+                        {{ _('n°') }}{{ $inspection->reservation->permis_numero }}
                     @endif
-                    @if ($reservation->permis_at)
-                        {{ _('délivré le') }} {{ $reservation->permis_at->format('d/m/Y') }}
+                    @if ($inspection->reservation->permis_at)
+                        {{ _('délivré le') }} {{ $inspection->reservation->permis_at->format('d/m/Y') }}
                     @endif
-                    @if ($reservation->permis_delivre)
-                        {{ _('par') }} {{ $reservation->permis_delivre }}
+                    @if ($inspection->reservation->permis_delivre)
+                        {{ _('par') }} {{ $inspection->reservation->permis_delivre }}
                     @endif
                 @endif
 
-                @foreach($reservation->conducteurs as $conducteur)
+                @foreach($inspection->reservation->conducteurs as $conducteur)
                     <br><br>
                     <strong>{{ $conducteur->prenom }} {{ $conducteur->nom }}</strong><br/>
                     @if ($conducteur->naissance_at)
@@ -79,8 +79,8 @@
             <div class="card-body p-2">
                 <table class="table table-sm table-billing mb-0">
                     <tbody>
-                    @if($reservation->prestations->count())
-                        @foreach ($reservation->prestations as $prestation)
+                    @if($inspection->reservation->prestations->count())
+                        @foreach ($inspection->reservation->prestations as $prestation)
                             <tr>
                                 <td>{{ $prestation->quantite }} x {{ $prestation->nom }} <small class="text-muted">{{ $prestation->choix }}</small></td>
                                 <td class="text-right">{{ $prestation->tarif_libelle }}</td>
@@ -88,51 +88,51 @@
                         @endforeach
                     @endif
 
-                    @if($reservation->promotions->count())
-                        @foreach ($reservation->promotions as $promotion)
+                    @if($inspection->reservation->promotions->count())
+                        @foreach ($inspection->reservation->promotions as $promotion)
                             <tr>
                                 <td>Offre : {{ $promotion->nom }}</td>
                                 <td class="text-right">-@prix($promotion->reduction)&nbsp;€</td>
                             </tr>
                         @endforeach
                     @endif
-                    @if ($reservation->remise)
+                    @if ($inspection->reservation->remise)
                         <tr>
                             <td>Remise</td>
-                            <td class="text-right">-@prix($reservation->remise)&nbsp;€</td>
+                            <td class="text-right">-@prix($inspection->reservation->remise)&nbsp;€</td>
                         </tr>
                     @endif
-                    @if ($reservation->caution || $reservation->paiementCaution?->montant)
+                    @if ($inspection->reservation->caution || $inspection->reservation->paiementCaution?->montant)
                         <tr>
                             <td>
                                 {{ _('Caution') }}
 
-                                @if($reservation->paiementCaution)
-                                    <span class="badge badge-success ml-1">Sécurisée (@prix($reservation->paiementCaution->montant) €)</span>
-                                @elseif($reservation->caution_send_at)
-                                    <span class="badge badge-info ml-1">Envoyée le {{ $reservation->caution_send_at->format('d/m/Y H:i') }}</span>
+                                @if($inspection->reservation->paiementCaution)
+                                    <span class="badge badge-success ml-1">Sécurisée (@prix($inspection->reservation->paiementCaution->montant) €)</span>
+                                @elseif($inspection->reservation->caution_send_at)
+                                    <span class="badge badge-info ml-1">Envoyée le {{ $inspection->reservation->caution_send_at->format('d/m/Y H:i') }}</span>
                                 @endif
 
                             </td>
                             <td class="text-right">
-                                @prix($reservation->caution)&nbsp;€
+                                @prix($inspection->reservation->caution)&nbsp;€
                             </td>
                         </tr>
                     @endif
-                    @if ($reservation->franchise)
+                    @if ($inspection->reservation->franchise)
                         <tr>
                             <td>{{ _('Franchise') }}</td>
-                            <td class="text-right">@prix($reservation->franchise)&nbsp;€ </td>
+                            <td class="text-right">@prix($inspection->reservation->franchise)&nbsp;€ </td>
                         </tr>
                     @endif
                     <tr>
                         <td><strong>Total (TTC)</strong></td>
-                        <td class="text-right">@prix($reservation->total)&nbsp;€</td>
+                        <td class="text-right">@prix($inspection->reservation->total)&nbsp;€</td>
                     </tr>
-                    @if (!$reservation->is_payed)
+                    @if (!$inspection->reservation->is_payed)
                         <tr>
                             <td><strong>Reste à régler</strong></td>
-                            <td class="text-right">@prix($reservation->total - $reservation->montant_paye)&nbsp;€</td>
+                            <td class="text-right">@prix($inspection->reservation->total - $inspection->reservation->montant_paye)&nbsp;€</td>
                         </tr>
                     @endif
                     </tbody>
@@ -141,15 +141,15 @@
         </div>
     </div>
 
-    <div class="{{ $type->is_initial ? 'col-xl-6' : 'col-md-6' }}">
+    <div class="{{ $inspection->type->is_initial ? 'col-xl-6' : 'col-md-6' }}">
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-secondary text-white p-1">Véhicule</div>
             <div class="card-body p-2">
-                <strong>{{ _('Catégorie') }} {{ $reservation->categorie_nom }}</strong><br>
-                @if ($reservation->vehicule)
-                    <strong>{{ _('Marque et modéle') }} :</strong> {{ $reservation->vehicule->marque_modele }}<br>
-                    <strong>{{ _('Immatriculation') }} :</strong> {{ $reservation->vehicule->immatriculation }}<br>
+                <strong>{{ _('Catégorie') }} {{ $inspection->reservation->categorie_nom }}</strong><br>
+                @if ($inspection->vehicule)
+                    <strong>{{ _('Marque et modéle') }} :</strong> {{ $inspection->vehicule->marque_modele }}<br>
                 @endif
+                <strong>{{ _('Immatriculation') }} :</strong> {{ $inspection->immatriculation }}<br>
             </div>
         </div>
 
@@ -157,14 +157,14 @@
             <div class="card-header bg-secondary text-white p-1">Période</div>
             <div class="card-body p-2">
                 <strong>{{ _('Départ') }} :</strong>
-                {{ $reservation->debut_lieu_nom }}
-                {{ _('le') }} {{ $reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->debut_at->format('H\hi') }}
+                {{ $inspection->reservation->debut_lieu_nom }}
+                {{ _('le') }} {{ $inspection->reservation->debut_at->format('d/m/Y') }} {{ _('à') }} {{ $inspection->reservation->debut_at->format('H\hi') }}
                 <br>
                 <strong>{{ _('Retour') }} :</strong>
-                {{ $reservation->fin_lieu_nom }}
-                {{ _('le') }} {{ $reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $reservation->fin_at->format('H\hi') }}
+                {{ $inspection->reservation->fin_lieu_nom }}
+                {{ _('le') }} {{ $inspection->reservation->fin_at->format('d/m/Y') }} {{ _('à') }} {{ $inspection->reservation->fin_at->format('H\hi') }}
                 <br><br>
-                <strong>Nombre de jours :</strong> {{ $reservation->nb_jours }}
+                <strong>Nombre de jours :</strong> {{ $inspection->reservation->nb_jours }}
             </div>
         </div>
     </div>

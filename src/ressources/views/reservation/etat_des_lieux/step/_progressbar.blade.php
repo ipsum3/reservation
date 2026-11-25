@@ -55,18 +55,18 @@
 </style>
 
 @php
-/** @var \Ipsum\Reservation\app\Models\Inspection\Type::class $type **/
+/** @var \Ipsum\Reservation\app\Models\Inspection\Inspection $inspection **/
 
 $etapes = [
     [
         'route' => 'admin.inspection.vehicule',
         'nom' => 'Véhicule',
-        'show' => $type->is_initial
+        'show' => $inspection->type->is_initial
     ],
     [
         'route' => 'admin.inspection.client',
         'nom' => 'Réservation',
-        'show' => $type->is_initial
+        'show' => $inspection->type->is_initial
     ],
     [
         'route' => 'admin.inspection.checklist',
@@ -108,7 +108,7 @@ $has_link = true;
                 }
                 @endphp
                 @if($has_link)
-                    <a href="{{ route($etape['route'], [$reservation, $type]) }}"><div class="progressbar-item">{{ $etape['nom'] }}</div></a>
+                    <a href="{{ route($etape['route'], $inspection) }}"><div class="progressbar-item">{{ $etape['nom'] }}</div></a>
                 @else
                     <div class="progressbar-item {{ request()->routeIs($etape['route']) ? 'active' : '' }}">{{ $etape['nom'] }}</div>
                 @endif
