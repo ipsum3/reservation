@@ -154,10 +154,6 @@ class ReservationServiceProvider extends ServiceProvider
             __DIR__.'/config/ipsum/reservation.php', 'ipsum.reservation'
         );
 
-        $this->mergeConfigFrom(
-            __DIR__.'/config/dompdf.php', 'dompdf'
-        );
-
         // register the artisan commands
         $this->commands($this->commands);
 
