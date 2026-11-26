@@ -30,7 +30,7 @@ class Devis extends Mailable
         $this->email = $email ?: $this->reservation->email;
         $this->objet = $objet ?: 'Devis réservation ' . $this->reservation->reference;
         $this->message = $message;
-        $pdf = Pdf::loadView(config('ipsum.reservation.devis.view'), compact('reservation'));
+        $pdf = Pdf::setOption(['isRemoteEnabled' => true, 'chroot' => '/'])->loadView(config('ipsum.reservation.devis.view'), compact('reservation'));
         $pdf->render();
         $this->file = $pdf->output();
         App::setLocale($reservation->locale);

@@ -501,7 +501,7 @@ class ReservationController extends AdminController
 
     public function devis(Reservation $reservation)
     {
-        $pdf = Pdf::loadView(config('ipsum.reservation.devis.view'), compact('reservation'));
+        $pdf = Pdf::setOption(['isRemoteEnabled' => true, 'chroot' => '/'])->loadView(config('ipsum.reservation.devis.view'), compact('reservation'));
         return $pdf->stream();
     }
 
@@ -587,7 +587,7 @@ class ReservationController extends AdminController
     {
         $cgl = Article::where('nom', config('ipsum.reservation.contrat.cgl_nom'))->first();
 
-        $pdf = Pdf::loadView(config('ipsum.reservation.contrat.view'), compact('reservation', 'cgl'));
+        $pdf = Pdf::setOption(['isRemoteEnabled' => true, 'chroot' => '/'])->loadView(config('ipsum.reservation.contrat.view'), compact('reservation', 'cgl'));
         return $pdf->stream();
     }
 
@@ -611,7 +611,7 @@ class ReservationController extends AdminController
         }
 
         //$pdf = Pdf::loadView(config('ipsum.reservation.contrat.view'), compact('reservations', 'cgl'));
-        $pdf = Pdf::loadHTML($html);
+        $pdf = Pdf::setOption(['isRemoteEnabled' => true, 'chroot' => '/'])->loadHTML($html);
         return $pdf->stream();
     }
 
@@ -726,7 +726,7 @@ class ReservationController extends AdminController
     {
         $jours = $this->_getDepartRetourResa($request);
 
-        $pdf = Pdf::loadView('IpsumReservation::reservation.imprime-depart-retour', compact('jours'));
+        $pdf = Pdf::setOption(['isRemoteEnabled' => true, 'chroot' => '/'])->loadView('IpsumReservation::reservation.imprime-depart-retour', compact('jours'));
 
         return $pdf->stream();
     }

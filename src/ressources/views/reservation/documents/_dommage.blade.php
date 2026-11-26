@@ -2,10 +2,7 @@
     <div style=" /*border:1px solid #ccc; padding:6px; box-sizing:border-box; background:#fafafa; margin-bottom:8px;*/">
         <div style="text-align:center; margin-bottom:5px;">
             @if($dommage->illustration)
-                @php
-                    Croppa::render(Croppa::url($dommage->illustration->cropPath, 600))
-                @endphp
-                <img src="{{ public_path(Croppa::url($dommage->illustration->cropPath, 600)) }}"
+                <img src="{{ asset(Croppa::url($dommage->illustration->cropPath, 600))  }}"
                      alt="{{ $dommage->illustration->titre }}"
                      style="width:100%; height:auto;">
             @else

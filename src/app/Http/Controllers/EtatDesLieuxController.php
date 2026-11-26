@@ -338,7 +338,7 @@ class EtatDesLieuxController extends AdminController
 
             $inspectionPdfPath = $directory . "/etat_des_lieux-{$inspection->id}.pdf";
 
-            PDF::loadView(config('ipsum.reservation.etat_des_lieux.view'), [
+            Pdf::setOption(['isRemoteEnabled' => true, 'chroot' => '/'])->loadView(config('ipsum.reservation.etat_des_lieux.view'), [
                 'inspection' => $inspection,
                 'checklists' => $checklists,
             ])->save($inspectionPdfPath);
@@ -361,7 +361,7 @@ class EtatDesLieuxController extends AdminController
 
                 $contratPdfPath = $contratDirectory . "/contrat-{$reservation->contrat}.pdf";
 
-                Pdf::loadView(
+                Pdf::setOption(['isRemoteEnabled' => true, 'chroot' => '/'])->loadView(
                     config('ipsum.reservation.contrat.view'),
                     compact('reservation', 'cgl', 'inspection')
                 )->save($contratPdfPath);
@@ -442,7 +442,7 @@ class EtatDesLieuxController extends AdminController
         $type = $inspection->type;
         $checklists = Checklist::orderBy('order')->get();
 
-        $pdf = Pdf::loadView(config('ipsum.reservation.etat_des_lieux.view'), compact('inspection', 'reservation', 'type', 'checklists'));
+        $pdf = Pdf::setOption(['isRemoteEnabled' => true, 'chroot' => '/'])->loadView(config('ipsum.reservation.etat_des_lieux.view'), compact('inspection', 'reservation', 'type', 'checklists'));
 
         return $pdf->stream("etat_des_lieux_{$inspection->id}.pdf");
     }
