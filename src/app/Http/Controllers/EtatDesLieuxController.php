@@ -210,7 +210,7 @@ class EtatDesLieuxController extends AdminController
     {
         $inspection->update($request->validated());
 
-        $inspection->checklists()->sync($data['checklists'] ?? []);
+        $inspection->checklists()->sync($request->checklists ?? []);
 
         return redirect()->route('admin.inspection.dommages', [$inspection]);
     }
